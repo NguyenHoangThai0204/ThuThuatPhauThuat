@@ -3,68 +3,9 @@
 }
 
 <link href="~/dist/lib/toastr/build/toastr.min.css" rel="stylesheet" />
+<link href="~/dist/css/CSS0302/CSS0302TTPT/CSS0302Index.css" rel="stylesheet" />
 
-<style>
-    .nav-link {
-        color: #000;
-    }
 
-    .card-infor {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 10px;
-        padding: 12px;
-        background: #f8f9fa; /* nền nhạt */
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        font-family: "Segoe UI", Arial, sans-serif;
-        font-size: 17px;
-        font-weight:bold;
-    }
-
-        .card-infor div {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 8px 10px;
-            text-align: center;
-            font-weight: 600;
-            color: #212529;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            transition: 0.2s;
-        }
-
-            .card-infor div:nth-child(1) {
-                color: #0d6efd; /* xanh dương */
-                font-size: 20px;
-                font-weight: bold;
-            }
-
-            .card-infor div:nth-child(2) {
-                color: #198754; /* xanh lá */
-                font-size: 19px;
-                font-weight: bold;
-            }
-
-            .card-infor div:nth-child(3) {
-                color: #dc3545; /* đỏ */
-                font-size: 19px;
-                font-weight: bold;
-            }
-
-            .card-infor div:nth-child(4) {
-                color: #6f42c1; /* tím */
-                font-size: 19px;
-                font-weight: bold;
-            }
-
-            .card-infor div:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 3px 6px rgba(0,0,0,0.12);
-            }
-
-</style>
 <div class="card p-1">
     <div class="card-infor">
         <div id="info-tenbn">--</div>
@@ -97,7 +38,7 @@
                
             </ul>
         </div>
-    <div class="card-body">
+    <div class="card-body" style="padding: 3px !important;">
         <div class="tab-content">
             <div class="tab-pane active show" id="tabs-danhsach-7" role="tabpanel"></div>
             <div class="tab-pane" id="tabs-thongtin-7" role="tabpanel"></div>
@@ -110,21 +51,6 @@
 
 @section Scripts {
     <script src="~/dist/lib/toastr/build/toastr.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // load Danh sách mặc định
-            $("#tabs-danhsach-7").load("/thu_thuat_phau_thuat/danh_sach");
+    <script src="~/dist/js/J0302/J0302TTPT/J0302Index.js" asp-append-version="true" defer></script>
 
-            // khi click tab thì load nội dung
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-                var target = $(e.target).attr("href"); 
-                if (target === "#tabs-danhsach-7" && $(target).is(':empty')) {
-                    $(target).load("/thu_thuat_phau_thuat/danh_sach");
-                }
-                else if (target === "#tabs-thongtin-7" && $(target).is(':empty')) {
-                    $(target).load("/thu_thuat_phau_thuat/thong_tin");
-                }
-            });
-        });
-    </script>
 }

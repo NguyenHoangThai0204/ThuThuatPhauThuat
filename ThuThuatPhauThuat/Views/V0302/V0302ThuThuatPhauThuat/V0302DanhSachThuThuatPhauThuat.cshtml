@@ -1,86 +1,20 @@
 ﻿@{
     ViewData["Title"] = "Danh sách thủ thuật phẩu thuật";
 }
-
-<style>
-    /* Giới hạn chiều cao bảng, bật scroll dọc và ngang */
-    .table-responsive {
-        max-height: 400px; /* chỉnh tùy ý, ví dụ 400px */
-        overflow-y: auto;
-        overflow-x: auto;
-    }
-
-    /* Không cho text bị cắt thành dấu ... */
-    .table td,
-    .table th {
-        white-space: nowrap;
-    }
-
-    .table th {
-        text-align: center;
-    }
-
-    /* ===== CỐ ĐỊNH CỘT 1 (STT) ===== */
-    table thead th:nth-child(1) {
-        position: sticky;
-        left: 0;
-        z-index: 20;
-        background-color: #f2f2f2;
-        border-right: 1px solid #ccc !important;
-        width: 65px; /* đồng bộ */
-        min-width: 65px;
-        max-width: 65px;
-        text-align: center;
-    }
-
-    /* ===== CỐ ĐỊNH CỘT 2 ===== */
-    table thead th:nth-child(2) {
-        position: sticky;
-        left: 65px; /* = width cột 1 */
-        z-index: 20;
-        background-color: #f2f2f2;
-        border-right: 1px solid #ccc !important;
-        width: 100px;
-        min-width: 100px;
-        max-width: 300px;
-    }
-
-    /* ===== CỐ ĐỊNH CỘT 1 (STT) ===== */
-    table tbody td:nth-child(1) {
-        position: sticky;
-        left: 0;
-        z-index: 18;
-        background-color: #fff;
-        border-right: 1px solid #ccc !important;
-        width: 65px; /* đồng bộ */
-        min-width: 65px;
-        max-width: 65px;
-        text-align: center;
-    }
-
-    /* ===== CỐ ĐỊNH CỘT 2 ===== */
-    table tbody td:nth-child(2) {
-        position: sticky;
-        left: 65px; /* = width cột 1 */
-        z-index: 18;
-        background-color: #fff;
-        border-right: 1px solid #ccc !important;
-        min-width: 100px;
-        max-width: 350px;
-        width: 350px;
-        white-space: normal !important; /* cho phép xuống dòng */
-        word-break: break-word; /* xuống dòng khi từ quá dài */
-    }
-
-</style>
+<link href="~/dist/css/CSS0302/CSS0302TTPT/CSS0302DanhSach.css" rel="stylesheet" />
 
 <div class="row me-0">
-    <div class="col-12 col-lg-2 mb-2 pe-1">
+    <div class="col-12 col-lg-20 mb-2 pe-1">
         <div class="card p-1 bg-azure-lt mb-1">
-            <!-- sidebar trống -->
+            <div class="row">
+                <div class="col-md-4"> 
+                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Ngày: </label>
+                </div>
+                <div class="col-md-2 flex-fill"> <input type="text" autocomplete="off" class="form-control text-dark input-date-default" id="NgayKham" name="NgayKham" placeholder="Ngày Khám" required=""> </div>
+            </div>
         </div>
     </div>
-    <div class="col-12 col-lg-10 ps-1 pe-0">
+    <div class="col-12 col-lg-80 ps-1 pe-0">
         <div class="card">
             <div class="table-responsive">
                 <table id="example" class="table table-bordered table-hover w-100">
@@ -135,55 +69,9 @@
         </div>
     </div> <!-- 80% ≈ 10/12 -->
 </div>
-<script>
-    function formatDateTime(date) {
-           const dd = String(date.getDate()).padStart(2, '0');
-           const MM = String(date.getMonth() + 1).padStart(2, '0');
-           const yyyy = date.getFullYear();
-           const HH = String(date.getHours()).padStart(2, '0');
-           const mm = String(date.getMinutes()).padStart(2, '0');
-           return `${dd}-${MM}-${yyyy} ${HH}:${mm}`;
-       }
 
-       function updateDateTime() {
-           var now = new Date();
-           var formatted = formatDateTime(now);
-           $("#info-datetime", window.parent.document).text(formatted);
-       }
-
-    $(document).on("click", "#example tbody tr", function () {
-        var tenBN = $(this).find("td:eq(2)").text().trim();
-        var namSinh = $(this).find("td:eq(3)").text().trim();
-        var gioiTinh = $(this).find("td:eq(4)").text().trim();
-
-        var bacSi  = $(this).find("td:eq(10)").text().trim();
-
-        $("#info-tenbn", window.parent.document).text(tenBN);
-        $("#info-namsinh", window.parent.document).text(namSinh + " - " + gioiTinh);
-        $("#info-bacsi", window.parent.document).text(bacSi);
-        updateDateTime();
-
-        $("#example tbody tr").removeClass("table-active");
-        $(this).addClass("table-active");
-    });
-
-    $(document).ready(function () {
-        updateDateTime();
-        setInterval(updateDateTime, 60000);
-    });
-</script>
-
+<script src="~/dist/js/J0302/J0302TTPT/J0302DanhSach.js" asp-append-version="true" defer></script>
 
 @section Scripts {
     <script src="~/dist/js/dataTables.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#example').DataTable({
-                scrollX: true,  
-                paging: false,  
-                searching: false,
-                info: false
-            });
-        });
-    </script>
 }

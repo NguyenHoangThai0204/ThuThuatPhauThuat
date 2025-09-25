@@ -1,0 +1,68 @@
+﻿/* Giới hạn chiều cao bảng, bật scroll dọc và ngang */
+.table-responsive {
+    max-height: 400px; /* chỉnh tùy ý, ví dụ 400px */
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+/* Không cho text bị cắt thành dấu ... */
+.table td,
+.table th {
+    white-space: nowrap;
+}
+
+.table th {
+    text-align: center;
+}
+
+/* ===== CỐ ĐỊNH CỘT 1 (STT) ===== */
+table thead th:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 20;
+    background-color: #f2f2f2;
+    border-right: 1px solid #ccc !important;
+    width: 65px; /* đồng bộ */
+    min-width: 65px;
+    max-width: 65px;
+    text-align: center;
+}
+
+/* ===== CỐ ĐỊNH CỘT 2 ===== */
+table thead th:nth-child(2) {
+    position: sticky;
+    left: 65px; /* = width cột 1 */
+    z-index: 20;
+    background-color: #f2f2f2;
+    border-right: 1px solid #ccc !important;
+    width: 100px;
+    min-width: 100px;
+    max-width: 300px;
+}
+
+/* ===== CỐ ĐỊNH CỘT 1 (STT) ===== */
+table tbody td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 18;
+    background-color: #fff;
+    border-right: 1px solid #ccc !important;
+    width: 65px; /* đồng bộ */
+    min-width: 65px;
+    max-width: 65px;
+    text-align: center;
+}
+
+/* ===== CỐ ĐỊNH CỘT 2 ===== */
+table tbody td:nth-child(2) {
+    position: sticky;
+    left: 65px; /* = width cột 1 */
+    z-index: 18;
+    background-color: #fff;
+    border-right: 1px solid #ccc !important;
+    min-width: 100px;
+    max-width: 350px;
+    width: 350px;
+    white-space: normal !important; /* cho phép xuống dòng */
+    word-break: break-word; /* xuống dòng khi từ quá dài */
+}

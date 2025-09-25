@@ -1,7 +1,7 @@
 wwwroot\dist\css\bootstrap-icons.css
 wwwroot\dist\css\bootstrap.min.css
-wwwroot\dist\css\CSS0302\CSS0302SoKhamSucKhoeDinhKyTren18T.css
-wwwroot\dist\css\CSS0302\CSS0302XoaGoiChiDinh.css
+wwwroot\dist\css\CSS0302\CSS0302TTPT\CSS0302DanhSach.css
+wwwroot\dist\css\CSS0302\CSS0302TTPT\CSS0302Index.css
 wwwroot\dist\css\Custom.css
 wwwroot\dist\css\dataTables.min.css
 wwwroot\dist\css\demo.css
@@ -38,10 +38,10 @@ wwwroot\dist\data\json\DM_NhomDichVuKyThuat.json
 wwwroot\dist\data\json\HH_DmKhoHang.json
 wwwroot\dist\img\Logo-BVUB.jpg
 wwwroot\dist\js\BienChung.js
-wwwroot\dist\js\J0302\J0302SoKhamSucKhoeDinhKyTren18T.js
+wwwroot\dist\js\J0302\J0302TTPT\J0302DanhSach.js
+wwwroot\dist\js\J0302\J0302TTPT\J0302Index.js
 wwwroot\dist\js\J0302\J0302utils\J0302DateFormatUtil.js
 wwwroot\dist\js\J0302\J0302utils\J0302LoadHH_DM_KhoHangUtil.js
-wwwroot\dist\js\J0302\J0302XoaGoiChiDinh.js
 wwwroot\dist\lib\apexcharts\dist\apexcharts.amd.js
 wwwroot\dist\lib\apexcharts\dist\apexcharts.common.js
 wwwroot\dist\lib\apexcharts\dist\apexcharts.css
