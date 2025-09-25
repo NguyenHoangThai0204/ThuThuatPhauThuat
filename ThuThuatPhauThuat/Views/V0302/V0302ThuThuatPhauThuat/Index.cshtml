@@ -5,8 +5,9 @@
 <link href="~/dist/lib/toastr/build/toastr.min.css" rel="stylesheet" />
 
 <style>
-
-
+    .nav-link {
+        color: #000;
+    }
 </style>
 <div class="card p-1">
         <div class="card-infor" style="height:50px; background: yellow;"> 
@@ -56,7 +57,7 @@
 
             // khi click tab thì load nội dung
             $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-                var target = $(e.target).attr("href"); // #tabs-danhsach-7 / #tabs-thongtin-7
+                var target = $(e.target).attr("href"); 
                 if (target === "#tabs-danhsach-7" && $(target).is(':empty')) {
                     $(target).load("/thu_thuat_phau_thuat/danh_sach");
                 }
