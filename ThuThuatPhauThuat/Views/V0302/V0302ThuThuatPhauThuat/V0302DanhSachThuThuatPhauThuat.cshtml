@@ -1,25 +1,92 @@
 ﻿@{
-	ViewData["Title"] = "Danh sách thủ thuật phẩu thuật";
+    ViewData["Title"] = "Danh sách thủ thuật phẩu thuật";
 }
 
 <style>
+    /* Giới hạn chiều cao bảng, bật scroll dọc và ngang */
+    .table-responsive {
+        max-height: 400px; /* chỉnh tùy ý, ví dụ 400px */
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    /* Không cho text bị cắt thành dấu ... */
+    .table td,
+    .table th {
+        white-space: nowrap;
+    }
+
+    .table th {
+        text-align: center;
+    }
+
+    /* ===== CỐ ĐỊNH CỘT 1 (STT) ===== */
+    table thead th:nth-child(1) {
+        position: sticky;
+        left: 0;
+        z-index: 20;
+        background-color: #f2f2f2;
+        border-right: 1px solid #ccc !important;
+        width: 65px; /* đồng bộ */
+        min-width: 65px;
+        max-width: 65px;
+        text-align: center;
+    }
+
+    /* ===== CỐ ĐỊNH CỘT 2 ===== */
+    table thead th:nth-child(2) {
+        position: sticky;
+        left: 65px; /* = width cột 1 */
+        z-index: 20;
+        background-color: #f2f2f2;
+        border-right: 1px solid #ccc !important;
+        width: 100px;
+        min-width: 100px;
+        max-width: 300px;
+    }
+
+    /* ===== CỐ ĐỊNH CỘT 1 (STT) ===== */
+    table tbody td:nth-child(1) {
+        position: sticky;
+        left: 0;
+        z-index: 18;
+        background-color: #fff;
+        border-right: 1px solid #ccc !important;
+        width: 65px; /* đồng bộ */
+        min-width: 65px;
+        max-width: 65px;
+        text-align: center;
+    }
+
+    /* ===== CỐ ĐỊNH CỘT 2 ===== */
+    table tbody td:nth-child(2) {
+        position: sticky;
+        left: 65px; /* = width cột 1 */
+        z-index: 18;
+        background-color: #fff;
+        border-right: 1px solid #ccc !important;
+        min-width: 100px;
+        max-width: 350px;
+        width: 350px;
+        white-space: normal !important; /* cho phép xuống dòng */
+        word-break: break-word; /* xuống dòng khi từ quá dài */
+    }
 
 </style>
+
 <div class="row me-0">
     <div class="col-12 col-lg-2 mb-2 pe-1">
         <div class="card p-1 bg-azure-lt mb-1">
-
+            <!-- sidebar trống -->
         </div>
-    </div> 
+    </div>
     <div class="col-12 col-lg-10 ps-1 pe-0">
         <div class="card">
             <div class="table-responsive">
                 <table id="example" class="table table-bordered table-hover w-100">
-                    <thead>
+                    <thead class="table-light">
                         <tr>
-                            <th class="w-1">
-                                STT
-                            </th>
+                            <th class="w-1">STT</th>
                             <th>Mã BN</th>
                             <th>Tên BN</th>
                             <th>Năm sinh</th>
@@ -29,14 +96,14 @@
                             <th>Tên dịch vụ</th>
                             <th>Thời gian</th>
                             <th>Nơi thực hiện</th>
-                            <th>Bác sỉ chỉ định</th>
+                            <th>Bác sĩ chỉ định</th>
                             <th>Nơi chỉ định</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td class="text-center">1</td>
-                            <td class="text-center">BN001</td>
+                            <td class="text-center">BN001 BN001</td>
                             <td>Nguyễn Văn A</td>
                             <td class="text-center">1985</td>
                             <td class="text-center">Nam</td>
@@ -60,20 +127,63 @@
                             <td class="text-center">25-09-2025 09:15</td>
                             <td>Khoa Xét nghiệm</td>
                             <td>BS. Lê Văn C</td>
-                            <td>Khoa Nội Tổng Hợp</td>
+                            <td>Khoa Nội Tổng Hợp Khoa Nội Tổng Hợp Khoa Nội Tổng Hợp</td>
                         </tr>
-
                     </tbody>
                 </table>
             </div>
         </div>
     </div> <!-- 80% ≈ 10/12 -->
 </div>
+<script>
+    function formatDateTime(date) {
+           const dd = String(date.getDate()).padStart(2, '0');
+           const MM = String(date.getMonth() + 1).padStart(2, '0');
+           const yyyy = date.getFullYear();
+           const HH = String(date.getHours()).padStart(2, '0');
+           const mm = String(date.getMinutes()).padStart(2, '0');
+           return `${dd}-${MM}-${yyyy} ${HH}:${mm}`;
+       }
+
+       function updateDateTime() {
+           var now = new Date();
+           var formatted = formatDateTime(now);
+           $("#info-datetime", window.parent.document).text(formatted);
+       }
+
+    $(document).on("click", "#example tbody tr", function () {
+        var tenBN = $(this).find("td:eq(2)").text().trim();
+        var namSinh = $(this).find("td:eq(3)").text().trim();
+        var gioiTinh = $(this).find("td:eq(4)").text().trim();
+
+        var bacSi  = $(this).find("td:eq(10)").text().trim();
+
+        $("#info-tenbn", window.parent.document).text(tenBN);
+        $("#info-namsinh", window.parent.document).text(namSinh + " - " + gioiTinh);
+        $("#info-bacsi", window.parent.document).text(bacSi);
+        updateDateTime();
+
+        $("#example tbody tr").removeClass("table-active");
+        $(this).addClass("table-active");
+    });
+
+    $(document).ready(function () {
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+    });
+</script>
+
 
 @section Scripts {
-
+    <script src="~/dist/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                scrollX: true,  
+                paging: false,  
+                searching: false,
+                info: false
+            });
+        });
+    </script>
 }
-
-
-
-
