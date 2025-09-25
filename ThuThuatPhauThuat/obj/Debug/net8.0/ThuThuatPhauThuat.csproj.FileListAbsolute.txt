@@ -87,3 +87,4 @@ D:\Sixos\ThuThuatPhauThuat\ThuThuatPhauThuat\obj\Debug\net8.0\refint\ThuThuatPha
 D:\Sixos\ThuThuatPhauThuat\ThuThuatPhauThuat\obj\Debug\net8.0\ThuThuatPhauThuat.pdb
 D:\Sixos\ThuThuatPhauThuat\ThuThuatPhauThuat\obj\Debug\net8.0\ThuThuatPhauThuat.genruntimeconfig.cache
 D:\Sixos\ThuThuatPhauThuat\ThuThuatPhauThuat\obj\Debug\net8.0\ref\ThuThuatPhauThuat.dll
+D:\Sixos\ThuThuatPhauThuat\ThuThuatPhauThuat\obj\Debug\net8.0\ThuThuatPhauThuat.sourcelink.json

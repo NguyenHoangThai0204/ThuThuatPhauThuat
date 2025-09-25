@@ -64,7 +64,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         }
 
         [HttpGet("thong_tin")]
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> ThongTin()
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)

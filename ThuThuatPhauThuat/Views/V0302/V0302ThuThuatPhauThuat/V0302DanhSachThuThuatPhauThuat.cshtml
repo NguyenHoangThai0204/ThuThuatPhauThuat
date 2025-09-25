@@ -1,18 +1,61 @@
 ﻿@{
-    ViewData["Title"] = "Danh sách thủ thuật phẩu thuật";
+	ViewData["Title"] = "Danh sách thủ thuật phẩu thuật";
 }
-
-<link href="~/dist/lib/toastr/build/toastr.min.css" rel="stylesheet" />
 
 <style>
 
-
 </style>
-<div class="card p-1">
-    <h1> danh sách ènd</h1>
+<div class="row me-0">
+    <div class="col-12 col-lg-2 mb-2 pe-1">
+        <div class="card p-1 bg-azure-lt mb-1">
+
+        </div>
+    </div> 
+    <div class="col-12 col-lg-10 ps-1 pe-0">
+        <div class="card">
+            <div class="table-responsive">
+                <table id="example" class="table table-bordered table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="w-1">
+                                STT
+                            </th>
+                            <th>Mã KH</th>
+                            <th>Tên KH</th>
+                            <th>Ngày sinh</th>
+                            <th>SĐT</th>
+                            <th>Địa chỉ</th>
+                            <th>Giới tính</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td class="text-center">KH255</td>
+                            <td>Khách hàng 1</td>
+                            <td>15-12-2017</td>
+                            <td>87956621</td>
+                            <td>TP HCM</td>
+                            <td>nam</td>
+                            <td>email@gmail.com</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">2</td>
+                            <td class="text-center">KH245</td>
+                            <td>Khách hàng 2</td>
+                            <td>15-12-2017</td>
+                            <td>87956621</td>
+                            <td>TP HCM</td>
+                            <td>nam</td>
+                            <td>email@gmail.com</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- 80% ≈ 10/12 -->
 </div>
-
-
 
 @section Scripts {
 

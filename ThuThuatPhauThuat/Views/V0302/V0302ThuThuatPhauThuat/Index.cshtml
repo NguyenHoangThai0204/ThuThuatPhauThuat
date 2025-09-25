@@ -38,9 +38,8 @@
         </div>
     <div class="card-body">
         <div class="tab-content">
-            <div class="tab-pane active show" id="tabs-home-7" role="tabpanel"></div>
-            <div class="tab-pane" id="tabs-profile-7" role="tabpanel"></div>
-            <div class="tab-pane" id="tabs-activity-7" role="tabpanel"></div>
+            <div class="tab-pane active show" id="tabs-danhsach-7" role="tabpanel"></div>
+            <div class="tab-pane" id="tabs-thongtin-7" role="tabpanel"></div>
         </div>
     </div>
 
@@ -49,29 +48,22 @@
 
 
 @section Scripts {
-		<script src="~/dist/lib/toastr/build/toastr.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                // load Home mặc định
-            $("#tabs-home-7").load("/thu_thuat_phau_thuat/danh_sach");
+    <script src="~/dist/lib/toastr/build/toastr.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // load Danh sách mặc định
+            $("#tabs-danhsach-7").load("/thu_thuat_phau_thuat/danh_sach");
 
-                // khi click tab
-                $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-                    var target = $(e.target).attr("href"); // #tabs-home-7 / #tabs-profile-7
-                    if (target === "#tabs-danhsach-7") {
+            // khi click tab thì load nội dung
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var target = $(e.target).attr("href"); // #tabs-danhsach-7 / #tabs-thongtin-7
+                if (target === "#tabs-danhsach-7" && $(target).is(':empty')) {
                     $(target).load("/thu_thuat_phau_thuat/danh_sach");
-                    }
-                    else if (target === "#tabs-thongtin-7") {
+                }
+                else if (target === "#tabs-thongtin-7" && $(target).is(':empty')) {
                     $(target).load("/thu_thuat_phau_thuat/thong_tin");
-                    }
-                    // else if (target === "#tabs-activity-7") {
-                    //     $(target).load("/thu_thuat_phau_thuat/activity");
-                    // }
-                });
+                }
             });
-        </script>
+        });
+    </script>
 }
-
-
-
-
