@@ -1,22 +1,22 @@
 ﻿/* Giới hạn chiều cao bảng, bật scroll dọc và ngang */
-.table-responsive {
+.table_danhsach-responsive {
     max-height: 400px; /* chỉnh tùy ý, ví dụ 400px */
     overflow-y: auto;
     overflow-x: auto;
 }
 
 /* Không cho text bị cắt thành dấu ... */
-.table td,
-.table th {
+.table_danhsach td,
+.table_danhsach th {
     white-space: nowrap;
 }
 
-.table th {
+.table_danhsach th {
     text-align: center;
 }
 
 /* ===== CỐ ĐỊNH CỘT 1 (STT) ===== */
-table thead th:nth-child(1) {
+table_danhsach thead th:nth-child(1) {
     position: sticky;
     left: 0;
     z-index: 20;
@@ -29,7 +29,7 @@ table thead th:nth-child(1) {
 }
 
 /* ===== CỐ ĐỊNH CỘT 2 ===== */
-table thead th:nth-child(2) {
+table_danhsach thead th:nth-child(2) {
     position: sticky;
     left: 65px; /* = width cột 1 */
     z-index: 20;
@@ -41,7 +41,7 @@ table thead th:nth-child(2) {
 }
 
 /* ===== CỐ ĐỊNH CỘT 1 (STT) ===== */
-table tbody td:nth-child(1) {
+table_danhsach tbody td:nth-child(1) {
     position: sticky;
     left: 0;
     z-index: 18;
@@ -54,7 +54,7 @@ table tbody td:nth-child(1) {
 }
 
 /* ===== CỐ ĐỊNH CỘT 2 ===== */
-table tbody td:nth-child(2) {
+table_danhsach tbody td:nth-child(2) {
     position: sticky;
     left: 65px; /* = width cột 1 */
     z-index: 18;
@@ -66,7 +66,7 @@ table tbody td:nth-child(2) {
     white-space: normal !important; /* cho phép xuống dòng */
     word-break: break-word; /* xuống dòng khi từ quá dài */
 }
-.datepicker {
+/*.datepicker {
     font-size: 0.9rem;
     transform: scale(1.2);
     transform-origin: top left;
@@ -79,3 +79,4 @@ table tbody td:nth-child(2) {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
+*/

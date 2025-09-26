@@ -33,14 +33,7 @@ $(document).ready(function () {
     updateDateTime();
     setInterval(updateDateTime, 60000);
 });
-$(document).ready(function () {
-    $('#example').DataTable({
-        scrollX: true,
-        paging: false,
-        searching: false,
-        info: false
-    });
-});
+
 let listDanToc = [];
 
 // đọc JSON bằng jQuery
@@ -101,3 +94,88 @@ function configCb(configs, dataSource) {
         });
     });
 }
+$(function () {
+    $('#txtDateTime').datepicker({
+        format: "dd-mm-yyyy",
+        language: "vi",
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    $('#txtDateTime').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
+});
+
+
+//document.addEventListener("DOMContentLoaded", function () {
+//    // Dữ liệu mẫu
+//    const data = [
+//        {
+//            stt: 1,
+//            maBN: "BN001",
+//            tenBN: "Nguyễn Văn A",
+//            namSinh: 1985,
+//            gioiTinh: "Nam",
+//            khan: "Có",
+//            nhomDV: "Chẩn đoán hình ảnh",
+//            tenDV: "X-quang ngực",
+//            thoiGian: "26-09-2025 08:30",
+//            noiTH: "Khoa Chẩn đoán hình ảnh",
+//            bacSi: "BS. Trần Văn B",
+//            noiCD: "Phòng Khám Tổng Quát"
+//        },
+//        {
+//            stt: 2,
+//            maBN: "BN002",
+//            tenBN: "Trần Thị B",
+//            namSinh: 1992,
+//            gioiTinh: "Nữ",
+//            khan: "Không",
+//            nhomDV: "Xét nghiệm",
+//            tenDV: "Công thức máu",
+//            thoiGian: "26-09-2025 09:15",
+//            noiTH: "Khoa Xét nghiệm",
+//            bacSi: "BS. Lê Văn C",
+//            noiCD: "Khoa Nội Tổng Hợp"
+//        },
+//        {
+//            stt: 3,
+//            maBN: "BN003",
+//            tenBN: "Phạm Văn C",
+//            namSinh: 1978,
+//            gioiTinh: "Nam",
+//            khan: "Có",
+//            nhomDV: "Thủ thuật",
+//            tenDV: "Nội soi dạ dày",
+//            thoiGian: "26-09-2025 10:00",
+//            noiTH: "Khoa Tiêu Hóa",
+//            bacSi: "BS. Nguyễn Thị D",
+//            noiCD: "Phòng Khám Nội Soi"
+//        }
+//    ];
+
+//    console.log(data)
+//    const tbody = document.getElementById("tbodyData");
+//    tbody.innerHTML = ""; // clear trước
+
+//    data.forEach(item => {
+//        const tr = document.createElement("tr");
+//        tr.innerHTML = `
+//            <td class="text-center">${item.stt}</td>
+//            <td class="text-center">${item.maBN}</td>
+//            <td>${item.tenBN}</td>
+//            <td class="text-center">${item.namSinh}</td>
+//            <td class="text-center">${item.gioiTinh}</td>
+//            <td class="text-center">${item.khan}</td>
+//            <td>${item.nhomDV}</td>
+//            <td>${item.tenDV}</td>
+//            <td class="text-center">${item.thoiGian}</td>
+//            <td>${item.noiTH}</td>
+//            <td>${item.bacSi}</td>
+//            <td>${item.noiCD}</td>
+//        `;
+//        tbody.appendChild(tr);
+//    });
+
+//    // Nếu bạn muốn dùng DataTables
+//    //$('#example').DataTable();
+//});

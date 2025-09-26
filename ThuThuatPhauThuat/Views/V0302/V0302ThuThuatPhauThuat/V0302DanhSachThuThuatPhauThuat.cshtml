@@ -1,111 +1,185 @@
 ﻿@{
-    ViewData["Title"] = "Danh sách thủ thuật phẩu thuật";
+	ViewData["Title"] = "Danh sách thủ thuật phẩu thuật";
 }
 <link href="~/dist/css/CSS0302/CSS0302TTPT/CSS0302DanhSach.css" rel="stylesheet" />
 
-<link rel="stylesheet" href="~/dist/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
-
-
 <div class="row me-0">
-    <div class="col-12 col-lg-20 mb-2 pe-1">
-        <div class="card p-1 bg-azure-lt mb-1">
-            <div class="row" style="margin-bottom: 6px;">
-                <div class="col-md-4"> 
-                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Ngày: </label>
-                </div>
-                <div class="col-md-2 flex-fill">
-                    <div class="input-group">
-                        <input type="text"
-                               class="form-control date-input"
-                               id="ngayTuNgay"
-                               name="TuNgay"
-                               value="@DateTime.Now.ToString("dd-MM-yyyy")"
-                               placeholder="dd-mm-yyyy"
-                               autocomplete="off" />
-                        <span class="input-group-text cursor-pointer datepicker-trigger">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6c757d">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </span>
-                    </div>
-                </div>
-                @* <div class="col-md-2 flex-fill"> <input type="text" autocomplete="off" class="form-control text-dark input-date-default" id="NgayKham" name="NgayKham" placeholder="Ngày Khám" required=""> </div> *@
-            </div>
-            <div class="row" style="margin-bottom: 6px;">
-                <div class="col-md-4">
-                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Phòng khám: </label>
-                </div>
-                <div class="col-md-2 flex-fill">
-                    <input class="tom-select-test" type="text" name="name" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-lg-80 ps-1 pe-0">
-        <div class="card">
-            <div class="table-responsive">
-                <table id="example" class="table table-bordered table-hover w-100">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="w-1">STT</th>
-                            <th>Mã BN</th>
-                            <th>Tên BN</th>
-                            <th>Năm sinh</th>
-                            <th>Giới tính</th>
-                            <th>Khẩn</th>
-                            <th>Nhóm dịch vụ</th>
-                            <th>Tên dịch vụ</th>
-                            <th>Thời gian</th>
-                            <th>Nơi thực hiện</th>
-                            <th>Bác sĩ chỉ định</th>
-                            <th>Nơi chỉ định</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td class="text-center">BN001 BN001</td>
-                            <td>Nguyễn Văn A</td>
-                            <td class="text-center">1985</td>
-                            <td class="text-center">Nam</td>
-                            <td class="text-center">Có</td>
-                            <td>Chẩn đoán hình ảnh</td>
-                            <td>X-quang ngực</td>
-                            <td class="text-center">25-09-2025 08:30</td>
-                            <td>Khoa Chẩn đoán hình ảnh</td>
-                            <td>BS. Trần Văn B</td>
-                            <td>Phòng Khám Tổng Quát</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">2</td>
-                            <td class="text-center">BN002</td>
-                            <td>Trần Thị B</td>
-                            <td class="text-center">1992</td>
-                            <td class="text-center">Nữ</td>
-                            <td class="text-center">Không</td>
-                            <td>Xét nghiệm</td>
-                            <td>Công thức máu</td>
-                            <td class="text-center">25-09-2025 09:15</td>
-                            <td>Khoa Xét nghiệm</td>
-                            <td>BS. Lê Văn C</td>
-                            <td>Khoa Nội Tổng Hợp Khoa Nội Tổng Hợp Khoa Nội Tổng Hợp</td>
-                        </tr>
-                      
-                </table>
-            </div>
-        </div>
-    </div> <!-- 80% ≈ 10/12 -->
+	<div class="col-12 col-lg-20 mb-2 pe-1">
+		<div class="card p-1 bg-azure-lt mb-1">
+			<div class="row" style="margin-bottom: 6px;">
+				<div class="col-md-4">
+					<label class="col-form-label form-label text-truncate" style="max-width: 180px">Ngày: </label>
+				</div>
+				<div class="col-md-2 flex-fill">
+					@* <div class="input-icon">
+						<input id="txtDateTime" type="text" class="form-control"
+							   placeholder="Chọn ngày giờ" autocomplete="off" />
+						<span class="input-icon-addon">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+								 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+								 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+								 class="icon icon-tabler icon-tabler-calendar-event">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+								<path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+								<path d="M16 3l0 4"></path>
+								<path d="M8 3l0 4"></path>
+								<path d="M4 11l16 0"></path>
+								<path d="M8 15h2v2h-2z"></path>
+							</svg>
+						</span>
+					</div> *@
+					<div class="input-icon">
+						<input id="txtDateTime" type="text" class="form-control"
+							   placeholder="Chọn ngày giờ" autocomplete="off" />
+						<span class="input-icon-addon">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+								 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+								 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+								 class="icon icon-tabler icon-tabler-calendar-event">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+								<path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+								<path d="M16 3l0 4"></path>
+								<path d="M8 3l0 4"></path>
+								<path d="M4 11l16 0"></path>
+								<path d="M8 15h2v2h-2z"></path>
+							</svg>
+						</span>
+					</div>
+				</div>
+				@* <div class="col-md-2 flex-fill"> <input type="text" autocomplete="off" class="form-control text-dark input-date-default" id="NgayKham" name="NgayKham" placeholder="Ngày Khám" required=""> </div> *@
+			</div>
+			<div class="row" style="margin-bottom: 6px;">
+				<div class="col-md-4">
+					<label class="col-form-label form-label text-truncate" style="max-width: 180px">Phòng khám: </label>
+				</div>
+				<div class="col-md-2 flex-fill">
+					<input class="tom-select-test" type="text" name="name" />
+				</div>
+			</div>
+			<!-- Nhóm radio -->
+			<div class="mb-3" style="margin-left: 20px">
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="statusGroup" id="status0" value="0" checked>
+					<label class="form-check-label text-danger" for="status0">Chưa thực hiện</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="statusGroup" id="status1" value="1">
+					<label class="form-check-label text-success" for="status1">Đã thực hiện</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="statusGroup" id="status2" value="2">
+					<label class="form-check-label text-secondary" for="status2">Tất cả</label>
+				</div>
+			</div>
+
+			<!-- Nút -->
+			<div class="col-12 mb-1">
+				<button class="btn btn-primary w-100 p-1" id="btnSearchNangCao">Lọc danh sách</button>
+			</div>
+
+		</div>   <div class="card p-1">
+			<div class="row TimKiemNangCao">
+				<div class="col-12 col-md-6 mb-1">
+					<input type="text" autocomplete="off" class="form-control py-1 txtds" id="txtMaVaoVienDS" placeholder="Tìm mã vào viện">
+				</div>
+				<div class="col-12 col-md-6 mb-1">
+					<input type="text" autocomplete="off" class="form-control py-1 txtds" id="txtMaBenhNhanDS" placeholder="Tìm mã bệnh nhân">
+				</div>
+				<div class="col-12 col-md-6 mb-1">
+					<input type="text" autocomplete="off" class="form-control py-1 txtds" id="txtTenBnDS" placeholder="Tìm tên bệnh nhân">
+				</div>
+				<div class="col-12 col-md-6 mb-1">
+					<input type="text" autocomplete="off" class="form-control py-1 txtds" id="txtCCCDDS" placeholder="Tìm CCCD">
+				</div>
+				<div class="col-12 col-md-6 mb-1">
+					<input type="text" autocomplete="off" class="form-control py-1 txtds" id="txtMaTheDS" placeholder="Tìm mã thẻ">
+				</div>
+				<div class="col-12 col-md-6 mb-1">
+					<input type="text" autocomplete="off" class="form-control py-1 txtds" id="txtSDTDS" placeholder="Tìm số điện thoại">
+				</div>
+				<div class="col-12 mb-1">
+					<button class="btn btn-primary w-100 p-1" id="btnSearchNangCao">Tìm kiếm nâng cao</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-12 col-lg-80 ps-1 pe-0">
+		<div class="card">
+			<div class="table-responsive">
+				<table id="example" class="table table_danhsach table-bordered table-hover w-100">
+					<thead class="table-light">
+						<tr>
+							<th class="w-1">STT</th>
+							<th>Mã BN</th>
+							<th>Tên BN</th>
+							<th>Năm sinh</th>
+							<th>Giới tính</th>
+							<th>Khẩn</th>
+							<th>Nhóm dịch vụ</th>
+							<th>Tên dịch vụ</th>
+							<th>Thời gian</th>
+							<th>Nơi thực hiện</th>
+							<th>Bác sĩ chỉ định</th>
+							<th>Nơi chỉ định</th>
+						</tr>
+					</thead>
+					<tbody id="tbodyData">
+					
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div> <!-- 80% ≈ 10/12 -->
 </div>
 
-<script src="/dist/js/J0302/J0302utils/J0302DateFormatUtil.js" asp-append-version="true" defer></script>
 <script src="~/dist/js/J0302/J0302TTPT/J0302DanhSach.js" asp-append-version="true" defer></script>
 
+<script>
+	$(function () {
+		$('#txtDateTime').datepicker({
+			format: "dd-mm-yyyy",
+			language: "vi",
+			autoclose: true,
+			todayHighlight: true
+		});
+
+		$('#txtDateTime').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
+	});
+
+	document.addEventListener("DOMContentLoaded", function () {
+		console.log("Script chạy rồi!");
+
+		const data = [
+			{ stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" }
+		];
+
+		const tbody = document.getElementById("tbodyData");
+		tbody.innerHTML = "";
+		data.forEach(item => {
+			const tr = document.createElement("tr");
+			tr.innerHTML = `
+				<td>${item.stt}</td>
+				<td>${item.maBN}</td>
+				<td>${item.tenBN}</td>
+				<td>${item.namSinh}</td>
+				<td>${item.gioiTinh}</td>
+				<td>${item.khan}</td>
+				<td>${item.nhomDV}</td>
+				<td>${item.tenDV}</td>
+				<td>${item.thoiGian}</td>
+				<td>${item.noiTH}</td>
+				<td>${item.bacSi}</td>
+				<td>${item.noiCD}</td>
+			`;
+			tbody.appendChild(tr);
+		});
+	});
+</script>
+
 @section Scripts {
-    <script src="~/dist/js/dataTables.min.js"></script>
 
 
 }
-
 
 
 
