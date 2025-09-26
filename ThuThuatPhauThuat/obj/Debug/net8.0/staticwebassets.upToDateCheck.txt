@@ -35,11 +35,11 @@ wwwroot\dist\css\treeview.css
 wwwroot\dist\data\json\DM_DichVuKyThuat.json
 wwwroot\dist\data\json\DM_LoaiThuThuatPhauThuat.json
 wwwroot\dist\data\json\DM_NhomDichVuKyThuat.json
+wwwroot\dist\data\json\DM_PhongBuong.json
 wwwroot\dist\data\json\HH_DmKhoHang.json
 wwwroot\dist\img\Logo-BVUB.jpg
 wwwroot\dist\js\BienChung.js
 wwwroot\dist\js\J0302\J0302TTPT\J0302DanhSach.js
-wwwroot\dist\js\J0302\J0302TTPT\J0302Index.js
 wwwroot\dist\js\J0302\J0302utils\J0302DateFormatUtil.js
 wwwroot\dist\js\J0302\J0302utils\J0302LoadHH_DM_KhoHangUtil.js
 wwwroot\dist\lib\apexcharts\dist\apexcharts.amd.js
@@ -1072,3 +1072,4 @@ wwwroot\dist\lib\webfont\tabler-icons.min.css
 wwwroot\dist\lib\webfont\tabler-icons.scss
 wwwroot\favicon.ico
 wwwroot\static\logo.png
+wwwroot\dist\js\J0302\J0302TTPT\J0302Index.js

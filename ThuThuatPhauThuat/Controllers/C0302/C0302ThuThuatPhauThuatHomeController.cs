@@ -85,7 +85,73 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302ThongTinThuThuatPhauThuat.cshtml");
         }
+        [HttpGet("trinh_tu")]
+        public async Task<IActionResult> TrinhTuVaKetLuan()
+        {
+            //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
+            //if (quyenVaiTro == null)
+            //{
+            //    return RedirectToAction("NotFound", "Home");
+            //}
+            //ViewBag.quyenVaiTro = quyenVaiTro;
+            //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
-      
+            ViewBag.quyenVaiTro = new
+            {
+                Them = true,
+                Sua = true,
+                Xoa = true,
+                Xuat = true,
+                CaNhan = true,
+                Xem = true,
+            };
+            return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302TrinhTuVaKeLuanTTPT.cshtml");
+        }
+
+        [HttpGet("ekip")]
+        public async Task<IActionResult> EkipThucHien()
+        {
+            //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
+            //if (quyenVaiTro == null)
+            //{
+            //    return RedirectToAction("NotFound", "Home");
+            //}
+            //ViewBag.quyenVaiTro = quyenVaiTro;
+            //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
+
+            ViewBag.quyenVaiTro = new
+            {
+                Them = true,
+                Sua = true,
+                Xoa = true,
+                Xuat = true,
+                CaNhan = true,
+                Xem = true,
+            };
+            return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302EkipThucHienTTPT.cshtml");
+        }
+        [HttpGet("ghi_nhan_thuoc_vat_tu")]
+        public async Task<IActionResult> GhiNhanThuocVatTu()
+        {
+            //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
+            //if (quyenVaiTro == null)
+            //{
+            //    return RedirectToAction("NotFound", "Home");
+            //}
+            //ViewBag.quyenVaiTro = quyenVaiTro;
+            //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
+
+            ViewBag.quyenVaiTro = new
+            {
+                Them = true,
+                Sua = true,
+                Xoa = true,
+                Xuat = true,
+                CaNhan = true,
+                Xem = true,
+            };
+            return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302GhiNhanVatTuTTPT.cshtml");
+        }
+
     }
 }

@@ -66,3 +66,16 @@ table tbody td:nth-child(2) {
     white-space: normal !important; /* cho phép xuống dòng */
     word-break: break-word; /* xuống dòng khi từ quá dài */
 }
+.datepicker {
+    font-size: 0.9rem;
+    transform: scale(1.2);
+    transform-origin: top left;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    margin-left: 5px;
+    z-index: 99999 !important;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+

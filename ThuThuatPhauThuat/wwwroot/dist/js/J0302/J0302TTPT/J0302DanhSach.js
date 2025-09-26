@@ -41,3 +41,63 @@ $(document).ready(function () {
         info: false
     });
 });
+let listDanToc = [];
+
+// đọc JSON bằng jQuery
+$.getJSON("dist/data/json/DM_PhongBuong.json", dataDanToc => {
+
+    listDanToc = dataDanToc
+        .filter(n => n.active === true || n.active === 1) // chỉ lấy active
+        .map(n => ({
+            ...n,
+            alias: n.viettat?.trim() !== ""
+                ? n.viettat.toUpperCase()
+                : n.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("")
+        }));
+
+
+    // config cho TomSelect
+    const configs = [
+        {
+            className: ".tom-select-test",
+            placeholder: "-- Phòng khám --",
+            dieuKien: function (response) {
+                return response.filter(x => x.ma); // lọc điều kiện tuỳ ý
+            }
+        }
+    ];
+
+    configCb(configs, listDanToc);
+});
+
+function configCb(configs, dataSource) {
+    configs.forEach(cfg => {
+        let result = cfg.dieuKien ? cfg.dieuKien(dataSource) : dataSource;
+
+
+        new TomSelect(cfg.className, {
+            options: result,
+            valueField: "ma",
+            labelField: "ten",
+            searchField: ["ten", "alias"],
+            placeholder: cfg.placeholder,
+            maxItems: 1,
+            render: {
+                option: function (data, escape) {
+                    return `
+                             <div style="display:flex; justify-content:space-between; width:100%;">
+                                 <span>${escape(data.ten)}</span>
+                                 <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.viettat || "")}</span>
+                             </div>`;
+                },
+                item: function (data, escape) {
+                    return `
+                             <div style="display:flex; justify-content:space-between; width:100%;">
+                                 <span>${escape(data.ten)}</span>
+                                 <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.viettat || "")}</span>
+                             </div>`;
+                }
+            }
+        });
+    });
+}
