@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ThuThuatPhauThuat.Service.S0302.IS0302;
 
 namespace ThuThuatPhauThuat.Controllers.C0302
 {
@@ -8,12 +9,11 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         //private string _maChucNang = "/thu_thuat_phau_thuat";
         //private IMemoryCachingServices _memoryCache;
 
-        //private readonly IS0302XoaGoiChiDinhInterface _service;
-        //private readonly Context0302 _dbService;
+        private readonly IS0302ThuThuatPhauThuatInterface _service;
 
-        public C0302ThuThuatPhauThuatHomeController(/*IS0302XoaGoiChiDinhInterface service , IMemoryCachingServices memoryCache*/)
+        public C0302ThuThuatPhauThuatHomeController(IS0302ThuThuatPhauThuatInterface service /*, IMemoryCachingServices memoryCache*/)
         {
-            //_service = service;
+            _service = service;
             //_memoryCache = memoryCache;
         }
 
@@ -61,6 +61,12 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 Xem = true,
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302DanhSachThuThuatPhauThuat.cshtml");
+        }
+        [HttpPost("loc_danh_sach")]
+        public async Task<IActionResult> LocDanhSach(long IdChiNhanh, string Ngay , long IdPhongBuong, int TrangThai)
+        {
+            var data = await _service.LocDanhSachAsync( IdChiNhanh,  Ngay,  IdPhongBuong,  TrangThai);
+            return Json(data);
         }
 
         [HttpGet("thong_tin")]

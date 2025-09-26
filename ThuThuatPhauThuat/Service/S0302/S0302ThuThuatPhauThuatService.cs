@@ -1,0 +1,53 @@
+﻿
+using C0302_HoangThai.Models.M0302;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
+using ThuThuatPhauThuat.Service.S0302.IS0302;
+
+namespace ThuThuatPhauThuat.Service.S0302
+{
+    public class S0302ThuThuatPhauThuatService : IS0302ThuThuatPhauThuatInterface
+    {
+        private readonly Context0302 _dbService;
+        private readonly ILogger<S0302ThuThuatPhauThuatService> _logger;
+
+        public S0302ThuThuatPhauThuatService(  Context0302 dbService, ILogger<S0302ThuThuatPhauThuatService> logger)
+        {
+            _dbService = dbService;
+            _logger = logger;
+        }
+
+        public async Task<(bool Success, string Message, object Data)> LocDanhSachAsync(long IdChiNhanh, string Ngay, long IdPhongBuong, int TrangThai)
+        {
+            try
+            {
+            
+
+                var paramIdChiNhanh = new SqlParameter("@IdChiNhanh", IdChiNhanh);
+                var paramNgay = new SqlParameter("@Ngay", string.IsNullOrEmpty(Ngay) ? DBNull.Value : (object)Ngay);
+                var paramIdPhongBuong = new SqlParameter("@IDPhongBuong", IdPhongBuong == 0 ? DBNull.Value : (object)IdPhongBuong);
+                var paramTrangThai = new SqlParameter("@TrangThai", TrangThai);
+
+                var allData = await _dbService.M0302ThuThuatPhauThuatModelLists
+                    .FromSqlRaw("EXEC S0302_XuatDanhSachThuThuatPhauThuat @IdChiNhanh, @Ngay, @IDPhongBuong, @TrangThai",
+                        paramIdChiNhanh, paramNgay, paramIdPhongBuong, paramTrangThai)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                if (allData == null || allData.Count == 0)
+                {
+                    return (true, "Không có dữ liệu", new { Data = new List<object>() });
+                }
+
+                    return (true, "Thành công", new { Data = allData });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lọc danh sách thủ thuật phẫu thuật");
+                return (false, ex.Message, null);
+            }
+        }
+    }
+}
