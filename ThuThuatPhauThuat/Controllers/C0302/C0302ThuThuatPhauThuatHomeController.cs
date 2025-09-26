@@ -42,8 +42,9 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         }
 
         [HttpGet("thong_tin_so_phieu")]
-        public IActionResult ThongTinSoPhieu()
+        public IActionResult ThongTinSoPhieu(int tabIndex)
         {
+            ViewBag.TabIndex = tabIndex;
             return PartialView("_ThongTinSoPhieu");
         }
 

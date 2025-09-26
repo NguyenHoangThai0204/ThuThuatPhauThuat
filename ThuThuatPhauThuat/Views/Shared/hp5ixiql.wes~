@@ -66,6 +66,7 @@
 </div>
 
 <script>
+    console.log('tabIndex', '@tabIndex');
     // Dữ liệu mẫu cho các dropdown
     var soPhieuData = [
         { ma: "25761707", ten: "25761707" },
@@ -160,5 +161,4 @@
         configTomSelect(tabIndex);
         configDateTimePicker(tabIndex);
     }
-    khoiTaoThongTinSoPhieu(@tabIndex);
 </script>
