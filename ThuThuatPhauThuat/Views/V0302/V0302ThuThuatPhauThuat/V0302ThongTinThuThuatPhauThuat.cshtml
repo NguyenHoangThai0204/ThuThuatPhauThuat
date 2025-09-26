@@ -1,23 +1,311 @@
-﻿@{
-    ViewData["Title"] = "Danh sách thủ thuật phẩu thuật";
-}
-
+﻿
 <style>
+    .compact-form .form-control,
+    .compact-form .form-select {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        font-size: 0.75rem;
+    }
 
+    .compact-form .col-form-label,
+    .compact-form .form-label {
+        padding-top: calc(0.1rem + 1px);
+        padding-bottom: calc(0.1rem + 1px);
+        font-size: 0.75rem;
+    }
+
+    .compact-form .mb-3 {
+        margin-bottom: 0.75rem !important;
+    }
+
+    .compact-form .mt-4 {
+        margin-top: 1rem !important;
+    }
+
+    .compact-form .btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .compact-form .table-responsive table {
+        font-size: 0.875rem;
+    }
+
+    .compact-form .table-responsive th,
+    .compact-form .table-responsive td {
+        padding: 0.5rem;
+    }
+
+    .table-responsive {
+        min-height: 300px;
+    }
 </style>
-<div class="row me-0">
-    <div class="col-12 col-lg-2 mb-2 pe-1">
-       trái
+
+<div class="container mt-4 compact-form">
+    <div class="row">
+        <!-- Cột 1: Chẩn đoán vào khoa -->
+        <div class="col-md-3">
+            <h5 class="mb-3">Chẩn đoán vào khoa</h5>
+            <div class="row mb-3">
+                <div class="col-4">
+                    <input type="text" class="form-control me-2" id="ma_icd_vao_khoa" placeholder="Mã ICD">
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="hien_thi_icd_vao_khoa" readonly placeholder="Mã ICD đã nhập">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+<textarea class="form-control" id="ten_icd_vao_khoa" rows="3" readonly placeholder="Tên ICD"></textarea>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 6px;">
+                <div class="col-md-4">
+                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Phòng ban thực hiện: </label>
+                </div>
+                <div class="col-md-2 flex-fill">
+                    <input class="tom-select-test cbPhongThucHien" type="text" name="name" />
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 6px;">
+                <div class="col-md-4">
+                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Phân loại: </label>
+                </div>
+                <div class="col-md-8 flex-fill">
+                    <input class="tom-select-phanLoai" type="text" name="name" />
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 6px;">
+                <div class="col-md-4">
+                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Thiết bị: </label>
+                </div>
+                <div class="col-md-8 flex-fill">
+                    <input class="tom-select-thietBi" type="text" name="name" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="can_thiep_thu_thuat" class="col-4 col-form-label">Can thiệp thủ thuật</label>
+                <div class="col-8">
+<textarea class="form-control" id="can_thiep_thu_thuat" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột 2: Chẩn đoán trước thủ thuật -->
+        <div class="col-md-3">
+            <h5 class="mb-3">Chẩn đoán trước thủ thuật</h5>
+            <div class="row mb-3">
+                <div class="col-4">
+                    <input type="text" class="form-control me-2" id="ma_icd_truoc_thuat" placeholder="Mã ICD">
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="hien_thi_icd_truoc_thuat" readonly placeholder="Mã ICD đã nhập">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+
+<textarea class="form-control" id="ten_icd_truoc_thuat" rows="3" readonly placeholder="Tên ICD"></textarea>
+
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 6px;">
+                <div class="col-md-4">
+                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Tai biến/biến chứng: </label>
+                </div>
+                <div class="col-md-8 flex-fill">
+                    <input class="tom-select-taiBienBienChung" type="text" name="name" />
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 6px;">
+                <div class="col-md-4">
+                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Chế độ thủ thuật: </label>
+                </div>
+                <div class="col-md-8 flex-fill">
+                    <input class="tom-select-cheDoThuThuat" type="text" name="name" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="so_lan_mo_lai" class="col-4 col-form-label">Số lần mổ lại</label>
+                <div class="col-8">
+                    <input type="number" class="form-control" id="so_lan_mo_lai">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="ly_do_mo_lai" class="col-4 col-form-label">Lý do mổ lại</label>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="ly_do_mo_lai">
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 6px;">
+                <div class="col-md-4">
+                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Vị trí thực hiện: </label>
+                </div>
+                <div class="col-md-8 flex-fill">
+                    <input class="tom-select-viTriThucHien" type="text" name="name" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột 3: Chẩn đoán sau thủ thuật -->
+        <div class="col-md-3">
+            <h5 class="mb-3">Chẩn đoán sau thủ thuật</h5>
+            <div class="row mb-3">
+                <div class="col-4">
+                    <input type="text" class="form-control me-2" id="ma_icd_sau_thuat" placeholder="Mã ICD">
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="hien_thi_icd_sau_thuat" readonly placeholder="Mã ICD đã nhập">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+
+<textarea class="form-control" id="ten_icd_sau_thuat" rows="3" readonly placeholder="Tên ICD"></textarea>
+
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 6px;">
+                <div class="col-md-4">
+                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Tử vong: </label>
+                </div>
+                <div class="col-md-8 flex-fill">
+                    <input class="tom-select-tuVong" type="text" name="name" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="dan_luu" class="col-4 col-form-label">Dẫn lưu</label>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="dan_luu">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="ngay_rut_ong_dan_luu" class="col-4 col-form-label">Ngày rút ống dẫn lưu</label>
+                <div class="col-8">
+                    <input type="date" class="form-control" id="ngay_rut_ong_dan_luu">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="ngay_cat_chi" class="col-4 col-form-label">Ngày cắt chỉ</label>
+                <div class="col-8">
+                    <input type="date" class="form-control" id="ngay_cat_chi">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="khac" class="col-4 col-form-label">Khác</label>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="khac">
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột 4: FNA -->
+        <div class="col-md-3">
+            <h5 class="mb-3">FNA</h5>
+            <div class="row mb-3">
+                <label for="ma_fna" class="col-4 col-form-label">Mã FNA</label>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="ma_fna">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="tien_can" class="col-4 col-form-label">Tiền căn</label>
+                <div class="col-8">
+                    <input type="text" class="form-control" id="tien_can">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="ket_qua_xet_nghiem" class="form-label">Kết quả xét nghiệm FNA, GBP lần trước</label>
+                <input type="text" class="form-control" id="ket_qua_xet_nghiem">
+            </div>
+            <div class="mb-3">
+                <label for="chi_dinh_vi_tri_ton_thuong_fna" class="form-label">Chỉ định vị trí tổn thương FNA</label>
+                <input type="text" class="form-control" id="chi_dinh_vi_tri_ton_thuong_fna">
+            </div>
+            <div class="mb-3">
+                <label for="yeu_cau_xet_nghiem" class="form-label">Yêu cầu xét nghiệm</label>
+                <input type="text" class="form-control" id="yeu_cau_xet_nghiem">
+            </div>
+        </div>
     </div>
-    <div class="col-12 col-lg-10 ps-1 pe-0">
-     phải 
-    </div> 
+
+    <hr>
+
+    <!-- Hàng chứa hai bảng -->
+    <div class="row">
+        <!-- Bảng 1: Phương pháp vô cảm -->
+        <div class="col-md-4">
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <select class="form-select" id="phuong_phap_vo_cam_select">
+                        <option selected>Phương pháp</option>
+                        <!-- Thêm các options ở đây -->
+                    </select>
+                </div>
+                <div class="col-md-4 d-grid">
+                    <button type="button" class="btn btn-primary">Thêm</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-vcenter text-nowrap table-text">
+                    <thead class="table-light">
+                        <tr>
+                            <th>STT</th>
+                            <th style="min-width: 300px;">Phương pháp vô cảm</th>
+                            <th>Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dữ liệu sẽ được thêm vào đây -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bảng 2: Chi phí dịch vụ -->
+        <div class="col-md-8">
+            <div class="table-responsive">
+                <table class="table table-bordered table-vcenter text-nowrap table-text">
+                    <thead class="table-light">
+                        <tr>
+                            <th>STT</th>
+                            <th>Nhóm dịch vụ</th>
+                            <th>Mã dịch vụ</th>
+                            <th>Dịch vụ</th>
+                            <th>Ngày chỉ định</th>
+                            <th>KTC</th>
+                            <th>Tổng chi phí</th>
+                            <th>BHYT chi trả</th>
+                            <th>Người bệnh phải trả</th>
+                            <th>Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td class="text-center">KH255</td>
+                            <td>AAA</td>
+                            <td>AAA</td>
+                            <td>AAA</td>
+                            <td>AAA</td>
+                            <td>AAA</td>
+                            <td>AAA</td>
+                            <td>AAA</td>
+                            <td>AAA</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 </div>
+<script src="~/dist/js/J0302/J0302TTPT/J0302ThongTinThuThuat.js" asp-append-version="true" defer></script>
 
 @section Scripts {
 
-}
 
+}
 
 
 

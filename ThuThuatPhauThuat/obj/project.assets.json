@@ -2797,23 +2797,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Asus\\.nuget\\packages\\": {},
+    "C:\\Users\\ASUS\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj",
+      "projectUniqueName": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj",
       "projectName": "ThuThuatPhauThuat",
-      "projectPath": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj",
-      "packagesPath": "C:\\Users\\Asus\\.nuget\\packages\\",
-      "outputPath": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\obj\\",
+      "projectPath": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj",
+      "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
+      "outputPath": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Asus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

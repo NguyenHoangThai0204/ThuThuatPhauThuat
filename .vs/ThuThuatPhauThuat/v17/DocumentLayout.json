@@ -1,29 +1,29 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Sixos\\ThuThuatPhauThuat\\",
+  "WorkspaceRootPath": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\controllers\\c0302\\c0302thuthuatphauthuathomecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|e:\\sixos_project\\new folder\\thuthuatphauthuat\\thuthuatphauthuat\\controllers\\c0302\\c0302thuthuatphauthuathomecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\controllers\\c0302\\c0302thuthuatphauthuathomecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302danhsach.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|e:\\sixos_project\\new folder\\thuthuatphauthuat\\thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302danhsach.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302danhsach.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302danhsachthuthuatphauthuat.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|e:\\sixos_project\\new folder\\thuthuatphauthuat\\thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302danhsachthuthuatphauthuat.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302danhsachthuthuatphauthuat.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|e:\\sixos_project\\new folder\\thuthuatphauthuat\\thuthuatphauthuat\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|e:\\sixos_project\\new folder\\thuthuatphauthuat\\thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\wwwroot\\dist\\css\\css0302\\css0302ttpt\\css0302danhsach.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|e:\\sixos_project\\new folder\\thuthuatphauthuat\\thuthuatphauthuat\\wwwroot\\dist\\css\\css0302\\css0302ttpt\\css0302danhsach.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\wwwroot\\dist\\css\\css0302\\css0302ttpt\\css0302danhsach.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     }
   ],
@@ -34,28 +34,35 @@
       "DocumentGroups": [
         {
           "DockedWidth": 308,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{a80febb4-e7e0-4147-b476-21aaf2453969}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\Index.cshtml",
+              "DocumentMoniker": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\Index.cshtml",
               "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\Index.cshtml",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\Index.cshtml",
+              "ToolTip": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\Index.cshtml",
               "RelativeToolTip": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-26T04:59:43.22Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-26T04:59:43.22Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "C0302ThuThuatPhauThuatHomeController.cs",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Controllers\\C0302\\C0302ThuThuatPhauThuatHomeController.cs",
+              "DocumentMoniker": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Controllers\\C0302\\C0302ThuThuatPhauThuatHomeController.cs",
               "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Controllers\\C0302\\C0302ThuThuatPhauThuatHomeController.cs",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Controllers\\C0302\\C0302ThuThuatPhauThuatHomeController.cs",
+              "ToolTip": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Controllers\\C0302\\C0302ThuThuatPhauThuatHomeController.cs",
               "RelativeToolTip": "ThuThuatPhauThuat\\Controllers\\C0302\\C0302ThuThuatPhauThuatHomeController.cs",
               "ViewState": "AgIAAJcAAAAAAAAAAAAwwJ0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -66,53 +73,53 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "_Layout.cshtml",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\Shared\\_Layout.cshtml",
+              "DocumentMoniker": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "ThuThuatPhauThuat\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAABsAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-26T04:12:34.328Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-26T04:12:34.328Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "CSS0302DanhSach.css",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\css\\CSS0302\\CSS0302TTPT\\CSS0302DanhSach.css",
+              "DocumentMoniker": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\css\\CSS0302\\CSS0302TTPT\\CSS0302DanhSach.css",
               "RelativeDocumentMoniker": "ThuThuatPhauThuat\\wwwroot\\dist\\css\\CSS0302\\CSS0302TTPT\\CSS0302DanhSach.css",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\css\\CSS0302\\CSS0302TTPT\\CSS0302DanhSach.css",
+              "ToolTip": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\css\\CSS0302\\CSS0302TTPT\\CSS0302DanhSach.css",
               "RelativeToolTip": "ThuThuatPhauThuat\\wwwroot\\dist\\css\\CSS0302\\CSS0302TTPT\\CSS0302DanhSach.css",
               "ViewState": "AgIAADYAAAAAAAAAAAAAABEAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-26T03:13:19.277Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-26T03:13:19.277Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "J0302DanhSach.js",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302DanhSach.js",
+              "DocumentMoniker": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302DanhSach.js",
               "RelativeDocumentMoniker": "ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302DanhSach.js",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302DanhSach.js",
+              "ToolTip": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302DanhSach.js",
               "RelativeToolTip": "ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302DanhSach.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-09-26T03:06:50.549Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-26T03:06:50.549Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "V0302DanhSachThuThuatPhauThuat.cshtml",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302DanhSachThuThuatPhauThuat.cshtml",
+              "DocumentMoniker": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302DanhSachThuThuatPhauThuat.cshtml",
               "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302DanhSachThuThuatPhauThuat.cshtml",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302DanhSachThuThuatPhauThuat.cshtml",
+              "ToolTip": "E:\\SixOs_Project\\New folder\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302DanhSachThuThuatPhauThuat.cshtml",
               "RelativeToolTip": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302DanhSachThuThuatPhauThuat.cshtml",
               "ViewState": "AgIAAI0AAAAAAAAAAAAAALkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-26T03:03:39.384Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-26T03:03:39.384Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             }
           ]
         },
