@@ -73,8 +73,6 @@ $.getJSON("dist/data/json/DM_PhongBuong.json", dataDanToc => {
 function configCb(configs, dataSource) {
     configs.forEach(cfg => {
         let result = cfg.dieuKien ? cfg.dieuKien(dataSource) : dataSource;
-
-
         new TomSelect(cfg.className, {
             options: result,
             valueField: "ma",

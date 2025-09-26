@@ -63,20 +63,16 @@
 </div>
 
 
-    @* <script>
-        $(function () {
-            $('#txtDateTime1').datepicker({
-                format: "dd-mm-yyyy",
-                language: "vi",
-                autoclose: true,
-                todayHighlight: true
-            });
-
-            $('#txtDateTime1').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
+<script>
+    $(function () {
+        $('#txtDateTime1').datepicker({
+            format: "dd-mm-yyyy",
+            language: "vi",
+            autoclose: true,
+            todayHighlight: true
         });
-    </script> *@
-@section ScriptsThinh {
 
-}
-
+        $('#txtDateTime1').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
+    });
+</script>
 

@@ -18,4 +18,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\dist\js\J0305\" />
+  </ItemGroup>
+
 </Project>

@@ -40,6 +40,13 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             return View("~/Views/V0302/V0302ThuThuatPhauThuat/Index.cshtml");
         }
+
+        [HttpGet("thong_tin_so_phieu")]
+        public IActionResult ThongTinSoPhieu()
+        {
+            return PartialView("_ThongTinSoPhieu");
+        }
+
         [HttpGet("danh_sach")]
         public async Task<IActionResult> Home()
         { 
