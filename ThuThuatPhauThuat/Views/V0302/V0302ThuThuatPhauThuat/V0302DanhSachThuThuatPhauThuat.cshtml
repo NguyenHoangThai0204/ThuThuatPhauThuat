@@ -1,9 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Danh sách thủ thuật phẩu thuật";
 }
-<link href="~/dist/css/CSS0302/CSS0302TTPT/CSS0302DanhSach.css" rel="stylesheet" />
+@* <link href="~/dist/css/CSS0302/CSS0302TTPT/CSS0302DanhSach.css" rel="stylesheet" /> *@
 
-<link rel="stylesheet" href="~/dist/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+@* <link rel="stylesheet" href="~/dist/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css"> *@
 
 
 <div class="row me-0">
@@ -14,17 +14,20 @@
                     <label class="col-form-label form-label text-truncate" style="max-width: 180px">Ngày: </label>
                 </div>
                 <div class="col-md-2 flex-fill">
-                    <div class="input-group">
-                        <input type="text"
-                               class="form-control date-input"
-                               id="ngayTuNgay"
-                               name="TuNgay"
-                               value="@DateTime.Now.ToString("dd-MM-yyyy")"
-                               placeholder="dd-mm-yyyy"
-                               autocomplete="off" />
-                        <span class="input-group-text cursor-pointer datepicker-trigger">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6c757d">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <div class="input-icon">
+                        <input id="txtDateTime" type="text" class="form-control"
+                               placeholder="Chọn ngày giờ" autocomplete="off" />
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                 class="icon icon-tabler icon-tabler-calendar-event">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                                <path d="M16 3l0 4"></path>
+                                <path d="M8 3l0 4"></path>
+                                <path d="M4 11l16 0"></path>
+                                <path d="M8 15h2v2h-2z"></path>
                             </svg>
                         </span>
                     </div>
@@ -97,12 +100,23 @@
     </div> <!-- 80% ≈ 10/12 -->
 </div>
 
-<script src="/dist/js/J0302/J0302utils/J0302DateFormatUtil.js" asp-append-version="true" defer></script>
-<script src="~/dist/js/J0302/J0302TTPT/J0302DanhSach.js" asp-append-version="true" defer></script>
 
+<script>
+    $(function () {
+        $('#txtDateTime').datepicker({
+            format: "dd-mm-yyyy",
+            language: "vi",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        $('#txtDateTime').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
+    });
+</script>
+
+
+<script src="~/dist/js/J0302/J0302TTPT/J0302DanhSach.js" defer></script>
 @section Scripts {
-    <script src="~/dist/js/dataTables.min.js"></script>
-
 
 }
 

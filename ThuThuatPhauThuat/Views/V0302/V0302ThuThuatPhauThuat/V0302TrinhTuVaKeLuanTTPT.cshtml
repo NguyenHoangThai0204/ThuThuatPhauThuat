@@ -2,22 +2,81 @@
     ViewData["Title"] = "Trình tự và kết luận";
 }
 
-<style>
-
-</style>
-<div class="row me-0">
-    <div class="col-12 col-lg-2 mb-2 pe-1">
-        trái
+<div class="row m-0 align-items-end">
+    <div class="col-4 mb-1">
+        <input class="form-control" placeholder="Nhập dữ liệu ở đây">
     </div>
-    <div class="col-12 col-lg-10 ps-1 pe-0">
-        phải
+    <div class="col-4 mb-1">
+        <label for="txtTitle">Tiêu đề</label>
+        <input id="txtTitle" class="form-control" placeholder="Input cùng tiêu đề">
+    </div>
+
+    <div class="col-4 mb-1">
+        <label for="txtDateTime" class="form-label">Date</label>
+        <div class="input-icon">
+            <input id="txtDateTime1" type="text" class="form-control"
+                   placeholder="Chọn ngày giờ" autocomplete="off" />
+            <span class="input-icon-addon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="icon icon-tabler icon-tabler-calendar-event">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                    <path d="M16 3l0 4"></path>
+                    <path d="M8 3l0 4"></path>
+                    <path d="M4 11l16 0"></path>
+                    <path d="M8 15h2v2h-2z"></path>
+                </svg>
+            </span>
+        </div>
+    </div>
+
+    <div class="col-4 mb-1">
+        <div class="row">
+            <label class="col-lg-3 col-12 col-form-label required">
+                Dòng
+                1:
+            </label>
+            <div class="col">
+                <input type="text" autocomplete="off" class="form-control" placeholder="Enter email">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-4 mb-1">
+        <label class="form-label">Input group</label>
+        <div class="input-group">
+            <span class="input-group-text"> https:// </span>
+            <input type="text" class="form-control" placeholder="subdomain" autocomplete="off">
+            <span class="input-group-text"> .com.vn </span>
+        </div>
+    </div>
+    <div class="col-4 mb-1">
+        <div class="input-group">
+            <div class="input-group-text">
+                <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input">
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with checkbox">
+        </div>
     </div>
 </div>
 
-@section Scripts {
+
+    @* <script>
+        $(function () {
+            $('#txtDateTime1').datepicker({
+                format: "dd-mm-yyyy",
+                language: "vi",
+                autoclose: true,
+                todayHighlight: true
+            });
+
+            $('#txtDateTime1').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
+        });
+    </script> *@
+@section ScriptsThinh {
 
 }
-
-
 
 
