@@ -3,15 +3,125 @@
 }
 
 <style>
+    .checkbox-left {
+        width: 25%;
+    }
 
+    .input-right {
+		width: 100%;
+	}
+
+    .input-bottom {
+        width: 15%;
+	}
 </style>
-<div class="row me-0">
-    <div class="col-12 col-lg-2 mb-2 pe-1">
-        trái
+<div class="me-0 mb-2">
+    <div class="row g-3 align-items-center mb-2">
+        <!-- Nhóm trái: 3 checkbox -->
+        <div class="col-12 col-md-6 d-flex flex-wrap gap-3">
+            <div class="form-check mb-0 checkbox-left">
+                <input class="form-check-input KhamDV" type="checkbox" id="chkThuPhi">
+                <label class="form-check-label fw-bold" for="chkThuPhi">Thu phí</label>
+            </div>
+
+            <div class="form-check mb-0 checkbox-left">
+                <input class="form-check-input KhamDV" type="checkbox" id="chkNBTuTra">
+                <label class="form-check-label fw-bold" for="chkNBTuTra">NB tự trả ngoài BHYT</label>
+            </div>
+
+            <div class="form-check mb-0 checkbox-left">
+                <input class="form-check-input KhamDV" type="checkbox" id="chkVetThuong">
+                <label class="form-check-label fw-bold" for="chkVetThuong">Vết thương TP</label>
+            </div>
+        </div>
+
+        <!-- Nhóm phải: 2 select -->
+        <div class="col-12 col-md-6 d-flex gap-3">
+            <div class="input-right">
+                <label class="form-label mb-0" for="cbKhoDuoc">Kho dược</label>
+                <select class="form-select cbKhoDuoc" id="cbKho" name="cbKhoa">
+                    <option value="">-- Kho dược --</option>
+                </select>
+            </div>
+
+            <div class="input-right">
+                <label class="form-label mb-0" for="cbMauDuoc">Mẫu dược</label>
+                <select class="form-select cbMauDuoc" id="cbMauDuoc" name="cbKhoa2">
+                    <option value="">-- Chọn mẫu dược - VTYT --</option>
+                </select>
+            </div>
+        </div>
     </div>
-    <div class="col-12 col-lg-10 ps-1 pe-0">
-        phải
+
+    <div class="row g-3 align-items-end mb-2">
+        <!-- Nhãn lớn -->
+        <div class="col-12 col-md-1 fw-bold mb-2">
+            Nhập dược:
+        </div>
+
+        <!-- Dược và vật tư y tế -->
+        <div class="col-12 col-md-3">
+            <label for="SoHoaDon" class="form-label mb-0">Dược và vật tư y tế:</label>
+            <input type="text" class="form-control" id="SoHoaDon" placeholder="Dược và vật tư y tế">
+        </div>
+
+        <!-- ĐVT -->
+        <div class="col-12 col-md-1">
+            <label for="DVT" class="form-label mb-0">ĐVT:</label>
+            <input type="text" class="form-control" id="DVT" placeholder="ĐVT">
+        </div>
+
+        <!-- Số lượng -->
+        <div class="col-12 col-md-1">
+            <label for="SoLuong" class="form-label mb-0">Số lượng:</label>
+            <input type="text" class="form-control" id="SoLuong" placeholder="Số lượng">
+        </div>
+
+        <!-- Ghi chú -->
+        <div class="col-12 col-md-3">
+            <label for="GhiChu" class="form-label mb-0">Ghi chú:</label>
+            <input type="text" class="form-control" id="GhiChu" placeholder="Ghi chú">
+        </div>
+
+        <!-- Nút -->
+        <div class="col-12 col-md-auto d-flex gap-2">
+            <button class="btn btn-primary">+</button>
+            <button class="btn btn-primary">Thêm mới</button>
+        </div>
     </div>
+
+   @* Table  *@
+
+    <div class="row">
+        <div class="card mb-2">
+            <div id="table-Duoc" class="table-responsive vh-lg-67">
+                <table class="table table-bordered text-nowrap table-vcenter" id="tableDanhSachDuoc">
+                    <thead>
+                        <tr>
+                            <th class="text-center p-1">STT</th>
+                            <th class="text-center p-1">Tên kho</th>
+                            <th class="text-center p-1">Nguồn</th>
+                            <th class="text-center p-1">Dược và VTYT</th>
+                            <th class="text-center p-1">ĐVT</th>
+                            <th class="text-center p-1">Số lượng</th>
+                            <th class="text-center p-1">Thành tiền</th>
+                            <th class="text-center p-1">Tính tiền</th>
+                            <th class="text-center p-1">NB tự trả ngoài BHYT</th>
+                            <th class="text-center p-1">Vết thương TP</th>
+                            <th class="text-center p-1">Ghi chú</th>
+                            <th class="text-center p-1">Số phiếu lĩnh</th>
+                            <th class="text-center p-1">Số phiéu xuất</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tBody-DanhSachDuoc"></tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+
+
 </div>
 
 @section Scripts {
