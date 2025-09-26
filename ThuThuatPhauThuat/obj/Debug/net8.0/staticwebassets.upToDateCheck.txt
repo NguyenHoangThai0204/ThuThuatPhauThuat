@@ -39,7 +39,6 @@ wwwroot\dist\data\json\DM_PhongBuong.json
 wwwroot\dist\data\json\HH_DmKhoHang.json
 wwwroot\dist\img\Logo-BVUB.jpg
 wwwroot\dist\js\BienChung.js
-wwwroot\dist\js\J0302\J0302TTPT\J0302DanhSach.js
 wwwroot\dist\js\J0302\J0302TTPT\J0302Index.js
 wwwroot\dist\js\J0302\J0302TTPT\J0302ThongTinThuThuat.js
 wwwroot\dist\js\J0302\J0302utils\J0302DateFormatUtil.js
@@ -1073,3 +1072,4 @@ wwwroot\dist\lib\webfont\tabler-icons.min.css
 wwwroot\dist\lib\webfont\tabler-icons.scss
 wwwroot\favicon.ico
 wwwroot\static\logo.png
+wwwroot\dist\js\J0302\J0302TTPT\J0302DanhSach.js

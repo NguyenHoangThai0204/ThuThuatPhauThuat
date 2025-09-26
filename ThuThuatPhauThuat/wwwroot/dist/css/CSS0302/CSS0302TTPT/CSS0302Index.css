@@ -6,7 +6,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px;
-    padding: 12px;
+    padding: 6px;
     background: #f8f9fa; /* nền nhạt */
     border: 1px solid #dee2e6;
     border-radius: 8px;

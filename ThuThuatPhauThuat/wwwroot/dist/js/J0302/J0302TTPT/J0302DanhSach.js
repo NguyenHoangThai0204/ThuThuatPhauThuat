@@ -1,11 +1,13 @@
 ﻿
+
+
 //// ==================== BIẾN GLOBAL PHÂN TRANG ====================
 //let currentPage = 1;
 //let pageSize = 10;
 //let totalRecords = 0;
-//let totalPages = 0;
+//let totalPages = 0; 
 //let isInitialLoad = true;
-
+//let allData = []; // Lưu toàn bộ dữ liệu
 
 //function formatDateTime(date) {
 //    const dd = String(date.getDate()).padStart(2, '0');
@@ -26,7 +28,6 @@
 //    var tenBN = $(this).find("td:eq(2)").text().trim();
 //    var namSinh = $(this).find("td:eq(3)").text().trim();
 //    var gioiTinh = $(this).find("td:eq(4)").text().trim();
-
 //    var bacSi = $(this).find("td:eq(10)").text().trim();
 
 //    $("#info-tenbn", window.parent.document).text(tenBN);
@@ -47,9 +48,12 @@
 
 //// đọc JSON bằng jQuery
 //$.getJSON("dist/data/json/DM_PhongBuong.json", dataDanToc => {
+//    const idcnHienTai = _idcn; // gán giá trị idcn cần lọc
 
 //    listDanToc = dataDanToc
-//        .filter(n => n.active === true || n.active === 1) // chỉ lấy active
+//        .filter(n =>
+//            (n.active === true || n.active === 1) && n.idcn === idcnHienTai
+//        )
 //        .map(n => ({
 //            ...n,
 //            alias: n.viettat?.trim() !== ""
@@ -57,29 +61,26 @@
 //                : n.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("")
 //        }));
 
-
 //    // config cho TomSelect
 //    const configs = [
 //        {
 //            className: ".tom-select-test",
 //            placeholder: "-- Phòng khám --",
 //            dieuKien: function (response) {
-//                return response.filter(x => x.ma); // lọc điều kiện tuỳ ý
+//                return response.filter(x => x.id); // lọc điều kiện tuỳ ý
 //            }
 //        }
 //    ];
 
 //    configCb(configs, listDanToc);
 //});
-
 //function configCb(configs, dataSource) {
 //    configs.forEach(cfg => {
 //        let result = cfg.dieuKien ? cfg.dieuKien(dataSource) : dataSource;
 
-
 //        new TomSelect(cfg.className, {
 //            options: result,
-//            valueField: "ma",
+//            valueField: "id",
 //            labelField: "ten",
 //            searchField: ["ten", "alias"],
 //            placeholder: cfg.placeholder,
@@ -103,6 +104,7 @@
 //        });
 //    });
 //}
+
 //$(function () {
 //    $('#txtDateTime').datepicker({
 //        format: "dd-mm-yyyy",
@@ -115,38 +117,22 @@
 //    $('#txtDateTime').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
 //});
 
-//$(document).ready(function () {
-//    console.log("Script J0302DanhSach.js chạy rồi!");
-
-//    const data = [
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 2, maBN: "BN002", tenBN: "Trần Thị B", namSinh: 1990, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Máu", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS B", noiCD: "PK Ngoại" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 2, maBN: "BN002", tenBN: "Trần Thị B", namSinh: 1990, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Máu", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS B", noiCD: "PK Ngoại" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 2, maBN: "BN002", tenBN: "Trần Thị B", namSinh: 1990, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Máu", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS B", noiCD: "PK Ngoại" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 2, maBN: "BN002", tenBN: "Trần Thị B", namSinh: 1990, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Máu", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS B", noiCD: "PK Ngoại" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 2, maBN: "BN002", tenBN: "Trần Thị B", namSinh: 1990, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Máu", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS B", noiCD: "PK Ngoại" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 2, maBN: "BN002", tenBN: "Trần Thị B", namSinh: 1990, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Máu", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS B", noiCD: "PK Ngoại" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-//        { stt: 2, maBN: "BN002", tenBN: "Trần Thị B", namSinh: 1990, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Máu", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS B", noiCD: "PK Ngoại" },
-//        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang Nguyễn Văn A Nguyễn Văn A", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" }];
-
+//// ==================== HÀM PHÂN TRANG ====================
+//function renderTable(data, page = 1, pageSize = 10) {
 //    const tbody = $("#tbodyData");
 //    tbody.empty();
-//    data.forEach(item => {
+
+//    // Tính toán dữ liệu cho trang hiện tại
+//    const startIndex = (page - 1) * pageSize;
+//    const endIndex = startIndex + pageSize;
+//    const pageData = data.slice(startIndex, endIndex);
+
+//    // Render dữ liệu
+//    pageData.forEach((item, index) => {
+//        const stt = startIndex + index + 1;
 //        tbody.append(`
 //            <tr>
-//                <td>${item.stt}</td>
+//                <td>${stt}</td>
 //                <td>${item.maBN}</td>
 //                <td>${item.tenBN}</td>
 //                <td>${item.namSinh}</td>
@@ -161,17 +147,171 @@
 //            </tr>
 //        `);
 //    });
+
+//    // Cập nhật thông tin phân trang
+//    updatePaginationInfo(data.length, page, pageSize);
+
+//    // Render phân trang
+//    renderPagination(data.length, page, pageSize);
+//}
+
+//function updatePaginationInfo(totalRecords, currentPage, pageSize) {
+//    const startRecord = (currentPage - 1) * pageSize + 1;
+//    const endRecord = Math.min(currentPage * pageSize, totalRecords);
+//    $("#pageInfo").text(`Hiển thị ${startRecord}-${endRecord} của ${totalRecords} bản ghi`);
+//}
+
+//function renderPagination(totalRecords, currentPage, pageSize) {
+//    const totalPages = Math.ceil(totalRecords / pageSize);
+//    const pagination = $("#pagination");
+//    pagination.empty();
+
+//    // Nút Previous
+//    const prevDisabled = currentPage === 1 ? "disabled" : "";
+//    pagination.append(`
+//        <li class="page-item ${prevDisabled}">
+//            <a class="page-link" href="#" data-page="${currentPage - 1}">‹</a>
+//        </li>
+//    `);
+
+//    // Các nút trang
+//    const maxVisiblePages = 5;
+//    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+//    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+//    // Điều chỉnh nếu vượt quá giới hạn
+//    if (endPage - startPage + 1 < maxVisiblePages) {
+//        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+//    }
+
+//    for (let i = startPage; i <= endPage; i++) {
+//        const active = i === currentPage ? "active" : "";
+//        pagination.append(`
+//            <li class="page-item ${active}">
+//                <a class="page-link" href="#" data-page="${i}">${i}</a>
+//            </li>
+//        `);
+//    }
+
+//    // Nút Next
+//    const nextDisabled = currentPage === totalPages ? "disabled" : "";
+//    pagination.append(`
+//        <li class="page-item ${nextDisabled}">
+//            <a class="page-link" href="#" data-page="${currentPage + 1}">›</a>
+//        </li>
+//    `);
+//}
+
+//// ==================== SỰ KIỆN PHÂN TRANG ====================
+//$(document).on("click", ".page-link", function (e) {
+//    e.preventDefault();
+//    const page = parseInt($(this).data("page"));
+//    if (!isNaN(page) && page >= 1 && page <= Math.ceil(allData.length / pageSize)) {
+//        currentPage = page;
+//        renderTable(allData, currentPage, pageSize);
+//    }
 //});
 
+//// Sự kiện thay đổi số bản ghi mỗi trang
+//$(document).on("change", "#pageSizeSelect", function () {
+//    pageSize = parseInt($(this).val());
+//    currentPage = 1; // Reset về trang đầu tiên
+//    renderTable(allData, currentPage, pageSize);
+//});
 
+//$(document).on("click", "#btnLocDanhSachTTPT", function (e) {
+//    e.preventDefault();
 
+//    const ngay = $("#txtDateTime").val().trim();
+//    const phongKham = $(".tom-select-test").val();
+//    const status = $("input[name='statusGroup']:checked").val();
 
+//    const filterParams = {
+//        IdChiNhanh: _idcn,
+//        Ngay: ngay,
+//        IdPhongBuong: phongKham || 0, // Đảm bảo không gửi undefined
+//        TrangThai: status || 0
+//    };
+
+//    console.log("Filter params:", filterParams);
+
+//    $.post("/thu_thuat_phau_thuat/loc_danh_sach", filterParams, function (response) {
+//        console.log("API Response:", response);
+
+//        if (response && response.success) {
+//            // Truy cập đúng đường dẫn: response.data.data
+//            if (response.data && response.data.data && Array.isArray(response.data.data)) {
+//                allData = response.data.data;
+//                console.log("Dữ liệu nhận được:", allData);
+//                console.log("Số lượng items:", allData.length);
+//            } else {
+//                allData = [];
+//                console.log("Không tìm thấy dữ liệu ở response.data.data");
+//            }
+//        } else {
+//            allData = [];
+//            console.log("API không thành công:", response?.message);
+//        }
+
+//        currentPage = 1;
+//        renderTable(allData, currentPage, pageSize);
+
+//    }).fail(function (err) {
+//        console.error("Lỗi gọi API:", err);
+//        allData = [];
+//        renderTable(allData, currentPage, pageSize);
+//    });
+//});
+//function filterData(data) {
+//    const maBenhNhan = $("#txtMaBenhNhanDS").val().toLowerCase();
+//    const tenBN = $("#txtTenBnDS").val().toLowerCase();
+
+//    return data.filter(item => {
+//        const matchMaBN = !maBenhNhan || (item.maBN && item.maBN.toLowerCase().includes(maBenhNhan));
+//        const matchTenBN = !tenBN || (item.tenBN && item.tenBN.toLowerCase().includes(tenBN));
+//        return matchMaBN && matchTenBN;
+//    });
+//}
+
+//function renderTable(data, page, size) {
+//    const tbody = $("#tbodyData"); // Đảm bảo ID đúng
+//    tbody.empty();
+
+//    if (!data || data.length === 0) {
+//        tbody.append('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
+//        return;
+//    }
+
+//    const start = (page - 1) * size;
+//    const paginatedData = data.slice(start, start + size);
+
+//    console.log("Dữ liệu để render:", paginatedData); // Debug
+
+//    paginatedData.forEach((item, index) => {
+//        const row = `
+//            <tr>
+//                <td class="text-center">${start + index + 1}</td>
+//                <td class="text-center">${item.maBenhNhan || ""}</td> <!-- Sửa thành maBenhNhan -->
+//                <td>${item.tenBenhNhan || ""}</td> <!-- Sửa thành tenBenhNhan -->
+//                <td class="text-center">${item.namSinh || ""}</td>
+//                <td class="text-center">${item.gioiTinh || ""}</td>
+//                <td class="text-center">${item.khan ? 'Có' : 'Không'}</td> <!-- Xử lý boolean -->
+//                <td>${item.nhomDichVuKyThuat || ""}</td> <!-- Sửa thành nhomDichVuKyThuat -->
+//                <td>${item.dichVuKyThuat || ""}</td> <!-- Sửa thành dichVuKyThuat -->
+//                <td class="text-center">${item.thoiGian || ""}</td>
+//                <td>${item.noiThucHien || ""}</td> <!-- Sửa thành noiThucHien -->
+//                <td>${item.bacSiChiDinh || ""}</td> <!-- Sửa thành bacSiChiDinh -->
+//                <td>${item.noiChiDinh || ""}</td> <!-- Sửa thành noiChiDinh -->
+//            </tr>
+//        `;
+//        tbody.append(row);
+//    });
+//}
 // ==================== BIẾN GLOBAL PHÂN TRANG ====================
 let currentPage = 1;
 let pageSize = 10;
 let totalRecords = 0;
 let totalPages = 0;
-let isInitialLoad = true;
 let allData = []; // Lưu toàn bộ dữ liệu
 
 function formatDateTime(date) {
@@ -209,40 +349,30 @@ $(document).ready(function () {
     setInterval(updateDateTime, 60000);
 });
 
+// ==================== Load dữ liệu cho TomSelect ====================
 let listDanToc = [];
-
-// đọc JSON bằng jQuery
 $.getJSON("dist/data/json/DM_PhongBuong.json", dataDanToc => {
-    const idcnHienTai = _idcn; // gán giá trị idcn cần lọc
+    const idcnHienTai = _idcn;
 
     listDanToc = dataDanToc
-        .filter(n =>
-            (n.active === true || n.active === 1) && n.idcn === idcnHienTai
-        )
+        .filter(n => (n.active === true || n.active === 1) && n.idcn === idcnHienTai)
         .map(n => ({
             ...n,
-            alias: n.viettat?.trim() !== ""
-                ? n.viettat.toUpperCase()
-                : n.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("")
+            alias: n.viettat?.trim() !== "" ?
+                n.viettat.toUpperCase() :
+                n.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("")
         }));
 
-    // config cho TomSelect
-    const configs = [
-        {
-            className: ".tom-select-test",
-            placeholder: "-- Phòng khám --",
-            dieuKien: function (response) {
-                return response.filter(x => x.id); // lọc điều kiện tuỳ ý
-            }
-        }
-    ];
-
-    configCb(configs, listDanToc);
+    configCb([{
+        className: ".tom-select-test",
+        placeholder: "-- Phòng khám --",
+        dieuKien: function (response) { return response.filter(x => x.id); }
+    }], listDanToc);
 });
+
 function configCb(configs, dataSource) {
     configs.forEach(cfg => {
         let result = cfg.dieuKien ? cfg.dieuKien(dataSource) : dataSource;
-
         new TomSelect(cfg.className, {
             options: result,
             valueField: "id",
@@ -251,25 +381,20 @@ function configCb(configs, dataSource) {
             placeholder: cfg.placeholder,
             maxItems: 1,
             render: {
-                option: function (data, escape) {
-                    return `
-                             <div style="display:flex; justify-content:space-between; width:100%;">
-                                 <span>${escape(data.ten)}</span>
-                                 <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.viettat || "")}</span>
-                             </div>`;
-                },
-                item: function (data, escape) {
-                    return `
-                             <div style="display:flex; justify-content:space-between; width:100%;">
-                                 <span>${escape(data.ten)}</span>
-                                 <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.viettat || "")}</span>
-                             </div>`;
-                }
+                option: (data, escape) => `<div style="display:flex; justify-content:space-between; width:100%;">
+                        <span>${escape(data.ten)}</span>
+                        <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.viettat || "")}</span>
+                    </div>`,
+                item: (data, escape) => `<div style="display:flex; justify-content:space-between; width:100%;">
+                        <span>${escape(data.ten)}</span>
+                        <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.viettat || "")}</span>
+                    </div>`
             }
         });
     });
 }
 
+// ==================== Date Picker ====================
 $(function () {
     $('#txtDateTime').datepicker({
         format: "dd-mm-yyyy",
@@ -282,42 +407,40 @@ $(function () {
     $('#txtDateTime').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
 });
 
-// ==================== HÀM PHÂN TRANG ====================
-function renderTable(data, page = 1, pageSize = 10) {
+// ==================== PHÂN TRANG ====================
+function renderTable(data, page = 1, size = 10) {
     const tbody = $("#tbodyData");
     tbody.empty();
 
-    // Tính toán dữ liệu cho trang hiện tại
-    const startIndex = (page - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const pageData = data.slice(startIndex, endIndex);
+    if (!data || data.length === 0) {
+        tbody.append('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
+        return;
+    }
 
-    // Render dữ liệu
+    const start = (page - 1) * size;
+    const pageData = data.slice(start, start + size);
+
     pageData.forEach((item, index) => {
-        const stt = startIndex + index + 1;
         tbody.append(`
             <tr>
-                <td>${stt}</td>
-                <td>${item.maBN}</td>
-                <td>${item.tenBN}</td>
-                <td>${item.namSinh}</td>
-                <td>${item.gioiTinh}</td>
-                <td>${item.khan}</td>
-                <td>${item.nhomDV}</td>
-                <td>${item.tenDV}</td>
-                <td>${item.thoiGian}</td>
-                <td>${item.noiTH}</td>
-                <td>${item.bacSi}</td>
-                <td>${item.noiCD}</td>
+                <td class="text-center">${start + index + 1}</td>
+                <td class="text-center">${item.maBenhNhan || ""}</td>
+                <td>${item.tenBenhNhan || ""}</td>
+                <td class="text-center">${item.namSinh || ""}</td>
+                <td class="text-center">${item.gioiTinh || ""}</td>
+                <td class="text-center">${item.khan ? 'Có' : 'Không'}</td>
+                <td>${item.nhomDichVuKyThuat || ""}</td>
+                <td>${item.dichVuKyThuat || ""}</td>
+                <td class="text-center">${item.thoiGian || ""}</td>
+                <td>${item.noiThucHien || ""}</td>
+                <td>${item.bacSiChiDinh || ""}</td>
+                <td>${item.noiChiDinh || ""}</td>
             </tr>
         `);
     });
 
-    // Cập nhật thông tin phân trang
-    updatePaginationInfo(data.length, page, pageSize);
-
-    // Render phân trang
-    renderPagination(data.length, page, pageSize);
+    updatePaginationInfo(data.length, page, size);
+    renderPagination(data.length, page, size);
 }
 
 function updatePaginationInfo(totalRecords, currentPage, pageSize) {
@@ -327,158 +450,71 @@ function updatePaginationInfo(totalRecords, currentPage, pageSize) {
 }
 
 function renderPagination(totalRecords, currentPage, pageSize) {
-    const totalPages = Math.ceil(totalRecords / pageSize);
+    totalPages = Math.ceil(totalRecords / pageSize);
     const pagination = $("#pagination");
     pagination.empty();
 
-    // Nút Previous
     const prevDisabled = currentPage === 1 ? "disabled" : "";
-    pagination.append(`
-        <li class="page-item ${prevDisabled}">
-            <a class="page-link" href="#" data-page="${currentPage - 1}">‹</a>
-        </li>
-    `);
+    pagination.append(`<li class="page-item ${prevDisabled}"><a class="page-link" href="#" data-page="${currentPage - 1}">‹</a></li>`);
 
-    // Các nút trang
     const maxVisiblePages = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
-    // Điều chỉnh nếu vượt quá giới hạn
     if (endPage - startPage + 1 < maxVisiblePages) {
         startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
 
     for (let i = startPage; i <= endPage; i++) {
         const active = i === currentPage ? "active" : "";
-        pagination.append(`
-            <li class="page-item ${active}">
-                <a class="page-link" href="#" data-page="${i}">${i}</a>
-            </li>
-        `);
+        pagination.append(`<li class="page-item ${active}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`);
     }
 
-    // Nút Next
     const nextDisabled = currentPage === totalPages ? "disabled" : "";
-    pagination.append(`
-        <li class="page-item ${nextDisabled}">
-            <a class="page-link" href="#" data-page="${currentPage + 1}">›</a>
-        </li>
-    `);
+    pagination.append(`<li class="page-item ${nextDisabled}"><a class="page-link" href="#" data-page="${currentPage + 1}">›</a></li>`);
 }
 
-// ==================== SỰ KIỆN PHÂN TRANG ====================
+// ==================== XỬ LÝ SỰ KIỆN PHÂN TRANG ====================
 $(document).on("click", ".page-link", function (e) {
     e.preventDefault();
     const page = parseInt($(this).data("page"));
-    if (!isNaN(page) && page >= 1 && page <= Math.ceil(allData.length / pageSize)) {
+    if (!isNaN(page) && page >= 1 && page <= totalPages) {
         currentPage = page;
         renderTable(allData, currentPage, pageSize);
     }
 });
 
-// Sự kiện thay đổi số bản ghi mỗi trang
 $(document).on("change", "#pageSizeSelect", function () {
     pageSize = parseInt($(this).val());
-    currentPage = 1; // Reset về trang đầu tiên
+    currentPage = 1;
     renderTable(allData, currentPage, pageSize);
 });
 
-
-
+// ==================== LỌC DANH SÁCH ====================
 $(document).on("click", "#btnLocDanhSachTTPT", function (e) {
     e.preventDefault();
 
-    // Lấy ngày
     const ngay = $("#txtDateTime").val().trim();
-
-    // Lấy phòng khám (TomSelect lưu value trong input)
     const phongKham = $(".tom-select-test").val();
-
-    // Lấy radio được chọn
     const status = $("input[name='statusGroup']:checked").val();
 
-    // Gom thành object
     const filterParams = {
-        ngay: ngay,
-        idPhongBuong: phongKham,
-        status: status
+        IdChiNhanh: _idcn,
+        Ngay: ngay,
+        IdPhongBuong: phongKham || 0,
+        TrangThai: status || 0
     };
 
-    console.log("Filter:", filterParams);
-
-    // 👉 ở đây bạn có thể gọi AJAX để gửi đi
-    $.post("/thu_thuat_phau_thuat/loc_danh_sach", filterParams, function (res) {
-         allData = res;  // giả sử backend trả về data
-         currentPage = 1;
-         renderTable(allData, currentPage, pageSize);
-     });
-
-});
-
-
-
-
-// ==================== DỮ LIỆU MẪU VÀ KHỞI TẠO ====================
-$(document).ready(function () {
-    console.log("Script J0302DanhSach.js chạy rồi!");
-
-    // Dữ liệu mẫu
-    allData = [
-        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-        { stt: 2, maBN: "BN002", tenBN: "Trần Thị B", namSinh: 1990, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Máu", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS B", noiCD: "PK Ngoại" },
-        { stt: 3, maBN: "BN003", tenBN: "Lê Văn C", namSinh: 1978, gioiTinh: "Nam", khan: "Có", nhomDV: "PT", tenDV: "Phẫu thuật", thoiGian: "26-09-2025", noiTH: "Khoa PT", bacSi: "BS C", noiCD: "PK Ngoại" },
-        { stt: 4, maBN: "BN004", tenBN: "Phạm Thị D", namSinh: 1995, gioiTinh: "Nữ", khan: "Không", nhomDV: "CDHA", tenDV: "CT Scan", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS D", noiCD: "PK Nội" },
-        { stt: 5, maBN: "BN005", tenBN: "Hoàng Văn E", namSinh: 1982, gioiTinh: "Nam", khan: "Có", nhomDV: "XN", tenDV: "Sinh hóa", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS E", noiCD: "PK Nội" },
-        { stt: 6, maBN: "BN006", tenBN: "Vũ Thị F", namSinh: 1992, gioiTinh: "Nữ", khan: "Không", nhomDV: "PT", tenDV: "Nội soi", thoiGian: "26-09-2025", noiTH: "Khoa PT", bacSi: "BS F", noiCD: "PK Ngoại" },
-        { stt: 7, maBN: "BN007", tenBN: "Đặng Văn G", namSinh: 1975, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "MRI", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS G", noiCD: "PK Nội" },
-        { stt: 8, maBN: "BN008", tenBN: "Bùi Thị H", namSinh: 1988, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Huyết học", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS H", noiCD: "PK Ngoại" },
-        { stt: 9, maBN: "BN009", tenBN: "Ngô Văn I", namSinh: 1993, gioiTinh: "Nam", khan: "Có", nhomDV: "PT", tenDV: "Tiểu phẫu", thoiGian: "26-09-2025", noiTH: "Khoa PT", bacSi: "BS I", noiCD: "PK Nội" },
-        { stt: 10, maBN: "BN010", tenBN: "Đỗ Thị K", namSinh: 1980, gioiTinh: "Nữ", khan: "Không", nhomDV: "CDHA", tenDV: "Siêu âm", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS K", noiCD: "PK Ngoại" },
-        { stt: 11, maBN: "BN011", tenBN: "Trịnh Văn L", namSinh: 1970, gioiTinh: "Nam", khan: "Có", nhomDV: "XN", tenDV: "Vi sinh", thoiGian: "27-09-2025", noiTH: "Khoa XN", bacSi: "BS L", noiCD: "PK Nội" },
-        { stt: 12, maBN: "BN012", tenBN: "Lương Thị M", namSinh: 1998, gioiTinh: "Nữ", khan: "Không", nhomDV: "PT", tenDV: "Gây mê", thoiGian: "27-09-2025", noiTH: "Khoa PT", bacSi: "BS M", noiCD: "PK Ngoại" },
-        { stt: 1, maBN: "BN001", tenBN: "Nguyễn Văn A", namSinh: 1985, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "X-quang", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS A", noiCD: "PK Nội" },
-        { stt: 2, maBN: "BN002", tenBN: "Trần Thị B", namSinh: 1990, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Máu", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS B", noiCD: "PK Ngoại" },
-        { stt: 3, maBN: "BN003", tenBN: "Lê Văn C", namSinh: 1978, gioiTinh: "Nam", khan: "Có", nhomDV: "PT", tenDV: "Phẫu thuật", thoiGian: "26-09-2025", noiTH: "Khoa PT", bacSi: "BS C", noiCD: "PK Ngoại" },
-        { stt: 4, maBN: "BN004", tenBN: "Phạm Thị D", namSinh: 1995, gioiTinh: "Nữ", khan: "Không", nhomDV: "CDHA", tenDV: "CT Scan", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS D", noiCD: "PK Nội" },
-        { stt: 5, maBN: "BN005", tenBN: "Hoàng Văn E", namSinh: 1982, gioiTinh: "Nam", khan: "Có", nhomDV: "XN", tenDV: "Sinh hóa", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS E", noiCD: "PK Nội" },
-        { stt: 6, maBN: "BN006", tenBN: "Vũ Thị F", namSinh: 1992, gioiTinh: "Nữ", khan: "Không", nhomDV: "PT", tenDV: "Nội soi", thoiGian: "26-09-2025", noiTH: "Khoa PT", bacSi: "BS F", noiCD: "PK Ngoại" },
-        { stt: 7, maBN: "BN007", tenBN: "Đặng Văn G", namSinh: 1975, gioiTinh: "Nam", khan: "Có", nhomDV: "CDHA", tenDV: "MRI", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS G", noiCD: "PK Nội" },
-        { stt: 8, maBN: "BN008", tenBN: "Bùi Thị H", namSinh: 1988, gioiTinh: "Nữ", khan: "Không", nhomDV: "XN", tenDV: "Huyết học", thoiGian: "26-09-2025", noiTH: "Khoa XN", bacSi: "BS H", noiCD: "PK Ngoại" },
-        { stt: 9, maBN: "BN009", tenBN: "Ngô Văn I", namSinh: 1993, gioiTinh: "Nam", khan: "Có", nhomDV: "PT", tenDV: "Tiểu phẫu", thoiGian: "26-09-2025", noiTH: "Khoa PT", bacSi: "BS I", noiCD: "PK Nội" },
-        { stt: 10, maBN: "BN010", tenBN: "Đỗ Thị K", namSinh: 1980, gioiTinh: "Nữ", khan: "Không", nhomDV: "CDHA", tenDV: "Siêu âm", thoiGian: "26-09-2025", noiTH: "Khoa CĐHA", bacSi: "BS K", noiCD: "PK Ngoại" },
-        { stt: 11, maBN: "BN011", tenBN: "Trịnh Văn L", namSinh: 1970, gioiTinh: "Nam", khan: "Có", nhomDV: "XN", tenDV: "Vi sinh", thoiGian: "27-09-2025", noiTH: "Khoa XN", bacSi: "BS L", noiCD: "PK Nội" },
-        { stt: 12, maBN: "BN012", tenBN: "Lương Thị M", namSinh: 1998, gioiTinh: "Nữ", khan: "Không", nhomDV: "PT", tenDV: "Gây mê", thoiGian: "27-09-2025", noiTH: "Khoa PT", bacSi: "BS M", noiCD: "PK Ngoại" }
-    ];
-
-    // Khởi tạo bảng với phân trang
-    renderTable(allData, currentPage, pageSize);
-
-    // Sự kiện tìm kiếm nâng cao
-    $("#btnSearchNangCao").on("click", function () {
-        // Lọc dữ liệu dựa trên các điều kiện tìm kiếm
-        const filteredData = filterData(allData);
+    $.post("/thu_thuat_phau_thuat/loc_danh_sach", filterParams, function (response) {
+        if (response && response.success && Array.isArray(response.data?.data)) {
+            allData = response.data.data;
+        } else {
+            allData = [];
+        }
         currentPage = 1;
-        renderTable(filteredData, currentPage, pageSize);
+        renderTable(allData, currentPage, pageSize);
+    }).fail(function () {
+        allData = [];
+        renderTable(allData, currentPage, pageSize);
     });
 });
-
-// Hàm lọc dữ liệu (cần triển khai logic lọc thực tế)
-function filterData(data) {
-    // Lấy giá trị từ các ô tìm kiếm
-    const maVaoVien = $("#txtMaVaoVienDS").val().toLowerCase();
-    const maBenhNhan = $("#txtMaBenhNhanDS").val().toLowerCase();
-    const tenBN = $("#txtTenBnDS").val().toLowerCase();
-    const cccd = $("#txtCCCDDS").val().toLowerCase();
-    const maThe = $("#txtMaTheDS").val().toLowerCase();
-    const sdt = $("#txtSDTDS").val().toLowerCase();
-
-    // Lọc dữ liệu (ví dụ đơn giản)
-    return data.filter(item => {
-        const matchMaBN = !maBenhNhan || item.maBN.toLowerCase().includes(maBenhNhan);
-        const matchTenBN = !tenBN || item.tenBN.toLowerCase().includes(tenBN);
-
-        return matchMaBN && matchTenBN;
-        // Thêm các điều kiện lọc khác tùy theo nhu cầu
-    });
-}

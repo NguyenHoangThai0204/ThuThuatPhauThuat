@@ -3,6 +3,7 @@ using C0302_HoangThai.Models.M0302;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Text.Json;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
 using ThuThuatPhauThuat.Service.S0302.IS0302;
 
@@ -38,8 +39,15 @@ namespace ThuThuatPhauThuat.Service.S0302
 
                 if (allData == null || allData.Count == 0)
                 {
+                    _logger.LogInformation("Không có dữ liệu ");
                     return (true, "Không có dữ liệu", new { Data = new List<object>() });
                 }
+                else
+                {
+                    _logger.LogInformation("Có dữ liệu: {AllData}", JsonSerializer.Serialize(allData));
+
+                }
+
 
                     return (true, "Thành công", new { Data = allData });
             }

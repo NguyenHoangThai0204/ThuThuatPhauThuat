@@ -63,10 +63,14 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302DanhSachThuThuatPhauThuat.cshtml");
         }
         [HttpPost("loc_danh_sach")]
-        public async Task<IActionResult> LocDanhSach(long IdChiNhanh, string Ngay , long IdPhongBuong, int TrangThai)
+        public async Task<IActionResult> LocDanhSach(long IdChiNhanh, string Ngay, long IdPhongBuong, int TrangThai)
         {
-            var data = await _service.LocDanhSachAsync( IdChiNhanh,  Ngay,  IdPhongBuong,  TrangThai);
-            return Json(data);
+            var (success, message, data) = await _service.LocDanhSachAsync(IdChiNhanh, Ngay, IdPhongBuong, TrangThai);
+            if (!success)
+                return Json(new { Success = false, Message = message, Data = new List<object>() });
+
+            // Trả về đúng cấu trúc object
+            return Json(new { Success = true, Message = message, Data = data });
         }
 
         [HttpGet("thong_tin")]
