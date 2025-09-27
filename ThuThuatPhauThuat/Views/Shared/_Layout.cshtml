@@ -1,4 +1,15 @@
-﻿
+﻿@{
+    var jsonUrl = "https://ungbuou.sixossoft.com/dist/data/jsondkonline/";
+}
+
+<script>
+
+    var jsonUrl = "@jsonUrl";
+
+    // console.log("Json URL:", jsonUrl);
+</script>
+
+
 <!DOCTYPE html>
 <html lang="en" translate="no">
 <head>
@@ -14,6 +25,23 @@
     <link href="/dist/css/demo.min.css?1684106062" rel="stylesheet" />
     <link href="/dist/css/Custom.css" rel="stylesheet" />
 
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PLUGINS STYLES -->
+    <link href="https://styles.sixossoft.com/dist/libs/datetimepicker/bootstrap-datetimepicker.min.css"
+          rel="stylesheet" />
+
+    <link href="https://styles.sixossoft.com/dist/css/tabler-flags.css" rel="stylesheet" />
+    <link href="https://styles.sixossoft.com/dist/css/tabler-socials.css" rel="stylesheet" />
+    <link href="https://styles.sixossoft.com/dist/css/tabler-payments.css" rel="stylesheet" />
+    <link href="https://styles.sixossoft.com/dist/css/tabler-vendors.css" rel="stylesheet" />
+    <link href="https://styles.sixossoft.com/dist/css/tabler-marketing.css" rel="stylesheet" />
+    <link href="https://styles.sixossoft.com/dist/css/tabler-themes.css" rel="stylesheet" />
+
+
+    <!-- END PLUGINS STYLES -->
+    <!-- BEGIN DEMO STYLES -->
+    <link href="https://styles.sixossoft.com/dist/css/demo.css" rel="stylesheet" />
+    <link href="https://styles.sixossoft.com/dist/css/custom.css" rel="stylesheet" />
 
     <style>
         .quanly-menu {
@@ -129,8 +157,12 @@
             </div>
         </footer>
     </div>
+
+
+    <script src="~/dist/js/J0302/J0302TTPT/J0401_GhiNhanVatTuTTPT.js" asp-append-version="true" defer></script>
+
     <script src="/dist/lib/Jquery/jquery.min.js"></script>
-    <script src="/dist/lib/tom-select/dist/js/tom-select.base.js" defer asp-append-version="true"></script>
+    @* <script src="/dist/lib/tom-select/dist/js/tom-select.base.js" defer asp-append-version="true"></script> *@
 
     <script src="/dist/lib/Jquery/jquery.inputmask.js" defer></script>
     <script src="/dist/lib/popper.js/umd/popper.min.js" defer></script>
@@ -139,15 +171,21 @@
     <script src="~/dist/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" defer></script>
     <script src="~/dist/lib/bootstrap-datepicker/dist/locales/bootstrap-datepicker.vi.min.js" defer></script>
 
-
-
+    <script src="/dist/lib/datetimepicker/moment.min.js" defer=""></script>
+    <script src="/dist/lib/datetimepicker/moment-with-locales.min.js" defer=""></script>
+    <script src="/dist/lib/datetimepicker/bootstrap-datetimepicker.min.js" defer></script>
+    <script src="/dist/lib/datetimepicker/popper.min.js" defer=""></script>
+    <script src="/dist/lib/tom-select/dist/js/tom-select.base.min.js" defer></script>
+ 
     <!-- DataTables -->
     <script src="/dist/lib/datatables/jquery.dataTables.min.js"></script>
     <script src="/dist/lib/datatables/dataTables.fixedColumns.min.js"></script>
 
     <script src="/dist/js/BienChung.js"></script>
+    <script src="/dist/js/Common.js" defer></script>
 
+    
 
-    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false) 
 </body>
 </html>

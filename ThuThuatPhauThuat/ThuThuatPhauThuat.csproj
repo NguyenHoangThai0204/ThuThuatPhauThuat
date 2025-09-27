@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Service\S0302\IS0302\" />
+    <Folder Include="wwwroot\dist\js\J0401\" />
   </ItemGroup>
 
 </Project>

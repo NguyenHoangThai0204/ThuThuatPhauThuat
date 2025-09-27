@@ -39,8 +39,10 @@ wwwroot\dist\data\json\DM_PhongBuong.json
 wwwroot\dist\data\json\HH_DmKhoHang.json
 wwwroot\dist\img\Logo-BVUB.jpg
 wwwroot\dist\js\BienChung.js
+wwwroot\dist\js\Common.js
 wwwroot\dist\js\J0302\J0302TTPT\J0302DanhSach.js
 wwwroot\dist\js\J0302\J0302TTPT\J0302Index.js
+wwwroot\dist\js\J0302\J0302TTPT\J0401_GhiNhanVatTuTTPT.js
 wwwroot\dist\js\J0302\J0302utils\J0302DateFormatUtil.js
 wwwroot\dist\js\J0302\J0302utils\J0302LoadHH_DM_KhoHangUtil.js
 wwwroot\dist\lib\apexcharts\dist\apexcharts.amd.js
