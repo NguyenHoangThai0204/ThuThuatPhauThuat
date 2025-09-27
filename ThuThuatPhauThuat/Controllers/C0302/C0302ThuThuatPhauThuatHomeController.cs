@@ -70,17 +70,39 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302DanhSachThuThuatPhauThuat.cshtml");
         }
+        //[HttpPost("loc_danh_sach")]
+        //public async Task<IActionResult> LocDanhSach(long IdChiNhanh, string Ngay, long IdPhongBuong, int TrangThai)
+        //{
+        //    var (success, message, data) = await _service.LocDanhSachAsync(IdChiNhanh, Ngay, IdPhongBuong, TrangThai);
+        //    if (!success)
+        //        return Json(new { Success = false, Message = message, Data = new List<object>() });
+
+        //    // Trả về đúng cấu trúc object
+        //    return Json(new { Success = true, Message = message, Data = data });
+        //}
         [HttpPost("loc_danh_sach")]
-        public async Task<IActionResult> LocDanhSach(long IdChiNhanh, string Ngay, long IdPhongBuong, int TrangThai)
+        public async Task<IActionResult> LocDanhSach(
+            long IdChiNhanh,
+            string Ngay,
+            long IdPhongBuong,
+            int TrangThai,
+            // Thêm các tham số tìm kiếm nâng cao (có thể null)
+            string MaVaoVien = null,
+            string MaBenhNhan = null,
+            string TenBenhNhan = null,
+            string CCCD = null,
+            string MaThe = null,
+            string SoDienThoai = null)
         {
-            var (success, message, data) = await _service.LocDanhSachAsync(IdChiNhanh, Ngay, IdPhongBuong, TrangThai);
+            var (success, message, data) = await _service.LocDanhSachAsync(
+                IdChiNhanh, Ngay, IdPhongBuong, TrangThai,
+                MaVaoVien, MaBenhNhan, TenBenhNhan, CCCD, MaThe, SoDienThoai);
+
             if (!success)
                 return Json(new { Success = false, Message = message, Data = new List<object>() });
 
-            // Trả về đúng cấu trúc object
             return Json(new { Success = true, Message = message, Data = data });
         }
-
         [HttpGet("thong_tin")]
         public async Task<IActionResult> ThongTin()
         {
