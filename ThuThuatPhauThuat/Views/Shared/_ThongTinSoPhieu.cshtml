@@ -1,0 +1,170 @@
+﻿@{
+    var tabIndex = ViewBag.TabIndex ?? 0;
+}
+<div class="row mt-1">
+    <div class="col-3">
+        <div class=" d-flex align-items-center">
+            <label class="form-label fw-bold me-2" style="min-width: 100px;">Số phiếu:</label>
+            <select type="text" class="form-select form-select-md tomselected thuThuat__soPhieu-tom-select-@tabIndex" value="25761707"></select>
+        </div>
+       
+    </div>
+    <div class="col-1">
+        <div class=" d-flex align-items-center ">
+            <label class="form-label fw-bold me-2" style="min-width: 60px;">Nhóm máu:</label>
+            <label type="text" class="form-label thuThuat__nhomMau-@tabIndex" name="nhomMau">B</label>
+        </div>
+       
+    </div>
+    <div class="col-4">
+        <div class="d-flex align-items-center">
+            <label class="form-label fw-bold me-2" style="min-width: 140px;">Bắt đầu thủ thuật:</label>
+            <div class="input-icon w-100">
+                <input type="text" class="form-control form-control-md txtDateTimeBatDauThuThuat-@tabIndex"
+                                   value="19/08/2025 09:39" autocomplete="off">
+                <span class="input-icon-addon">
+                    <i class="ti ti-calendar-event"></i>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+    <div class="col-4">
+        <div class=" d-flex align-items-center">
+            <label class="form-label fw-bold me-2" style="min-width: 140px;">Thời gian khóa:</label>
+            <input type="text" class="form-control form-control-md" readonly>
+        </div>
+        
+    </div>
+</div>
+<div class="row mt-1">
+    <div class="col-3">
+        <div class=" d-flex align-items-center">
+            <label class="form-label fw-bold me-2" style="min-width: 100px;">Nguồn bệnh:</label>
+            <select type="text" class="form-select form-select-md tomselected thuThuat__nguonBenh-tom-select-@tabIndex" name="nguonBenh" value="Trong Bệnh viện"></select>
+        </div>
+    </div>
+    <div class="col-1">
+        <div class=" d-flex align-items-center ">
+            <label class="form-label fw-bold me-2" style="min-width: 70px;">Yếu tố Rh:</label>
+            <span type="text" class="form-label thuThuat__yeuToRh-@tabIndex" name="yeuToRh" value="Dương tính">A</span>
+        </div>
+    </div>
+    <div class="col-4">
+        
+        <div class=" d-flex align-items-center">
+            <label class="form-label fw-bold me-2" style="min-width: 140px;">Kết thúc thủ thuật:</label>
+            <div class="input-icon w-100">
+                <input type="text" class="form-control form-control-md txtDateTimeKetThucThuThuat-@tabIndex"
+                       value="19/08/2025 10:39" autocomplete="off">
+                <span class="input-icon-addon">
+                    <i class="ti ti-calendar-event"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class=" d-flex align-items-center">
+            <label class="form-label fw-bold me-2" style="min-width: 140px;">Người khóa:</label>
+            <input type="text" class="form-control form-control-md" readonly>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dữ liệu mẫu cho các dropdown
+    var soPhieuData = [
+        { ma: "25761707", ten: "25761707" },
+        { ma: "25761708", ten: "25761708" },
+        { ma: "25761709", ten: "25761709" }
+    ];
+
+    var nguonBenhData = [
+        { ma: "TB", ten: "Trong Bệnh viện", vietTat: "tbv" },
+        { ma: "NB", ten: "Ngoài Bệnh viện", vietTat: "nbv" },
+        { ma: "CK", ten: "Chuyển khoa", vietTat: "ck" },
+        { ma: "TC", ten: "Tự chuyển", vietTat: "tc" }
+    ];
+
+    var nhomMauData = [
+        { ma: "A", ten: "A", vietTat: "a" },
+        { ma: "B", ten: "B", vietTat: "b" },
+        { ma: "AB", ten: "AB", vietTat: "ab" },
+        { ma: "O", ten: "O", vietTat: "o" }
+    ];
+
+    var yeuToRhData = [
+        { ma: "D", ten: "Dương tính", vietTat: "d+" },
+        { ma: "A", ten: "Âm tính", vietTat: "d-" }
+    ];
+
+    // Hàm cấu hình Tom Select cho đúng tabIndex
+    function configTomSelect(tabIndex) {
+        var tomSelectConfigs = [
+            {
+                className: ".thuThuat__soPhieu-tom-select-" + tabIndex,
+                placeholder: "-- Chọn số phiếu --",
+                data: soPhieuData
+            },
+            {
+                className: ".thuThuat__nguonBenh-tom-select-" + tabIndex,
+                placeholder: "-- Chọn nguồn bệnh --",
+                data: nguonBenhData,
+                showVietTat: true
+            },
+            {
+                className: ".thuThuat__nhomMau-tom-select-" + tabIndex,
+                placeholder: "-- Chọn nhóm máu --",
+                data: nhomMauData,
+                showVietTat: true,
+                disabled: true
+            },
+            {
+                className: ".thuThuat__yeuToRh-tom-select-" + tabIndex,
+                placeholder: "-- Chọn yếu tố Rh --",
+                data: yeuToRhData,
+                showVietTat: true,
+                disabled: true
+            }
+        ];
+
+        tomSelectConfigs.forEach(cfg => {
+            let tomSelectConfig = {
+                options: cfg.data,
+                valueField: "ma",
+                labelField: "ten",
+                searchField: ["ma", "ten", "vietTat"],
+                placeholder: cfg.placeholder,
+                maxItems: 1,
+                create: cfg.allowCreate || false,
+                disabled: cfg.disabled || false
+            };
+
+            if (cfg.showVietTat) {
+                tomSelectConfig.render = {
+                    option: function(data, escape) {
+                        return '<div style="display: flex; justify-content: space-between;">' +
+                            '<span>' + escape(data.ten) + '</span>' +
+                            '<span style="color: #6c757d;">' + escape(data.vietTat || '') + '</span>' +
+                            '</div>';
+                    },
+                    item: function(data, escape) {
+                        return '<div>' + escape(data.ten) + '</div>';
+                    }
+                };
+            }
+
+            new TomSelect(cfg.className, tomSelectConfig);
+        });
+    }
+
+    function configDateTimePicker(tabIndex) {
+        $('.txtDateTimeBatDauThuThuat-' + tabIndex + ', .txtDateTimeKetThucThuThuat-' + tabIndex).attachDateTimeGroups();
+    }
+
+    function khoiTaoThongTinSoPhieu(tabIndex) {
+        configTomSelect(tabIndex);
+        configDateTimePicker(tabIndex);
+    }
+    khoiTaoThongTinSoPhieu(@tabIndex);
+</script>

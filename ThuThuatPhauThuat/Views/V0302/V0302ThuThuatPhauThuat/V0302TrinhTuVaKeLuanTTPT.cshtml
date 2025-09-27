@@ -1,23 +1,258 @@
-﻿@{
-    ViewData["Title"] = "Trình tự và kết luận";
-}
-
-<style>
-
-</style>
-<div class="row me-0">
-    <div class="col-12 col-lg-2 mb-2 pe-1">
-        trái
+﻿<div class="report-template-editor">
+    <!-- Cột trái -->
+    <div class="image-panel">
+        <div class="image-panel-header" style="font-size: 1.05rem;">
+            <span>Hình ảnh</span>
+            <button class="btn btn-sm btn-light">
+                <i class="ti ti-plus" style="font-size: 1.05rem;"></i>
+            </button>
+        </div>
+        <div class="image-panel-body">
+            <div class="image-item active">
+                <div class="fw-bold">HÌNH CỔ BÊN (P)</div>
+                <small>19/08/2025 09:39:30</small>
+            </div>
+            <div class="image-item">
+                <div class="fw-bold">HÌNH CỔ BÊN (T)</div>
+                <small>19/08/2025 09:41:15</small>
+            </div>
+        </div>
     </div>
-    <div class="col-12 col-lg-10 ps-1 pe-0">
-        phải
+
+    <!-- Cột phải -->
+    <div class="editor-panel">
+        <div class="editor-header d-flex align-items-center justify-content-between" style="font-size: 1.05rem;">
+            <span>Mẫu tường trình</span>
+            <div class="d-flex align-items-center" style="gap: 5px; flex: 1; justify-content: flex-end;">
+                <select class="form-select w-75" style="min-width: 350px;" id="templateSelect">
+                    <option value="">-- Chọn mẫu --</option>
+                    <option value="Mẫu 1">Mẫu 1 - Siêu âm bình thường</option>
+                    <option value="Mẫu 2">Mẫu 2 - Có bất thường nhỏ</option>
+                    <option value="Mẫu 3">Mẫu 3 - Nghi ngờ khối u</option>
+                </select>
+                <button class="btn btn-primary" onclick="applyTemplate()">Áp dụng</button>
+            </div>
+        </div>
+
+        <div class="editor-toolbar" id="editorToolbar">
+            <!-- Undo / Redo -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('undo')" data-bs-toggle="tooltip" title="Hoàn tác"><i class="ti ti-arrow-back-up"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('redo')" data-bs-toggle="tooltip" title="Làm lại"><i class="ti ti-arrow-forward-up"></i></button>
+
+            <div class="toolbar-separator"></div>
+
+            <!-- Font -->
+            <select class="form-select form-select-sm" style="width:auto;" onchange="execCmd('fontName', this.value)" data-bs-toggle="tooltip" title="Chọn font">
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Arial">Arial</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+            <select class="form-select form-select-sm" style="width: 70px;" onchange="execCmd('fontSize', this.value)" data-bs-toggle="tooltip" title="Cỡ chữ">
+                <option value="2">12pt</option>
+                <option value="3">14pt</option>
+                <option value="4">18pt</option>
+            </select>
+
+            <div class="toolbar-separator"></div>
+
+            <!-- Format text -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('bold')" data-bs-toggle="tooltip" title="In đậm"><i class="ti ti-bold"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('italic')" data-bs-toggle="tooltip" title="In nghiêng"><i class="ti ti-italic"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('underline')" data-bs-toggle="tooltip" title="Gạch chân"><i class="ti ti-underline"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('strikeThrough')" data-bs-toggle="tooltip" title="Gạch ngang"><i class="ti ti-strikethrough"></i></button>
+
+            <div class="toolbar-separator"></div>
+
+            <!-- Align -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('justifyLeft')" data-bs-toggle="tooltip" title="Căn trái"><i class="ti ti-align-left"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('justifyCenter')" data-bs-toggle="tooltip" title="Căn giữa"><i class="ti ti-align-center"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('justifyRight')" data-bs-toggle="tooltip" title="Căn phải"><i class="ti ti-align-right"></i></button>
+
+            <div class="toolbar-separator"></div>
+
+            <!-- List -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('insertUnorderedList')" data-bs-toggle="tooltip" title="Danh sách chấm"><i class="ti ti-list"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('insertOrderedList')" data-bs-toggle="tooltip" title="Danh sách số"><i class="ti ti-list-numbers"></i></button>
+
+            <div class="toolbar-separator"></div>
+
+            <!-- Color -->
+            <label data-bs-toggle="tooltip" title="Màu chữ">
+                <input type="color" class="color-picker" onchange="execCmd('foreColor', this.value)" value="#000000">
+            </label>
+            <label data-bs-toggle="tooltip" title="Highlight">
+                <input type="color" class="color-picker" onchange="execCmd('hiliteColor', this.value)" value="#ffff00">
+            </label>
+
+            <div class="toolbar-separator"></div>
+
+            <!-- Insert -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('createLink', prompt('Nhập link:','https://'))" data-bs-toggle="tooltip" title="Chèn link"><i class="ti ti-link"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('insertImage', prompt('Nhập URL hình:','https://'))" data-bs-toggle="tooltip" title="Chèn ảnh"><i class="ti ti-photo"></i></button>
+
+            <div class="toolbar-separator"></div>
+
+            <!-- Clear -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('removeFormat')" data-bs-toggle="tooltip" title="Xóa định dạng"><i class="ti ti-clear-formatting"></i></button>
+        </div>
+
+        <div id="editorContent" class="editor-content" contenteditable="true">
+            Kiểm tra bằng siêu âm trước mổ vùng cổ phải bình thường...
+        </div>
+
+        <div class="editor-footer">
+            <textarea class="editor-note" placeholder="Kết luận / Tóm tắt"></textarea>
+        </div>
     </div>
 </div>
 
-@section Scripts {
+<style>
+    .report-template-editor {
+        height: calc(100vh - 200px);
+        margin: 10px;
+        min-height: 400px;
+        display: flex;
+        border: 1px solid #ccc;
+    }
 
-}
+    /* Cột trái */
+    .image-panel {
+        width: 280px;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #ccc;
+    }
 
+    .image-panel-header {
+        background: #006d77;
+        color: #fff;
+        font-weight: bold;
+        padding: 6px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
+    .image-panel-body {
+        flex: 1;
+        overflow-y: auto;
+        background: #f8f9fa;
+    }
 
+    .image-item {
+        padding: 8px 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #e1e1e1;
+    }
 
+        .image-item.active {
+            background: #e0f2f1;
+            font-weight: bold;
+        }
+
+    /* Cột phải */
+    .editor-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .editor-header {
+        background: #f1f1f1;
+        padding: 6px 10px;
+        border-bottom: 1px solid #ccc;
+        font-weight: bold;
+    }
+
+    .editor-toolbar {
+        padding: 6px;
+        border-bottom: 1px solid #ccc;
+        background: #f9f9f9;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+    }
+
+        .editor-toolbar button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+        }
+
+        .editor-toolbar select {
+            height: 32px;
+        }
+
+    .toolbar-separator {
+        width: 1px;
+        height: 24px;
+        background: #ccc;
+        margin: 0 4px;
+    }
+
+    .color-picker {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .editor-content {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        border: none;
+        outline: none;
+    }
+
+    .editor-footer {
+        border-top: 1px solid #ccc;
+        padding: 4px 10px;
+        background: #fff;
+    }
+
+    .editor-note {
+        width: 100%;
+        height: 40px;
+        resize: none;
+        border: none;
+        outline: none;
+        font-size: 13px;
+        color: #666;
+        background: transparent;
+    }
+</style>
+
+<script>
+    function execCmd(command, value = null) {
+        document.execCommand(command, false, value);
+    }
+    function applyTemplate() {
+        const select = document.getElementById("templateSelect");
+        const content = document.getElementById("editorContent");
+
+        switch (select.value) {
+            case "Mẫu 1":
+                content.innerHTML = "Kiểm tra bằng siêu âm trước mổ vùng cổ phải bình thường...";
+                break;
+            case "Mẫu 2":
+                content.innerHTML = "Siêu âm vùng cổ cho thấy một số bất thường nhỏ, cần theo dõi thêm...";
+                break;
+            case "Mẫu 3":
+                content.innerHTML = "Phát hiện khối bất thường vùng cổ, nghi ngờ khối u, cần xét nghiệm bổ sung...";
+                break;
+            default:
+                content.innerHTML = "";
+                break;
+        }
+    }
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+</script>

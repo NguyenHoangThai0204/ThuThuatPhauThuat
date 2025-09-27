@@ -9,9 +9,11 @@
     <!-- CSS files -->
     <link href="/dist/css/tabler.min.css?1684106062" rel="stylesheet" />
     <link href="/dist/css/tabler-payments.min.css?1684106062" rel="stylesheet" />
+    <link href="/dist/lib/webfont/tabler-icons.min.css" rel="stylesheet" />
     <link href="/dist/css/tabler-vendors.min.css?1684106062" rel="stylesheet" />
     <link href="/dist/css/demo.min.css?1684106062" rel="stylesheet" />
     <link href="/dist/css/Custom.css" rel="stylesheet" />
+    <link href="/dist/lib/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 
     <link href="/dist/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" />
 
@@ -130,7 +132,6 @@
         </footer>
     </div>
 
-
     <!-- Core -->
     <script src="/dist/lib/Jquery/jquery.min.js"></script>
     <script src="/dist/lib/popper.js/umd/popper.min.js"></script>
@@ -143,6 +144,12 @@
     <script src="/dist/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" defer></script>
     <script src="/dist/lib/bootstrap-datepicker/dist/locales/bootstrap-datepicker.vi.min.js" defer></script>
 
+    <!-- JQuery DateTimePicker -->
+    <script src="/dist/lib/datetimepicker/popper.min.js" defer></script>
+    <script src="/dist/lib/datetimepicker/moment.min.js" defer></script>
+    <script src="/dist/lib/datetimepicker/moment-with-locales.min.js" defer></script>
+    <script src="/dist/lib/datetimepicker/bootstrap-datetimepicker.min.js" defer></script>
+
     <!-- Các lib không bắt buộc load trước -->
     <script src="/dist/lib/tom-select/dist/js/tom-select.base.js" defer asp-append-version="true"></script>
     <script src="/dist/lib/apexcharts/dist/apexcharts.min.js" defer></script>
@@ -150,7 +157,8 @@
     <script src="/dist/lib/datatables/dataTables.fixedColumns.min.js" defer></script>
 
     <!-- Custom JS -->
-    <script src="/dist/js/BienChung.js" defer></script>
+    <script src="~/dist/js/datetime-group.js" defer></script>
+    <script src="~/dist/js/BienChung.js" defer></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

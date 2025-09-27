@@ -13,8 +13,8 @@ function updateDateTime() {
     $("#info-datetime", window.parent.document).text(formatted);
 }
 
-// Dữ liệu mẫu cho các TomSelect khác
-const sampleData = {
+
+const sampleDataThongTin = {
     phanLoai: [
         { ma: "PL01", ten: "Phẫu thuật", alias: "PT" },
         { ma: "PL02", ten: "Thủ thuật", alias: "TT" },
@@ -44,7 +44,13 @@ const sampleData = {
         { ma: "TV01", ten: "Trong 24 giờ", alias: "24h" },
         { ma: "TV02", ten: "Trong 7 ngày", alias: "7N" },
         { ma: "TV03", ten: "Không tử vong", alias: "KTV" }
-    ]
+    ],
+
+    voCam: [
+            { ma: "TV01", ten: "Gây tê", alias: "GT" },
+            { ma: "TV02", ten: "Gây mê", alias: "GM" },
+            { ma: "TV03", ten: "Châm tê", alias: "CT" }
+        ]
 };
 
 // Định nghĩa các cấu hình TomSelect
@@ -56,40 +62,45 @@ function getTomSelectConfigs(phongBuongData) {
             data: phongBuongData
         },
         {
-            className: ".tom-select-phanLoai",
+            className: ".cbPhanLoai",
             placeholder: "-- Phân loại --",
-            data: sampleData.phanLoai
+            data: sampleDataThongTin.phanLoai
         },
         {
-            className: ".tom-select-thietBi",
+            className: ".cbThietBi",
             placeholder: "-- Thiết bị --",
-            data: sampleData.thietBi
+            data: sampleDataThongTin.thietBi
         },
         {
-            className: ".tom-select-taiBienBienChung",
+            className: ".cbBienChung",
             placeholder: "-- Tai biến/biến chứng --",
-            data: sampleData.taiBienBienChung
+            data: sampleDataThongTin.taiBienBienChung
         },
         {
-            className: ".tom-select-cheDoThuThuat",
+            className: ".cbCheDoThuThuat",
             placeholder: "-- Chế độ thủ thuật --",
-            data: sampleData.cheDoThuThuat
+            data: sampleDataThongTin.cheDoThuThuat
         },
         {
-            className: ".tom-select-viTriThucHien",
+            className: ".cbViTriThucHien",
             placeholder: "-- Vị trí thực hiện --",
-            data: sampleData.viTriThucHien
+            data: sampleDataThongTin.viTriThucHien
         },
         {
-            className: ".tom-select-tuVong",
+            className: ".cbTuVong",
             placeholder: "-- Tử vong --",
-            data: sampleData.tuVong
+            data: sampleDataThongTin.tuVong
+        },
+        {
+            className: ".cbPTVoCam",
+            placeholder: "-- Phương thức vô cảm --",
+            data: sampleDataThongTin.tuVong
         }
     ];
 }
 
 // Hàm chung để cấu hình TomSelect
-function configCb(configs) {
+function configCbThongTin(configs) {
     configs.forEach(cfg => {
         new TomSelect(cfg.className, {
             options: cfg.data,
@@ -118,8 +129,8 @@ function configCb(configs) {
     });
 }
 
-// Đọc JSON và khởi tạo tất cả các TomSelect
-$(document).ready(function () {
+
+function initThongTinTab() {
     $.getJSON("dist/data/json/DM_PhongBuong.json", dataPhongBuong => {
         const listPhongBuong = dataPhongBuong
             .filter(n => n.active === true || n.active === 1)
@@ -131,7 +142,15 @@ $(document).ready(function () {
             }));
 
         const configs = getTomSelectConfigs(listPhongBuong);
-        configCb(configs);
+        configCbThongTin(configs);
 
     });
-});
+    var $ekipPane = $("#tabs-thongtin-7");
+    $ekipPane.off('click', '.btn-edit').on('click', '.btn-edit', handleEditEkipClick);
+    $ekipPane.off('click', '.btn-delete').on('click', '.btn-delete', handleDeleteEkipClick);
+
+    console.log("Khởi tạo Tab thông tin hoàn tất. Sự kiện đã được gán.");
+}
+
+initThongTinTab();
+

@@ -1,22 +1,93 @@
 ﻿@{
     ViewData["Title"] = "Ekip thực hiện";
 }
-
 <style>
+    .compact-form .form-control,
+    .compact-form .form-select {
+        padding-top: 0.35rem;
+        padding-bottom: 0.35rem;
+        font-size: 0.75rem;
+    }
 
+    .compact-form .mb-3 {
+        margin-bottom: 0.75rem !important;
+    }
+
+    .compact-form .btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .compact-form .table-responsive table {
+        font-size: 0.875rem;
+    }
+
+    .compact-form .table-responsive th,
+    .compact-form .table-responsive td {
+        padding: 0.5rem;
+    }
+
+    .table-responsive {
+        min-height: 300px;
+    }
 </style>
-<div class="row me-0">
-    <div class="col-12 col-lg-2 mb-2 pe-1">
-        trái
+
+<div class="container mt-1 compact-form card p-2">
+    <div class="row mb-1">
+        <div class="col-md-4 mb-3 ">
+            <select class="tom-select cbNhanVien form-select" id="cb_NhanVien"></select>
+        </div>
+        <div class="col-md-4 mb-3 ">
+            <select class="tom-select cbVaiTro form-select" id="cb_VaiTro"></select>
+        </div>
+        <div class="col-md-4 mb-3 ">
+            <div class="row">
+                <span class="col-md-10">
+                    <input type="text" class="form-control" id="text_ghiChu" style="padding: 7px;">
+                </span>
+                <span class="col-md-2">
+                    <button type="button" class="btn btn-primary" id="btn_ghiChu" style="padding-left: 17px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-plus">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M12 5l0 14"></path>
+                            <path d="M5 12l14 0"></path>
+                        </svg>
+                    </button>
+                </span>
+            </div>
+        </div>
+
     </div>
-    <div class="col-12 col-lg-10 ps-1 pe-0">
-        phải
+
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table table-bordered table-vcenter text-nowrap table-text">
+                <thead class="table-light">
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên nhân viên</th>
+                        <th>Vai trò</th>
+                        <th>Ghi chú</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center">1</td>
+                        <td class="text-center">KH255</td>
+                        <td>AAA</td>
+                        <td>AAA</td>
+                        <td>AAA</td>
+                       
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+<script src="~/dist/js/J0302/J0302TTPT/J0302EkipThucHien.js" asp-append-version="true" defer></script>
 
-@section Scripts {
 
-}
 
 
 
