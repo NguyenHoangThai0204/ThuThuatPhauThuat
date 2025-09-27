@@ -1,72 +1,78 @@
 ﻿@{
     var tabIndex = ViewBag.TabIndex ?? 0;
 }
-<div class="row mt-1">
-    <div class="col-3">
-        <div class=" d-flex align-items-center">
-            <label class="form-label fw-bold me-2" style="min-width: 100px;">Số phiếu:</label>
-            <select type="text" class="form-select form-select-md tomselected thuThuat__soPhieu-tom-select-@tabIndex" value="25761707"></select>
-        </div>
-       
-    </div>
-    <div class="col-1">
-        <div class=" d-flex align-items-center ">
-            <label class="form-label fw-bold me-2" style="min-width: 60px;">Nhóm máu:</label>
-            <label type="text" class="form-label thuThuat__nhomMau-@tabIndex" name="nhomMau">B</label>
-        </div>
-       
-    </div>
-    <div class="col-4">
-        <div class="d-flex align-items-center">
-            <label class="form-label fw-bold me-2" style="min-width: 140px;">Bắt đầu thủ thuật:</label>
-            <div class="input-icon w-100">
-                <input type="text" class="form-control form-control-md txtDateTimeBatDauThuThuat-@tabIndex"
-                                   value="19/08/2025 09:39" autocomplete="off">
-                <span class="input-icon-addon">
-                    <i class="ti ti-calendar-event"></i>
-                </span>
+<div class="p-2 bg-azure-lt rounded-2">
+    <div class="row mt-1">
+
+        <div class="col-12 col-md-3">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 100px;">Số phiếu:</label>
+                <select type="text" class="form-select form-select-md tomselected thuThuat__soPhieu-tom-select-@tabIndex" value="25761707"></select>
             </div>
         </div>
-        
-    </div>
-    <div class="col-4">
-        <div class=" d-flex align-items-center">
-            <label class="form-label fw-bold me-2" style="min-width: 140px;">Thời gian khóa:</label>
-            <input type="text" class="form-control form-control-md" readonly>
+
+        <div class="col-4 col-md-1">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 60px;">Nhóm máu:</label>
+                <label type="text" class="form-label thuThuat__nhomMau-@tabIndex text-dark" name="nhomMau">B</label>
+            </div>
         </div>
-        
-    </div>
-</div>
-<div class="row mt-1">
-    <div class="col-3">
-        <div class=" d-flex align-items-center">
-            <label class="form-label fw-bold me-2" style="min-width: 100px;">Nguồn bệnh:</label>
-            <select type="text" class="form-select form-select-md tomselected thuThuat__nguonBenh-tom-select-@tabIndex" name="nguonBenh" value="Trong Bệnh viện"></select>
+
+        <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 140px;">Bắt đầu thủ thuật:</label>
+                <div class="input-icon w-100">
+                    <input type="text" class="form-control form-control-md txtDateTimeBatDauThuThuat-@tabIndex text-dark"
+                           value="19/08/2025 09:39" autocomplete="off">
+                    <span class="input-icon-addon">
+                        <i class="ti ti-calendar-event"></i>
+                    </span>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-1">
-        <div class=" d-flex align-items-center ">
-            <label class="form-label fw-bold me-2" style="min-width: 70px;">Yếu tố Rh:</label>
-            <span type="text" class="form-label thuThuat__yeuToRh-@tabIndex" name="yeuToRh" value="Dương tính">A</span>
-        </div>
-    </div>
-    <div class="col-4">
-        
-        <div class=" d-flex align-items-center">
-            <label class="form-label fw-bold me-2" style="min-width: 140px;">Kết thúc thủ thuật:</label>
-            <div class="input-icon w-100">
-                <input type="text" class="form-control form-control-md txtDateTimeKetThucThuThuat-@tabIndex"
-                       value="19/08/2025 10:39" autocomplete="off">
-                <span class="input-icon-addon">
-                    <i class="ti ti-calendar-event"></i>
-                </span>
+
+        <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 140px;">Thời gian khóa:</label>
+                <input type="text" class="form-control form-control-md text-dark" readonly>
             </div>
         </div>
     </div>
-    <div class="col-4">
-        <div class=" d-flex align-items-center">
-            <label class="form-label fw-bold me-2" style="min-width: 140px;">Người khóa:</label>
-            <input type="text" class="form-control form-control-md" readonly>
+
+    <div class="row mt-1">
+
+        <div class="col-12 col-md-3">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 100px;">Nguồn bệnh:</label>
+                <select type="text" class="form-select form-select-md tomselected thuThuat__nguonBenh-tom-select-@tabIndex text-dark" name="nguonBenh" value="Trong Bệnh viện"></select>
+            </div>
+        </div>
+
+        <div class="col-4 col-md-1">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 72px;">Yếu tố Rh:</label>
+                <span type="text" class="form-label thuThuat__yeuToRh-@tabIndex text-dark" name="yeuToRh" value="Dương tính">A</span>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 140px;">Kết thúc thủ thuật:</label>
+                <div class="input-icon w-100">
+                    <input type="text" class="form-control form-control-md txtDateTimeKetThucThuThuat-@tabIndex text-dark"
+                           value="19/08/2025 10:39" autocomplete="off">
+                    <span class="input-icon-addon">
+                        <i class="ti ti-calendar-event"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 140px;">Người khóa:</label>
+                <input type="text" class="form-control form-control-md text-dark" readonly>
+            </div>
         </div>
     </div>
 </div>

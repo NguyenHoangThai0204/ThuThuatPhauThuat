@@ -1,6 +1,6 @@
 ﻿/* Giới hạn chiều cao bảng, bật scroll dọc và ngang */
 .table_danhsach-responsive {
-    max-height: 400px; /* chỉnh tùy ý, ví dụ 400px */
+    height: 450px; /* chỉnh tùy ý */
     overflow-y: auto;
     overflow-x: auto;
 }
@@ -16,59 +16,59 @@
 }
 
 /* ===== CỐ ĐỊNH CỘT 1 (STT) ===== */
-table_danhsach thead th:nth-child(1) {
+.table_danhsach thead th:nth-child(1) {
     position: sticky;
     left: 0;
     z-index: 20;
+    background-color: #e8e9eb !important;
     background-color: #f2f2f2;
     border-right: 1px solid #ccc !important;
-    width: 65px; /* đồng bộ */
+    width: 65px;
     min-width: 65px;
     max-width: 65px;
     text-align: center;
 }
 
-/* ===== CỐ ĐỊNH CỘT 2 ===== */
-table_danhsach thead th:nth-child(2) {
+.table_danhsach tbody td:nth-child(1) {
     position: sticky;
-    left: 65px; /* = width cột 1 */
+    left: 0;
+    z-index: 1;
+    background-color: #fff;
+    border-right: 1px solid #ccc !important;
+    width: 65px;
+    min-width: 65px;
+    max-width: 65px;
+    text-align: center;
+}
+
+/* ===== CỐ ĐỊNH CỘT 2 (Mã BN) ===== */
+.table_danhsach thead th:nth-child(2) {
+    position: sticky;
+    background-color: #e8e9eb !important;
+    left: 65px;
     z-index: 20;
     background-color: #f2f2f2;
     border-right: 1px solid #ccc !important;
-    width: 100px;
     min-width: 100px;
     max-width: 300px;
 }
 
-/* ===== CỐ ĐỊNH CỘT 1 (STT) ===== */
-table_danhsach tbody td:nth-child(1) {
+.table_danhsach tbody td:nth-child(2) {
     position: sticky;
-    left: 0;
-    z-index: 18;
-    background-color: #fff;
-    border-right: 1px solid #ccc !important;
-    width: 65px; /* đồng bộ */
-    min-width: 65px;
-    max-width: 65px;
-    text-align: center;
-}
-
-/* ===== CỐ ĐỊNH CỘT 2 ===== */
-table_danhsach tbody td:nth-child(2) {
-    position: sticky;
-    left: 65px; /* = width cột 1 */
-    z-index: 18;
+    left: 65px;
+    z-index: 1;
     background-color: #fff;
     border-right: 1px solid #ccc !important;
     min-width: 100px;
     max-width: 350px;
     width: 350px;
     white-space: normal !important; /* cho phép xuống dòng */
-    word-break: break-word; /* xuống dòng khi từ quá dài */
+    word-break: break-word;
 }
-/*.datepicker {
+
+.datepicker {
     font-size: 0.9rem;
-    transform: scale(1.2);
+    transform: scale(1.3);
     transform-origin: top left;
     position: absolute;
     top: 0;
@@ -79,4 +79,62 @@ table_danhsach tbody td:nth-child(2) {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-*/
+#txtDateTime.form-control {
+    color: #000 !important; /* chữ màu đen */
+}
+
+/* Phân trang */
+.pagination {
+    margin: 0;
+}
+
+.page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.page-link {
+    color: #0d6efd;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+}
+
+.page-link:hover {
+    color: #0a58ca;
+}
+
+#pageInfo {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Dropdown chọn số bản ghi */
+#pageSizeSelect {
+    width: auto;
+    display: inline-block;
+    margin-left: 10px;
+}
+/* Giữ phân trang cố định ở dưới */
+.phan_trang {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding-right: 30px;
+    flex-wrap: nowrap;
+    margin: 5px auto !important;
+    font-size: 14px;
+    gap: 10px;
+    min-height: 50px; /* Chiều cao tối thiểu để không bị nhảy */
+}
+
+    .phan_trang label {
+        margin-bottom: 0;
+    }
+
+.page-link:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+

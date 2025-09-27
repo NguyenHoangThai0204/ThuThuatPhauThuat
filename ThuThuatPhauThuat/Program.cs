@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using ThuThuatPhauThuat.Service.S0302;
+using ThuThuatPhauThuat.Service.S0302.IS0302;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,10 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddScoped<IS0302ThuThuatPhauThuatInterface, S0302ThuThuatPhauThuatService>();
+
+
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

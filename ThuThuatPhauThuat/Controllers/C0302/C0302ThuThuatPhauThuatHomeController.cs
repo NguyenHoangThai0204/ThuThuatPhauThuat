@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ThuThuatPhauThuat.Service.S0302.IS0302;
 
 namespace ThuThuatPhauThuat.Controllers.C0302
 {
@@ -8,12 +9,11 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         //private string _maChucNang = "/thu_thuat_phau_thuat";
         //private IMemoryCachingServices _memoryCache;
 
-        //private readonly IS0302XoaGoiChiDinhInterface _service;
-        //private readonly Context0302 _dbService;
+        private readonly IS0302ThuThuatPhauThuatInterface _service;
 
-        public C0302ThuThuatPhauThuatHomeController(/*IS0302XoaGoiChiDinhInterface service , IMemoryCachingServices memoryCache*/)
+        public C0302ThuThuatPhauThuatHomeController(IS0302ThuThuatPhauThuatInterface service /*, IMemoryCachingServices memoryCache*/)
         {
-            //_service = service;
+            _service = service;
             //_memoryCache = memoryCache;
         }
 
@@ -40,6 +40,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             return View("~/Views/V0302/V0302ThuThuatPhauThuat/Index.cshtml");
         }
+
         [HttpGet("thong_tin_so_phieu")]
         public IActionResult ThongTinSoPhieu(int tabIndex)
         {
@@ -69,7 +70,39 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302DanhSachThuThuatPhauThuat.cshtml");
         }
+        //[HttpPost("loc_danh_sach")]
+        //public async Task<IActionResult> LocDanhSach(long IdChiNhanh, string Ngay, long IdPhongBuong, int TrangThai)
+        //{
+        //    var (success, message, data) = await _service.LocDanhSachAsync(IdChiNhanh, Ngay, IdPhongBuong, TrangThai);
+        //    if (!success)
+        //        return Json(new { Success = false, Message = message, Data = new List<object>() });
 
+        //    // Trả về đúng cấu trúc object
+        //    return Json(new { Success = true, Message = message, Data = data });
+        //}
+        [HttpPost("loc_danh_sach")]
+        public async Task<IActionResult> LocDanhSach(
+            long IdChiNhanh,
+            string Ngay,
+            long IdPhongBuong,
+            int TrangThai,
+            // Thêm các tham số tìm kiếm nâng cao (có thể null)
+            string MaVaoVien = null,
+            string MaBenhNhan = null,
+            string TenBenhNhan = null,
+            string CCCD = null,
+            string MaThe = null,
+            string SoDienThoai = null)
+        {
+            var (success, message, data) = await _service.LocDanhSachAsync(
+                IdChiNhanh, Ngay, IdPhongBuong, TrangThai,
+                MaVaoVien, MaBenhNhan, TenBenhNhan, CCCD, MaThe, SoDienThoai);
+
+            if (!success)
+                return Json(new { Success = false, Message = message, Data = new List<object>() });
+
+            return Json(new { Success = true, Message = message, Data = data });
+        }
         [HttpGet("thong_tin")]
         public async Task<IActionResult> ThongTin()
         {
