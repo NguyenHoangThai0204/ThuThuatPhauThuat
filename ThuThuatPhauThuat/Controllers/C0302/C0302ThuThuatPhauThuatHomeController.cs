@@ -103,8 +103,10 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             return Json(new { Success = true, Message = message, Data = data });
         }
+      
+
         [HttpGet("thong_tin")]
-        public async Task<IActionResult> ThongTin()
+        public IActionResult ThongTin(long? idVaoVien, int tabIndex = 0)
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
@@ -114,6 +116,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -123,11 +127,14 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 CaNhan = true,
                 Xem = true,
             };
+
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302ThongTinThuThuatPhauThuat.cshtml");
         }
+
         [HttpGet("trinh_tu")]
-        public async Task<IActionResult> TrinhTuVaKetLuan()
+        public async Task<IActionResult> TrinhTuVaKetLuan(long? idVaoVien, int tabIndex = 0)
         {
+
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
             //{
@@ -136,6 +143,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -149,7 +158,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         }
 
         [HttpGet("ekip")]
-        public async Task<IActionResult> EkipThucHien()
+        public async Task<IActionResult> EkipThucHien(long? idVaoVien, int tabIndex = 0)
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
@@ -159,6 +168,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -171,7 +182,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302EkipThucHienTTPT.cshtml");
         }
         [HttpGet("ghi_nhan_thuoc_vat_tu")]
-        public async Task<IActionResult> GhiNhanThuocVatTu()
+        public async Task<IActionResult> GhiNhanThuocVatTu(long? idVaoVien, int tabIndex = 0)
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
@@ -181,6 +192,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -192,6 +205,101 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302GhiNhanVatTuTTPT.cshtml");
         }
+
+
+
+        //[HttpGet("thong_tin")]
+        //public async Task<IActionResult> ThongTin()
+        //{
+        //    //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
+        //    //if (quyenVaiTro == null)
+        //    //{
+        //    //    return RedirectToAction("NotFound", "Home");
+        //    //}
+        //    //ViewBag.quyenVaiTro = quyenVaiTro;
+        //    //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
+
+        //    ViewBag.quyenVaiTro = new
+        //    {
+        //        Them = true,
+        //        Sua = true,
+        //        Xoa = true,
+        //        Xuat = true,
+        //        CaNhan = true,
+        //        Xem = true,
+        //    }; 
+        //    //ViewBag.IdVaoVien = idVaoVien;
+        //    return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302ThongTinThuThuatPhauThuat.cshtml");
+        //}
+
+        //[HttpGet("trinh_tu")]
+        //public async Task<IActionResult> TrinhTuVaKetLuan()
+        //{
+        //    //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
+        //    //if (quyenVaiTro == null)
+        //    //{
+        //    //    return RedirectToAction("NotFound", "Home");
+        //    //}
+        //    //ViewBag.quyenVaiTro = quyenVaiTro;
+        //    //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
+
+        //    ViewBag.quyenVaiTro = new
+        //    {
+        //        Them = true,
+        //        Sua = true,
+        //        Xoa = true,
+        //        Xuat = true,
+        //        CaNhan = true,
+        //        Xem = true,
+        //    };
+        //    return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302TrinhTuVaKeLuanTTPT.cshtml");
+        //}
+
+        //[HttpGet("ekip")]
+        //public async Task<IActionResult> EkipThucHien()
+        //{
+        //    //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
+        //    //if (quyenVaiTro == null)
+        //    //{
+        //    //    return RedirectToAction("NotFound", "Home");
+        //    //}
+        //    //ViewBag.quyenVaiTro = quyenVaiTro;
+        //    //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
+
+        //    ViewBag.quyenVaiTro = new
+        //    {
+        //        Them = true,
+        //        Sua = true,
+        //        Xoa = true,
+        //        Xuat = true,
+        //        CaNhan = true,
+        //        Xem = true,
+        //    };
+        //    return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302EkipThucHienTTPT.cshtml");
+        //}
+
+        //[HttpGet("ghi_nhan_thuoc_vat_tu")]
+        //public async Task<IActionResult> GhiNhanThuocVatTu()
+        //{
+        //    //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
+        //    //if (quyenVaiTro == null)
+        //    //{
+        //    //    return RedirectToAction("NotFound", "Home");
+        //    //}
+        //    //ViewBag.quyenVaiTro = quyenVaiTro;
+        //    //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
+
+        //    ViewBag.quyenVaiTro = new
+        //    {
+        //        Them = true,
+        //        Sua = true,
+        //        Xoa = true,
+        //        Xuat = true,
+        //        CaNhan = true,
+        //        Xem = true,
+        //    };
+        //    return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302GhiNhanVatTuTTPT.cshtml");
+        //}
 
     }
 }

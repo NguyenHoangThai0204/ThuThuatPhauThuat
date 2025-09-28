@@ -1,4 +1,11 @@
-﻿function formatDateTime(date) {
+﻿(function () {
+    const idVaoVien = document.getElementById("hiddenIdVaoVien")?.value;
+    const tabIndex = document.getElementById("hiddenTabIndex")?.value;
+
+    console.log("DEBUG IdVaoVien:", idVaoVien, " TabIndex:", tabIndex);
+})();
+
+function formatDateTime(date) {
     const dd = String(date.getDate()).padStart(2, '0');
     const MM = String(date.getMonth() + 1).padStart(2, '0');
     const yyyy = date.getFullYear();
@@ -153,4 +160,5 @@ function initThongTinTab() {
 }
 
 initThongTinTab();
+
 
