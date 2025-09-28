@@ -13,7 +13,7 @@ $(document).ready(function () {
 
     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         var target = $(e.target).attr("href");
-        console.log("test" + selectedIdVaoVien)
+
         var tabNumber = 0;
         if (target === "#tabs-thongtin-7") tabNumber = 2;
         else if (target === "#tabs-trinhtu-7") tabNumber = 3;
@@ -23,7 +23,8 @@ $(document).ready(function () {
         if (target === "#tabs-danhsach-7" && $(target).is(':empty')) {
             $(target).load("/thu_thuat_phau_thuat/danh_sach");
         }
-        else if (tabNumber > 0 && $(target).is(':empty')) {
+        else if (tabNumber > 0 ) {
+        //else if (tabNumber > 0 && $(target).is(':empty')) {
             var urlMap = {
                 2: "/thu_thuat_phau_thuat/thong_tin",
                 3: "/thu_thuat_phau_thuat/trinh_tu",
@@ -36,6 +37,7 @@ $(document).ready(function () {
             //        khoiTaoJSChoTab(tabNumber);
             //    });
             //});
+            console.log(selectedIdVaoVien)
             $(target).load(urlMap[tabNumber] + "?idVaoVien=" + selectedIdVaoVien, function () {
                 $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu?tabIndex=" + tabNumber, function (html) {
                     $(target).prepend(html);
