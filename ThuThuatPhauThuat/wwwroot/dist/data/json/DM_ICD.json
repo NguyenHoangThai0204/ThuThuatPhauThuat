@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "MaBenh": "T02.1",
+    "TenBenh": "Gãy xương tác động ngực, dưới lưng và khung chậu",
+    "viettat": "T02.1",
+    "active": 1
+  },
+  {
+    "id": 2,
+    "MaBenh": "T02.2",
+    "TenBenh": "Gãy xương tác động nhiều vùng của một chi trên",
+    "viettat": "T02.2",
+    "active": 1
+  },
+  {
+    "id": 3,
+    "MaBenh": "T02.3",
+    "TenBenh": "Gãy xương tác động nhiều vùng của một chi dưới",
+    "viettat": "T02.3",
+    "active": 1
+  },
+  {
+    "id": 4,
+    "MaBenh": "T02.4",
+    "TenBenh": "Gãy xương tác động nhiều vùng của cả hai chi trên",
+    "viettat": "T02.4",
+    "active": 1
+  },
+  {
+    "id": 5,
+    "MaBenh": "T02.5",
+    "TenBenh": "Gãy xương tác động nhiều vùng của cả hai chi dưới",
+    "viettat": "T02.5",
+    "active": 1
+  },
+  {
+    "id": 6,
+    "MaBenh": "T02.6",
+    "TenBenh": "Gãy xương tác động nhiều vùng của chi trên và chi dưới",
+    "viettat": "T02.6",
+    "active": 1
+  },
+  {
+    "id": 7,
+    "MaBenh": "T02.7",
+    "TenBenh": "Gãy xương tác động ngực với lưng dưới và khung chậu với chi",
+    "viettat": "T02.7",
+    "active": 1
+  },
+  {
+    "id": 8,
+    "MaBenh": "T02.8",
+    "TenBenh": "Gãy xương tác động kết hợp khác của nhiều vùng cơ thể",
+    "viettat": "T02.8",
+    "active": 1
+  },
+  {
+    "id": 9,
+    "MaBenh": "T02.9",
+    "TenBenh": "Gãy xương nhiều vị trí, chưa xác định",
+    "viettat": "T02.9",
+    "active": 1
+  },
+  {
+    "id": 10,
+    "MaBenh": "T03",
+    "TenBenh": "Sai khớp, bong gân, căng cơ tác động của nhiều vùng cơ thể",
+    "viettat": "T03",
+    "active": 1
+  },
+  {
+    "id": 11,
+    "MaBenh": "T03.0",
+    "TenBenh": "Sai khớp, bong gân, căng cơ tác động của nhiều vùng cơ thể",
+    "viettat": "T03.0",
+    "active": 1
+  },
+  {
+    "id": 12,
+    "MaBenh": "T03.1",
+    "TenBenh": "Sai khớp, bong gân, căng cơ tác động của ngực với lưng dưới và khung chậu",
+    "viettat": "T03.1",
+    "active": 1
+  },
+  {
+    "id": 13,
+    "MaBenh": "T03.2",
+    "TenBenh": "Sai khớp, bong gân, căng cơ tác động nhiều vùng chi trên",
+    "viettat": "T03.2",
+    "active": 1
+  },
+  {
+    "id": 14,
+    "MaBenh": "T03.3",
+    "TenBenh": "Sai khớp, bong gân, căng cơ tác động nhiều của vùng chi dưới",
+    "viettat": "T03.3",
+    "active": 1
+  },
+  {
+    "id": 15,
+    "MaBenh": "T03.4",
+    "TenBenh": "Sai khớp, bong gân, căng cơ tác động của nhiều vùng của chi trên và chi dưới",
+    "viettat": "T03.4",
+    "active": 1
+  }
+]

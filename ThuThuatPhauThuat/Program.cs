@@ -1,13 +1,24 @@
-﻿using C0302_HoangThai.Models.M0302;
+﻿
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Service.S0302;
 using ThuThuatPhauThuat.Service.S0302.IS0302;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        // Đây là cách phổ biến để xử lý tham chiếu vòng
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 
+        // Đảm bảo tên thuộc tính được viết bằng camelCase (tiêu chuẩn JS)
+        options.JsonSerializerOptions.PropertyNamingPolicy =
+            System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 // Add services to the container.
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
@@ -28,7 +39,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+builder.Services.AddScoped<IS0303TemplateTTPT, S0303TemplateTTPT>();
 builder.Services.AddScoped<IS0302ThuThuatPhauThuatInterface, S0302ThuThuatPhauThuatService>();
 
 

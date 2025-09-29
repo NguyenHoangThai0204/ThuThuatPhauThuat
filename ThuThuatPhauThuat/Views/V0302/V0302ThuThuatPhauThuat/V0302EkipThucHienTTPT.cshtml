@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Ekip thực hiện";
 }
 <style>
@@ -42,11 +43,11 @@
         </div>
         <div class="col-md-4 mb-3 ">
             <div class="row">
-                <span class="col-md-10">
-                    <input type="text" class="form-control" id="text_ghiChu" style="padding: 7px;">
+                <span class="col-10">
+                    <input type="text" class="form-control" id="text_ghiChu" style="padding: 7px;" placeholder="Nhập ghi chú ...." autocomplete="off">
                 </span>
-                <span class="col-md-2">
-                    <button type="button" class="btn btn-primary" id="btn_ghiChu" style="padding-left: 17px;">
+                <span class="col-2 d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary" id="btn_addEkip" title="Thêm thành viên">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-plus">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                             <path d="M12 5l0 14"></path>
@@ -56,7 +57,19 @@
                 </span>
             </div>
         </div>
-
+        <div class="row mt-2">
+            <div class="col-12 text-end">
+                <button type="button" class="btn btn-success" id="btn_saveEkip" title="Lưu danh sách ekip">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 0 2 -2"></path>
+                        <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                        <path d="M14 4l0 4l-4 0"></path>
+                    </svg>
+                    Lưu Dữ Liệu
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="row">
@@ -64,31 +77,20 @@
             <table class="table table-bordered table-vcenter text-nowrap table-text">
                 <thead class="table-light">
                     <tr>
-                        <th>STT</th>
-                        <th>Tên nhân viên</th>
-                        <th>Vai trò</th>
-                        <th>Ghi chú</th>
-                        <th>Xóa</th>
+                        <th class="text-center" style="width: 5%;">STT</th>
+                        <th style="width: 25%;">Tên nhân viên</th>
+                        <th style="width: 25%;">Vai trò</th>
+                        <th style="width: 35%;">Ghi chú</th>
+                        <th class="text-center" style="width: 10%;">#</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td class="text-center">1</td>
-                        <td class="text-center">KH255</td>
-                        <td>AAA</td>
-                        <td>AAA</td>
-                        <td>AAA</td>
-                       
-                    </tr>
+                <!-- Đã thêm ID cho tbody để JS dễ dàng cập nhật -->
+                <tbody id="ekipTableBody">
+                    <!-- Dữ liệu sẽ được chèn vào đây bởi JavaScript -->
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+<!-- Đã đổi ID nút thêm từ btn_ghiChu thành btn_addEkip để rõ ràng hơn -->
 <script src="~/dist/js/J0302/J0302TTPT/J0302EkipThucHien.js" asp-append-version="true" defer></script>
-
-
-
-
-
-

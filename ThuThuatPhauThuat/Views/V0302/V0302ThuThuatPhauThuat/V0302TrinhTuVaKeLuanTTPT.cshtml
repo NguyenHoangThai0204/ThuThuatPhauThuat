@@ -24,13 +24,21 @@
         <div class="editor-header d-flex align-items-center justify-content-between" style="font-size: 1.05rem;">
             <span>Mẫu tường trình</span>
             <div class="d-flex align-items-center" style="gap: 5px; flex: 1; justify-content: flex-end;">
-                <select class="form-select w-75" style="min-width: 350px;" id="templateSelect">
+                <select class="form-select w-75 cbTemplateTTPT" style="min-width: 350px;" id="templateSelect">
                     <option value="">-- Chọn mẫu --</option>
-                    <option value="Mẫu 1">Mẫu 1 - Siêu âm bình thường</option>
-                    <option value="Mẫu 2">Mẫu 2 - Có bất thường nhỏ</option>
-                    <option value="Mẫu 3">Mẫu 3 - Nghi ngờ khối u</option>
                 </select>
-                <button class="btn btn-primary" onclick="applyTemplate()">Áp dụng</button>
+                <div class="input-group-ellipsis">
+                    <button class="btn btn-primary" onclick="applyTemplate()">Áp dụng</button>
+                    <button type="button" class="ellipsis-btn goi-remove" data-bs-toggle="modal"
+                            data-bs-target="#myModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                        </svg>
+                    </button>
+                </div>
+
             </div>
         </div>
 
@@ -101,7 +109,100 @@
         </div>
 
         <div class="editor-footer">
-            <textarea class="editor-note" placeholder="Kết luận / Tóm tắt"></textarea>
+            <textarea class="editor-summary" placeholder="Kết luận / Tóm tắt"></textarea>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl custom-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Các mẫu tường trình phẫu thuật</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+
+            <div class="modal-body custom-modal-body">
+                <div class="row mb-3 container">
+                    <div class="col-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <input class="tom-select cbTemplateKhoa khoa-width" type="text" name="khoa" style="width: 75%;" />
+                        </div>
+
+                        <div class="d-flex search-container" style="width: 75%;">
+                            <input type="text" class="form-control form-control-sm me-2" placeholder="Tìm kiếm…" autocomplete="off">
+                            <a href="#" class="btn btn-2 btn-icon p-1 flex-shrink-0" aria-label="Button" style="width: 40px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-2 mb-0">
+                                    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                                    <path d="M21 21l-6 -6"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-8 d-flex justify-content-center align-items-center">
+                        <div id="chiTietTitleContainer" style="width: 100%;">
+                            <input type="text"
+                                   id="chiTietTitleInput"
+                                   class="form-control form-control-sm text-center fw-bold"
+                                   placeholder="Chọn hoặc nhập tên mẫu tường trình..."
+                                   autocomplete="off"
+                                   value="Thông tin phẫu thuật" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row custom-content-area">
+                    <div class="col-4 border-end position-relative">
+                        <div id="loadingSpinner" class="d-none position-absolute top-50 start-50 translate-middle">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Đang tải...</span>
+                            </div>
+                        </div>
+
+                        <div class="table-scroll-container custom-table-scroll">
+                            <table class="table table-sm table-bordered align-middle table-fixed-layout full-width-table table-gói">
+                                <colgroup>
+                                    <col class="table-col-50">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Danh sách phẫu thuật</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="goiVuTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-8 d-flex flex-column">
+                        <div class="table-scroll-container custom-table-scroll flex-grow-1">
+                            <table class="table table-striped table-bordered table-hover table-fixed-layout full-width-table">
+                                <colgroup>
+                                    <col class="table-col-70">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Nội dung</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dichVuTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-between">
+                <div>
+                    <button type="button" class="btn btn-secondary d-none" id="btnCancel">Hủy</button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-success" id="btnSave">Thêm mới</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -216,7 +317,7 @@
         background: #fff;
     }
 
-    .editor-note {
+    .editor-summary {
         width: 100%;
         height: 40px;
         resize: none;
@@ -226,33 +327,237 @@
         color: #666;
         background: transparent;
     }
+
+    .input-group-ellipsis {
+        position: relative;
+    }
+
+    .ellipsis-btn {
+        position: absolute;
+        right: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 10;
+        padding: 2px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+    }
+
+        .ellipsis-btn:hover {
+            background-color: #ccc;
+        }
+
+        .ellipsis-btn svg {
+            width: 16px;
+            height: 16px;
+            color: #6c757d;
+        }
+    /* MODAL */
+    .custom-modal-body {
+        min-height: 400px;
+       
+        padding-bottom: 0.5rem !important;
+    }
+
+    /* Tính toán chiều cao còn lại cho khu vực 2 bảng */
+    .custom-content-area {
+        height: calc(100% - 40px); /* 40px là ước lượng cho tiêu đề tên mẫu + margin */
+        min-height: 350px; /* Chiều cao tối thiểu cho nội dung */
+    }
+
+    /* Đảm bảo khu vực scroll chiếm toàn bộ chiều cao còn lại trong custom-content-area */
+    .custom-table-scroll {
+        height: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    /* Đảm bảo textarea trong bảng nội dung có đủ không gian */
+    .textarea-fixed-height {
+        resize: none; /* Cấm thay đổi kích thước thủ công */
+        /* Chiều cao tùy ý, ví dụ 150px, hoặc có thể để mặc định */
+        min-height: 150px;
+        max-height: 350px;
+    }
+
+    /* Điều chỉnh style cho input tiêu đề */
+    #chiTietTitleInput:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+    }
 </style>
 
 <script>
-    function execCmd(command, value = null) {
-        document.execCommand(command, false, value);
-    }
-    function applyTemplate() {
-        const select = document.getElementById("templateSelect");
-        const content = document.getElementById("editorContent");
+    // Định nghĩa biến ID mặc định cho khoa
+    // Giả sử có một ID Khoa chung được biết trước, ví dụ: 1
+    const DEFAULT_KHOA_ID = 1;
+    let templateTomSelectInstance;
+    let allTemplatesData = [];
 
-        switch (select.value) {
-            case "Mẫu 1":
-                content.innerHTML = "Kiểm tra bằng siêu âm trước mổ vùng cổ phải bình thường...";
-                break;
-            case "Mẫu 2":
-                content.innerHTML = "Siêu âm vùng cổ cho thấy một số bất thường nhỏ, cần theo dõi thêm...";
-                break;
-            case "Mẫu 3":
-                content.innerHTML = "Phát hiện khối bất thường vùng cổ, nghi ngờ khối u, cần xét nghiệm bổ sung...";
-                break;
-            default:
-                content.innerHTML = "";
-                break;
+    function normalizeData(data, tenField = 'Ten', viettatField = 'alias') {
+        if (!Array.isArray(data)) {
+            console.warn("normalizeData nhận dữ liệu không phải mảng:", data);
+            return [];
+        }
+
+        // Trong trường hợp model M0303TemplateTTPT không có trường 'active', ta bỏ qua bước filter này.
+        return data
+            .map(n => {
+                const ten = n[tenField]?.trim() || "";
+                const viettat = n[viettatField]?.trim() || ""; // Trường này có thể không có trong model, nên ta dùng logic tạo alias
+
+                let generatedAlias = "";
+
+                // Nếu backend không trả về viettat, ta tự tạo từ Ten
+                if (viettat !== "") {
+                    generatedAlias = viettat.toUpperCase();
+                } else {
+                    const words = ten.split(/\s+|-|\/|\(|\)|[^\w\s]/g).filter(w => w.length > 0);
+
+                    generatedAlias = words
+                        .map(w => w.charAt(0)?.toUpperCase())
+                        .join("");
+
+                    generatedAlias = generatedAlias.replace(/[^A-Z0-9]/g, '');
+                }
+
+                return {
+                    ...n,
+                    // Giả sử Ten là trường hiển thị, ID là value, NoiDung là nội dung tường trình
+                    alias: generatedAlias
+                };
+            });
+    }
+
+
+    function fetchDataAndNormalize(url, tenField = 'ten', viettatField = 'alias') {
+        return new Promise((resolve) => {
+            // Sử dụng $.ajax vì url không kết thúc bằng .json
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: function (templates) {
+                    console.log(templates);
+                    // Dùng trường Ten cho tên, không có trường viết tắt cụ thể trong M0303TemplateTTPT
+                    resolve(normalizeData(templates, tenField, viettatField));
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error(`Lỗi khi gọi API ${url}:`, textStatus, errorThrown);
+                    resolve([]); // Trả về mảng rỗng nếu có lỗi
+                }
+            });
+        });
+    }
+
+    // --- Hàm khởi tạo TomSelect và Logic chính ---
+
+    async function initTemplateTomSelect(url) {
+        console.log(`Đang tải mẫu tường trình từ: ${url}`);
+
+        // Lấy dữ liệu mẫu tường trình
+         allTemplatesData  = await fetchDataAndNormalize(url, 'ten', 'ten'); // 'Ten' là trường label, alias sẽ được tạo từ 'Ten'
+        const templateSelectEl = document.querySelector('.cbTemplateTTPT');
+        if (!templateSelectEl) {
+            console.error("Không tìm thấy phần tử select .cbTemplateTTPT");
+            return;
+        }
+
+        // Khởi tạo TomSelect
+            templateTomSelectInstance = new window.TomSelect('.cbTemplateTTPT', {
+            options: allTemplatesData,
+            valueField: "id", // Dùng ID làm value
+            labelField: "ten", // Dùng Ten làm label
+            searchField: ["ten", "alias"], // Tìm kiếm theo Ten và alias
+            placeholder: "-- Chọn mẫu --",
+            maxItems: 1,
+            // Thêm các trường dữ liệu khác vào option để truy cập sau này
+            preload: true,
+            //onInitialize: function() {
+                // Lưu trữ dữ liệu vào instance để dễ dàng tìm kiếm sau này
+                //this.allTemplatesData = allTemplatesData;
+            //},
+            render: {
+                option: (data, escape) => `
+                    <div style="display:flex; justify-content:space-between; width:100%;">
+                        <span>${escape(data.ten)}</span>
+                        <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.alias || "")}</span>
+                    </div>`,
+                item: (data, escape) => `
+                    <div style="display:flex; justify-content:space-between; width:100%;">
+                        <span>${escape(data.ten)}</span>
+                        <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.alias || "")}</span>
+                    </div>`,
+                no_results: (data, escape) => `
+                    <div class="no-results" style="padding:6px 10px;color:#999;">
+                        Không tìm thấy "${escape(data.input)}"
+                    </div>`
+            }
+        });
+
+        // Xử lý sự kiện khi chọn một mẫu
+        // tomSelectInstance.on('change', function(value) {
+        //     if (value) {
+        //         const selectedTemplate = this.allTemplates.find(t => t.id.toString() === value.toString());
+
+        //         if (selectedTemplate && selectedTemplate.noiDung) {
+        //             const editorContent = document.getElementById('editorContent');
+        //             if (editorContent) {
+        //                 editorContent.innerHTML = selectedTemplate.noiDung;
+        //                 console.log(`Đã áp dụng mẫu: ${selectedTemplate.ten}`);
+        //             }
+        //         }
+        //     } else {
+        //         const editorContent = document.getElementById('editorContent');
+        //         if (editorContent) {
+        //             editorContent.innerHTML = '';
+        //         }
+        //     }
+        // });
+
+        // window.templateTomSelect = tomSelectInstance;
+
+        console.log("Khởi tạo TomSelect cho Mẫu tường trình hoàn tất.");
+    }
+
+    initTemplateTomSelect(`/template_tuong_trinh/LayDanhSachTheoIDKhoa/${DEFAULT_KHOA_ID}`);
+
+
+    function applyTemplate() {
+        if (!templateTomSelectInstance) {
+            console.error("TomSelect chưa được khởi tạo.");
+            return;
+        }
+
+        const selectedTemplateId = templateTomSelectInstance.getValue();
+        const editorContent = document.getElementById('editorContent');
+
+        if (!selectedTemplateId) {
+            editorContent.innerHTML = '';
+            alert("Vui lòng chọn một mẫu tường trình trước khi áp dụng.");
+            return;
+        }
+
+        // 1. Tìm template object đầy đủ từ ID đã chọn
+        const selectedTemplate = allTemplatesData.find(t => t.id.toString() === selectedTemplateId.toString());
+
+        if (selectedTemplate && selectedTemplate.noiDung) {
+            // 2. Cập nhật nội dung vào editorContent
+            editorContent.innerHTML = selectedTemplate.noiDung;
+            console.log(`Đã áp dụng mẫu "${selectedTemplate.ten}" vào editor.`);
+          
+        } else {
+            console.warn(`Không tìm thấy Nội dung cho Template ID: ${selectedTemplateId}`);
+            alert("Lỗi: Không tìm thấy nội dung mẫu tường trình.");
         }
     }
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+
+    function execCmd(command, value = null) {
+        document.execCommand(command, false, value);
+        document.getElementById('editorContent').focus();
+    }
 </script>
+<script src="~/dist/js/J0302/J0302TTPT/J0303TemplateTuongTrinh.js" asp-append-version="true" defer></script>

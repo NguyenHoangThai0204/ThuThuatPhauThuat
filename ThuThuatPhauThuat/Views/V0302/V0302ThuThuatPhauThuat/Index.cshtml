@@ -79,8 +79,13 @@ ViewData["Title"] = "Thủ thuật phẩu thuật";
 </div>
 
 
+@await Html.PartialAsync("_ThuThuatAction")
 
 @section Scripts {
+
     <script src="~/dist/lib/toastr/build/toastr.min.js"></script>
-    <script src="~/dist/js/J0302/J0302TTPT/J0302Index.js" asp-append-version="true" defer></script>
+
+    <script src="~/dist/js/J0302/J0302TTPT/J0302Index.js" asp-append-version="true"></script>
+    <script src="~/dist/js/J0305/J0305TTPT/J0305FloatingActionBtn.js"></script>
+
 }

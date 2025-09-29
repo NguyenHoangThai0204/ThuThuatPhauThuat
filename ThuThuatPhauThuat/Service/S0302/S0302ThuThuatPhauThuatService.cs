@@ -1,10 +1,7 @@
 ﻿
-using C0302_HoangThai.Models.M0302;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
-using System.Text.Json;
-using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
+using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Service.S0302.IS0302;
 
 namespace ThuThuatPhauThuat.Service.S0302

@@ -1,8 +1,4 @@
-﻿
-<style>
-    .container{
-        padding: 10px;
-    }
+﻿<style>
     .col-form-label {
         padding-top: 2px;
         padding-bottom: 2px;
@@ -35,12 +31,111 @@
     .table-responsive {
         min-height: 300px;
     }
-    hr{
-        margin: 1rem !important;
+
+    /* Updated modal styles for centering and label width */
+    .input-group-ellipsis {
+        position: relative;
     }
+
+    .ellipsis-btn {
+        position: absolute;
+        right: -5px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 10;
+        padding: 2px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+    }
+
+        .ellipsis-btn:hover {
+            background-color: #ccc;
+        }
+
+        .ellipsis-btn svg {
+            width: 16px;
+            height: 16px;
+            color: #6c757d;
+        }
+
+    .modal-dialog {
+        display: flex;
+        align-items: center;
+        min-height: calc(100vh - 1rem);
+    }
+
+    .modal-body .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .modal-body .form-label {
+        min-width: 150px;
+        display: inline-block;
+    }
+
+    /* Added styles for anesthesia table delete buttons */
+    .delete-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+        .delete-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .delete-btn svg {
+            width: 16px;
+            height: 16px;
+            color: #dc3545;
+        }
+
+    /* ICD tag styles */
+    .icd-tag {
+        background-color: #e3f2fd;
+        border: 1px solid #2196f3;
+        border-radius: 16px;
+        padding: 4px 12px;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 2px;
+    }
+
+        .icd-tag .remove-btn {
+            background: none;
+            border: none;
+            color: #1976d2;
+            cursor: pointer;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .icd-tag .remove-btn:hover {
+                background-color: #1976d2;
+                color: white;
+            }
 </style>
 
-<div class="container mt-1 compact-form card">
+<div class="container mt-1 compact-form card p-2">
     <div class="row">
         <!-- Cột 1: Chẩn đoán vào khoa -->
         <div class="col-md-3">
@@ -48,10 +143,10 @@
                 <label class="border-label fw-bold">Chẩn đoán vào khoa</label>
                 <div class="row" style="margin-bottom: 6px;">
                     <div class="col-4">
-                        <input type="text" class="form-control form-control-md  me-2" id="ma_icd_vao_khoa" placeholder="Mã ICD">
+                        <input type="text" class="form-control form-control-md  me-2 tom-select cbCDVaoKhoa" id="ma_icd_vao_khoa" placeholder="Mã ICD">
                     </div>
                     <div class="col-8">
-                        <input type="text" class="form-control form-control-md " id="hien_thi_icd_vao_khoa" readonly placeholder="">
+                        <div class="form-control form-control-md" id="hien_thi_icd_vao_khoa" style="min-height: 38px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center;"></div>
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 6px;">
@@ -76,12 +171,20 @@
                     <input class="tom-select cbPhanLoai form-select form-select-md" type="text" name="name" />
                 </div>
             </div>
+            <!-- Added ellipsis button for Thiết bị -->
             <div class="row" style="margin-bottom: 6px;">
                 <div class="col-md-4">
                     <label class="col-form-label form-label text-truncate" style="max-width: 180px">Thiết bị: </label>
                 </div>
-                <div class="col-md-8 flex-fill">
+                <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input class="tom-select cbThietBi form-select form-select-md" type="text" name="name" />
+                    <button type="button" class="ellipsis-btn" onclick="openModal('thietBiModal')">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                        </svg>
+                    </button>
                 </div>
             </div>
             <div class="row mb-3">
@@ -98,10 +201,10 @@
                 <label class="border-label fw-bold col-form-label">Chẩn đoán trước thủ thuật</label>
                 <div class="row" style="margin-bottom: 6px;">
                     <div class="col-4">
-                        <input type="text" class="form-control  form-control-md me-2" id="ma_icd_truoc_thuat" placeholder="Mã ICD">
+                        <input type="text" class="form-control  form-control-md me-2 tom-select cbTruocThuThuat" id="ma_icd_truoc_thuat" placeholder="Mã ICD">
                     </div>
                     <div class="col-8">
-                        <input type="text" class="form-control form-control-md  " id="hien_thi_icd_truoc_thuat" readonly placeholder="">
+                        <div class="form-control form-control-md" id="hien_thi_icd_truoc_thuat" style="min-height: 38px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center;"></div>
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 6px;">
@@ -110,20 +213,36 @@
                     </div>
                 </div>
             </div>
+            <!-- Added ellipsis button for Tai biến/biến chứng -->
             <div class="row" style="margin-bottom: 6px;">
                 <div class="col-md-4">
                     <label class="col-form-label form-label text-truncate" title="Tai biến/biến chứng" style="max-width: 180px">Tai biến/biến chứng: </label>
                 </div>
-                <div class="col-md-8 flex-fill">
+                <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input class="tom-select cbBienChung form-select form-select-md" type="text" name="name" />
+                    <button type="button" class="ellipsis-btn" onclick="openModal('bienChungModal')">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                        </svg>
+                    </button>
                 </div>
             </div>
+            <!-- Added ellipsis button for Chế độ thủ thuật -->
             <div class="row" style="margin-bottom: 6px;">
                 <div class="col-md-4">
                     <label class="col-form-label form-label text-truncate" style="max-width: 180px">Chế độ thủ thuật: </label>
                 </div>
-                <div class="col-md-8 flex-fill">
+                <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input class="tom-select cbCheDoThuThuat form-select form-select-md" type="text" name="name" />
+                    <button type="button" class="ellipsis-btn" onclick="openModal('cheDoThuThuatModal')">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                        </svg>
+                    </button>
                 </div>
             </div>
             <div class="row" style="margin-bottom: 6px;">
@@ -138,12 +257,20 @@
                     <input type="text" class="form-control form-control-md" id="ly_do_mo_lai">
                 </div>
             </div>
+            <!-- Added ellipsis button for Vị trí thực hiện -->
             <div class="row" style="margin-bottom: 6px;">
                 <div class="col-md-4">
                     <label class="col-form-label form-label text-truncate" style="max-width: 180px">Vị trí thực hiện: </label>
                 </div>
-                <div class="col-md-8 flex-fill">
+                <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input class="tom-select cbViTriThucHien form-select form-select-md" type="text" name="name" />
+                    <button type="button" class="ellipsis-btn" onclick="openModal('viTriThucHienModal')">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -154,10 +281,10 @@
                 <label class="border-label fw-bold">Chẩn đoán sau thủ thuật</label>
                 <div class="row" style="margin-bottom: 6px;">
                     <div class="col-4">
-                        <input type="text" class="form-control form-control-md me-2" id="ma_icd_sau_thuat" placeholder="Mã ICD">
+                        <input type="text" class="form-control form-control-md me-2 tom-select cbSauThuThuat" id="ma_icd_sau_thuat" placeholder="Mã ICD">
                     </div>
                     <div class="col-8">
-                        <input type="text" class="form-control form-control-md " id="hien_thi_icd_sau_thuat" readonly placeholder="">
+                        <div class="form-control form-control-md" id="hien_thi_icd_sau_thuat" style="min-height: 38px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center;"></div>
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 6px;">
@@ -235,12 +362,11 @@
         <!-- Bảng 1: Phương pháp vô cảm -->
         <div class="col-md-4">
             <div class="row mb-3">
-
                 <div class="col-md-10 flex-fill">
-                    <input class="tom-select cbPTVoCam form-control" type="text" name="name" />
+                    <input class="tom-select cbPTVoCam form-control" type="text" name="name" id="voCamSelect" />
                 </div>
                 <div class="col-md-2 d-grid">
-                    <button type="button" class="btn btn-primary" style="padding-left: 15px;">
+                    <button type="button" class="btn btn-primary" onclick="addAnesthesiaMethod()" style="padding-left: 15px;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-plus">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                             <path d="M12 5l0 14"></path>
@@ -255,19 +381,146 @@
                         <tr>
                             <th>STT</th>
                             <th style="min-width: 300px;">Phương pháp vô cảm</th>
-                            <th>Xóa</th>
+                            <th>#</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="anesthesiaTableBody">
                         <!-- Dữ liệu sẽ được thêm vào đây -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+    <div class="row mt-3">
+        <div class="col-12 text-center">
+            <button type="button" class="btn btn-success btn-lg" id="btn_saveThongTin">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path>
+                    <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                    <path d="M14 4l0 4h-6l0 -4"></path>
+                </svg>
+                Lưu Thông Tin Thủ Thuật
+            </button>
+        </div>
+    </div>
 
 </div>
+
+<!-- Updated modals to remove alias field and center positioning -->
+<!-- Modal for Thiết bị -->
+<div class="modal fade" id="thietBiModal" tabindex="-1" aria-labelledby="thietBiModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="thietBiModalLabel">Thêm Thiết Bị Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="thietBiForm">
+                    <div class="form-group mb-3">
+                        <label for="thietBiMa" class="form-label">Mã thiết bị:</label>
+                        <input type="text" class="form-control" id="thietBiMa" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="thietBiTen" class="form-label">Tên thiết bị:</label>
+                        <input type="text" class="form-control" id="thietBiTen" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveThietBi()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Tai biến/biến chứng -->
+<div class="modal fade" id="bienChungModal" tabindex="-1" aria-labelledby="bienChungModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bienChungModalLabel">Thêm Tai Biến/Biến Chứng Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="bienChungForm">
+                    <div class="form-group mb-3">
+                        <label for="bienChungMa" class="form-label">Mã tai biến/biến chứng:</label>
+                        <input type="text" class="form-control" id="bienChungMa" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="bienChungTen" class="form-label">Tên tai biến/biến chứng:</label>
+                        <input type="text" class="form-control" id="bienChungTen" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveBienChung()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Chế độ thủ thuật -->
+<div class="modal fade" id="cheDoThuThuatModal" tabindex="-1" aria-labelledby="cheDoThuThuatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cheDoThuThuatModalLabel">Thêm Chế Độ Thủ Thuật Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="cheDoThuThuatForm">
+                    <div class="form-group mb-3">
+                        <label for="cheDoThuThuatMa" class="form-label">Mã chế độ thủ thuật:</label>
+                        <input type="text" class="form-control" id="cheDoThuThuatMa" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="cheDoThuThuatTen" class="form-label">Tên chế độ thủ thuật:</label>
+                        <input type="text" class="form-control" id="cheDoThuThuatTen" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveCheDoThuThuat()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Vị trí thực hiện -->
+<div class="modal fade" id="viTriThucHienModal" tabindex="-1" aria-labelledby="viTriThucHienModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viTriThucHienModalLabel">Thêm Vị Trí Thực Hiện Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="viTriThucHienForm">
+                    <div class="form-group mb-3">
+                        <label for="viTriThucHienMa" class="form-label">Mã vị trí thực hiện:</label>
+                        <input type="text" class="form-control" id="viTriThucHienMa" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="viTriThucHienTen" class="form-label">Tên vị trí thực hiện:</label>
+                        <input type="text" class="form-control" id="viTriThucHienTen" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveViTriThucHien()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/dist/js/J0302/J0302TTPT/J0302ThongTinThuThuat.js" asp-append-version="true" defer></script>
+<script>
 
-
-
+</script>
