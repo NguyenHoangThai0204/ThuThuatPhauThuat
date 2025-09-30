@@ -27,7 +27,7 @@ $(document).on("click", "#example tbody tr", function () {
     var gioiTinh = $(this).find("td:eq(4)").text().trim();
     var bacSi = $(this).find("td:eq(10)").text().trim();
     selectedIdVaoVien = $(this).data("idvaovien");
-
+    selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
     var dateStr = decodeURIComponent($(this).attr("data-ngaygiochidinh"));
     var date = formatDateTime(new Date(dateStr));
 
@@ -123,7 +123,7 @@ function renderTable(data, page = 1, size = 10) {
     pageData.forEach((item, index) => {
         const ngayGioEncoded = encodeURIComponent(item.ngayGioChiDinh || "");
         tbody.append(`
-            <tr data-idvaovien="${item.idVaoVien || ''}" data-ngaygiochidinh="${ngayGioEncoded}">
+            <tr data-idvaovien="${item.idVaoVien || ''}" data-idchidinhct="${item.idChiDinhChiTiet || ''}" data-ngaygiochidinh="${ngayGioEncoded}">
                 <td class="text-center">${start + index + 1}</td>
                 <td class="text-center">${item.maBenhNhan || ""}</td>
                 <td>${item.tenBenhNhan || ""}</td>
