@@ -28,6 +28,10 @@ $(document).on("click", "#example tbody tr", function () {
     var bacSi = $(this).find("td:eq(10)").text().trim();
     selectedIdVaoVien = $(this).data("idvaovien");
     selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
+    IDPhieuTTPT = $(this).data("idphieu");
+
+    console.log("asdfads fjasduhf goufasdhuig ", IDPhieuTTPT);
+    console.log("asdfads fjasduhf  ", selectedIdVaoVien);
     var dateStr = decodeURIComponent($(this).attr("data-ngaygiochidinh"));
     var date = formatDateTime(new Date(dateStr));
 
@@ -123,7 +127,7 @@ function renderTable(data, page = 1, size = 10) {
     pageData.forEach((item, index) => {
         const ngayGioEncoded = encodeURIComponent(item.ngayGioChiDinh || "");
         tbody.append(`
-            <tr data-idvaovien="${item.idVaoVien || ''}" data-idchidinhct="${item.idChiDinhChiTiet || ''}" data-ngaygiochidinh="${ngayGioEncoded}">
+            <tr data-idvaovien="${item.idVaoVien || ''}" data-idchidinhct="${item.idChiDinhChiTiet || ''}" data-idphieu="${item.idPhieuTTPT || ''}" data-ngaygiochidinh="${ngayGioEncoded}">
                 <td class="text-center">${start + index + 1}</td>
                 <td class="text-center">${item.maBenhNhan || ""}</td>
                 <td>${item.tenBenhNhan || ""}</td>
@@ -219,6 +223,7 @@ $(document).on("click", ".page-link", function (e) {
     if (!isNaN(page) && page >= 1 && page <= totalPages) {
         currentPage = page;
         renderTable(allData, currentPage, pageSize);
+        
     }
 });
 
@@ -243,7 +248,8 @@ $(document).on("change", "#pageSizeSelect", function () {
 // ==================== LỌC DANH SÁCH (CẢ THƯỜNG VÀ NÂNG CAO) có real time ====================
 $(document).on("click", "#btnLocDanhSachTTPT, #btnSearchNangCao", function (e) {
     e.preventDefault();
-
+    $('#loadingSpinner').show();
+    $('.table-wrapper').css('opacity', '0.5');
     const isAdvancedSearch = $(this).attr('id') === 'btnSearchNangCao';
 
     // Tham số lọc cơ bản
@@ -274,9 +280,13 @@ $(document).on("click", "#btnLocDanhSachTTPT, #btnSearchNangCao", function (e) {
         }
         currentPage = 1;
         renderTable(allData, currentPage, pageSize);
+        //console.log("asdf", allData);
     }).fail(function () {
         allData = [];
         renderTable(allData, currentPage, pageSize);
+    }).always(function () {   // <- luôn chạy dù thành công hay thất bại
+        $('#loadingSpinner').hide();
+        $('.table-wrapper').css('opacity', '1');
     });
 });
 

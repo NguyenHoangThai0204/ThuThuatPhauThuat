@@ -8,5 +8,6 @@
         public DateTime? KetThucThuThuat { get; set; }
         public string? NhomMau { get; set; }
         public string? YeuToRh { get; set; }
+        public long? IDPhieuTTPT { get; set; }
     }
 }

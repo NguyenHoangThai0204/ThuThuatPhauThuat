@@ -138,3 +138,21 @@
     opacity: 0.5;
 }
 
+#loadingSpinner {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    /* Tăng kích thước spinner */
+    width: 100px; /* Chiều rộng */
+    height: 100px; /* Chiều cao */
+}
+
+    /* Nếu dùng Bootstrap spinner */
+    #loadingSpinner .spinner-border {
+        width: 5rem; /* Tăng gấp 5 lần kích thước mặc định */
+        height: 5rem;
+        border-width: 0.5em; /* Độ dày viền */
+    }

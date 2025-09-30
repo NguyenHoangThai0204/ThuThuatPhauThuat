@@ -514,7 +514,7 @@ function updateDateTime() {
     $("#info-datetime", window.parent.document).text(formatted);
 }
 function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
-    //console.log("Bắt đầu loadData", idVaoVien, idChiNhanh);
+    //console.log("Bắt đầu loadData", idVaoVien, idChiNhanh); 
     if (idVaoVien && idChiNhanh && idChiDinhChiTiet) {
         fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${idChiDinhChiTiet}`)
             .then(response => response.json())
@@ -883,7 +883,7 @@ async function handleSaveThongTin() {
     if (!validateForm()) {
         return; // Dừng hàm nếu validate thất bại
     }
-    const IDPhieuTTPT_HienTai = 1;
+    const IDPhieuTTPT_HienTai = IDPhieuTTPT;
 
     const maIcdVaoKhoaArray = selectedICDs.vao_khoa.map(item => item.id);
     const maIcdTruocThuatArray = selectedICDs.truoc_thuat.map(item => item.id);
