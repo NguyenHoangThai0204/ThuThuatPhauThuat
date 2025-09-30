@@ -8,7 +8,7 @@
         public string? TenChanDoanVao { get; set; }
         public string? MaChanDoanTruoc { get; set; }
         public string? TenChanDoanTruoc { get; set; }
-        public string?  MaChanDoanSau { get; set; }
+        public string? MaChanDoanSau { get; set; }
         public string? TenChanDoanSau { get; set; }
 
         // Join với DM
@@ -27,12 +27,16 @@
         public DateTime? NgayRutOngDanLuu { get; set; }
         public DateTime? NgayCatChi { get; set; }
         public string? Khac { get; set; }
-        public long?  MaFNA { get; set; }
+        public long? MaFNA { get; set; }
         public string? TienCan { get; set; }
         public string? KetQuaXNFNAGBP { get; set; }
         public string? ChiDinhViTriTonThuongFNA { get; set; }
         public string? YeuCauXetNghiem { get; set; }
+<<<<<<< HEAD
         public long? IDTuVong {  get; set; }
+=======
+        public long? IDTuVong { get; set; }
+>>>>>>> origin/merge01
         public long? IDPhuongPhapVoCam { get; set; }
     }
 }

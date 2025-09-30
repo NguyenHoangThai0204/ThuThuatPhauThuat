@@ -26,11 +26,16 @@ $(document).on("click", "#example tbody tr", function () {
     var namSinh = $(this).find("td:eq(3)").text().trim();
     var gioiTinh = $(this).find("td:eq(4)").text().trim();
     var bacSi = $(this).find("td:eq(10)").text().trim();
+    selectedIdVaoVien = $(this).data("idvaovien");
+    selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
+    var dateStr = decodeURIComponent($(this).attr("data-ngaygiochidinh"));
+    var date = formatDateTime(new Date(dateStr));
 
     $("#info-tenbn", window.parent.document).text(tenBN);
     $("#info-namsinh", window.parent.document).text(namSinh + " - " + gioiTinh);
     $("#info-bacsi", window.parent.document).text(bacSi);
-    updateDateTime();
+    $("#info-datetime", window.parent.document).text(date);
+    
 
     $("#example tbody tr").removeClass("table-active");
     $(this).addClass("table-active");
@@ -108,7 +113,7 @@ function renderTable(data, page = 1, size = 10) {
     tbody.empty();
 
     if (!data || data.length === 0) {
-        tbody.append('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
+        tbody.append('<tr><td colspan="13" class="text-center">Không có dữ liệu</td></tr>');
         return;
     }
 
@@ -116,8 +121,9 @@ function renderTable(data, page = 1, size = 10) {
     const pageData = data.slice(start, start + size);
 
     pageData.forEach((item, index) => {
+        const ngayGioEncoded = encodeURIComponent(item.ngayGioChiDinh || "");
         tbody.append(`
-            <tr>
+            <tr data-idvaovien="${item.idVaoVien || ''}" data-idchidinhct="${item.idChiDinhChiTiet || ''}" data-ngaygiochidinh="${ngayGioEncoded}">
                 <td class="text-center">${start + index + 1}</td>
                 <td class="text-center">${item.maBenhNhan || ""}</td>
                 <td>${item.tenBenhNhan || ""}</td>
@@ -130,6 +136,7 @@ function renderTable(data, page = 1, size = 10) {
                 <td>${item.noiThucHien || ""}</td>
                 <td>${item.bacSiChiDinh || ""}</td>
                 <td>${item.noiChiDinh || ""}</td>
+                
             </tr>
         `);
     });
@@ -137,6 +144,42 @@ function renderTable(data, page = 1, size = 10) {
     updatePaginationInfo(data.length, page, size);
     renderPagination(data.length, page, size);
 }
+
+//function renderTable(data, page = 1, size = 10) {
+//    const tbody = $("#tbodyData");
+//    tbody.empty();
+
+//    if (!data || data.length === 0) {
+//        tbody.append('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
+//        return;
+//    }
+
+//    const start = (page - 1) * size;
+//    const pageData = data.slice(start, start + size);
+
+//    pageData.forEach((item, index) => {
+//        tbody.append(`
+//             <tr data-idvaovien="${item.idVaoVien || ''}">
+//                <td class="text-center">${start + index + 1}</td>
+//                <td class="text-center">${item.maBenhNhan || ""}</td>
+//                <td>${item.tenBenhNhan || ""}</td>
+//                <td class="text-center">${item.namSinh || ""}</td>
+//                <td class="text-center">${item.gioiTinh || ""}</td>
+//                <td class="text-center">${item.khan ? 'Có' : 'Không'}</td>
+//                <td>${item.nhomDichVuKyThuat || ""}</td>
+//                <td>${item.dichVuKyThuat || ""}</td>
+//                <td class="text-center">${item.thoiGian || ""}</td>
+//                <td>${item.noiThucHien || ""}</td>
+//                <td>${item.bacSiChiDinh || ""}</td>
+//                <td>${item.noiChiDinh || ""}</td>
+//                <td>${item.ngayGioChiDinh || ""}</td>
+//            </tr>
+//        `);
+//    });
+
+//    updatePaginationInfo(data.length, page, size);
+//    renderPagination(data.length, page, size);
+//}
 
 function updatePaginationInfo(totalRecords, currentPage, pageSize) {
     const startRecord = (currentPage - 1) * pageSize + 1;

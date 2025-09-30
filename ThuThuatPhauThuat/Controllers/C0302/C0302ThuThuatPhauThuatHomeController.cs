@@ -50,11 +50,39 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             return View("~/Views/V0302/V0302ThuThuatPhauThuat/Index.cshtml");
         }
 
+        //[HttpGet("thong_tin_so_phieu")]
+        //public IActionResult ThongTinSoPhieu(int tabIndex)
+        //{
+        //    ViewBag.TabIndex = tabIndex;
+        //    return PartialView("_ThongTinSoPhieu");
+        //}
         [HttpGet("thong_tin_so_phieu")]
-        public IActionResult ThongTinSoPhieu(int tabIndex)
+        public async Task<IActionResult> ThongTinSoPhieu(int tabIndex, long idVaoVien, long idcn, long idChiDinhChiTiet)
         {
-            ViewBag.TabIndex = tabIndex;
-            return PartialView("_ThongTinSoPhieu");
+
+            var parameters = new[]
+            {
+            new SqlParameter("@IdVaoVien", idVaoVien),
+
+            new SqlParameter("@IdChiNhanh", idcn),
+                    new SqlParameter("@IdChiDinhCT", idChiDinhChiTiet)
+
+        };
+
+            var sql = @"EXEC S0302_GetSoPhieuThuThuatPhauThuat @IdVaoVien, @IdChiNhanh, @IdChiDinhCT";
+
+            var data = _context.M0302PhieuThuThuatPhauThuatModels
+                .FromSqlRaw(sql, parameters)
+                .AsNoTracking()
+                .AsEnumerable() // ← đưa query về client
+                .FirstOrDefault();
+
+            if (data == null)
+            {
+                data = new ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat.M0302PhieuThuThuatPhauThuatModel();
+            }
+
+            return PartialView("_ThongTinSoPhieu", data);
         }
 
         [HttpGet("danh_sach")]
@@ -79,16 +107,45 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302DanhSachThuThuatPhauThuat.cshtml");
         }
-        //[HttpPost("loc_danh_sach")]
-        //public async Task<IActionResult> LocDanhSach(long IdChiNhanh, string Ngay, long IdPhongBuong, int TrangThai)
-        //{
-        //    var (success, message, data) = await _service.LocDanhSachAsync(IdChiNhanh, Ngay, IdPhongBuong, TrangThai);
-        //    if (!success)
-        //        return Json(new { Success = false, Message = message, Data = new List<object>() });
+        [HttpGet("get_thong_tin_chi_tiet")]
+        public async Task<IActionResult> GetThongTinChiTiet(long idVaoVien, long idChiNhanh, long idChiDinhChiTiet)
+        {
+            try
+            {
+                // Sử dụng stored procedure chuyên cho chi tiết
+                var parameters = new[]
+                {
+                    new SqlParameter("@IdVaoVien", idVaoVien),
+                    new SqlParameter("@IdChiNhanh", idChiNhanh),
+                    new SqlParameter("@IdChiDinhCT", idChiDinhChiTiet)
 
-        //    // Trả về đúng cấu trúc object
-        //    return Json(new { Success = true, Message = message, Data = data });
-        //}
+                };
+                
+
+                var data = await _context.M0302ThongTinThuThuatPhauThuatModels
+                    .FromSqlRaw("EXEC S0302_GetThongTinThuThuatPhauThuat @IdVaoVien, @IdChiNhanh, @IdChiDinhCT", parameters)
+                    .AsNoTracking()
+                    .ToListAsync();   // Lấy tất cả về client
+
+                var record = data.FirstOrDefault();  // Chọn 1 record trên client
+
+                return Ok(new
+                {
+                    success = true,
+                    data = record
+                });
+
+
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
         [HttpPost("loc_danh_sach")]
         public async Task<IActionResult> LocDanhSach(
             long IdChiNhanh,
@@ -112,8 +169,10 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             return Json(new { Success = true, Message = message, Data = data });
         }
+      
+
         [HttpGet("thong_tin")]
-        public async Task<IActionResult> ThongTin()
+        public IActionResult ThongTin(long? idVaoVien, int tabIndex = 0)
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
@@ -123,6 +182,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -132,8 +193,10 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 CaNhan = true,
                 Xem = true,
             };
+
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302ThongTinThuThuatPhauThuat.cshtml");
         }
+<<<<<<< HEAD
 
         [HttpPost("thong-tin/save-thong-tin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -202,9 +265,12 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             }
         }
 
+=======
+>>>>>>> origin/merge01
         [HttpGet("trinh_tu")]
-        public async Task<IActionResult> TrinhTuVaKetLuan()
+        public async Task<IActionResult> TrinhTuVaKetLuan(long? idVaoVien, int tabIndex = 0)
         {
+
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
             //{
@@ -213,12 +279,17 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+<<<<<<< HEAD
             //var model = await _context.TrinhTuVaKetLuan
             //    .FromSqlRaw("EXEC S0305_TTPT_GetTrinhTuVaKetLuanTheoIDPhieuTTPT @IDPhieuTTPT",
             //    new SqlParameter("@IDPhieuTTPT", 1))
             //    .AsNoTracking()
             //    .FirstOrDefault();
 
+=======
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
+>>>>>>> origin/merge01
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -298,7 +369,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         }
 
         [HttpGet("ekip")]
-        public async Task<IActionResult> EkipThucHien()
+        public async Task<IActionResult> EkipThucHien(long? idVaoVien, int tabIndex = 0)
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
@@ -308,6 +379,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -429,11 +502,11 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         {
             public int Result { get; set; }
             public string Message { get; set; }
-        }
+        }           
 
 
         [HttpGet("ghi_nhan_thuoc_vat_tu")]
-        public async Task<IActionResult> GhiNhanThuocVatTu()
+        public async Task<IActionResult> GhiNhanThuocVatTu(long? idVaoVien, int tabIndex = 0)
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
@@ -443,6 +516,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -454,7 +529,6 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302GhiNhanVatTuTTPT.cshtml");
         }
-
 
     }
 }

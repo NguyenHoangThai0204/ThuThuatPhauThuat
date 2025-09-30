@@ -1,6 +1,7 @@
 ﻿
 *.sln
 
+<<<<<<< HEAD
 
 [Bb]in/
 [Oo]bj/
@@ -35,3 +36,22 @@ bower_components/
 *.mdf
 *.ldf
 *.sdf
+=======
+/.vs/ThuThuatPhauThuat/FileContentIndex/af955042-79c3-4699-a4ef-ae75fd306981.vsidx
+/.vs/ProjectEvaluation/thuthuatphauthuat.metadata.v9.bin
+/.vs/ProjectEvaluation/thuthuatphauthuat.projects.v9.bin
+/.vs/ProjectEvaluation/thuthuatphauthuat.strings.v9.bin
+/ThuThuatPhauThuat/obj/Debug/net8.0/staticwebassets.upToDateCheck.txt
+/ThuThuatPhauThuat/obj/Debug/net8.0/ThuThuatPhauThuat.AssemblyInfoInputs.cache
+/ThuThuatPhauThuat/obj/Debug/net8.0/ThuThuatPhauThuat.assets.cache
+/ThuThuatPhauThuat/obj/Debug/net8.0/ThuThuatPhauThuat.csproj.CoreCompileInputs.cache
+/ThuThuatPhauThuat/obj/Debug/net8.0/ThuThuatPhauThuat.csproj.FileListAbsolute.txt
+/ThuThuatPhauThuat/obj/ThuThuatPhauThuat.csproj.nuget.g.props
+/ThuThuatPhauThuat/obj/project.nuget.cache
+/ThuThuatPhauThuat/obj/Debug/net8.0/ThuThuatPhauThuat.genruntimeconfig.cache
+/ThuThuatPhauThuat/obj/project.assets.json
+.vs/
+bin/
+obj/
+/ThuThuatPhauThuat/obj/
+>>>>>>> origin/merge01
