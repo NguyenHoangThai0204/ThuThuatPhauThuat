@@ -3,36 +3,28 @@
   "WorkspaceRootPath": "D:\\Sixos\\ThuThuatPhauThuat\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302thongtinthuthuatphauthuat.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302thongtinthuthuatphauthuat.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302trinhtuvakeluanttpt.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302trinhtuvakeluanttpt.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\views\\shared\\_thongtinsophieu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\views\\shared\\_thongtinsophieu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302thongtinthuthuatphauthuat.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302thongtinthuthuatphauthuat.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302thongtinthuthuat.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302thongtinthuthuat.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302danhsach.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\wwwroot\\dist\\js\\j0302\\j0302ttpt\\j0302danhsach.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\controllers\\c0302\\c0302thuthuatphauthuathomecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\controllers\\c0302\\c0302thuthuatphauthuathomecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302ekipthuchienttpt.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\views\\v0302\\v0302thuthuatphauthuat\\v0302ekipthuchienttpt.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|d:\\sixos\\thuthuatphauthuat\\thuthuatphauthuat\\models\\m0302\\context0302.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7FE8144D-0B42-47F8-B2DA-D2CA5D0627AB}|ThuThuatPhauThuat\\ThuThuatPhauThuat.csproj|solutionrelative:thuthuatphauthuat\\models\\m0302\\context0302.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -41,117 +33,88 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedHeight": 29,
-          "SelectedChildIndex": 7,
+          "DockedHeight": 33,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "J0302DanhSach.js",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302DanhSach.js",
-              "RelativeDocumentMoniker": "ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302DanhSach.js",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302DanhSach.js",
-              "RelativeToolTip": "ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302DanhSach.js",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAAwBwAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-09-28T07:43:44.004Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\Index.cshtml",
-              "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\Index.cshtml",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\Index.cshtml",
-              "RelativeToolTip": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFYAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-28T07:40:56.511Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "V0302EkipThucHienTTPT.cshtml",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302EkipThucHienTTPT.cshtml",
-              "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302EkipThucHienTTPT.cshtml",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302EkipThucHienTTPT.cshtml",
-              "RelativeToolTip": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302EkipThucHienTTPT.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-28T07:38:53.296Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "J0302ThongTinThuThuat.js",
               "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302ThongTinThuThuat.js",
               "RelativeDocumentMoniker": "ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302ThongTinThuThuat.js",
               "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302ThongTinThuThuat.js",
               "RelativeToolTip": "ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302ThongTinThuThuat.js",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABACAAAAAAAAAAAAABkAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-09-28T07:27:01.263Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "J0302Index.js",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302Index.js",
-              "RelativeDocumentMoniker": "ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302Index.js",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302Index.js",
-              "RelativeToolTip": "ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302Index.js",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAAwBsAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-09-28T07:23:49.606Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-30T01:59:23.89Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
+              "Title": "Context0302.cs",
+              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Models\\M0302\\Context0302.cs",
+              "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Models\\M0302\\Context0302.cs",
+              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Models\\M0302\\Context0302.cs",
+              "RelativeToolTip": "ThuThuatPhauThuat\\Models\\M0302\\Context0302.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAiwBUAAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-30T01:58:19.223Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "C0302ThuThuatPhauThuatHomeController.cs",
               "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Controllers\\C0302\\C0302ThuThuatPhauThuatHomeController.cs",
               "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Controllers\\C0302\\C0302ThuThuatPhauThuatHomeController.cs",
               "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Controllers\\C0302\\C0302ThuThuatPhauThuatHomeController.cs",
               "RelativeToolTip": "ThuThuatPhauThuat\\Controllers\\C0302\\C0302ThuThuatPhauThuatHomeController.cs",
-              "ViewState": "AgIAAMoAAAAAAAAAAAAAANEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAowGUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-28T07:23:35.904Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-30T01:57:52.381Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "V0302TrinhTuVaKeLuanTTPT.cshtml",
-              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302TrinhTuVaKeLuanTTPT.cshtml",
-              "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302TrinhTuVaKeLuanTTPT.cshtml",
-              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302TrinhTuVaKeLuanTTPT.cshtml",
-              "RelativeToolTip": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302TrinhTuVaKeLuanTTPT.cshtml",
-              "ViewState": "AgIAAFkAAAAAAAAAAAAkwGsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-28T07:22:43.349Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "V0302ThongTinThuThuatPhauThuat.cshtml",
               "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302ThongTinThuThuatPhauThuat.cshtml",
               "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302ThongTinThuThuatPhauThuat.cshtml",
               "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302ThongTinThuThuatPhauThuat.cshtml",
               "RelativeToolTip": "ThuThuatPhauThuat\\Views\\V0302\\V0302ThuThuatPhauThuat\\V0302ThongTinThuThuatPhauThuat.cshtml",
-              "ViewState": "AgIAAPkAAAAAAAAAAAAIwBoBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAH4BAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-28T07:22:37.209Z",
+              "WhenOpened": "2025-09-30T01:57:17.68Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "_ThongTinSoPhieu.cshtml",
+              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\Shared\\_ThongTinSoPhieu.cshtml",
+              "RelativeDocumentMoniker": "ThuThuatPhauThuat\\Views\\Shared\\_ThongTinSoPhieu.cshtml",
+              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\Views\\Shared\\_ThongTinSoPhieu.cshtml",
+              "RelativeToolTip": "ThuThuatPhauThuat\\Views\\Shared\\_ThongTinSoPhieu.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-30T01:57:12.492Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "J0302Index.js",
+              "DocumentMoniker": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302Index.js",
+              "RelativeDocumentMoniker": "ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302Index.js",
+              "ToolTip": "D:\\Sixos\\ThuThuatPhauThuat\\ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302Index.js",
+              "RelativeToolTip": "ThuThuatPhauThuat\\wwwroot\\dist\\js\\J0302\\J0302TTPT\\J0302Index.js",
+              "ViewState": "AgIAADgAAAAAAAAAAAAAwFAAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-09-30T01:57:03.217Z",
               "EditorCaption": ""
             }
           ]
         },
         {
-          "DockedHeight": 6,
+          "DockedHeight": 2,
           "SelectedChildIndex": -1,
           "Children": [
             {

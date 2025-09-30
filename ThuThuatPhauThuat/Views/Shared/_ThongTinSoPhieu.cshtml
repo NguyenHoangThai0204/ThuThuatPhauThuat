@@ -13,30 +13,39 @@
             <div class="d-flex align-items-center mb-2 mb-md-0">
                 <label class="form-label fw-bold me-2" style="min-width: 100px;">Số phiếu:</label>
                 <select class="form-select form-select-md thuThuat__soPhieu-tom-select-@tabIndex">
-                    @foreach (var item in Model)
+                    @if (Model != null && Model.Any())
                     {
-                        if (item.SoPhieu == first?.SoPhieu)
+                   
+                        @foreach (var item in Model)
                         {
-                            <option value="@item.SoPhieu"
-                                    data-nhommau="@item.NhomMau"
-                                    data-yeutorh="@item.YeuToRh" data-idnguonbenh="@item.IDNguonBenh"
-                                    data-batdau="@(item.BatDauThuThuat?.ToString("dd/MM/yyyy HH:mm"))"
-                                    data-ketthuc="@(item.KetThucThuThuat?.ToString("dd/MM/yyyy HH:mm"))"
-                                    selected="selected">
-                                @item.SoPhieu
-                            </option>
-                        }
-                        else
-                        {
-                            <option value="@item.SoPhieu"
-                                    data-nhommau="@item.NhomMau"
-                                    data-yeutorh="@item.YeuToRh" data-idnguonbenh="@item.IDNguonBenh"
-                                    data-batdau="@(item.BatDauThuThuat?.ToString("dd/MM/yyyy HH:mm"))"
-                                    data-ketthuc="@(item.KetThucThuThuat?.ToString("dd/MM/yyyy HH:mm"))">
-                                @item.SoPhieu
-                            </option>
+                            if (item.SoPhieu == first?.SoPhieu)
+                            {
+                                <option value="@item.SoPhieu"
+                                        data-nhommau="@item.NhomMau"
+                                        data-yeutorh="@item.YeuToRh" data-idnguonbenh="@item.IDNguonBenh"
+                                        data-batdau="@(item.BatDauThuThuat?.ToString("dd/MM/yyyy HH:mm"))"
+                                        data-ketthuc="@(item.KetThucThuThuat?.ToString("dd/MM/yyyy HH:mm"))"
+                                        selected="selected">
+                                    @item.SoPhieu
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@item.SoPhieu"
+                                        data-nhommau="@item.NhomMau"
+                                        data-yeutorh="@item.YeuToRh" data-idnguonbenh="@item.IDNguonBenh"
+                                        data-batdau="@(item.BatDauThuThuat?.ToString("dd/MM/yyyy HH:mm"))"
+                                        data-ketthuc="@(item.KetThucThuThuat?.ToString("dd/MM/yyyy HH:mm"))">
+                                    @item.SoPhieu
+                                </option>
+                            }
                         }
                     }
+                    else
+                    {
+                        <p>Không có dữ liệu.</p>
+                    }
+                    
                 </select>
             </div>
         </div>

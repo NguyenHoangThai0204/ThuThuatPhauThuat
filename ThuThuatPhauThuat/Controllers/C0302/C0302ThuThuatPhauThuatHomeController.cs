@@ -95,7 +95,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
                 var sql = @"EXEC S0302_GetThongTinThuThuatPhauThuat @IdVaoVien, @IdChiNhanh,@SoPhieu ";
 
-                var data = await _dbService.M0302ThongTinThuThuatPhauThuatModels
+                var data = await _context.M0302PhieuThuThuatPhauThuatModels
                      .FromSqlRaw(sql, parameters)
                      .AsNoTracking()
                      .ToListAsync();
