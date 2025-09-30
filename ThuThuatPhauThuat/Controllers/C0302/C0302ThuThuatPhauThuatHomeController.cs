@@ -148,19 +148,12 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             try
             {
-                // Cần phải parse các trường string (từ FE) sang kiểu số (BIGINT trong SP)
-                long.TryParse(model.IDTaiBienBienChung, out long idTaiBien);
-                long.TryParse(model.IDTuVong, out long idTuVong);
-                // Giả sử IDViTriThucHien cũng cần parse
-                long.TryParse(model.IDViTriThucHien, out long idViTriThucHien);
-
-                // Tạo câu lệnh SQL gọi Stored Procedure, truyền các tham số
-                // @p0, @p1, ... là các placeholder cho tham số, EF Core sẽ tự động ánh xạ
-                string sqlQuery = @"EXEC S0301_ThemThongTinTTPT 
+               
+            string sqlQuery = @"EXEC S0301_ThemThongTinTTPT 
             @IDPhieuTTPT, @MaChanDoanVao, @TenChanDoanVao, @MaChanDoanTruoc, @TenChanDoanTruoc, @MaChanDoanSau, @TenChanDoanSau,
             @IDPhongThucHien, @IDLoaiTTPT, @IDThietBi, @IDTaiBienBienChung, @IDCheDoThuThuat, @CanThiepThuThuat, @SoLanMoLai, 
             @LyDoMoLai, @IDViTriThucHien, @IDTuVong, @DanLuu, @NgayRutOngDanLuu, @NgayCatChi, @Khac,
-            @MaFNA, @TienCan, @KetQuaXNFNAGBP, @ChiDinhViTriTonThuongFNA, @YeuCauXetNghiem, @PhuongPhapVoCam";
+            @MaFNA, @TienCan, @KetQuaXNFNAGBP, @ChiDinhViTriTonThuongFNA, @YeuCauXetNghiem, @IDPhuongPhapVoCam";
 
                 await _context.Database.ExecuteSqlRawAsync(sqlQuery,
                     new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT ?? (object)DBNull.Value),
@@ -175,19 +168,16 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                     new SqlParameter("@IDLoaiTTPT", model.IDLoaiTTPT ?? (object)DBNull.Value),
                     new SqlParameter("@IDThietBi", model.IDThietBi ?? (object)DBNull.Value),
 
-                    // Ép kiểu: model.IDTaiBienBienChung (string) -> idTaiBien (long)
-                    new SqlParameter("@IDTaiBienBienChung", idTaiBien),
+                    new SqlParameter("@IDTaiBienBienChung", model.IDTaiBienBienChung),
                     new SqlParameter("@IDCheDoThuThuat", model.IDCheDoThuThuat ?? (object)DBNull.Value),
                     new SqlParameter("@CanThiepThuThuat", model.CanThiepThuThuat ?? (object)DBNull.Value),
 
                     new SqlParameter("@SoLanMoLai", model.SoLanMoLai ?? (object)DBNull.Value),
                     new SqlParameter("@LyDoMoLai", model.LyDoMoLai ?? (object)DBNull.Value),
 
-                    // Ép kiểu: model.IDViTriThucHien (string) -> idViTriThucHien (long)
-                    new SqlParameter("@IDViTriThucHien", idViTriThucHien),
+                    new SqlParameter("@IDViTriThucHien", model.IDViTriThucHien),
 
-                    // Ép kiểu: model.IDTuVong (string) -> idTuVong (long)
-                    new SqlParameter("@IDTuVong", idTuVong),
+                    new SqlParameter("@IDTuVong", model.IDTuVong),
 
                     new SqlParameter("@DanLuu", model.DanLuu ?? (object)DBNull.Value),
                     new SqlParameter("@NgayRutOngDanLuu", model.NgayRutOngDanLuu ?? (object)DBNull.Value),
@@ -200,7 +190,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                     new SqlParameter("@ChiDinhViTriTonThuongFNA", model.ChiDinhViTriTonThuongFNA ?? (object)DBNull.Value),
                     new SqlParameter("@YeuCauXetNghiem", model.YeuCauXetNghiem ?? (object)DBNull.Value),
 
-                    new SqlParameter("@PhuongPhapVoCam", model.IDPhuongThucVoCam ?? (object)DBNull.Value)
+                    new SqlParameter("@IDPhuongPhapVoCam", model.IDPhuongPhapVoCam ?? (object)DBNull.Value)
                 );
 
                 return Ok(new { success = true, message = "Lưu thông tin thủ thuật/phẫu thuật thành công." });

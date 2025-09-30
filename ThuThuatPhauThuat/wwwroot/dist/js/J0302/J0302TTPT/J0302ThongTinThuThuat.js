@@ -161,9 +161,9 @@ function configureICDTomSelect() {
             const tomSelectInstance = new window.TomSelect(config.className, {
                 options: icdData,
                 valueField: "id", // <-- ĐÃ SỬA: Dùng ID
-
-                searchField: ["ma"],
-                placeholder: "-Mã ICD-",
+                labelField: "ten",
+                searchField: ["ten","ma"],
+                placeholder: "-- Mã ICD --",
                 maxItems: 1,
                 render: {
                     option: (data, escape) => `
@@ -185,6 +185,7 @@ function configureICDTomSelect() {
                         }
                     }
                 },
+                
             })
         }
     })
@@ -333,12 +334,13 @@ async function initThongTinTab() {
     console.log("Khởi tạo Tab thông tin hoàn tất. Dữ liệu đã được tải.");
 }
 
+
 // Gọi hàm khởi tạo
 initThongTinTab();
 
 function configCbThongTin(configs) {
     configs.forEach((cfg) => {
-        const element = document.querySelector(cfg.className)
+        const element = document.querySelector(cfg.className);
         if (element) {
             const tomSelectInstance = new window.TomSelect(cfg.className, {
                 options: cfg.data,
@@ -346,6 +348,8 @@ function configCbThongTin(configs) {
                 labelField: "ten",
                 searchField: ["ten", "alias"],
                 placeholder: cfg.placeholder,
+                dropdownDirection: 'auto',
+                //dropdownParent: 'body',
                 maxItems: 1,
                 render: {
                     option: (data, escape) => `
@@ -358,36 +362,83 @@ function configCbThongTin(configs) {
                             <span>${escape(data.ten)}</span>
                             <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.alias || "")}</span>
                         </div>`,
-                }, no_results: function (data, escape) {
-                    return `<div class="no-results" style="padding:6px 10px;color:#999;">
-                                Không tìm thấy "${escape(data.input)}"
-                            </div>`;
                 },
-            })
-            if (cfg.className === ".cbPTVoCam") {
-                tomSelectInstance.on("keydown", function (e) {
-                    if (e.key === "Enter" && this.getValue()) {
-                        e.preventDefault()
-                        if (window.addAnesthesiaMethod) {
-                            window.addAnesthesiaMethod()
-                        }
-                    }
-                })
-            }
+                no_results: function (data, escape) {
+                    return `<div class="no-results" style="padding:6px 10px;color:#999;">
+                                Không tìm thấy "${escape(data.input)}"
+                            </div>`;
+                },
+            });
+
+            tomSelectInstance.on('dropdown_open', () => {
+                const rect = tomSelectInstance.control.getBoundingClientRect();
+                const spaceBelow = window.innerHeight - rect.bottom;
+                const dropdown = tomSelectInstance.dropdown;
+                const needed = dropdown.offsetHeight || 200;
+
+                if (spaceBelow < needed) {
+                    dropdown.classList.add('ts-dropdown-up');
+                } else {
+                    dropdown.classList.remove('ts-dropdown-up');
+                }
+            });
         }
-    })
+    });
 }
+
+
 // ================= XU LY MODAL ========================
 function openModal(modalId) {
     const modal = new bootstrap.Modal(document.getElementById(modalId));
     modal.show();
 }
+function resetModalForm(modalId) {
+    const modalElement = document.getElementById(modalId);
+    if (modalElement) {
+        const formId = modalId.replace('Modal', 'Form');
+        const formElement = modalElement.querySelector(`#${formId}`);
+
+        if (formElement && typeof formElement.reset === 'function') {
+            formElement.reset();
+            console.log(`Đã reset form: ${formId}`);
+        }
+    }
+}
+const modals = document.querySelectorAll('.modal');
+    modals.forEach(modalElement => {
+
+        modalElement.addEventListener('hide.bs.modal', function (e) {
+            const modalId = modalElement.id;
+
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+            resetModalForm(modalId);
+        });
+    });
+
 function closeModal(modalId) {
+    if (document.activeElement) {
+        document.activeElement.blur();
+    }
+    resetModalForm(modalId);
     const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
     if (modal) {
         modal.hide();
     }
 }
+document.addEventListener('DOMContentLoaded', function () {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modalElement => {
+        modalElement.addEventListener('hide.bs.modal', function (e) {
+            const modalId = modalElement.id;
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+            resetModalForm(modalId); 
+        });
+    });
+});
 async function saveThietBi() {
     const ma = document.getElementById('thietBiMa').value;
     const ten = document.getElementById('thietBiTen').value;
@@ -540,139 +591,110 @@ function refreshTomSelect(selector, newData) {
     }
 }
 
-//==================== XỬ LÝ PHƯƠNG THỨC VÔ CẢM =======================
-// Đổi tên biến sang "Ids" để phản ánh việc lưu trữ ID thay vì code
-let selectedAnesthesiaIds = new Set();
-let anesthesiaCounter = 1;
+//==================== SAVE THÔNG TIN TRƯỜNG TRÌNH =======================
+function validateForm() {
+    // 1. Reset tất cả các đánh dấu lỗi trước
+    $('.validation-error').removeClass('validation-error');
 
+    // 2. Định nghĩa các trường cần kiểm tra và tên hiển thị (Tiếng Việt)
+    const fieldsToValidate = [
+        // ICDs (Kiểm tra xem mảng đã chọn có ít nhất 1 item không)
+        { data: selectedICDs.vao_khoa, element: '.cbCDVaoKhoa', name: 'Chẩn đoán vào khoa' },
+        { data: selectedICDs.truoc_thuat, element: '.cbTruocThuThuat', name: 'Chẩn đoán trước thủ thuật' },
+        { data: selectedICDs.sau_thuat, element: '.cbSauThuThuat', name: 'Chẩn đoán sau thủ thuật' },
 
-function addAnesthesiaMethod() {
-    const selectElement = document.querySelector('.cbPTVoCam');
-    const tomSelectInstance = selectElement.tomselect;
+        // Các trường TomSelect đơn
+        { data: $('.cbPhongThucHien').val(), element: '.cbPhongThucHien', name: 'Phòng thực hiện' },
+        { data: $('.cbPhanLoai').val(), element: '.cbPhanLoai', name: 'Phân loại' },
+        { data: $('.cbThietBi').val(), element: '.cbThietBi', name: 'Thiết bị' }, 
+        { data: $('.cbViTriThucHien').val(), element: '.cbViTriThucHien', name: 'Vị trí thực hiện' },
+        { data: $('.cbBienChung').val(), element: '.cbBienChung', name: 'Biến chứng' },
+        { data: $('.cbPTVoCam').val(), element: '.cbPTVoCam', name: 'Phương pháp vô cảm' },
+        { data: $('.cbCheDoThuThuat').val(), element: '.cbCheDoThuThuat', name: 'Chế độ thủ thuật' },
+        { data: $('.cbTuVong').val(), element: '.cbTuVong', name: 'Tử vong' },
 
-    if (tomSelectInstance && tomSelectInstance.getValue()) {
-        const selectedId = tomSelectInstance.getValue(); // Lấy ID (1, 2, 3...)
+        { data: $('#ma_fna').val(), element: '#ma_fna', name: 'Mã FNA' },
+        { data: $('#tien_can').val(), element: '#tien_can', name: 'Tiền căn' },
 
-        // 1. SỬA: Tìm kiếm bằng trường 'id'
-        // Dùng String() để đảm bảo so sánh an toàn giữa id (có thể là số) và giá trị trả về của TomSelect (thường là chuỗi)
-        const selectedItem = sampleDataThongTin.voCam.find(item => String(item.id) === String(selectedId));
+    ];
 
-        // 2. SỬA: Kiểm tra sự tồn tại trong Set bằng ID
-        if (selectedItem && !selectedAnesthesiaIds.has(selectedId)) {
-            addToAnesthesiaTable(selectedItem);
+    let isValid = true;
+    let firstErrorElement = null;
+    let firstErrorName = '';
 
-            // 3. SỬA: Lưu ID vào Set
-            selectedAnesthesiaIds.add(selectedId);
+    // 3. Lặp và kiểm tra
+    for (const field of fieldsToValidate) {
+        let isFieldInvalid = false;
 
-            tomSelectInstance.clear();
-            updateTomSelectOptions();
-            console.log('Added anesthesia method ID:', selectedId);
-        } else {
-            tomSelectInstance.clear();
+        // Xử lý dữ liệu ICD (là một mảng/Set)
+        if (field.data && typeof field.data.size === 'number') { // Check cho Set (ICD)
+            isFieldInvalid = field.data.size === 0;
+        } else if (Array.isArray(field.data)) { // Check cho Array (ICD nếu là array)
+            isFieldInvalid = field.data.length === 0;
         }
-    }
-}
+        // Xử lý dữ liệu TomSelect đơn (là chuỗi mã, check giá trị falsy)
+        else if (!field.data) {
+            isFieldInvalid = true;
+        }
 
-function updateTomSelectOptions() {
-    const selector = '.cbPTVoCam';
-    const tomSelectInstance = document.querySelector(selector).tomselect;
-
-    if (tomSelectInstance) {
-        // 4. SỬA: Lọc options dựa trên ID
-        const availableOptions = sampleDataThongTin.voCam.filter(item =>
-            !selectedAnesthesiaIds.has(String(item.id))
-        );
-        tomSelectInstance.clearOptions();
-        tomSelectInstance.addOptions(availableOptions);
-        tomSelectInstance.refreshOptions(false);
-    }
-}
-
-function addToAnesthesiaTable(item) {
-    const tableBody = document.getElementById('anesthesiaTableBody');
-    const row = document.createElement('tr');
-
-    // 5. SỬA: Lưu ID vào dataset
-    row.dataset.id = item.id;
-
-    row.innerHTML = `
-        <td class="text-center">${anesthesiaCounter}</td>
-        <td>${item.ten}</td>
-        <td class="text-center">
-            <button type="button" class="delete-btn" onclick="removeAnesthesiaRow(this)">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 6h18"></path>
-                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                    <line x1="10" y1="11" x2="10" y2="17"></line>
-                    <line x1="14" y1="11" x2="14" y2="17"></line>
-                </svg>
-            </button>
-        </td>
-    `;
-
-    tableBody.appendChild(row);
-    anesthesiaCounter++;
-}
-function removeAnesthesiaRow(button) {
-    const row = button.closest('tr');
-    // 6. SỬA: Lấy ID từ dataset
-    const idToRemove = row.dataset.id;
-
-    if (idToRemove) {
-        // 7. SỬA: Xóa khỏi Set bằng ID
-        selectedAnesthesiaIds.delete(idToRemove);
-
-        row.remove();
-        updateTomSelectOptions();
-        const tableBody = document.getElementById('anesthesiaTableBody');
-        const rows = tableBody.querySelectorAll('tr');
-        rows.forEach((row, index) => {
-            row.querySelector('td:first-child').textContent = index + 1;
-        });
-        anesthesiaCounter = rows.length + 1;
-        console.log(`Removed anesthesia method with ID: ${idToRemove}`);
-    } else {
-        row.remove();
-    }
-}
-// Giữ nguyên DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function () {
-    const voCamSelect = document.querySelector('.cbPTVoCam');
-    if (voCamSelect) {
-        voCamSelect.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addAnesthesiaMethod();
+        if (isFieldInvalid) {
+            isValid = false;
+            if (!firstErrorElement) {
+                firstErrorElement = $(field.element);
+                firstErrorName = field.name;
             }
-        });
-    }
-});
-function getAnesthesiaMethods() {
-    const methods = [];
-    // Lấy tất cả các hàng trong tbody
-    $('#anesthesiaTableBody').find('tr').each(function () {
-        // Mỗi hàng được gán data-ma (code)
-        const code = $(this).data('id');
-        if (code) {
-            methods.push(code);
+
+            // Tìm phần tử hiển thị TomSelect (wrapper) và áp dụng class lỗi
+            const tomSelectWrapper = $(field.element).next('.ts-wrapper').length ?
+                $(field.element).next('.ts-wrapper') :
+                $(field.element);
+            tomSelectWrapper.addClass('validation-error');
+
+            // Xử lý đặc biệt cho ICDs: đánh dấu form-control hiển thị tags
+            if (field.element.includes('cbCDVaoKhoa')) {
+                $('#hien_thi_icd_vao_khoa').addClass('validation-error');
+            } else if (field.element.includes('cbTruocThuThuat')) {
+                $('#hien_thi_icd_truoc_thuat').addClass('validation-error');
+            } else if (field.element.includes('cbSauThuThuat')) {
+                $('#hien_thi_icd_sau_thuat').addClass('validation-error');
+            }
         }
-    });
-    return methods;
+    }
+
+    // 4. Hiển thị cảnh báo nếu có lỗi
+    if (!isValid) {
+        if (typeof toastr !== 'undefined') {
+            toastr.error(`Vui lòng nhập thông tin: ${firstErrorName}.`);
+        }
+
+        // Cuộn đến phần tử lỗi đầu tiên và focus
+        if (firstErrorElement) {
+            $('html, body').animate({
+                scrollTop: firstErrorElement.offset().top - 100 // -100 để có thêm khoảng trống
+            }, 500);
+
+            // Nếu là TomSelect, focus vào input bên trong wrapper
+            const inputInsideTomSelect = firstErrorElement.next('.ts-wrapper').find('input[type="select-one"]');
+            if (inputInsideTomSelect.length) {
+                inputInsideTomSelect.focus();
+            } else {
+                firstErrorElement.focus();
+            }
+        }
+    }
+
+    return isValid;
 }
 async function handleSaveThongTin() {
+    if (!validateForm()) {
+        return; // Dừng hàm nếu validate thất bại
+    }
+    const IDPhieuTTPT_HienTai = 3;
 
-    const IDPhieuTTPT_HienTai = 2;
-
-    // 1. Thu thập dữ liệu
-
-    // 1. Lấy mảng chỉ chứa các MÃ ICD (dạng array of strings)
     const maIcdVaoKhoaArray = selectedICDs.vao_khoa.map(item => item.id);
     const maIcdTruocThuatArray = selectedICDs.truoc_thuat.map(item => item.id);
     const maIcdSauThuatArray = selectedICDs.sau_thuat.map(item => item.id);
 
-    // 2. (Tùy chọn) Chuyển mảng thành một chuỗi duy nhất, phân cách bởi dấu phẩy
-    // Nếu bạn cần gửi dữ liệu dưới dạng chuỗi (ví dụ: "A00,A01,B00")
     const maIcdVaoKhoa = maIcdVaoKhoaArray.join(',');
     const maIcdTruocThuat = maIcdTruocThuatArray.join(',');
     const maIcdSauThuat = maIcdSauThuatArray.join(',');
@@ -682,7 +704,6 @@ async function handleSaveThongTin() {
 
     console.log("Mã ICD Vào Khoa:", maIcdVaoKhoa);
 
-    // --- TomSelects đơn lẻ ---
     const maPhongThucHien = $('.cbPhongThucHien').val();
     const maPhanLoai = $('.cbPhanLoai').val();
     const maThietBi = $('.cbThietBi').val();
@@ -691,7 +712,6 @@ async function handleSaveThongTin() {
     const maViTriThucHien = $('.cbViTriThucHien').val();
     const maTuVong = $('.cbTuVong').val();
 
-    // --- Các trường Input/Textarea ---
     const canThiepThuThuat = $('#can_thiep_thu_thuat').val()?.trim() || null;
     const soLanMoLaiRaw = $('#so_lan_mo_lai').val();
     const soLanMoLai = soLanMoLaiRaw ? parseInt(soLanMoLaiRaw) : 0;
@@ -701,21 +721,17 @@ async function handleSaveThongTin() {
     const ngayCatChi = $('#ngay_cat_chi').val() || null;
     const khac = $('#khac').val()?.trim() || null;
 
-    // --- Dữ liệu FNA ---
     const maFna = $('#ma_fna').val()?.trim() || null;
     const tienCan = $('#tien_can').val()?.trim() || null;
     const ketQuaXetNghiem = $('#ket_qua_xet_nghiem').val()?.trim() || null;
     const chiDinhViTriTonThuongFNA = $('#chi_dinh_vi_tri_ton_thuong_fna').val()?.trim() || null;
     const yeuCauXetNghiem = $('#yeu_cau_xet_nghiem').val()?.trim() || null;
 
-    // --- Phương pháp vô cảm ---
-    const phuongPhapVoCamList = getAnesthesiaMethods();
+    const idPhuongPhapVoCam = $('.cbPTVoCam').val();
 
-    // 2. Chuẩn bị đối tượng gửi đi (Sử dụng PascalCase cho C# Model)
     const dataToSend = {
         IDPhieuTTPT: IDPhieuTTPT_HienTai,
 
-        // ICDs: Chuyển mảng (nếu có) thành chuỗi ngăn cách bằng dấu phẩy
         MaChanDoanVao: Array.isArray(maIcdVaoKhoa) ? maIcdVaoKhoa.join(',') : maIcdVaoKhoa,
         MaChanDoanTruoc: Array.isArray(maIcdTruocThuat) ? maIcdTruocThuat.join(',') : maIcdTruocThuat,
         MaChanDoanSau: Array.isArray(maIcdSauThuat) ? maIcdSauThuat.join(',') : maIcdSauThuat,
@@ -723,7 +739,6 @@ async function handleSaveThongTin() {
         TenChanDoanTruoc: tenICDTruoc,
         TenChanDoanSau: tenICDSau,
 
-        // Fields
         IDPhongThucHien: maPhongThucHien,
         IDLoaiTTPT: maPhanLoai,
         IDThietBi: maThietBi,
@@ -739,20 +754,17 @@ async function handleSaveThongTin() {
         NgayCatChi: ngayCatChi,
         Khac: khac,
 
-        // FNA
         MaFNA: maFna,
         TienCan: tienCan,
         KetQuaXNFNAGBP: ketQuaXetNghiem,
         ChiDinhViTriTonThuongFNA: chiDinhViTriTonThuongFNA,
         YeuCauXetNghiem: yeuCauXetNghiem,
 
-        // Phương pháp vô cảm (Gửi dưới dạng chuỗi ngăn cách bằng dấu phẩy)
-        PhuongPhapVoCam: phuongPhapVoCamList.join(','),
+        IDPhuongPhapVoCam: idPhuongPhapVoCam
     };
 
     console.log("-> Dữ liệu Thông Tin Thủ Thuật gửi đi:", dataToSend);
 
-    // 3. Gửi dữ liệu về Controller
     $.ajax({
         url: "/thu_thuat_phau_thuat/thong-tin/save-thong-tin",
         method: 'POST',
@@ -762,7 +774,7 @@ async function handleSaveThongTin() {
             console.log("Lưu dữ liệu Thông Tin Thủ Thuật thành công:", response);
             if (response.success) {
                 if (typeof toastr !== 'undefined') {
-                    toastr.success("Đã lưu thông tin thủ thuật thành công! ✅");
+                    toastr.success("Đã lưu thông tin thủ thuật thành công!");
                 }
             } else {
                 if (typeof toastr !== 'undefined') {
@@ -773,10 +785,11 @@ async function handleSaveThongTin() {
         error: function (jqXHR, textStatus, errorThrown) {
             console.error("Lỗi AJAX khi lưu Thông Tin Thủ Thuật:", { jqXHR, textStatus, errorThrown });
             if (typeof toastr !== 'undefined') {
-                toastr.error("Lỗi kết nối hoặc lỗi server khi lưu thông tin. ❌");
+                toastr.error("Lỗi kết nối hoặc lỗi server khi lưu thông tin.");
             }
         }
     });
 }
 $('#btn_saveThongTin').on('click', handleSaveThongTin);
 console.log("Đã gắn sự kiện 'click' cho nút Lưu Thông Tin Thủ Thuật.");
+
