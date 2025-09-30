@@ -148,19 +148,12 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             try
             {
-                // Cần phải parse các trường string (từ FE) sang kiểu số (BIGINT trong SP)
-                long.TryParse(model.IDTaiBienBienChung, out long idTaiBien);
-                long.TryParse(model.IDTuVong, out long idTuVong);
-                // Giả sử IDViTriThucHien cũng cần parse
-                long.TryParse(model.IDViTriThucHien, out long idViTriThucHien);
 
-                // Tạo câu lệnh SQL gọi Stored Procedure, truyền các tham số
-                // @p0, @p1, ... là các placeholder cho tham số, EF Core sẽ tự động ánh xạ
                 string sqlQuery = @"EXEC S0301_ThemThongTinTTPT 
             @IDPhieuTTPT, @MaChanDoanVao, @TenChanDoanVao, @MaChanDoanTruoc, @TenChanDoanTruoc, @MaChanDoanSau, @TenChanDoanSau,
             @IDPhongThucHien, @IDLoaiTTPT, @IDThietBi, @IDTaiBienBienChung, @IDCheDoThuThuat, @CanThiepThuThuat, @SoLanMoLai, 
             @LyDoMoLai, @IDViTriThucHien, @IDTuVong, @DanLuu, @NgayRutOngDanLuu, @NgayCatChi, @Khac,
-            @MaFNA, @TienCan, @KetQuaXNFNAGBP, @ChiDinhViTriTonThuongFNA, @YeuCauXetNghiem, @PhuongPhapVoCam";
+            @MaFNA, @TienCan, @KetQuaXNFNAGBP, @ChiDinhViTriTonThuongFNA, @YeuCauXetNghiem, @IDPhuongPhapVoCam";
 
                 await _context.Database.ExecuteSqlRawAsync(sqlQuery,
                     new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT ?? (object)DBNull.Value),
