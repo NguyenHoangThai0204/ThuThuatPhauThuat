@@ -137,6 +137,8 @@
 
 <div class="container mt-1 compact-form card p-2">
     <div class="row">
+        <input type="hidden" id="hiddenIdVaoVien" value="@ViewBag.IdVaoVien" />
+        <input type="hidden" id="hiddenTabIndex" value="@ViewBag.TabIndex" />
         <!-- Cột 1: Chẩn đoán vào khoa -->
         <div class="col-md-3">
             <div class="form-border-container">
@@ -406,121 +408,7 @@
     </div>
 
 </div>
-
-<!-- Updated modals to remove alias field and center positioning -->
-<!-- Modal for Thiết bị -->
-<div class="modal fade" id="thietBiModal" tabindex="-1" aria-labelledby="thietBiModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="thietBiModalLabel">Thêm Thiết Bị Mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="thietBiForm">
-                    <div class="form-group mb-3">
-                        <label for="thietBiMa" class="form-label">Mã thiết bị:</label>
-                        <input type="text" class="form-control" id="thietBiMa" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="thietBiTen" class="form-label">Tên thiết bị:</label>
-                        <input type="text" class="form-control" id="thietBiTen" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="saveThietBi()">Lưu</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal for Tai biến/biến chứng -->
-<div class="modal fade" id="bienChungModal" tabindex="-1" aria-labelledby="bienChungModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="bienChungModalLabel">Thêm Tai Biến/Biến Chứng Mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="bienChungForm">
-                    <div class="form-group mb-3">
-                        <label for="bienChungMa" class="form-label">Mã tai biến/biến chứng:</label>
-                        <input type="text" class="form-control" id="bienChungMa" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="bienChungTen" class="form-label">Tên tai biến/biến chứng:</label>
-                        <input type="text" class="form-control" id="bienChungTen" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="saveBienChung()">Lưu</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal for Chế độ thủ thuật -->
-<div class="modal fade" id="cheDoThuThuatModal" tabindex="-1" aria-labelledby="cheDoThuThuatModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cheDoThuThuatModalLabel">Thêm Chế Độ Thủ Thuật Mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="cheDoThuThuatForm">
-                    <div class="form-group mb-3">
-                        <label for="cheDoThuThuatMa" class="form-label">Mã chế độ thủ thuật:</label>
-                        <input type="text" class="form-control" id="cheDoThuThuatMa" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="cheDoThuThuatTen" class="form-label">Tên chế độ thủ thuật:</label>
-                        <input type="text" class="form-control" id="cheDoThuThuatTen" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="saveCheDoThuThuat()">Lưu</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal for Vị trí thực hiện -->
-<div class="modal fade" id="viTriThucHienModal" tabindex="-1" aria-labelledby="viTriThucHienModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="viTriThucHienModalLabel">Thêm Vị Trí Thực Hiện Mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="viTriThucHienForm">
-                    <div class="form-group mb-3">
-                        <label for="viTriThucHienMa" class="form-label">Mã vị trí thực hiện:</label>
-                        <input type="text" class="form-control" id="viTriThucHienMa" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="viTriThucHienTen" class="form-label">Tên vị trí thực hiện:</label>
-                        <input type="text" class="form-control" id="viTriThucHienTen" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="saveViTriThucHien()">Lưu</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script src="~/dist/js/J0302/J0302TTPT/J0302ThongTinThuThuat.js" asp-append-version="true" defer></script>
-<script>
 
-</script>
+
+

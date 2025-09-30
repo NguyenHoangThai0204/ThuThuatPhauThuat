@@ -1,10 +1,3 @@
-﻿toastr.options = {
-    "closeButton": true,
-    "progressBar": true,
-    "positionClass": "toast-top-right",
-    "timeOut": "1500"
-};
-
 function formatDateTime(date) {
     const dd = String(date.getDate()).padStart(2, "0")
     const MM = String(date.getMonth() + 1).padStart(2, "0")
@@ -750,33 +743,8 @@ async function handleSaveThongTin() {
         PhuongPhapVoCam: phuongPhapVoCamList.join(','),
     };
 
-    console.log("-> Dữ liệu Thông Tin Thủ Thuật gửi đi:", dataToSend);
-
-    // 3. Gửi dữ liệu về Controller
-    $.ajax({
-        url: "/thu_thuat_phau_thuat/thong-tin/save-thong-tin",
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(dataToSend),
-        success: function (response) {
-            console.log("Lưu dữ liệu Thông Tin Thủ Thuật thành công:", response);
-            if (response.success) {
-                if (typeof toastr !== 'undefined') {
-                    toastr.success("Đã lưu thông tin thủ thuật thành công! ✅");
-                }
-            } else {
-                if (typeof toastr !== 'undefined') {
-                    toastr.error(`Lỗi khi lưu: ${response.message || 'Lỗi server không rõ'}`);
-                }
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.error("Lỗi AJAX khi lưu Thông Tin Thủ Thuật:", { jqXHR, textStatus, errorThrown });
-            if (typeof toastr !== 'undefined') {
-                toastr.error("Lỗi kết nối hoặc lỗi server khi lưu thông tin. ❌");
-            }
-        }
-    });
+    console.log("Khởi tạo Tab thông tin hoàn tất. Sự kiện đã được gán.");
 }
-$('#btn_saveThongTin').on('click', handleSaveThongTin);
-console.log("Đã gắn sự kiện 'click' cho nút Lưu Thông Tin Thủ Thuật.");
+
+initThongTinTab();
+

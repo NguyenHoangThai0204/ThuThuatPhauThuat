@@ -6,9 +6,6 @@ function khoiTaoJSChoTab(tabIndex) {
     });
 }
 
-var selectedIdVaoVien = null;
-let selectedSoPhieu = localStorage.getItem("selectedSoPhieu") || null; // Lưu lâu dài
-
 $(document).ready(function () {
 
     $("#tabs-danhsach-7").load("/thu_thuat_phau_thuat/danh_sach");
@@ -25,15 +22,15 @@ $(document).ready(function () {
         if (target === "#tabs-danhsach-7" && $(target).is(':empty')) {
             $(target).load("/thu_thuat_phau_thuat/danh_sach");
         }
-        else if (tabNumber > 0) {
+        else if (tabNumber > 0 && $(target).is(':empty')) {
             var urlMap = {
                 2: "/thu_thuat_phau_thuat/thong_tin",
                 3: "/thu_thuat_phau_thuat/trinh_tu",
                 4: "/thu_thuat_phau_thuat/ekip",
                 5: "/thu_thuat_phau_thuat/ghi_nhan_thuoc_vat_tu"
             };
-            $(target).load(urlMap[tabNumber] + "?idVaoVien=" + selectedIdVaoVien, function () {
-                $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu?tabIndex=" + tabNumber + "&idVaoVien=" + selectedIdVaoVien + "&idcn=" + window._idcn, function (html) {
+            $(target).load(urlMap[tabNumber], function () {
+                $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu?tabIndex=" + tabNumber, function (html) {
                     $(target).prepend(html);
                     khoiTaoJSChoTab(tabNumber);
 

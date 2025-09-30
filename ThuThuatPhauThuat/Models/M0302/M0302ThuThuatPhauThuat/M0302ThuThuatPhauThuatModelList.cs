@@ -1,4 +1,6 @@
-﻿namespace ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat
+﻿using System;
+
+namespace ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat
 {
     public class M0302ThuThuatPhauThuatModelList
     {
@@ -13,5 +15,7 @@
         public string? NoiChiDinh { get; set; }       // pb.TenPhong
         public int? NamSinh { get; set; }
         public string? GioiTinh { get; set; }
+        public long? IdVaoVien { get; set; }
+        public DateTime? NgayGioChiDinh { get; set; }
     }
 }

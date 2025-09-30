@@ -141,8 +141,10 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             return Json(new { Success = true, Message = message, Data = data });
         }
+      
+
         [HttpGet("thong_tin")]
-        public async Task<IActionResult> ThongTin()
+        public IActionResult ThongTin(long? idVaoVien, int tabIndex = 0)
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
@@ -152,6 +154,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -161,89 +165,13 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 CaNhan = true,
                 Xem = true,
             };
+
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302ThongTinThuThuatPhauThuat.cshtml");
         }
-
-        [HttpPost("thong-tin/save-thong-tin")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> SaveThongTin([FromBody] M0302ThongTinThuThuatPhauThuatModel model)
-        {
-            if (model == null)
-            {
-                return BadRequest(new { success = false, message = "Dữ liệu gửi lên không hợp lệ." });
-            }
-
-            try
-            {
-                // Cần phải parse các trường string (từ FE) sang kiểu số (BIGINT trong SP)
-                long.TryParse(model.IDTaiBienBienChung, out long idTaiBien);
-                long.TryParse(model.IDTuVong, out long idTuVong);
-                // Giả sử IDViTriThucHien cũng cần parse
-                long.TryParse(model.IDViTriThucHien, out long idViTriThucHien);
-
-                // Tạo câu lệnh SQL gọi Stored Procedure, truyền các tham số
-                // @p0, @p1, ... là các placeholder cho tham số, EF Core sẽ tự động ánh xạ
-                string sqlQuery = @"EXEC S0301_ThemThongTinTTPT 
-            @IDPhieuTTPT, @MaChanDoanVao, @TenChanDoanVao, @MaChanDoanTruoc, @TenChanDoanTruoc, @MaChanDoanSau, @TenChanDoanSau,
-            @IDPhongThucHien, @IDLoaiTTPT, @IDThietBi, @IDTaiBienBienChung, @IDCheDoThuThuat, @CanThiepThuThuat, @SoLanMoLai, 
-            @LyDoMoLai, @IDViTriThucHien, @IDTuVong, @DanLuu, @NgayRutOngDanLuu, @NgayCatChi, @Khac,
-            @MaFNA, @TienCan, @KetQuaXNFNAGBP, @ChiDinhViTriTonThuongFNA, @YeuCauXetNghiem, @PhuongPhapVoCam";
-
-                await _context.Database.ExecuteSqlRawAsync(sqlQuery,
-                    new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT ?? (object)DBNull.Value),
-                    new SqlParameter("@MaChanDoanVao", model.MaChanDoanVao ?? (object)DBNull.Value),
-                    new SqlParameter("@TenChanDoanVao", model.TenChanDoanVao ?? (object)DBNull.Value),
-                    new SqlParameter("@MaChanDoanTruoc", model.MaChanDoanTruoc ?? (object)DBNull.Value),
-                    new SqlParameter("@TenChanDoanTruoc", model.TenChanDoanTruoc ?? (object)DBNull.Value),
-                    new SqlParameter("@MaChanDoanSau", model.MaChanDoanSau ?? (object)DBNull.Value),
-                    new SqlParameter("@TenChanDoanSau", model.TenChanDoanSau ?? (object)DBNull.Value),
-
-                    new SqlParameter("@IDPhongThucHien", model.IDPhongThucHien ?? (object)DBNull.Value),
-                    new SqlParameter("@IDLoaiTTPT", model.IDLoaiTTPT ?? (object)DBNull.Value),
-                    new SqlParameter("@IDThietBi", model.IDThietBi ?? (object)DBNull.Value),
-
-                    // Ép kiểu: model.IDTaiBienBienChung (string) -> idTaiBien (long)
-                    new SqlParameter("@IDTaiBienBienChung", idTaiBien),
-                    new SqlParameter("@IDCheDoThuThuat", model.IDCheDoThuThuat ?? (object)DBNull.Value),
-                    new SqlParameter("@CanThiepThuThuat", model.CanThiepThuThuat ?? (object)DBNull.Value),
-
-                    new SqlParameter("@SoLanMoLai", model.SoLanMoLai ?? (object)DBNull.Value),
-                    new SqlParameter("@LyDoMoLai", model.LyDoMoLai ?? (object)DBNull.Value),
-
-                    // Ép kiểu: model.IDViTriThucHien (string) -> idViTriThucHien (long)
-                    new SqlParameter("@IDViTriThucHien", idViTriThucHien),
-
-                    // Ép kiểu: model.IDTuVong (string) -> idTuVong (long)
-                    new SqlParameter("@IDTuVong", idTuVong),
-
-                    new SqlParameter("@DanLuu", model.DanLuu ?? (object)DBNull.Value),
-                    new SqlParameter("@NgayRutOngDanLuu", model.NgayRutOngDanLuu ?? (object)DBNull.Value),
-                    new SqlParameter("@NgayCatChi", model.NgayCatChi ?? (object)DBNull.Value),
-                    new SqlParameter("@Khac", model.Khac ?? (object)DBNull.Value),
-
-                    new SqlParameter("@MaFNA", model.MaFNA ?? (object)DBNull.Value),
-                    new SqlParameter("@TienCan", model.TienCan ?? (object)DBNull.Value),
-                    new SqlParameter("@KetQuaXNFNAGBP", model.KetQuaXNFNAGBP ?? (object)DBNull.Value),
-                    new SqlParameter("@ChiDinhViTriTonThuongFNA", model.ChiDinhViTriTonThuongFNA ?? (object)DBNull.Value),
-                    new SqlParameter("@YeuCauXetNghiem", model.YeuCauXetNghiem ?? (object)DBNull.Value),
-
-                    new SqlParameter("@PhuongPhapVoCam", model.IDPhuongThucVoCam ?? (object)DBNull.Value)
-                );
-
-                return Ok(new { success = true, message = "Lưu thông tin thủ thuật/phẫu thuật thành công." });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi khi gọi SP: {ex.Message}");
-                return StatusCode(500, new { success = false, message = $"Lỗi Server: {ex.Message}" });
-            }
-        }
-
         [HttpGet("trinh_tu")]
-        public async Task<IActionResult> TrinhTuVaKetLuan()
+        public async Task<IActionResult> TrinhTuVaKetLuan(long? idVaoVien, int tabIndex = 0)
         {
+
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
             //{
@@ -252,6 +180,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -265,7 +195,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         }
 
         [HttpGet("ekip")]
-        public async Task<IActionResult> EkipThucHien()
+        public async Task<IActionResult> EkipThucHien(long? idVaoVien, int tabIndex = 0)
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
@@ -275,6 +205,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -400,7 +332,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
 
         [HttpGet("ghi_nhan_thuoc_vat_tu")]
-        public async Task<IActionResult> GhiNhanThuocVatTu()
+        public async Task<IActionResult> GhiNhanThuocVatTu(long? idVaoVien, int tabIndex = 0)
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
@@ -410,6 +342,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            ViewBag.IdVaoVien = idVaoVien;
+            ViewBag.TabIndex = tabIndex;
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -421,7 +355,6 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302GhiNhanVatTuTTPT.cshtml");
         }
-
 
     }
 }
