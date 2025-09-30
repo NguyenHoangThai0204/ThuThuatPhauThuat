@@ -1,11 +1,4 @@
-function formatDateTime(date) {
-    const dd = String(date.getDate()).padStart(2, "0")
-    const MM = String(date.getMonth() + 1).padStart(2, "0")
-    const yyyy = date.getFullYear()
-    const HH = String(date.getHours()).padStart(2, "0")
-    const mm = String(date.getMinutes()).padStart(2, "0")
-    return `${dd}-${MM}-${yyyy} ${HH}:${mm}`
-}
+
 function updateDateTime() {
     var now = new Date()
     var formatted = formatDateTime(now)
@@ -214,33 +207,76 @@ function normalizeData(data, tenField = 'ten', viettatField = 'viettat') {
             };
         });
 }
+function fetchDataAndNormalize(url, tenField = 'ten', viettatField = 'viettat', idChiNhanh = null) {
+    function filterData(data) {
+        if (!Array.isArray(data)) return [];
 
-function fetchDataAndNormalize(url, tenField = 'ten', viettatField = 'viettat') {
+        let filtered = data.filter(n => n.active === true || n.active === 1);
+
+        if (idChiNhanh !== null) {
+            filtered = filtered.filter(n => {
+                if ('idchinhanh' in n) return n.idchinhanh == idChiNhanh;
+                if ('idcn' in n) return n.idcn == idChiNhanh;
+                return true; 
+            });
+        }
+
+        return normalizeData(filtered, tenField, viettatField);
+    }
+
     if (url.endsWith('.json')) {
         return new Promise((resolve, reject) => {
             $.getJSON(url, data => {
-                resolve(normalizeData(data, tenField, viettatField));
+                resolve(filterData(data));
             }).fail((jqXHR, textStatus, errorThrown) => {
                 console.error(`Lỗi khi tải dữ liệu từ ${url}:`, textStatus, errorThrown);
-                resolve([]); 
+                resolve([]);
             });
         });
     }
+
     return new Promise((resolve, reject) => {
         $.ajax({
             url: url,
             method: 'GET',
             dataType: 'json',
             success: function (data) {
-                resolve(normalizeData(data, tenField, viettatField));
+                resolve(filterData(data));
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error(`Lỗi khi gọi API ${url}:`, textStatus, errorThrown);
-                resolve([]); 
+                resolve([]);
             }
         });
     });
 }
+
+//function fetchDataAndNormalize(url, tenField = 'ten', viettatField = 'viettat') {
+//    if (url.endsWith('.json')) {
+//        return new Promise((resolve, reject) => {
+//            $.getJSON(url, data => {
+//                resolve(normalizeData(data, tenField, viettatField));
+//            }).fail((jqXHR, textStatus, errorThrown) => {
+//                console.error(`Lỗi khi tải dữ liệu từ ${url}:`, textStatus, errorThrown);
+//                resolve([]); 
+//            });
+//        });
+//    }
+//    return new Promise((resolve, reject) => {
+//        $.ajax({
+//            url: url,
+//            method: 'GET',
+//            dataType: 'json',
+//            success: function (data) {
+//                resolve(normalizeData(data, tenField, viettatField));
+//            },
+//            error: function (jqXHR, textStatus, errorThrown) {
+//                console.error(`Lỗi khi gọi API ${url}:`, textStatus, errorThrown);
+//                resolve([]); 
+//            }
+//        });
+//    });
+//}
 
 
 
@@ -292,22 +328,138 @@ function getTomSelectConfigs(allData) {
         },
     ]
 }
+$(function () {
+    $('#ngay_rut_ong_dan_luu').datepicker({
+        format: "dd-mm-yyyy",
+        language: "vi",
+        autoclose: true,
+        todayHighlight: true,
+        weekStart: 1,
+        defaultViewDate: 'today'
 
 
-async function initThongTinTab() {
+    });
+    $('#ngay_rut_ong_dan_luu').datepicker('setDate', new Date());
+    $('#ngay_rut_ong_dan_luu').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
+    $('#ngay_cat_chi').datepicker({
+        format: "dd-mm-yyyy",
+        language: "vi",
+        autoclose: true,
+        todayHighlight: true,
+        weekStart: 1,
+        defaultViewDate: 'today'
+
+
+    });
+    $('#ngay_cat_chi').datepicker('setDate', new Date());
+    $('#ngay_cat_chi').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
+});
+
+function bindDataToForm(data) {
+    if (!data) return;
+
+    // Bind dữ liệu vào các trường
+    console.log(data)
+    document.getElementById('ten_icd_vao_khoa').value = data.tenChanDoanVao || '';
+    document.getElementById('hien_thi_icd_vao_khoa').innerText = data.maChanDoanVao || '';
+
+
+    document.getElementById('ten_icd_truoc_thuat').value = data.tenChanDoanTruoc || '';
+    document.getElementById('hien_thi_icd_truoc_thuat').innerText = data.maChanDoanTruoc || '';
+
+    document.getElementById('ten_icd_sau_thuat').value = data.tenChanDoanSau || '';
+    document.getElementById('hien_thi_icd_sau_thuat').innerText = data.maChanDoanSau || '';
+
+    document.getElementById('can_thiep_thu_thuat').value = data.canThiepThuThuat || '';
+    document.getElementById('so_lan_mo_lai').value = data.soLanMoLai || '';
+    document.getElementById('ly_do_mo_lai').value = data.lyDoMoLai || '';
+    document.getElementById('dan_luu').value = data.danLuu || '';
+    document.getElementById('ngay_rut_ong_dan_luu').value = formatDate(data.ngayRutOngDanLuu);
+    document.getElementById('ngay_cat_chi').value = formatDate(data.ngayCatChi);
+    document.getElementById('khac').value = data.khac || '';
+    document.getElementById('ma_fna').value = data.maFNA || '';
+    document.getElementById('tien_can').value = data.tienCan || '';
+    document.getElementById('ket_qua_xet_nghiem').value = data.ketQuaXNFNAGBP || '';
+    document.getElementById('chi_dinh_vi_tri_ton_thuong_fna').value = data.chiDinhViTriTonThuongFNA || '';
+    document.getElementById('yeu_cau_xet_nghiem').value = data.yeuCauXetNghiem || '';
+    // Phòng thực hiện
+    if (data.iDPhongThucHien) {
+        const phongSelect = document.querySelector(".cbPhongThucHien")?.tomselect;
+        if (phongSelect) phongSelect.setValue(String(data.iDPhongThucHien));
+    }
+
+    // Thiết bị
+    if (data.idThietBi) {
+        const thietBiSelect = document.querySelector(".cbThietBi")?.tomselect;
+        if (thietBiSelect) thietBiSelect.setValue(String(data.idThietBi));
+    }
+
+    if (data.idLoaiTTPT) {
+        const plSelect = document.querySelector(".cbPhanLoai")?.tomselect;
+        if (plSelect) plSelect.setValue(String(data.idLoaiTTPT));
+    }
+    if (data.idTaiBienBienChung) {
+        const plSelect = document.querySelector(".cbBienChung")?.tomselect;
+        if (plSelect) plSelect.setValue(String(data.idTaiBienBienChung));
+    }
+    if (data.idCheDoThuThuat) {
+        const plSelect = document.querySelector(".cbCheDoThuThuat")?.tomselect;
+        if (plSelect) plSelect.setValue(String(data.idCheDoThuThuat));
+    }
+    if (data.idViTriThucHien) {
+        const plSelect = document.querySelector(".cbViTriThucHien")?.tomselect;
+        if (plSelect) plSelect.setValue(String(data.idViTriThucHien));
+    }
+    if (data.idTuVong) {
+        const plSelect = document.querySelector(".cbTuVong")?.tomselect;
+        if (plSelect) plSelect.setValue(String(data.idTuVong));
+    }
+}
+
+
+function loadData(idVaoVien, idChiNhanh, soPhieu) {
+    //console.log("Bắt đầu loadData", idVaoVien, idChiNhanh);
+    if (idVaoVien && idChiNhanh && soPhieu) {
+        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${soPhieu}`)
+            .then(response => response.json())
+            .then(data => {
+                //console.log("Dữ liệu loadData trả về", data);
+                if (data.success) {
+                    bindDataToForm(data.data);
+                } else {
+                    console.error("Lỗi khi tải dữ liệu:", data.message);
+                }
+            })
+            .catch(error => console.error("Lỗi:", error));
+    }
+}
+
+async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
     console.log("Bắt đầu tải dữ liệu và khởi tạo Tab thông tin...");
-
+   
     // 1. Định nghĩa các lời gọi bất đồng bộ
+    //const dataPromises = {
+    //    phongBuong: fetchDataAndNormalize("dist/data/json/DM_PhongBuong.json"),
+    //    phanLoai: fetchDataAndNormalize("dist/data/json/DM_LoaiThuThuatPhauThuat.json"),
+    //    viTriThucHien: fetchDataAndNormalize("/ViTriThucHien/List", 'ten', 'viettat'),
+    //    taiBienBienChung: fetchDataAndNormalize("/TaiBienBienChung/List", 'ten', 'viettat'),
+    //    cheDoThuThuat: fetchDataAndNormalize("/CheDoThuThuat/List", 'ten', 'viettat'),
+    //    thietBi: fetchDataAndNormalize("dist/data/json/CLS_DanhMucMayCls.json", 'ten', 'viettat'),
+    //};
     const dataPromises = {
-        phongBuong: fetchDataAndNormalize("dist/data/json/DM_PhongBuong.json"),
-        phanLoai: fetchDataAndNormalize("dist/data/json/DM_LoaiThuThuatPhauThuat.json"),
-        viTriThucHien: fetchDataAndNormalize("/ViTriThucHien/List", 'ten', 'viettat'),
-        taiBienBienChung: fetchDataAndNormalize("/TaiBienBienChung/List", 'ten', 'viettat'),
-        cheDoThuThuat: fetchDataAndNormalize("/CheDoThuThuat/List", 'ten', 'viettat'),
-        thietBi: fetchDataAndNormalize("dist/data/json/CLS_DanhMucMayCls.json", 'ten', 'viettat'),
+        phongBuong: fetchDataAndNormalize("dist/data/json/DM_PhongBuong.json", 'ten', 'viettat', _idcn),
+        phanLoai: fetchDataAndNormalize("dist/data/json/DM_LoaiThuThuatPhauThuat.json", 'ten', 'viettat', _idcn),
+        viTriThucHien: fetchDataAndNormalize("/ViTriThucHien/List", 'ten', 'viettat', _idcn),
+        taiBienBienChung: fetchDataAndNormalize("/TaiBienBienChung/List", 'ten', 'viettat', _idcn),
+        cheDoThuThuat: fetchDataAndNormalize("/CheDoThuThuat/List", 'ten', 'viettat', _idcn),
+        thietBi: fetchDataAndNormalize("dist/data/json/CLS_DanhMucMayCls.json", 'ten', 'viettat', _idcn),
     };
 
     const results = await Promise.all(Object.values(dataPromises));
+    if (idVaoVien !== null && idChiNhanh !== null && idChiDinhChiTiet !== null) {
+        loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet)
+    }
+
 
     const allData = {};
     const keys = Object.keys(dataPromises);
@@ -324,8 +476,49 @@ async function initThongTinTab() {
     configCbThongTin(configs);
 
     console.log("Khởi tạo Tab thông tin hoàn tất. Dữ liệu đã được tải.");
+
+}
+function formatDate(date) {
+    if (!date) return '';
+    const d = new Date(date);
+    if (isNaN(d)) return ''; // tránh lỗi khi date null/undefined
+
+    const dd = String(d.getDate()).padStart(2, '0');
+    const MM = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return `${dd}-${MM}-${yyyy}`;
 }
 
+function formatDateTime(date) {
+    const dd = String(date.getDate()).padStart(2, '0');
+    const MM = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    const HH = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    return `${dd}-${MM}-${yyyy} ${HH}:${mm}`;
+}
+
+function updateDateTime() {
+    var now = new Date();
+    var formatted = formatDateTime(now);
+    $("#info-datetime", window.parent.document).text(formatted);
+}
+function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
+    //console.log("Bắt đầu loadData", idVaoVien, idChiNhanh);
+    if (idVaoVien && idChiNhanh && idChiDinhChiTiet) {
+        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${idChiDinhChiTiet}`)
+            .then(response => response.json())
+            .then(data => {
+                //console.log("Dữ liệu loadData trả về", data);
+                if (data.success) {
+                    bindDataToForm(data.data);
+                } else {
+                    console.error("Lỗi khi tải dữ liệu:", data.message);
+                }
+            })
+            .catch(error => console.error("Lỗi:", error));
+    }
+}
 // Gọi hàm khởi tạo
 initThongTinTab();
 

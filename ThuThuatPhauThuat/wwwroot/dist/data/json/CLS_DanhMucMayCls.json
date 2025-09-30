@@ -1,1 +1,572 @@
-[{"id":10011,"ma":"SA.1.79647.US618D0850","ten":"[Phòng 14 Máy 01] MÁY SIÊU ÂM DOPPLER MÀU TỔNG QUÁT 3 ĐẦU DÒ","maloaicls":"U","idphong":29,"idchinhanh":1,"viettat":"[1M0MSADMTQ3DD","active":true},{"id":10012,"ma":"SA.1.79647.US518D1530","ten":"[Phòng 15 Máy 02] MÁY SIÊU ÂM DOPPLER MÀU TỔNG QUÁT 3 ĐẦU DÒ","maloaicls":"U","idphong":30,"idchinhanh":1,"viettat":"[1M0MSADMTQ3DD","active":true},{"id":10028,"ma":null,"ten":"[Phòng 412] Máy nội soi","maloaicls":"N","idphong":null,"idchinhanh":1,"viettat":"[4MNS","active":true},{"id":10029,"ma":null,"ten":"[Phòng 412A] Máy nội soi","maloaicls":"N","idphong":null,"idchinhanh":1,"viettat":"[4MNS","active":true},{"id":10027,"ma":null,"ten":"[Phòng 413] Máy nội soi","maloaicls":"N","idphong":null,"idchinhanh":1,"viettat":"[4MNS","active":true},{"id":10013,"ma":null,"ten":"[Phòng 415] Máy nội soi","maloaicls":"N","idphong":null,"idchinhanh":1,"viettat":"[4MNS","active":true},{"id":6,"ma":"AU480_1","ten":"AU480 - CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"ACL","active":true},{"id":17,"ma":"SH_AU680","ten":"AU680 - CN2 - L3","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"ACL","active":true},{"id":1,"ma":"CobasPro_1","ten":"Cobas Pro- CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"CPCL","active":true},{"id":10010,"ma":"XQ.2.75257.VKM10171070116","ten":"Cộng hưởng từ","maloaicls":"M","idphong":null,"idchinhanh":2,"viettat":"CHT","active":false},{"id":11,"ma":"DG_ISE5000_2","ten":"Điện giải ISE5000 - CN2 - L3","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"DGICL","active":false},{"id":9,"ma":"ACLTOP550_1","ten":"Đông máu ACL TOP550 1 - CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"DMAT1CL","active":true},{"id":12,"ma":"DM_ACLTOP550_2","ten":"Đông máu ACL TOP550 2 - CN2 - L3","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"DMAT2CL","active":true},{"id":10009,"ma":"CL.1.79647.CBCVG1900069HM","ten":"HỆ THỐNG CHỤP CẮT LỚP VI TÍNH>=16 LÁT CẮT/VÒNG QUAY","maloaicls":"C","idphong":null,"idchinhanh":2,"viettat":"HTCCLVTLCQ","active":true},{"id":10022,"ma":"CL.1.79647.RE36A1900254YC","ten":"HỆ THỐNG CHỤP CẮT LỚP VI TÍNH>=64 LÁT CẮT/VÒNG QUAY","maloaicls":"C","idphong":null,"idchinhanh":2,"viettat":"HTCCLVTLCQ","active":true},{"id":10026,"ma":"MRI.1.79647.SP40T1800026YR","ten":"HỆ THỐNG CHỤP CỘNG HƯỞNG TỪ (MRI).3.0 TESLA, SỐ KÊNH KHÔNG GIỚI HẠN","maloaicls":"M","idphong":null,"idchinhanh":2,"viettat":"HTCCHT","active":true},{"id":7,"ma":"DxH600_1","ten":"HH DXH600 1 - CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"HD1CL","active":true},{"id":8,"ma":"DxH600_2","ten":"HH DXH600 2 - CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"HD2CL","active":true},{"id":13,"ma":"HH_DXH800","ten":"Huyết học Beckman DXH800 - CN2 - L3","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"HHBDCL","active":true},{"id":5,"ma":"ISE5000_2","ten":"ISE5000 - CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"ICL","active":true},{"id":10019,"ma":"CobasPro","ten":"Máy Cobas Pro CN1-L3","maloaicls":"XN","idphong":null,"idchinhanh":1,"viettat":"MCPC","active":true},{"id":10031,"ma":null,"ten":"Máy CT[CS1]","maloaicls":"C","idphong":null,"idchinhanh":1,"viettat":"MC","active":true},{"id":10007,"ma":"DT.2.75257.EN0600065","ten":"Máy điện tim","maloaicls":"T","idphong":null,"idchinhanh":2,"viettat":"MDT","active":true},{"id":10008,"ma":"DT.2.75257.50008040","ten":"Máy điện tim (Mới)","maloaicls":"T","idphong":null,"idchinhanh":2,"viettat":"MDT","active":false},{"id":10020,"ma":"DxI800","ten":"Máy DxI 800 CN1-L3","maloaicls":"XN","idphong":null,"idchinhanh":1,"viettat":"MD8C","active":true},{"id":10030,"ma":"XNK","ten":"Máy khác","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"MK","active":true},{"id":10001,"ma":null,"ten":"Máy máu lắng CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"MMLCL","active":true},{"id":3,"ma":"ArchitectI2000_7","ten":"Máy miễn dịch (Architect) - CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"MMD","active":true},{"id":10033,"ma":null,"ten":"Máy MRI[CS1]","maloaicls":"M","idphong":null,"idchinhanh":1,"viettat":"MM","active":true},{"id":10032,"ma":"Senographe","ten":"Máy nhũ Senographe","maloaicls":"X","idphong":null,"idchinhanh":1,"viettat":"MNS","active":true},{"id":10005,"ma":"SA.2.75257.CN6-34000993","ten":"Máy siêu âm phòng 1","maloaicls":"U","idphong":26,"idchinhanh":2,"viettat":"MSAP1","active":true},{"id":10004,"ma":"SA.2.75257.S0QQM3HG800085A","ten":"Máy siêu âm phòng 2","maloaicls":"U","idphong":27,"idchinhanh":2,"viettat":"MSAP2","active":true},{"id":10035,"ma":null,"ten":"Máy siêu âm phòng 27","maloaicls":"U","idphong":31,"idchinhanh":2,"viettat":"MSAP2","active":true},{"id":10036,"ma":null,"ten":"Máy siêu âm phòng 28","maloaicls":"U","idphong":32,"idchinhanh":2,"viettat":"MSAP2","active":true},{"id":10017,"ma":"BeckmanCoulterDxC700","ten":"Máy sinh hóa Beckman Coulter DxC 700 CN1-L3","maloaicls":"XN","idphong":null,"idchinhanh":1,"viettat":"MSHBCD7C","active":true},{"id":10016,"ma":"SOLEA100","ten":"Máy xét nghiệm đông máu SOLEA 100 CN1-L3","maloaicls":"XN","idphong":null,"idchinhanh":1,"viettat":"MXNDMS1C","active":true},{"id":10018,"ma":"EasylyteExpand","ten":"Máy xét nghiệm Easylyte Expand CN1-L3","maloaicls":"XN","idphong":null,"idchinhanh":1,"viettat":"MXNEEC","active":true},{"id":10024,"ma":"XQ.1.79647.Q-RAD-R18-R0320","ten":"MÁY X-QUANG KỸ THUẬT SỐ, 2 TẤM CẢM BIẾN PHẲNG DRX-ASCEND [Máy XQ 01]","maloaicls":"X","idphong":null,"idchinhanh":2,"viettat":"MXKTS2TCBPD[X0","active":true},{"id":10002,"ma":"XQ.1.79647.Q-RAD-R18-R0321","ten":"MÁY X-QUANG KỸ THUẬT SỐ, 2 TẤM CẢM BIẾN PHẲNG DRX-ASCEND [XQ 02]","maloaicls":"X","idphong":null,"idchinhanh":2,"viettat":"MXKTS2TCBPD[0","active":true},{"id":10025,"ma":"XQ.1.79647.1810102451","ten":"MÁY X-QUANG NHŨ ẢNH KỸ THUẬT SỐ CÓ BỘ SINH THIẾT TỰ ĐỘNG","maloaicls":"X","idphong":null,"idchinhanh":2,"viettat":"MXNAKTSCBSTTD","active":true},{"id":10023,"ma":"XQ.1.79647.1803102151","ten":"MÁY X-QUANG NHŨ ẢNH KỸ THUẬT SỐ CÓ BỘ SINH THIẾT TỰ ĐỘNG 3D","maloaicls":"X","idphong":null,"idchinhanh":2,"viettat":"MXNAKTSCBSTTD3","active":true},{"id":10037,"ma":"XQ.1.79647.GDIM451","ten":"MÁY X-QUANG RĂNG KỸ THUẬT SỐ CHỤP TOÀN CẢNH + CT","maloaicls":"X","idphong":null,"idchinhanh":2,"viettat":"MXRKTSCTC+C","active":true},{"id":4,"ma":"DxI800_1","ten":"Miễn dịch Unicel DxI 800 - CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"MDUD8CL","active":true},{"id":10,"ma":"NM_Wadiana_1","ten":"Nhóm máu Wadiana 1 - CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"NMW1CL","active":true},{"id":14,"ma":"NM_Wadiana_2","ten":"Nhóm máu Wadiana 2 - CN2 - L3","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"NMW2CL","active":true},{"id":15,"ma":"HH_GEM3000","ten":"Phân tích khí máu GEM3000 - CN2 - L3","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"PTKMGCL","active":true},{"id":10039,"ma":"NS14","ten":"Phòng NS 14","maloaicls":"N","idphong":null,"idchinhanh":2,"viettat":"PN1","active":true},{"id":10038,"ma":"NS18","ten":"Phòng NS 18","maloaicls":"N","idphong":null,"idchinhanh":2,"viettat":"PN1","active":true},{"id":10006,"ma":"TC.2.75257.17044366P","ten":"Phòng NS 19","maloaicls":"N","idphong":null,"idchinhanh":2,"viettat":"PN1","active":true},{"id":10040,"ma":"NS20","ten":"Phòng NS 20","maloaicls":"N","idphong":null,"idchinhanh":2,"viettat":"PN2","active":true},{"id":10003,"ma":"NS.2.75257.MI1CB1906009","ten":"Phòng NS 21","maloaicls":"N","idphong":null,"idchinhanh":2,"viettat":"PN2","active":true},{"id":10015,"ma":"Sysmex_XN550","ten":"Sysmex XN550 CN1-L3","maloaicls":"XN","idphong":null,"idchinhanh":1,"viettat":"SXC","active":true},{"id":10014,"ma":"TestPM","ten":"TestPM","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"T","active":false},{"id":16,"ma":"NT_IchemVelocity","ten":"Xét nghiệm nước tiểu IchemVelocity - CN2 - L3","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"XNNTICL","active":true},{"id":2,"ma":"LabUReaderPlus_1","ten":"Xét nghiệm nước tiểu LabUReaderPlus - CN2 - L1","maloaicls":"XN","idphong":null,"idchinhanh":2,"viettat":"XNNTLCL","active":true},{"id":10021,"ma":"Revolution1","ten":"XQ Di động 01","maloaicls":"X","idphong":null,"idchinhanh":1,"viettat":"XDD0","active":true},{"id":10034,"ma":"Revolution2","ten":"XQ Di động 02","maloaicls":"X","idphong":null,"idchinhanh":1,"viettat":"XDD0","active":true}]
+[
+  {
+    "id": 10011,
+    "ma": "SA.1.79647.US618D0850",
+    "ten": "[Phòng 14 Máy 01] MÁY SIÊU ÂM DOPPLER MÀU TỔNG QUÁT 3 ĐẦU DÒ",
+    "maloaicls": "U",
+    "idphong": 29,
+    "idchinhanh": 1,
+    "viettat": "[1M0MSADMTQ3DD",
+    "active": true
+  },
+  {
+    "id": 10012,
+    "ma": "SA.1.79647.US518D1530",
+    "ten": "[Phòng 15 Máy 02] MÁY SIÊU ÂM DOPPLER MÀU TỔNG QUÁT 3 ĐẦU DÒ",
+    "maloaicls": "U",
+    "idphong": 30,
+    "idchinhanh": 1,
+    "viettat": "[1M0MSADMTQ3DD",
+    "active": true
+  },
+  {
+    "id": 10028,
+    "ma": null,
+    "ten": "[Phòng 412] Máy nội soi",
+    "maloaicls": "N",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "[4MNS",
+    "active": true
+  },
+  {
+    "id": 10029,
+    "ma": null,
+    "ten": "[Phòng 412A] Máy nội soi",
+    "maloaicls": "N",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "[4MNS",
+    "active": true
+  },
+  {
+    "id": 10027,
+    "ma": null,
+    "ten": "[Phòng 413] Máy nội soi",
+    "maloaicls": "N",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "[4MNS",
+    "active": true
+  },
+  {
+    "id": 10013,
+    "ma": null,
+    "ten": "[Phòng 415] Máy nội soi",
+    "maloaicls": "N",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "[4MNS",
+    "active": true
+  },
+  {
+    "id": 6,
+    "ma": "AU480_1",
+    "ten": "AU480 - CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "ACL",
+    "active": true
+  },
+  {
+    "id": 17,
+    "ma": "SH_AU680",
+    "ten": "AU680 - CN2 - L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "ACL",
+    "active": true
+  },
+  {
+    "id": 1,
+    "ma": "CobasPro_1",
+    "ten": "Cobas Pro- CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "CPCL",
+    "active": true
+  },
+  {
+    "id": 10010,
+    "ma": "XQ.2.75257.VKM10171070116",
+    "ten": "Cộng hưởng từ",
+    "maloaicls": "M",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "CHT",
+    "active": false
+  },
+  {
+    "id": 11,
+    "ma": "DG_ISE5000_2",
+    "ten": "Điện giải ISE5000 - CN2 - L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "DGICL",
+    "active": false
+  },
+  {
+    "id": 9,
+    "ma": "ACLTOP550_1",
+    "ten": "Đông máu ACL TOP550 1 - CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "DMAT1CL",
+    "active": true
+  },
+  {
+    "id": 12,
+    "ma": "DM_ACLTOP550_2",
+    "ten": "Đông máu ACL TOP550 2 - CN2 - L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "DMAT2CL",
+    "active": true
+  },
+  {
+    "id": 10009,
+    "ma": "CL.1.79647.CBCVG1900069HM",
+    "ten": "HỆ THỐNG CHỤP CẮT LỚP VI TÍNH>=16 LÁT CẮT/VÒNG QUAY",
+    "maloaicls": "C",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "HTCCLVTLCQ",
+    "active": true
+  },
+  {
+    "id": 10022,
+    "ma": "CL.1.79647.RE36A1900254YC",
+    "ten": "HỆ THỐNG CHỤP CẮT LỚP VI TÍNH>=64 LÁT CẮT/VÒNG QUAY",
+    "maloaicls": "C",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "HTCCLVTLCQ",
+    "active": true
+  },
+  {
+    "id": 10026,
+    "ma": "MRI.1.79647.SP40T1800026YR",
+    "ten": "HỆ THỐNG CHỤP CỘNG HƯỞNG TỪ (MRI).3.0 TESLA, SỐ KÊNH KHÔNG GIỚI HẠN",
+    "maloaicls": "M",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "HTCCHT",
+    "active": true
+  },
+  {
+    "id": 7,
+    "ma": "DxH600_1",
+    "ten": "HH DXH600 1 - CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "HD1CL",
+    "active": true
+  },
+  {
+    "id": 8,
+    "ma": "DxH600_2",
+    "ten": "HH DXH600 2 - CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "HD2CL",
+    "active": true
+  },
+  {
+    "id": 13,
+    "ma": "HH_DXH800",
+    "ten": "Huyết học Beckman DXH800 - CN2 - L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "HHBDCL",
+    "active": true
+  },
+  {
+    "id": 5,
+    "ma": "ISE5000_2",
+    "ten": "ISE5000 - CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "ICL",
+    "active": true
+  },
+  {
+    "id": 10019,
+    "ma": "CobasPro",
+    "ten": "Máy Cobas Pro CN1-L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "MCPC",
+    "active": true
+  },
+  {
+    "id": 10031,
+    "ma": null,
+    "ten": "Máy CT[CS1]",
+    "maloaicls": "C",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "MC",
+    "active": true
+  },
+  {
+    "id": 10007,
+    "ma": "DT.2.75257.EN0600065",
+    "ten": "Máy điện tim",
+    "maloaicls": "T",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MDT",
+    "active": true
+  },
+  {
+    "id": 10008,
+    "ma": "DT.2.75257.50008040",
+    "ten": "Máy điện tim (Mới)",
+    "maloaicls": "T",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MDT",
+    "active": false
+  },
+  {
+    "id": 10020,
+    "ma": "DxI800",
+    "ten": "Máy DxI 800 CN1-L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "MD8C",
+    "active": true
+  },
+  {
+    "id": 10030,
+    "ma": "XNK",
+    "ten": "Máy khác",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MK",
+    "active": true
+  },
+  {
+    "id": 10001,
+    "ma": null,
+    "ten": "Máy máu lắng CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MMLCL",
+    "active": true
+  },
+  {
+    "id": 3,
+    "ma": "ArchitectI2000_7",
+    "ten": "Máy miễn dịch (Architect) - CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MMD",
+    "active": true
+  },
+  {
+    "id": 10033,
+    "ma": null,
+    "ten": "Máy MRI[CS1]",
+    "maloaicls": "M",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "MM",
+    "active": true
+  },
+  {
+    "id": 10032,
+    "ma": "Senographe",
+    "ten": "Máy nhũ Senographe",
+    "maloaicls": "X",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "MNS",
+    "active": true
+  },
+  {
+    "id": 10005,
+    "ma": "SA.2.75257.CN6-34000993",
+    "ten": "Máy siêu âm phòng 1",
+    "maloaicls": "U",
+    "idphong": 26,
+    "idchinhanh": 2,
+    "viettat": "MSAP1",
+    "active": true
+  },
+  {
+    "id": 10004,
+    "ma": "SA.2.75257.S0QQM3HG800085A",
+    "ten": "Máy siêu âm phòng 2",
+    "maloaicls": "U",
+    "idphong": 27,
+    "idchinhanh": 2,
+    "viettat": "MSAP2",
+    "active": true
+  },
+  {
+    "id": 10035,
+    "ma": null,
+    "ten": "Máy siêu âm phòng 27",
+    "maloaicls": "U",
+    "idphong": 31,
+    "idchinhanh": 2,
+    "viettat": "MSAP2",
+    "active": true
+  },
+  {
+    "id": 10036,
+    "ma": null,
+    "ten": "Máy siêu âm phòng 28",
+    "maloaicls": "U",
+    "idphong": 32,
+    "idchinhanh": 2,
+    "viettat": "MSAP2",
+    "active": true
+  },
+  {
+    "id": 10017,
+    "ma": "BeckmanCoulterDxC700",
+    "ten": "Máy sinh hóa Beckman Coulter DxC 700 CN1-L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "MSHBCD7C",
+    "active": true
+  },
+  {
+    "id": 10016,
+    "ma": "SOLEA100",
+    "ten": "Máy xét nghiệm đông máu SOLEA 100 CN1-L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "MXNDMS1C",
+    "active": true
+  },
+  {
+    "id": 10018,
+    "ma": "EasylyteExpand",
+    "ten": "Máy xét nghiệm Easylyte Expand CN1-L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "MXNEEC",
+    "active": true
+  },
+  {
+    "id": 10024,
+    "ma": "XQ.1.79647.Q-RAD-R18-R0320",
+    "ten": "MÁY X-QUANG KỸ THUẬT SỐ, 2 TẤM CẢM BIẾN PHẲNG DRX-ASCEND [Máy XQ 01]",
+    "maloaicls": "X",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MXKTS2TCBPD[X0",
+    "active": true
+  },
+  {
+    "id": 10002,
+    "ma": "XQ.1.79647.Q-RAD-R18-R0321",
+    "ten": "MÁY X-QUANG KỸ THUẬT SỐ, 2 TẤM CẢM BIẾN PHẲNG DRX-ASCEND [XQ 02]",
+    "maloaicls": "X",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MXKTS2TCBPD[0",
+    "active": true
+  },
+  {
+    "id": 10025,
+    "ma": "XQ.1.79647.1810102451",
+    "ten": "MÁY X-QUANG NHŨ ẢNH KỸ THUẬT SỐ CÓ BỘ SINH THIẾT TỰ ĐỘNG",
+    "maloaicls": "X",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MXNAKTSCBSTTD",
+    "active": true
+  },
+  {
+    "id": 10023,
+    "ma": "XQ.1.79647.1803102151",
+    "ten": "MÁY X-QUANG NHŨ ẢNH KỸ THUẬT SỐ CÓ BỘ SINH THIẾT TỰ ĐỘNG 3D",
+    "maloaicls": "X",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MXNAKTSCBSTTD3",
+    "active": true
+  },
+  {
+    "id": 10037,
+    "ma": "XQ.1.79647.GDIM451",
+    "ten": "MÁY X-QUANG RĂNG KỸ THUẬT SỐ CHỤP TOÀN CẢNH + CT",
+    "maloaicls": "X",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MXRKTSCTC+C",
+    "active": true
+  },
+  {
+    "id": 4,
+    "ma": "DxI800_1",
+    "ten": "Miễn dịch Unicel DxI 800 - CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "MDUD8CL",
+    "active": true
+  },
+  {
+    "id": 10,
+    "ma": "NM_Wadiana_1",
+    "ten": "Nhóm máu Wadiana 1 - CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "NMW1CL",
+    "active": true
+  },
+  {
+    "id": 14,
+    "ma": "NM_Wadiana_2",
+    "ten": "Nhóm máu Wadiana 2 - CN2 - L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "NMW2CL",
+    "active": true
+  },
+  {
+    "id": 15,
+    "ma": "HH_GEM3000",
+    "ten": "Phân tích khí máu GEM3000 - CN2 - L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "PTKMGCL",
+    "active": true
+  },
+  {
+    "id": 10039,
+    "ma": "NS14",
+    "ten": "Phòng NS 14",
+    "maloaicls": "N",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "PN1",
+    "active": true
+  },
+  {
+    "id": 10038,
+    "ma": "NS18",
+    "ten": "Phòng NS 18",
+    "maloaicls": "N",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "PN1",
+    "active": true
+  },
+  {
+    "id": 10006,
+    "ma": "TC.2.75257.17044366P",
+    "ten": "Phòng NS 19",
+    "maloaicls": "N",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "PN1",
+    "active": true
+  },
+  {
+    "id": 10040,
+    "ma": "NS20",
+    "ten": "Phòng NS 20",
+    "maloaicls": "N",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "PN2",
+    "active": true
+  },
+  {
+    "id": 10003,
+    "ma": "NS.2.75257.MI1CB1906009",
+    "ten": "Phòng NS 21",
+    "maloaicls": "N",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "PN2",
+    "active": true
+  },
+  {
+    "id": 10015,
+    "ma": "Sysmex_XN550",
+    "ten": "Sysmex XN550 CN1-L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "SXC",
+    "active": true
+  },
+  {
+    "id": 10014,
+    "ma": "TestPM",
+    "ten": "TestPM",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "T",
+    "active": false
+  },
+  {
+    "id": 16,
+    "ma": "NT_IchemVelocity",
+    "ten": "Xét nghiệm nước tiểu IchemVelocity - CN2 - L3",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "XNNTICL",
+    "active": true
+  },
+  {
+    "id": 2,
+    "ma": "LabUReaderPlus_1",
+    "ten": "Xét nghiệm nước tiểu LabUReaderPlus - CN2 - L1",
+    "maloaicls": "XN",
+    "idphong": null,
+    "idchinhanh": 2,
+    "viettat": "XNNTLCL",
+    "active": true
+  },
+  {
+    "id": 10021,
+    "ma": "Revolution1",
+    "ten": "XQ Di động 01",
+    "maloaicls": "X",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "XDD0",
+    "active": true
+  },
+  {
+    "id": 10034,
+    "ma": "Revolution2",
+    "ten": "XQ Di động 02",
+    "maloaicls": "X",
+    "idphong": null,
+    "idchinhanh": 1,
+    "viettat": "XDD0",
+    "active": true
+  }
+]

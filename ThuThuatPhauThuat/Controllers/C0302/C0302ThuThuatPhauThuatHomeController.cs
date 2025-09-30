@@ -50,11 +50,39 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             return View("~/Views/V0302/V0302ThuThuatPhauThuat/Index.cshtml");
         }
 
+        //[HttpGet("thong_tin_so_phieu")]
+        //public IActionResult ThongTinSoPhieu(int tabIndex)
+        //{
+        //    ViewBag.TabIndex = tabIndex;
+        //    return PartialView("_ThongTinSoPhieu");
+        //}
         [HttpGet("thong_tin_so_phieu")]
-        public IActionResult ThongTinSoPhieu(int tabIndex)
+        public async Task<IActionResult> ThongTinSoPhieu(int tabIndex, long idVaoVien, long idcn, long idChiDinhChiTiet)
         {
-            ViewBag.TabIndex = tabIndex;
-            return PartialView("_ThongTinSoPhieu");
+
+            var parameters = new[]
+            {
+            new SqlParameter("@IdVaoVien", idVaoVien),
+
+            new SqlParameter("@IdChiNhanh", idcn),
+                    new SqlParameter("@IdChiDinhCT", idChiDinhChiTiet)
+
+        };
+
+            var sql = @"EXEC S0302_GetSoPhieuThuThuatPhauThuat @IdVaoVien, @IdChiNhanh, @IdChiDinhCT";
+
+            var data = _context.M0302PhieuThuThuatPhauThuatModels
+                .FromSqlRaw(sql, parameters)
+                .AsNoTracking()
+                .AsEnumerable() // ← đưa query về client
+                .FirstOrDefault();
+
+            if (data == null)
+            {
+                data = new ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat.M0302PhieuThuThuatPhauThuatModel();
+            }
+
+            return PartialView("_ThongTinSoPhieu", data);
         }
 
         [HttpGet("danh_sach")]
@@ -80,7 +108,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302DanhSachThuThuatPhauThuat.cshtml");
         }
         [HttpGet("get_thong_tin_chi_tiet")]
-        public async Task<IActionResult> GetThongTinChiTiet(long idVaoVien, long idChiNhanh, long soPhieu)
+        public async Task<IActionResult> GetThongTinChiTiet(long idVaoVien, long idChiNhanh, long idChiDinhChiTiet)
         {
             try
             {
@@ -89,24 +117,24 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 {
                     new SqlParameter("@IdVaoVien", idVaoVien),
                     new SqlParameter("@IdChiNhanh", idChiNhanh),
-                    new SqlParameter("@SoPhieu", soPhieu)
+                    new SqlParameter("@IdChiDinhCT", idChiDinhChiTiet)
 
                 };
+                
 
-                var sql = @"EXEC S0302_GetThongTinThuThuatPhauThuat @IdVaoVien, @IdChiNhanh,@SoPhieu ";
+                var data = await _context.M0302ThongTinThuThuatPhauThuatModels
+                    .FromSqlRaw("EXEC S0302_GetThongTinThuThuatPhauThuat @IdVaoVien, @IdChiNhanh, @IdChiDinhCT", parameters)
+                    .AsNoTracking()
+                    .ToListAsync();   // Lấy tất cả về client
 
-                var data = await _context.M0302PhieuThuThuatPhauThuatModels
-                     .FromSqlRaw(sql, parameters)
-                     .AsNoTracking()
-                     .ToListAsync();
-
-                var record = data.FirstOrDefault();
+                var record = data.FirstOrDefault();  // Chọn 1 record trên client
 
                 return Ok(new
                 {
                     success = true,
                     data = record
                 });
+
 
             }
             catch (Exception ex)
@@ -328,7 +356,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         {
             public int Result { get; set; }
             public string Message { get; set; }
-        }
+        }           
 
 
         [HttpGet("ghi_nhan_thuoc_vat_tu")]
