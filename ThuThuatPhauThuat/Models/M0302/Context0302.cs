@@ -22,6 +22,7 @@ namespace ThuThuatPhauThuat.Models.M0302
         public DbSet<M0301CheDoThuThuat> CheDoThuThuat { get; set; }
         public DbSet<M0301TaiBienBienChung> TaiBienBienChung { get; set; }
         public DbSet<M0301ThietBiTTPT> ThietBi { get; set; }
+        public DbSet<M0305TrinhTuVaKetLuanModel> TrinhTuVaKetLuan { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<M0302ThongTinDoanhNghiep>().HasNoKey();
@@ -41,6 +42,7 @@ namespace ThuThuatPhauThuat.Models.M0302
             modelBuilder.Entity<M0301ThietBiTTPT>().HasIndex(v => v.ID)
                 .IsUnique();
             modelBuilder.Entity<M0303Khoa>().HasNoKey();
+            modelBuilder.Entity<M0305TrinhTuVaKetLuanModel>().HasNoKey();
             base.OnModelCreating(modelBuilder);
         }
 

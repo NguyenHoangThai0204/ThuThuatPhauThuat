@@ -1,11 +1,8 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
-using ThuThuatPhauThuat.Service.S0302;
-using ThuThuatPhauThuat.Service.S0302.IS0302;
+using ThuThuatPhauThuat.Services.S0302;
+using ThuThuatPhauThuat.Services.S0302.IS0302;
 
 namespace ThuThuatPhauThuat.Controllers.C0302
 {

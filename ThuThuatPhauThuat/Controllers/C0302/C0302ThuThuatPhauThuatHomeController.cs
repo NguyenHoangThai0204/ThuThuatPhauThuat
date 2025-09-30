@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
-using ThuThuatPhauThuat.Service.S0302.IS0302;
+using ThuThuatPhauThuat.Services.S0302.IS0302;
 
 namespace ThuThuatPhauThuat.Controllers.C0302
 {
@@ -26,7 +26,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //_memoryCache = memoryCache;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
@@ -157,10 +157,10 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 // Tạo câu lệnh SQL gọi Stored Procedure, truyền các tham số
                 // @p0, @p1, ... là các placeholder cho tham số, EF Core sẽ tự động ánh xạ
                 string sqlQuery = @"EXEC S0301_ThemThongTinTTPT 
-            @IDPhieuTTPT, @MaChanDoanVao, @TenChanDoanVao, @MaChanDoanTruoc, @TenChanDoanTruoc, @MaChanDoanSau, @TenChanDoanSau,
-            @IDPhongThucHien, @IDLoaiTTPT, @IDThietBi, @IDTaiBienBienChung, @IDCheDoThuThuat, @CanThiepThuThuat, @SoLanMoLai, 
-            @LyDoMoLai, @IDViTriThucHien, @IDTuVong, @DanLuu, @NgayRutOngDanLuu, @NgayCatChi, @Khac,
-            @MaFNA, @TienCan, @KetQuaXNFNAGBP, @ChiDinhViTriTonThuongFNA, @YeuCauXetNghiem, @PhuongPhapVoCam";
+                                @IDPhieuTTPT, @MaChanDoanVao, @TenChanDoanVao, @MaChanDoanTruoc, @TenChanDoanTruoc, @MaChanDoanSau, @TenChanDoanSau,
+                                @IDPhongThucHien, @IDLoaiTTPT, @IDThietBi, @IDTaiBienBienChung, @IDCheDoThuThuat, @CanThiepThuThuat, @SoLanMoLai, 
+                                @LyDoMoLai, @IDViTriThucHien, @IDTuVong, @DanLuu, @NgayRutOngDanLuu, @NgayCatChi, @Khac,
+                                @MaFNA, @TienCan, @KetQuaXNFNAGBP, @ChiDinhViTriTonThuongFNA, @YeuCauXetNghiem, @PhuongPhapVoCam";
 
                 await _context.Database.ExecuteSqlRawAsync(sqlQuery,
                     new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT ?? (object)DBNull.Value),
@@ -223,6 +223,12 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
+            //var model = await _context.TrinhTuVaKetLuan
+            //    .FromSqlRaw("EXEC S0305_TTPT_GetTrinhTuVaKetLuanTheoIDPhieuTTPT @IDPhieuTTPT",
+            //    new SqlParameter("@IDPhieuTTPT", 1))
+            //    .AsNoTracking()
+            //    .FirstOrDefault();
+
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
@@ -232,7 +238,73 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 CaNhan = true,
                 Xem = true,
             };
-            return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302TrinhTuVaKeLuanTTPT.cshtml");
+
+            return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302TrinhTuVaKetLuanTTPT.cshtml");
+        }
+
+        [HttpPost("trinh-tu/save")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SaveTrinhTu([FromBody] M0305TrinhTuVaKetLuanModel model)
+        {
+            if (model == null)
+            {
+                return BadRequest(new { success = false, message = "Dữ liệu không hợp lệ." });
+            }
+
+            try
+            {
+                string sqlQuery = @"EXEC S0305_TTPT_TaoTrinhTuVaKetLuan 
+                          @IDPhieuTTPT, @TrinhTu, @KetLuan";
+
+                await _context.Database.ExecuteSqlRawAsync(sqlQuery,
+                    new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT),
+                    new SqlParameter("@TrinhTu", model.TrinhTu ?? (object)DBNull.Value),
+                    new SqlParameter("@KetLuan", model.KetLuan ?? (object)DBNull.Value)
+                );
+
+                return Ok(new { success = true, message = "Lưu trình tự thành công." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Lỗi: {ex.Message}" });
+            }
+        }
+
+        [HttpGet]
+        [Route("trinh-tu/list-by-idttpt/{idPhieuTTPT}")]
+        public async Task<IActionResult> GetTrinhTuByPhieuId(long idPhieuTTPT)
+        {
+            try
+            {
+                if (idPhieuTTPT <= 0)
+                {
+                    return BadRequest(new { success = false, message = "ID Phiếu không hợp lệ." });
+                }
+
+                var sql = "EXEC dbo.S0305_TTPT_GetTrinhTuVaKetLuanTheoIDPhieuTTPT @IDPhieuTTPT";
+                var idParam = new SqlParameter("@IDPhieuTTPT", idPhieuTTPT);
+
+                var trinhTuList = await _context.TrinhTuVaKetLuan
+                                             .FromSqlRaw(sql, idParam)
+                                             .ToListAsync();
+
+                if (trinhTuList == null || trinhTuList.Count == 0)
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Không tìm thấy trình tự nào cho phiếu này.",
+                        data = new List<object>() 
+                    });
+                }
+
+                return Ok(new { success = true, data = trinhTuList });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Lỗi Server: Không thể đọc dữ liệu trình tự. Chi tiết: {ex.Message}" });
+            }
         }
 
         [HttpGet("ekip")]

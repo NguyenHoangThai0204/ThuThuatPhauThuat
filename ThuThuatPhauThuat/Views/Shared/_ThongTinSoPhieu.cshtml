@@ -92,18 +92,6 @@
         { ma: "TC", ten: "Tự chuyển", vietTat: "tc" }
     ];
 
-    var nhomMauData = [
-        { ma: "A", ten: "A", vietTat: "a" },
-        { ma: "B", ten: "B", vietTat: "b" },
-        { ma: "AB", ten: "AB", vietTat: "ab" },
-        { ma: "O", ten: "O", vietTat: "o" }
-    ];
-
-    var yeuToRhData = [
-        { ma: "D", ten: "Dương tính", vietTat: "d+" },
-        { ma: "A", ten: "Âm tính", vietTat: "d-" }
-    ];
-
     // Hàm cấu hình Tom Select cho đúng tabIndex
     function configTomSelect(tabIndex) {
         var tomSelectConfigs = [
@@ -117,24 +105,20 @@
                 placeholder: "-- Chọn nguồn bệnh --",
                 data: nguonBenhData,
                 showVietTat: true
-            },
-            {
-                className: ".thuThuat__nhomMau-tom-select-" + tabIndex,
-                placeholder: "-- Chọn nhóm máu --",
-                data: nhomMauData,
-                showVietTat: true,
-                disabled: true
-            },
-            {
-                className: ".thuThuat__yeuToRh-tom-select-" + tabIndex,
-                placeholder: "-- Chọn yếu tố Rh --",
-                data: yeuToRhData,
-                showVietTat: true,
-                disabled: true
             }
         ];
 
         tomSelectConfigs.forEach(cfg => {
+            var element = document.querySelector(cfg.className);
+
+            if (!element) {
+                // console.warn('Không tìm thấy element:', cfg.className);
+                return;
+            }
+            if (element.tomselect) {
+                // console.warn('TomSelect đã được khởi tạo cho:', cfg.className);
+                return;
+            }
             let tomSelectConfig = {
                 options: cfg.data,
                 valueField: "ma",
@@ -145,7 +129,6 @@
                 create: cfg.allowCreate || false,
                 disabled: cfg.disabled || false
             };
-
             if (cfg.showVietTat) {
                 tomSelectConfig.render = {
                     option: function(data, escape) {
@@ -160,7 +143,11 @@
                 };
             }
 
-            new TomSelect(cfg.className, tomSelectConfig);
+            try {
+                new TomSelect(element, tomSelectConfig);
+            } catch (error) {
+                console.error('Lỗi khởi tạo TomSelect cho', cfg.className, ':', error);
+            }
         });
     }
 
