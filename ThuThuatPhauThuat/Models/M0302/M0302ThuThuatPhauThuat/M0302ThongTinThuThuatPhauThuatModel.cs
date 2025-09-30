@@ -32,11 +32,7 @@
         public string? KetQuaXNFNAGBP { get; set; }
         public string? ChiDinhViTriTonThuongFNA { get; set; }
         public string? YeuCauXetNghiem { get; set; }
-<<<<<<< HEAD
-        public long? IDTuVong {  get; set; }
-=======
         public long? IDTuVong { get; set; }
->>>>>>> origin/merge01
         public long? IDPhuongPhapVoCam { get; set; }
     }
 }

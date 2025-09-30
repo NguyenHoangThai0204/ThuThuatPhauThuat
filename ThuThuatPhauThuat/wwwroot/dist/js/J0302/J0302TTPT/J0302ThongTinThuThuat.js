@@ -1,12 +1,21 @@
+function toIsoDate(dateString) {
+    if (!dateString) return null;
 
-function updateDateTime() {
-    var now = new Date()
-    var formatted = formatDateTime(now)
-    const datetimeElement = document.getElementById("info-datetime")
-    if (datetimeElement) {
-        datetimeElement.textContent = formatted
+    // Kiểm tra xem đã là định dạng yyyy-mm-dd chưa (vì input type="date" trả về yyyy-mm-dd)
+    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        return dateString;
     }
+
+    // Nếu là định dạng dd-mm-yyyy, chuyển đổi
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+        const [day, month, year] = parts;
+        return `${year}-${month}-${day}`;
+    }
+
+    return null; // Trả về null nếu không phải định dạng hợp lệ
 }
+
 
 const sampleDataThongTin = {
     phanLoai: [
@@ -384,9 +393,9 @@ function bindDataToForm(data) {
     document.getElementById('chi_dinh_vi_tri_ton_thuong_fna').value = data.chiDinhViTriTonThuongFNA || '';
     document.getElementById('yeu_cau_xet_nghiem').value = data.yeuCauXetNghiem || '';
     // Phòng thực hiện
-    if (data.iDPhongThucHien) {
+    if (data.idPhongThucHien) {
         const phongSelect = document.querySelector(".cbPhongThucHien")?.tomselect;
-        if (phongSelect) phongSelect.setValue(String(data.iDPhongThucHien));
+        if (phongSelect) phongSelect.setValue(String(data.idPhongThucHien));
     }
 
     // Thiết bị
@@ -475,7 +484,7 @@ async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
     
     const configs = getTomSelectConfigs(allData);
     configCbThongTin(configs);
-
+    $('#btn_saveThongTin').on('click', handleSaveThongTin);
     console.log("Khởi tạo Tab thông tin hoàn tất. Dữ liệu đã được tải.");
 
 }
@@ -791,7 +800,7 @@ function validateForm() {
         // Các trường TomSelect đơn
         { data: $('.cbPhongThucHien').val(), element: '.cbPhongThucHien', name: 'Phòng thực hiện' },
         { data: $('.cbPhanLoai').val(), element: '.cbPhanLoai', name: 'Phân loại' },
-        { data: $('.cbThietBi').val(), element: '.cbThietBi', name: 'Thiết bị' }, 
+        { data: $('.cbThietBi').val(), element: '.cbThietBi', name: 'Thiết bị' },
         { data: $('.cbViTriThucHien').val(), element: '.cbViTriThucHien', name: 'Vị trí thực hiện' },
         { data: $('.cbBienChung').val(), element: '.cbBienChung', name: 'Biến chứng' },
         { data: $('.cbPTVoCam').val(), element: '.cbPTVoCam', name: 'Phương pháp vô cảm' },
@@ -874,7 +883,7 @@ async function handleSaveThongTin() {
     if (!validateForm()) {
         return; // Dừng hàm nếu validate thất bại
     }
-    const IDPhieuTTPT_HienTai = 3;
+    const IDPhieuTTPT_HienTai = 1;
 
     const maIcdVaoKhoaArray = selectedICDs.vao_khoa.map(item => item.id);
     const maIcdTruocThuatArray = selectedICDs.truoc_thuat.map(item => item.id);
@@ -935,8 +944,8 @@ async function handleSaveThongTin() {
         IDViTriThucHien: maViTriThucHien,
         IDTuVong: maTuVong,
         DanLuu: danLuu,
-        NgayRutOngDanLuu: ngayRutOngDanLuu,
-        NgayCatChi: ngayCatChi,
+        NgayRutOngDanLuu: toIsoDate(ngayRutOngDanLuu),
+        NgayCatChi: toIsoDate(ngayCatChi),
         Khac: khac,
 
         MaFNA: maFna,
@@ -975,6 +984,7 @@ async function handleSaveThongTin() {
         }
     });
 }
-$('#btn_saveThongTin').on('click', handleSaveThongTin);
+
 console.log("Đã gắn sự kiện 'click' cho nút Lưu Thông Tin Thủ Thuật.");
+
 

@@ -18,17 +18,13 @@ function khoiTaoJSChoTab(tabIndex) {
 
     // Khởi tạo TomSelect
     $('.tom-select-' + tabIndex).each(function () {
-<<<<<<< HEAD
+
         if (this && !this.tomselect) {
             try {
                 new TomSelect(this, {});
             } catch (e) {
                 console.error('Lỗi khởi tạo TomSelect:', e);
             }
-=======
-        if (!this.tomselect) {
-            new TomSelect(this, {});
->>>>>>> origin/merge01
         }
     });
 }
@@ -62,13 +58,6 @@ $(document).ready(function () {
                 5: "/thu_thuat_phau_thuat/ghi_nhan_thuoc_vat_tu"
             };
 
-<<<<<<< HEAD
-            $(target).load(urlMap[tabNumber], function () {
-                $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu?tabIndex=" + tabNumber, function (html) {
-                    $(target).prepend(html);
-                    // khoiTaoJSChoTab(tabNumber);
-=======
-            // Tạo key duy nhất dựa trên tab và ID hiện tại
             var tabKey = tabNumber + '_' + selectedIdVaoVien + '_' + selectedIdChiDinhChiTiet;
 
             if (!tabLoaded[tabKey] || tabNumber === 2) {
@@ -91,7 +80,6 @@ $(document).ready(function () {
                             initThongTinTab(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
                         }
                     });
->>>>>>> origin/merge01
                 });
             } else {
                 // Nếu tab đã load trước đó → chỉ khởi tạo JS
@@ -106,8 +94,6 @@ $(document).ready(function () {
     });
 });
 
-<<<<<<< HEAD
-=======
 
 //function khoiTaoJSChoTab(tabIndex) {
 //    $('.datetimepicker-' + tabIndex).datetimepicker({});
@@ -213,4 +199,4 @@ $(document).ready(function () {
 //        }
 //    });
 //});
->>>>>>> origin/merge01
+

@@ -196,7 +196,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302ThongTinThuThuatPhauThuat.cshtml");
         }
-<<<<<<< HEAD
+
 
         [HttpPost("thong-tin/save-thong-tin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -265,8 +265,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             }
         }
 
-=======
->>>>>>> origin/merge01
+
         [HttpGet("trinh_tu")]
         public async Task<IActionResult> TrinhTuVaKetLuan(long? idVaoVien, int tabIndex = 0)
         {
@@ -279,17 +278,16 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
 
-<<<<<<< HEAD
             //var model = await _context.TrinhTuVaKetLuan
             //    .FromSqlRaw("EXEC S0305_TTPT_GetTrinhTuVaKetLuanTheoIDPhieuTTPT @IDPhieuTTPT",
             //    new SqlParameter("@IDPhieuTTPT", 1))
             //    .AsNoTracking()
             //    .FirstOrDefault();
 
-=======
+
             ViewBag.IdVaoVien = idVaoVien;
             ViewBag.TabIndex = tabIndex;
->>>>>>> origin/merge01
+
             ViewBag.quyenVaiTro = new
             {
                 Them = true,
