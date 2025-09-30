@@ -2,9 +2,9 @@
 using ThuThuatPhauThuat.Models.M0302;
 using Microsoft.EntityFrameworkCore;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
-using ThuThuatPhauThuat.Service.S0302.IS0302;
+using ThuThuatPhauThuat.Services.S0302.IS0302;
 
-namespace ThuThuatPhauThuat.Service.S0302
+namespace ThuThuatPhauThuat.Services.S0302
 {
     
     public class S0303TemplateTTPT : IS0303TemplateTTPT

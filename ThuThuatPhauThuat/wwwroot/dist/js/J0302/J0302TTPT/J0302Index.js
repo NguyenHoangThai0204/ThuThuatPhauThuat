@@ -1,7 +1,13 @@
 ﻿function khoiTaoJSChoTab(tabIndex) {
     $('.datetimepicker-' + tabIndex).datetimepicker({});
     $('.tom-select-' + tabIndex).each(function () {
-        new TomSelect(this, {});
+        if (this && !this.tomselect) {
+            try {
+                new TomSelect(this, {});
+            } catch (e) {
+                console.error('Lỗi khởi tạo TomSelect:', e);
+            }
+        }
     });
 }
 
@@ -10,8 +16,8 @@ $(document).ready(function () {
 
     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         var target = $(e.target).attr("href");
-
         var tabNumber = 0;
+
         if (target === "#tabs-thongtin-7") tabNumber = 2;
         else if (target === "#tabs-trinhtu-7") tabNumber = 3;
         else if (target === "#tabs-ekip-7") tabNumber = 4;
@@ -27,10 +33,11 @@ $(document).ready(function () {
                 4: "/thu_thuat_phau_thuat/ekip",
                 5: "/thu_thuat_phau_thuat/ghi_nhan_thuoc_vat_tu"
             };
+
             $(target).load(urlMap[tabNumber], function () {
                 $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu?tabIndex=" + tabNumber, function (html) {
                     $(target).prepend(html);
-                    khoiTaoJSChoTab(tabNumber);
+                    // khoiTaoJSChoTab(tabNumber);
                 });
             });
         }

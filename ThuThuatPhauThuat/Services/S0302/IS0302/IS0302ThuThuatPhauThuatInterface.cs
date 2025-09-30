@@ -1,6 +1,6 @@
 ﻿using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
 
-namespace ThuThuatPhauThuat.Service.S0302.IS0302
+namespace ThuThuatPhauThuat.Services.S0302.IS0302
 {
     public interface IS0302ThuThuatPhauThuatInterface
     {

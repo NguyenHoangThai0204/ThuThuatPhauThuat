@@ -1,0 +1,1145 @@
+﻿@* @using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat; *@
+
+@{
+    // var trinhTuPhauThuatModel = ViewBag.model as M0305TrinhTuVaKetLuanModel;
+}
+
+<div class="report-template-editor">
+    <!-- Left column: Image panel -->
+    <div class="image-panel">
+        <div class="image-panel-header" style="font-size: 1.05rem;">
+            <span>Hình ảnh</span>
+            <button class="btn btn-sm btn-light" id="btnAddImagePanel">
+                <i class="ti ti-plus" style="font-size: 1.05rem;"></i>
+            </button>
+        </div>
+        <div class="image-panel-body"></div>
+    </div>
+    <!-- Right column: Editor panel -->
+    <div class="editor-panel">
+        <div class="editor-header d-flex align-items-center justify-content-between" style="font-size: 1.05rem;">
+            <span>Mẫu tường trình</span>
+            <div class="d-flex align-items-center" style="gap: 5px; flex: 1; justify-content: flex-end;">
+                <select class="form-select w-75 cbTemplateTTPT" style="min-width: 350px;" id="templateSelect">
+                    <option value="">-- Chọn mẫu --</option>
+                </select>
+                <div class="input-group-ellipsis">
+                    <button class="btn btn-primary" onclick="applyTemplate()">Áp dụng</button>
+                    <button type="button" class="ellipsis-btn goi-remove" data-bs-toggle="modal"
+                            data-bs-target="#myModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="editor-toolbar" id="editorToolbar">
+            <!-- Undo / Redo -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('undo')" data-bs-toggle="tooltip"
+                    title="Hoàn tác">
+                <i class="ti ti-arrow-back-up"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('redo')" data-bs-toggle="tooltip"
+                    title="Làm lại">
+                <i class="ti ti-arrow-forward-up"></i>
+            </button>
+            <div class="toolbar-separator"></div>
+            <!-- Font -->
+            <select class="form-select form-select-sm" style="width:auto;"
+                    onchange="execCmd('fontName', this.value)" data-bs-toggle="tooltip" title="Chọn font">
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Arial">Arial</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+            <select class="form-select form-select-sm" style="width: 70px;"
+                    onchange="execCmd('fontSize', this.value)" data-bs-toggle="tooltip" title="Cỡ chữ">
+                <option value="2">12pt</option>
+                <option value="3">14pt</option>
+                <option value="4">18pt</option>
+            </select>
+            <div class="toolbar-separator"></div>
+            <!-- Format text -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('bold')" data-bs-toggle="tooltip" title="In đậm"><i class="ti ti-bold"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('italic')" data-bs-toggle="tooltip" title="In nghiêng"><i class="ti ti-italic"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('underline')" data-bs-toggle="tooltip" title="Gạch chân"><i class="ti ti-underline"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('strikeThrough')" data-bs-toggle="tooltip" title="Gạch ngang"><i class="ti ti-strikethrough"></i></button>
+            <div class="toolbar-separator"></div>
+            <!-- Align -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('justifyLeft')" data-bs-toggle="tooltip" title="Căn trái"><i class="ti ti-align-left"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('justifyCenter')" data-bs-toggle="tooltip" title="Căn giữa"><i class="ti ti-align-center"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('justifyRight')" data-bs-toggle="tooltip" title="Căn phải"><i class="ti ti-align-right"></i></button>
+            <div class="toolbar-separator"></div>
+            <!-- List -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('insertUnorderedList')" data-bs-toggle="tooltip" title="Danh sách chấm"><i class="ti ti-list"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('insertOrderedList')" data-bs-toggle="tooltip" title="Danh sách số"><i class="ti ti-list-numbers"></i></button>
+            <div class="toolbar-separator"></div>
+            <!-- Color -->
+            <label data-bs-toggle="tooltip" title="Màu chữ">
+                <input type="color" class="color-picker" onchange="execCmd('foreColor', this.value)" value="#000000">
+            </label>
+            <label data-bs-toggle="tooltip" title="Highlight">
+                <input type="color" class="color-picker" onchange="execCmd('hiliteColor', this.value)" value="#ffff00">
+            </label>
+            <div class="toolbar-separator"></div>
+            <!-- Insert image from local -->
+            <button class="btn btn-sm btn-outline-secondary" id="btnInsertLocalImage" data-bs-toggle="tooltip"
+                    title="Chèn ảnh từ máy">
+                <i class="ti ti-upload"></i>
+            </button>
+            <input type="file" id="inputLocalImage" accept="image/*" style="display:none;" multiple>
+            <!-- Insert image by URL -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('insertImage', prompt('Nhập URL hình:','https://'))"
+                    data-bs-toggle="tooltip" title="Chèn ảnh từ link">
+                <i class="ti ti-photo"></i>
+            </button>
+            <div class="toolbar-separator"></div>
+            <!-- Clear -->
+            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('removeFormat')" data-bs-toggle="tooltip"
+                    title="Xóa định dạng">
+                <i class="ti ti-clear-formatting"></i>
+            </button>
+        </div>
+        <div id="editorContent" class="editor-content" contenteditable="true">
+            @* @Html.Raw(trinhTuPhauThuatModel.TrinhTu ?? "Kiểm tra bằng siêu âm trước mổ vùng cổ phải bình thường...") *@
+        </div>
+        <div class="editor-footer">
+            <textarea class="editor-summary" placeholder="Kết luận / Tóm tắt">
+                @* @trinhTuPhauThuatModel.KetLuan *@
+            </textarea>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl custom-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Các mẫu tường trình phẫu thuật</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+
+            <div class="modal-body custom-modal-body">
+                <div class="row mb-3 container">
+                    <div class="col-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <input class="tom-select cbTemplateKhoa khoa-width" type="text" name="khoa" style="width: 75%;" />
+                        </div>
+
+                        <div class="d-flex search-container" style="width: 75%;">
+                            <input type="text" class="form-control form-control-sm me-2" placeholder="Tìm kiếm…" autocomplete="off">
+                            <a href="#" class="btn btn-2 btn-icon p-1 flex-shrink-0" aria-label="Button" style="width: 40px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-2 mb-0">
+                                    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                                    <path d="M21 21l-6 -6"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-8 d-flex justify-content-center align-items-center">
+                        <div id="chiTietTitleContainer" style="width: 100%;">
+                            <input type="text"
+                                   id="chiTietTitleInput"
+                                   class="form-control form-control-sm text-center fw-bold"
+                                   placeholder="Chọn hoặc nhập tên mẫu tường trình..."
+                                   autocomplete="off"
+                                   value="Thông tin phẫu thuật" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row custom-content-area">
+                    <div class="col-4 border-end position-relative">
+                        <div id="loadingSpinner" class="d-none position-absolute top-50 start-50 translate-middle">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Đang tải...</span>
+                            </div>
+                        </div>
+
+                        <div class="table-scroll-container custom-table-scroll">
+                            <table class="table table-sm table-bordered align-middle table-fixed-layout full-width-table table-gói">
+                                <colgroup>
+                                    <col class="table-col-50">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Danh sách phẫu thuật</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="goiVuTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-8 d-flex flex-column">
+                        <div class="table-scroll-container custom-table-scroll flex-grow-1">
+                            <table class="table table-striped table-bordered table-hover table-fixed-layout full-width-table">
+                                <colgroup>
+                                    <col class="table-col-70">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Nội dung</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dichVuTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-between">
+                <div>
+                    <button type="button" class="btn btn-secondary d-none" id="btnCancel">Hủy</button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-success" id="btnSave">Thêm mới</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .report-template-editor {
+        height: calc(100vh - 200px);
+        margin: 10px;
+        min-height: 400px;
+        display: flex;
+        border: 1px solid #ccc;
+    }
+
+    /* Cột trái */
+    .image-panel {
+        width: 280px;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #ccc;
+    }
+
+    .image-panel-header {
+        background: #006d77;
+        color: #fff;
+        font-weight: bold;
+        padding: 6px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .image-panel-body {
+        flex: 1;
+        overflow-y: auto;
+        background: #f8f9fa;
+    }
+
+    .image-item {
+        padding: 8px 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #e1e1e1;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+
+        .image-item.active {
+            background: #e0f2f1;
+            font-weight: bold;
+        }
+
+        .image-item:hover {
+            background: #f0f0f0;
+        }
+
+        .image-item.selected {
+            background: #d1ecf1;
+            border-left: 4px solid #006d77;
+        }
+
+    .editor-content.drag-over {
+        border: 2px dashed #006d77;
+        background-color: #e0f2f1;
+    }
+
+    /* Image trong editor có thể resize */
+    .editor-content img {
+        max-width: 100%;
+        cursor: move;
+        border: 2px solid transparent;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .editor-content img:hover {
+            border-color: #006d77;
+        }
+
+        .editor-content img.selected {
+            border-color: #006d77;
+            box-shadow: 0 0 0 2px rgba(0, 109, 119, 0.3);
+        }
+
+        .editor-content img.resizing {
+            border-color: #0056b3;
+        }
+
+    /* Resize handles */
+    .img-wrapper {
+        display: inline-block;
+        position: relative;
+        margin: 10px 0;
+        transition: all 0.2s ease;
+    }
+
+        .img-wrapper.selected {
+            outline: 2px solid #006d77;
+            outline-offset: 2px;
+        }
+
+            .img-wrapper.selected .resize-handle {
+                display: block;
+            }
+
+    .resize-handle {
+        display: none;
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #006d77;
+        border: 1px solid #fff;
+        cursor: nwse-resize;
+        z-index: 10;
+    }
+
+        .resize-handle.se {
+            bottom: -5px;
+            right: -5px;
+        }
+
+    /* Image preview trong panel trái */
+    .image-item-preview {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        margin-top: 5px;
+        border-radius: 4px;
+        transition: transform 0.2s ease;
+    }
+
+    .image-item:hover .image-item-preview {
+        transform: scale(1.02);
+    }
+
+    .image-item .delete-image-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(220, 53, 69, 0.9);
+        color: white;
+        border: none;
+        border-radius: 3px;
+        padding: 2px 6px;
+        cursor: pointer;
+        font-size: 12px;
+        display: none;
+        transition: background-color 0.2s ease;
+    }
+
+    .image-item:hover .delete-image-btn {
+        display: block;
+    }
+
+    .image-item .delete-image-btn:hover {
+        background: rgba(220, 53, 69, 1);
+    }
+
+    /* Cột phải */
+    .editor-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .editor-header {
+        background: #f1f1f1;
+        padding: 6px 10px;
+        border-bottom: 1px solid #ccc;
+        font-weight: bold;
+    }
+
+    .editor-toolbar {
+        padding: 6px;
+        border-bottom: 1px solid #ccc;
+        background: #f9f9f9;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+    }
+
+        .editor-toolbar button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            transition: all 0.2s ease;
+        }
+
+            .editor-toolbar button:hover {
+                background-color: #e9ecef;
+                transform: translateY(-1px);
+            }
+
+        .editor-toolbar select {
+            height: 32px;
+        }
+
+    .toolbar-separator {
+        width: 1px;
+        height: 24px;
+        background: #ccc;
+        margin: 0 4px;
+    }
+
+    .color-picker {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        padding: 0;
+        transition: transform 0.2s ease;
+    }
+
+        .color-picker:hover {
+            transform: scale(1.1);
+        }
+
+    .editor-content {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        border: none;
+        outline: none;
+        line-height: 1.6;
+    }
+
+    .editor-footer {
+        border-top: 1px solid #ccc;
+        padding: 4px 10px;
+        background: #fff;
+    }
+
+    .editor-summary {
+        width: 100%;
+        height: 40px;
+        resize: none;
+        border: none;
+        outline: none;
+        font-size: 13px;
+        color: #666;
+        background: transparent;
+    }
+
+    /* Căn chỉnh ảnh trong editor */
+    .editor-content .img-wrapper {
+        margin: 10px 0;
+        width: fit-content;
+    }
+
+    /* Đảm bảo ảnh có thể căn giữa */
+    .editor-content {
+        text-align: left;
+    }
+
+    .img-wrapper.align-left {
+        margin-right: auto;
+        margin-left: 0;
+    }
+
+    .img-wrapper.align-center {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+    .img-wrapper.align-right {
+        margin-left: auto;
+        margin-right: 0;
+    }
+
+    .input-group-ellipsis {
+        position: relative;
+    }
+
+    .ellipsis-btn {
+        position: absolute;
+        right: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 10;
+        padding: 2px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+    }
+
+        .ellipsis-btn:hover {
+            background-color: #ccc;
+        }
+
+        .ellipsis-btn svg {
+            width: 16px;
+            height: 16px;
+            color: #6c757d;
+        }
+
+    /* MODAL */
+    .custom-modal-body {
+        min-height: 400px;
+        padding-bottom: 0.5rem !important;
+    }
+
+    .custom-content-area {
+        height: calc(100% - 40px);
+        min-height: 350px;
+    }
+
+    .custom-table-scroll {
+        height: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .textarea-fixed-height {
+        resize: none;
+        min-height: 150px;
+        max-height: 350px;
+    }
+
+    #chiTietTitleInput:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+    }
+
+    .img-wrapper.click-effect {
+        animation: clickAnimation 0.3s ease;
+    }
+
+    @@keyframes clickAnimation {
+        0%
+
+    {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+    }
+
+    .editor-content ::selection {
+        background-color: rgba(0, 109, 119, 0.2);
+    }
+
+    .editor-content img::selection {
+        background-color: transparent;
+    }
+</style>
+
+<script>
+    // ====== Khởi tạo TomSelect cho chọn mẫu ======
+    const DEFAULT_KHOA_ID = 1;
+    let templateTomSelectInstance;
+    let allTemplatesData = [];
+    let initializeImageEvents;
+
+    function normalizeData(data, tenField = 'Ten', viettatField = 'alias') {
+        if (!Array.isArray(data)) return [];
+        return data.map(n => {
+            const ten = n[tenField]?.trim() || "";
+            const viettat = n[viettatField]?.trim() || "";
+            let generatedAlias = viettat
+                ? viettat.toUpperCase()
+                : (ten.split(/\s+|-|\/|\(|\)|[^\w\s]/g).filter(w => w.length > 0)
+                    .map(w => w.charAt(0)?.toUpperCase())
+                    .join("").replace(/[^A-Z0-9]/g, ''));
+            return { ...n, alias: generatedAlias };
+        });
+    }
+
+    function fetchDataAndNormalize(url, tenField = 'ten', viettatField = 'alias') {
+        return new Promise((resolve) => {
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: templates => resolve(normalizeData(templates, tenField, viettatField)),
+                error: () => resolve([])
+            });
+        });
+    }
+
+    async function initTemplateTomSelect(url) {
+        allTemplatesData = await fetchDataAndNormalize(url, 'ten', 'ten');
+        const templateSelectEl = document.querySelector('.cbTemplateTTPT');
+        if (!templateSelectEl) return;
+        templateTomSelectInstance = new window.TomSelect('.cbTemplateTTPT', {
+            options: allTemplatesData,
+            valueField: "id",
+            labelField: "ten",
+            searchField: ["ten", "alias"],
+            placeholder: "-- Chọn mẫu --",
+            maxItems: 1,
+            preload: true,
+            render: {
+                option: (data, escape) => `
+                    <div style="display:flex; justify-content:space-between; width:100%;">
+                        <span>${escape(data.ten)}</span>
+                        <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.alias || "")}</span>
+                    </div>`,
+                item: (data, escape) => `
+                    <div style="display:flex; justify-content:space-between; width:100%;">
+                        <span>${escape(data.ten)}</span>
+                        <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.alias || "")}</span>
+                    </div>`,
+                no_results: (data, escape) =>
+                    `<div class="no-results" style="padding:6px 10px;color:#999;">Không tìm thấy "${escape(data.input)}"</div>`
+            }
+        });
+    }
+    initTemplateTomSelect(`/template_tuong_trinh/LayDanhSachTheoIDKhoa/${DEFAULT_KHOA_ID}`);
+
+    function applyTemplate() {
+        if (!templateTomSelectInstance) return;
+        const selectedTemplateId = templateTomSelectInstance.getValue();
+        const editorContent = document.getElementById('editorContent');
+        if (!selectedTemplateId) {
+            editorContent.innerHTML = '';
+            alert("Vui lòng chọn một mẫu tường trình trước khi áp dụng.");
+            return;
+        }
+        const selectedTemplate = allTemplatesData.find(t => t.id.toString() === selectedTemplateId.toString());
+        if (selectedTemplate && selectedTemplate.noiDung) {
+            editorContent.innerHTML = selectedTemplate.noiDung;
+            // Khởi tạo lại các sự kiện cho ảnh sau khi áp dụng template
+            initializeImageEvents();
+        } else {
+            alert("Lỗi: Không tìm thấy nội dung mẫu tường trình.");
+        }
+    }
+
+    // --- IMAGE INSERTION, RESIZE, ALIGN, PANEL ---
+    (function () {
+        const editorContent = document.getElementById('editorContent');
+        const imagePanel = document.querySelector('.image-panel-body');
+        let uploadedImages = [];
+        let imageCounter = 0;
+
+        // Hàm khởi tạo sự kiện cho tất cả ảnh trong editor
+        function initializeImageEvents() {
+            document.querySelectorAll('.img-wrapper').forEach(wrapper => {
+                const img = wrapper.querySelector('img');
+                const resizeHandle = wrapper.querySelector('.resize-handle');
+                if (img && resizeHandle) {
+                    setupImageResize(wrapper, img, resizeHandle);
+                    setupImageSelect(wrapper, img);
+                }
+            });
+        }
+
+        window.insertImageAtCursor = function (src, alt, imgId = null) {
+            let panelImage = uploadedImages.find(img => img.src === src);
+            if (!panelImage) {
+                panelImage = {
+                    id: ++imageCounter,
+                    name: alt || `Ảnh ${imageCounter}`,
+                    src: src,
+                    timestamp: new Date()
+                };
+                uploadedImages.push(panelImage);
+                addImageToPanel(panelImage);
+            }
+
+            // Wrapper
+            const wrapper = document.createElement('div');
+            wrapper.className = 'img-wrapper';
+            wrapper.contentEditable = false;
+            wrapper.style.display = 'inline-block';
+            wrapper.style.position = 'relative';
+            wrapper.style.textAlign = 'center';
+            wrapper.dataset.imageId = panelImage.id;
+
+            // Image
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = alt;
+            img.style.maxWidth = '500px';
+            img.style.height = 'auto';
+            img.style.width = '300px';
+            img.style.display = 'block';
+
+            // Resize handle (trực tiếp trên ảnh, góc phải dưới)
+            const resizeHandle = document.createElement('div');
+            resizeHandle.className = 'resize-handle se';
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(resizeHandle);
+
+            // Insert at cursor
+            const sel = window.getSelection();
+            if (sel.rangeCount > 0) {
+                const range = sel.getRangeAt(0);
+                range.collapse(false);
+                range.insertNode(wrapper);
+                // Đặt con trỏ sau ảnh
+                const br = document.createElement('br');
+                wrapper.parentNode.insertBefore(br, wrapper.nextSibling);
+                range.setStartAfter(br);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else {
+                editorContent.appendChild(wrapper);
+                editorContent.appendChild(document.createElement('br'));
+            }
+            setupImageResize(wrapper, img, resizeHandle);
+            setupImageSelect(wrapper, img);
+        };
+
+        // Resize logic
+        function setupImageResize(wrapper, img, resizeHandle) {
+            let isResizing = false, startX, startY, startWidth, startHeight;
+
+            resizeHandle.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                isResizing = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                startWidth = img.offsetWidth;
+                startHeight = img.offsetHeight;
+                img.classList.add('resizing');
+                document.body.style.cursor = 'nwse-resize';
+
+                function resizeMove(ev) {
+                    if (!isResizing) return;
+                    let newWidth = startWidth + (ev.clientX - startX);
+                    if (newWidth > 50 && newWidth < 1000) {
+                        img.style.width = newWidth + 'px';
+                        img.style.maxWidth = newWidth + 'px';
+                        img.style.height = 'auto';
+                    }
+                }
+                function stopResize() {
+                    isResizing = false;
+                    img.classList.remove('resizing');
+                    document.removeEventListener('mousemove', resizeMove);
+                    document.removeEventListener('mouseup', stopResize);
+                    document.body.style.cursor = '';
+                }
+                document.addEventListener('mousemove', resizeMove);
+                document.addEventListener('mouseup', stopResize);
+            });
+        }
+
+        // Click select logic với hiệu ứng
+        function setupImageSelect(wrapper, img) {
+            img.addEventListener('click', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                // Thêm hiệu ứng click
+                wrapper.classList.add('click-effect');
+                setTimeout(() => {
+                    wrapper.classList.remove('click-effect');
+                }, 300);
+
+                // Xóa selection cũ
+                document.querySelectorAll('.img-wrapper').forEach(w => {
+                    w.classList.remove('selected');
+                    w.querySelector('img')?.classList.remove('selected');
+                });
+
+                // Thêm selection mới
+                wrapper.classList.add('selected');
+                img.classList.add('selected');
+
+                // Tự động focus wrapper để nhận sự kiện keydown (Enter)
+                wrapper.setAttribute('tabindex', '-1');
+                wrapper.focus();
+            });
+
+            // Xử lý sự kiện keydown trực tiếp trên wrapper ảnh
+            wrapper.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Bỏ focus và selection khỏi ảnh
+                    wrapper.classList.remove('selected');
+                    img.classList.remove('selected');
+                    wrapper.blur();
+
+                    // Tạo một paragraph mới sau ảnh
+                    const newParagraph = document.createElement('p');
+                    newParagraph.innerHTML = '&nbsp;';
+
+                    // Chèn paragraph mới sau ảnh
+                    wrapper.parentNode.insertBefore(newParagraph, wrapper.nextSibling);
+
+                    // Đặt con trỏ vào paragraph mới
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+                    range.setStart(newParagraph, 0);
+                    range.collapse(true);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            });
+        }
+
+        // Panel trái: Danh sách ảnh
+        function addImageToPanel(imageData) {
+            // Không thêm nếu đã có
+            if (imagePanel.querySelector(`[data-image-id="${imageData.id}"]`)) return;
+            const imageItem = document.createElement('div');
+            imageItem.className = 'image-item';
+            imageItem.dataset.imageId = imageData.id;
+            const time = imageData.timestamp.toLocaleString('vi-VN', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+            imageItem.innerHTML = `
+                <div class="fw-bold">${imageData.name}</div>
+                <small>${time}</small>
+                <img src="${imageData.src}" class="image-item-preview" alt="${imageData.name}">
+                <button class="delete-image-btn" onclick="deleteImage(${imageData.id})">
+                    <i class="ti ti-trash"></i>
+                </button>
+            `;
+            imageItem.addEventListener('click', function () {
+                document.querySelectorAll('.image-item').forEach(item => item.classList.remove('active', 'selected'));
+                imageItem.classList.add('active', 'selected');
+
+                // focus ảnh trong editor
+                const imgWrapper = editorContent.querySelector(`[data-image-id="${imageData.id}"]`);
+                if (imgWrapper) {
+                    imgWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    document.querySelectorAll('.img-wrapper').forEach(w => {
+                        w.classList.remove('selected');
+                        w.querySelector('img')?.classList.remove('selected');
+                    });
+                    imgWrapper.classList.add('selected');
+                    imgWrapper.querySelector('img')?.classList.add('selected');
+                    imgWrapper.focus();
+                }
+            });
+            imagePanel.appendChild(imageItem);
+        }
+
+        // Xóa ảnh
+        window.deleteImage = function (imageId) {
+            if (!confirm('Bạn có chắc muốn xóa ảnh này?')) return;
+            uploadedImages = uploadedImages.filter(img => img.id !== imageId);
+            const panelItem = imagePanel.querySelector(`[data-image-id="${imageId}"]`);
+            if (panelItem) panelItem.remove();
+            const editorImgs = editorContent.querySelectorAll(`[data-image-id="${imageId}"]`);
+            editorImgs.forEach(img => img.remove());
+        };
+
+        // Click ngoài ảnh để deselect
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.img-wrapper') && !e.target.closest('.image-item')) {
+                document.querySelectorAll('.img-wrapper').forEach(w => {
+                    w.classList.remove('selected');
+                    w.querySelector('img')?.classList.remove('selected');
+                });
+                document.querySelectorAll('.image-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+            }
+        });
+
+        // Xử lý Enter trong editor content - ĐÃ SỬA: Cho phép Enter hoạt động bình thường
+        editorContent.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                // Nếu đang chọn ảnh, xử lý xuống dòng sau ảnh và bỏ focus
+                const selectedImg = document.querySelector('.img-wrapper.selected');
+                if (selectedImg) {
+                    e.preventDefault();
+
+                    // Bỏ focus và selection khỏi ảnh
+                    selectedImg.classList.remove('selected');
+                    selectedImg.querySelector('img')?.classList.remove('selected');
+                    selectedImg.blur();
+
+                    // Tạo một paragraph mới sau ảnh
+                    const newParagraph = document.createElement('p');
+                    newParagraph.innerHTML = '&nbsp;';
+
+                    // Chèn paragraph mới sau ảnh
+                    selectedImg.parentNode.insertBefore(newParagraph, selectedImg.nextSibling);
+
+                    // Đặt con trỏ vào paragraph mới
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+                    range.setStart(newParagraph, 0);
+                    range.collapse(true);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+                // Nếu không có ảnh được chọn, để Enter hoạt động bình thường
+            }
+        });
+
+        // Nút upload ảnh trong panel trái
+        const addImageBtn = document.getElementById('btnAddImagePanel');
+        if (addImageBtn) {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.multiple = true;
+            fileInput.style.display = 'none';
+            document.body.appendChild(fileInput);
+            addImageBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', function () {
+                [...this.files].forEach(file => {
+                    if (file.type.startsWith('image/')) window.insertImageAtCursor(URL.createObjectURL(file), file.name);
+                });
+                this.value = '';
+            });
+        }
+
+        // Drag & drop ảnh vào editor
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            editorContent.addEventListener(eventName, e => {
+                e.preventDefault(); e.stopPropagation();
+                if (eventName === 'dragenter' || eventName === 'dragover')
+                    editorContent.classList.add('drag-over');
+                else
+                    editorContent.classList.remove('drag-over');
+            }, false);
+        });
+        editorContent.addEventListener('drop', function (e) {
+            [...e.dataTransfer.files].forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = evt => window.insertImageAtCursor(evt.target.result, file.name);
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        // Nút upload ảnh trên toolbar
+        document.getElementById('btnInsertLocalImage').addEventListener('click', function () {
+            document.getElementById('inputLocalImage').click();
+        });
+        document.getElementById('inputLocalImage').addEventListener('change', function () {
+            [...this.files].forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = evt => window.insertImageAtCursor(evt.target.result, file.name);
+                    reader.readAsDataURL(file);
+                }
+            });
+            this.value = '';
+        });
+
+        // --- ALIGN IMAGE WITH TOOLBAR BUTTONS ---
+        function setupAlignToolbar() {
+            // Lấy 3 nút align
+            const btnLeft = document.querySelector('button[title="Căn trái"]');
+            const btnCenter = document.querySelector('button[title="Căn giữa"]');
+            const btnRight = document.querySelector('button[title="Căn phải"]');
+            if (!(btnLeft && btnCenter && btnRight)) return;
+
+            // Xóa event listeners cũ và thêm mới
+            btnLeft.replaceWith(btnLeft.cloneNode(true));
+            btnCenter.replaceWith(btnCenter.cloneNode(true));
+            btnRight.replaceWith(btnRight.cloneNode(true));
+
+            const newBtnLeft = document.querySelector('button[title="Căn trái"]');
+            const newBtnCenter = document.querySelector('button[title="Căn giữa"]');
+            const newBtnRight = document.querySelector('button[title="Căn phải"]');
+
+            newBtnLeft.addEventListener('click', () => handleAlignment('justifyLeft'));
+            newBtnCenter.addEventListener('click', () => handleAlignment('justifyCenter'));
+            newBtnRight.addEventListener('click', () => handleAlignment('justifyRight'));
+        }
+
+        function handleAlignment(command) {
+            const selectedImg = document.querySelector('.img-wrapper.selected');
+            const hasSelection = window.getSelection().toString().length > 0;
+
+            // Nếu có ảnh được chọn, căn chỉnh ảnh
+            if (selectedImg) {
+                const align = command.replace('justify', '').toLowerCase();
+                alignSelectedImage(align);
+            }
+            // Nếu có vùng text được chọn, sử dụng execCommand bình thường
+            else if (hasSelection) {
+                document.execCommand(command, false, null);
+            }
+            // Nếu không có gì được chọn, sử dụng execCommand cho toàn bộ đoạn
+            else {
+                document.execCommand(command, false, null);
+            }
+
+            document.getElementById('editorContent').focus();
+        }
+
+        function alignSelectedImage(align) {
+            const selected = document.querySelector('.img-wrapper.selected');
+            if (selected) {
+                // Xóa các class align cũ
+                selected.classList.remove('align-left', 'align-center', 'align-right');
+
+                // Thêm class align mới
+                selected.classList.add(`align-${align}`);
+
+                // Áp dụng style cho wrapper
+                selected.style.marginLeft = '';
+                selected.style.marginRight = '';
+                selected.style.display = 'block';
+
+                switch(align) {
+                    case 'left':
+                        selected.style.marginRight = 'auto';
+                        selected.style.marginLeft = '0';
+                        break;
+                    case 'center':
+                        selected.style.marginLeft = 'auto';
+                        selected.style.marginRight = 'auto';
+                        break;
+                    case 'right':
+                        selected.style.marginLeft = 'auto';
+                        selected.style.marginRight = '0';
+                        break;
+                }
+
+                // Đảm bảo wrapper chiếm toàn bộ chiều rộng để căn giữa hoạt động
+                selected.style.width = 'fit-content';
+                selected.parentElement.style.textAlign = align;
+            }
+        }
+        setupAlignToolbar();
+
+        // Khởi tạo sự kiện cho ảnh hiện có
+        initializeImageEvents();
+
+    })();
+
+    // --- Toolbar commands ---
+    function execCmd(command, value = null) {
+        // Xử lý căn chỉnh thông minh: ưu tiên ảnh nếu có ảnh được chọn
+        if (command.startsWith('justify')) {
+            handleAlignment(command);
+            return;
+        }
+
+        // Các command khác hoạt động bình thường
+        document.execCommand(command, false, value);
+        document.getElementById('editorContent').focus();
+    }
+
+    // Kiểm tra xem có ảnh nào đang được chọn không
+    function isImageSelected() {
+        return document.querySelector('.img-wrapper.selected') !== null;
+    }
+
+    // Căn chỉnh ảnh được chọn
+    function alignSelectedImage(align) {
+        const selected = document.querySelector('.img-wrapper.selected');
+        if (selected) {
+            // Xóa các class align cũ
+            selected.classList.remove('align-left', 'align-center', 'align-right');
+
+            // Thêm class align mới
+            selected.classList.add(`align-${align}`);
+
+            // Xóa các style căn chỉnh cũ
+            selected.style.marginLeft = '';
+            selected.style.marginRight = '';
+            selected.style.display = 'block';
+
+            // Áp dụng căn chỉnh mới
+            switch(align) {
+                case 'left':
+                    selected.style.marginRight = 'auto';
+                    selected.style.marginLeft = '0';
+                    break;
+                case 'center':
+                    selected.style.marginLeft = 'auto';
+                    selected.style.marginRight = 'auto';
+                    break;
+                case 'right':
+                    selected.style.marginLeft = 'auto';
+                    selected.style.marginRight = '0';
+                    break;
+            }
+
+            // Đảm bảo wrapper chiếm toàn bộ chiều rộng để căn giữa hoạt động
+            selected.style.width = 'fit-content';
+            selected.parentElement.style.textAlign = align;
+        }
+    }
+
+    // Hàm xử lý căn chỉnh thông minh
+    function handleAlignment(command) {
+        const selectedImg = document.querySelector('.img-wrapper.selected');
+        const hasSelection = window.getSelection().toString().length > 0;
+
+        // Nếu có ảnh được chọn, căn chỉnh ảnh
+        if (selectedImg) {
+            const align = command.replace('justify', '').toLowerCase();
+            alignSelectedImage(align);
+        }
+        // Nếu có vùng text được chọn, sử dụng execCommand bình thường
+        else if (hasSelection) {
+            document.execCommand(command, false, null);
+        }
+        // Nếu không có gì được chọn, sử dụng execCommand cho toàn bộ đoạn
+        else {
+            document.execCommand(command, false, null);
+        }
+
+        document.getElementById('editorContent').focus();
+    }
+
+    // Tooltip
+    [...document.querySelectorAll('[data-bs-toggle="tooltip"]')]
+        .forEach(el => new bootstrap.Tooltip(el));
+</script>
+<script>
+    async function loadTrinhTuVaKetLuan(idPhieuTTPT) {
+        try {
+            var response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/list-by-idttpt/${idPhieuTTPT}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            var data = await response.json();
+            console.log('Fetched data:', data);
+            document.getElementById('editorContent').innerHTML = data.data[0].trinhTu || '';
+            document.querySelector('.editor-summary').innerText = data.data[0].ketLuan || '';
+
+        }
+        catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+    loadTrinhTuVaKetLuan(1)
+</script>
+
+<script src="~/dist/js/J0302/J0302TTPT/J0303TemplateTuongTrinh.js" asp-append-version="true" defer></script>
