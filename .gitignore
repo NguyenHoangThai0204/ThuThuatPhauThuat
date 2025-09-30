@@ -15,3 +15,6 @@
 /ThuThuatPhauThuat/obj/project.nuget.cache
 /ThuThuatPhauThuat/obj/Debug/net8.0/ThuThuatPhauThuat.genruntimeconfig.cache
 /ThuThuatPhauThuat/obj/project.assets.json
+.vs/
+bin/
+obj/

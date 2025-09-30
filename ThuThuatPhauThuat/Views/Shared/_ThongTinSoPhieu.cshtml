@@ -1,4 +1,132 @@
-﻿@{
+﻿@model List<ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat.M0302PhieuThuThuatPhauThuatModel>
+@{
+    var tabIndex = ViewBag.TabIndex ?? 0;
+    var first = Model?.FirstOrDefault();
+}
+<div class="p-2 bg-azure-lt rounded-2">
+    <input type="hidden" id="hiddenIdVaoVienSoPhieu" value="@ViewBag.IdVaoVien" />
+
+    <div class="row mt-1">
+
+        <!-- Số phiếu -->
+        <div class="col-12 col-md-3">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 100px;">Số phiếu:</label>
+                <select class="form-select form-select-md thuThuat__soPhieu-tom-select-@tabIndex">
+                    @foreach (var item in Model)
+                    {
+                        if (item.SoPhieu == first?.SoPhieu)
+                        {
+                            <option value="@item.SoPhieu"
+                                    data-nhommau="@item.NhomMau"
+                                    data-yeutorh="@item.YeuToRh" data-idnguonbenh="@item.IDNguonBenh"
+                                    data-batdau="@(item.BatDauThuThuat?.ToString("dd/MM/yyyy HH:mm"))"
+                                    data-ketthuc="@(item.KetThucThuThuat?.ToString("dd/MM/yyyy HH:mm"))"
+                                    selected="selected">
+                                @item.SoPhieu
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@item.SoPhieu"
+                                    data-nhommau="@item.NhomMau"
+                                    data-yeutorh="@item.YeuToRh" data-idnguonbenh="@item.IDNguonBenh"
+                                    data-batdau="@(item.BatDauThuThuat?.ToString("dd/MM/yyyy HH:mm"))"
+                                    data-ketthuc="@(item.KetThucThuThuat?.ToString("dd/MM/yyyy HH:mm"))">
+                                @item.SoPhieu
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- Nhóm máu -->
+        <div class="col-4 col-md-1">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 60px;">Nhóm máu:</label>
+                <label class="form-label thuThuat__nhomMau-@tabIndex text-dark">@first?.NhomMau</label>
+            </div>
+        </div>
+
+        <!-- Bắt đầu thủ thuật -->
+        <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 140px;">Bắt đầu thủ thuật:</label>
+                <div class="input-icon w-100">
+                    <input type="text" class="form-control form-control-md txtDateTimeBatDauThuThuat-@tabIndex text-dark"
+                           value="@(first?.BatDauThuThuat?.ToString("dd/MM/yyyy HH:mm"))" autocomplete="off">
+                    <span class="input-icon-addon">
+                        <i class="ti ti-calendar-event"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thời gian khóa -->
+        <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 140px;">Thời gian khóa:</label>
+                <input type="text" class="form-control form-control-md text-dark" readonly>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+
+        <!-- Nguồn bệnh -->
+        <div class="col-12 col-md-3">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 100px;">Nguồn bệnh:</label>
+                <input type="text"
+                       class="form-control form-control-md thuThuat__nguonBenh-@tabIndex text-dark"
+                       value="@first?.IDNguonBenh" readonly />
+            </div>
+        </div>
+
+        <!-- Yếu tố Rh -->
+        <div class="col-4 col-md-1">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 72px;">Yếu tố Rh:</label>
+                <span class="form-label thuThuat__yeuToRh-@tabIndex text-dark">@first?.YeuToRh</span>
+            </div>
+        </div>
+
+        <!-- Kết thúc thủ thuật -->
+        <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 140px;">Kết thúc thủ thuật:</label>
+                <div class="input-icon w-100">
+                    <input type="text" class="form-control form-control-md txtDateTimeKetThucThuThuat-@tabIndex text-dark"
+                           value="@(first?.KetThucThuThuat?.ToString("dd/MM/yyyy HH:mm"))" autocomplete="off">
+                    <span class="input-icon-addon">
+                        <i class="ti ti-calendar-event"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Người khóa -->
+        <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <label class="form-label fw-bold me-2" style="min-width: 140px;">Người khóa:</label>
+                <input type="text" class="form-control form-control-md text-dark" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+@* @{
     var tabIndex = ViewBag.TabIndex ?? 0;
 }
 <div class="p-2 bg-azure-lt rounded-2">
@@ -173,4 +301,4 @@
         configDateTimePicker(tabIndex);
     }
     khoiTaoThongTinSoPhieu(@tabIndex);
-</script>
+</script> *@

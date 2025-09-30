@@ -79,16 +79,45 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302DanhSachThuThuatPhauThuat.cshtml");
         }
-        //[HttpPost("loc_danh_sach")]
-        //public async Task<IActionResult> LocDanhSach(long IdChiNhanh, string Ngay, long IdPhongBuong, int TrangThai)
-        //{
-        //    var (success, message, data) = await _service.LocDanhSachAsync(IdChiNhanh, Ngay, IdPhongBuong, TrangThai);
-        //    if (!success)
-        //        return Json(new { Success = false, Message = message, Data = new List<object>() });
+        [HttpGet("get_thong_tin_chi_tiet")]
+        public async Task<IActionResult> GetThongTinChiTiet(long idVaoVien, long idChiNhanh, long soPhieu)
+        {
+            try
+            {
+                // Sử dụng stored procedure chuyên cho chi tiết
+                var parameters = new[]
+                {
+                    new SqlParameter("@IdVaoVien", idVaoVien),
+                    new SqlParameter("@IdChiNhanh", idChiNhanh),
+                    new SqlParameter("@SoPhieu", soPhieu)
 
-        //    // Trả về đúng cấu trúc object
-        //    return Json(new { Success = true, Message = message, Data = data });
-        //}
+                };
+
+                var sql = @"EXEC S0302_GetThongTinThuThuatPhauThuat @IdVaoVien, @IdChiNhanh,@SoPhieu ";
+
+                var data = await _dbService.M0302ThongTinThuThuatPhauThuatModels
+                     .FromSqlRaw(sql, parameters)
+                     .AsNoTracking()
+                     .ToListAsync();
+
+                var record = data.FirstOrDefault();
+
+                return Ok(new
+                {
+                    success = true,
+                    data = record
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
         [HttpPost("loc_danh_sach")]
         public async Task<IActionResult> LocDanhSach(
             long IdChiNhanh,
