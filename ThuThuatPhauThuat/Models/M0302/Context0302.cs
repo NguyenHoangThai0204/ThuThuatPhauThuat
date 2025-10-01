@@ -26,6 +26,7 @@ namespace ThuThuatPhauThuat.Models.M0302
         public DbSet<M0301TaiBienBienChung> TaiBienBienChung { get; set; }
         public DbSet<M0301ThietBiTTPT> ThietBi { get; set; }
         public DbSet<M0305TrinhTuVaKetLuanModel> TrinhTuVaKetLuan { get; set; }
+        public DbSet<TaoPhieuResult> TaoPhieuResults { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<M0302ThongTinDoanhNghiep>().HasNoKey();
@@ -33,6 +34,7 @@ namespace ThuThuatPhauThuat.Models.M0302
             modelBuilder.Entity<EkipResult>().HasNoKey().ToView(null);
 
             modelBuilder.Entity<HH_DM_KhoHang>().HasNoKey();
+            modelBuilder.Entity<TaoPhieuResult>().HasNoKey();
             modelBuilder.Entity<M0302PhieuThuThuatPhauThuatModel>().HasNoKey();
             modelBuilder.Entity<M0302ThuThuatPhauThuatModelList>().HasNoKey();
             modelBuilder.Entity<M0302ThongTinThuThuatPhauThuatModel>().HasNoKey();

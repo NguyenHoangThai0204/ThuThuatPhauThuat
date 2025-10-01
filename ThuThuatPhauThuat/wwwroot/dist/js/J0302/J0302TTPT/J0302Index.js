@@ -24,6 +24,22 @@ var selectedIdVaoVien = null;
 var selectedIdChiDinhChiTiet = null;
 var tabLoaded = {};
 var IDPhieuTTPT = null;
+// Hàm format ngày giờ theo local (yyyy-MM-ddTHH:mm:ss)
+function formatLocalDateTime(str) {
+    if (!str) return null;
+    const parts = str.split(/[- :]/);
+    // parts = [dd, MM, yyyy, HH, mm]
+    if (parts.length < 5) return null;
+
+    const d = new Date(parts[2], parts[1] - 1, parts[0], parts[3], parts[4]);
+
+    return d.getFullYear() + "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) + "-" +
+        ("0" + d.getDate()).slice(-2) + "T" +
+        ("0" + d.getHours()).slice(-2) + ":" +
+        ("0" + d.getMinutes()).slice(-2) + ":00";
+}
+// Khi thu thập dữ liệu để lưu
 
 $(document).ready(function () {
     // Load tab danh sách mặc định
@@ -88,9 +104,55 @@ $(document).ready(function () {
     });
 
     $('#btn_saveIndex').on('click', function () {
-        console.log(">>> Nút Lưu Index được nhấn");
+        var data = {
+            SoPhieu: $('#soPhieu').val(),
+            IDNguonBenh: $('.thuThuat__nguonBenh-tom-select-0').val(),
+            BatDauThuThuat: formatLocalDateTime($('.txtDateTimeBatDauThuThuat-0').val()),
+            KetThucThuThuat: formatLocalDateTime($('.txtDateTimeKetThucThuThuat-0').val()),
+            ThoiGianKhoa: formatLocalDateTime($('.txtDateTimeThoiGianKhoa-0').val()),
+            NhomMau: $('#nhomMau').val(),
+            YeuToRh: $('#yeuToRh').val(),
+            IDVaoVien: selectedIdVaoVien,
+            IDChiDinhChiTiet: selectedIdChiDinhChiTiet,
+            NguoiKhoa: $('#nguoiKhoa').val()
+        };
+        if (!IDPhieuTTPT || IDPhieuTTPT === 0) {
+            // Thu thập dữ liệu từ form
+            
+            $.ajax({
+                url: '/thu_thuat_phau_thuat/create-phieu',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (res) {
+                    if (res.success) {
+                        IDPhieuTTPT = res.idPhieuTTPT;
+                    }
+                }
+            });
+        } else {
+            
+            data.IDPhieuTTPT = IDPhieuTTPT; // Gắn ID để server biết update
+            console.log(data);
+            $.ajax({
+                url: '/thu_thuat_phau_thuat/update-phieu',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (res) {
+                    if (res.success) {
+                        console.log("✅ Cập nhật phiếu thành công, ID =", IDPhieuTTPT);
+                    } else {
+                        console.error("❌ Cập nhật phiếu thất bại:", res.message);
+                    }
+                },
+                error: function (xhr) {
+                    console.error("❌ Lỗi server khi cập nhật phiếu!", xhr.responseText);
+                }
+            });
+        }
 
-        // Gọi hàm lưu từng tab
+
         if (typeof handleSaveThongTin === 'function') {
             handleSaveThongTin();
         }
@@ -100,7 +162,7 @@ $(document).ready(function () {
         if (typeof handleSaveEkip === 'function') {
             handleSaveEkip();
         }
-        //if (typeof handleSaveThuocVatTu === 'function') {
+        ////if (typeof handleSaveThuocVatTu === 'function') {
         //    handleSaveThuocVatTu();
         //}
     });

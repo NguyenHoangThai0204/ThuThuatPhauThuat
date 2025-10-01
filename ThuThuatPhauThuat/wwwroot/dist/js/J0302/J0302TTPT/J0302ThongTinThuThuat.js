@@ -261,35 +261,6 @@ function fetchDataAndNormalize(url, tenField = 'ten', viettatField = 'viettat', 
     });
 }
 
-//function fetchDataAndNormalize(url, tenField = 'ten', viettatField = 'viettat') {
-//    if (url.endsWith('.json')) {
-//        return new Promise((resolve, reject) => {
-//            $.getJSON(url, data => {
-//                resolve(normalizeData(data, tenField, viettatField));
-//            }).fail((jqXHR, textStatus, errorThrown) => {
-//                console.error(`Lỗi khi tải dữ liệu từ ${url}:`, textStatus, errorThrown);
-//                resolve([]); 
-//            });
-//        });
-//    }
-//    return new Promise((resolve, reject) => {
-//        $.ajax({
-//            url: url,
-//            method: 'GET',
-//            dataType: 'json',
-//            success: function (data) {
-//                resolve(normalizeData(data, tenField, viettatField));
-//            },
-//            error: function (jqXHR, textStatus, errorThrown) {
-//                console.error(`Lỗi khi gọi API ${url}:`, textStatus, errorThrown);
-//                resolve([]); 
-//            }
-//        });
-//    });
-//}
-
-
-
 /**
  * Định nghĩa cấu hình TomSelect với dữ liệu đã được tải
  * @param {object} allData - Object chứa tất cả các mảng dữ liệu đã tải
@@ -392,13 +363,12 @@ function bindDataToForm(data) {
     document.getElementById('ket_qua_xet_nghiem').value = data.ketQuaXNFNAGBP || '';
     document.getElementById('chi_dinh_vi_tri_ton_thuong_fna').value = data.chiDinhViTriTonThuongFNA || '';
     document.getElementById('yeu_cau_xet_nghiem').value = data.yeuCauXetNghiem || '';
-    // Phòng thực hiện
+
     if (data.idPhongThucHien) {
         const phongSelect = document.querySelector(".cbPhongThucHien")?.tomselect;
         if (phongSelect) phongSelect.setValue(String(data.idPhongThucHien));
     }
 
-    // Thiết bị
     if (data.idThietBi) {
         const thietBiSelect = document.querySelector(".cbThietBi")?.tomselect;
         if (thietBiSelect) thietBiSelect.setValue(String(data.idThietBi));
@@ -424,6 +394,10 @@ function bindDataToForm(data) {
         const plSelect = document.querySelector(".cbTuVong")?.tomselect;
         if (plSelect) plSelect.setValue(String(data.idTuVong));
     }
+    if (data.idPhuongPhapVoCam) {
+        const plSelect = document.querySelector(".cbPTVoCam")?.tomselect;
+        if (plSelect) plSelect.setValue(String(data.idPhuongPhapVoCam));
+    }
 }
 
 
@@ -445,17 +419,7 @@ function loadData(idVaoVien, idChiNhanh, soPhieu) {
 }
 
 async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
-    console.log("Bắt đầu tải dữ liệu và khởi tạo Tab thông tin...");
-   
-    // 1. Định nghĩa các lời gọi bất đồng bộ
-    //const dataPromises = {
-    //    phongBuong: fetchDataAndNormalize("dist/data/json/DM_PhongBuong.json"),
-    //    phanLoai: fetchDataAndNormalize("dist/data/json/DM_LoaiThuThuatPhauThuat.json"),
-    //    viTriThucHien: fetchDataAndNormalize("/ViTriThucHien/List", 'ten', 'viettat'),
-    //    taiBienBienChung: fetchDataAndNormalize("/TaiBienBienChung/List", 'ten', 'viettat'),
-    //    cheDoThuThuat: fetchDataAndNormalize("/CheDoThuThuat/List", 'ten', 'viettat'),
-    //    thietBi: fetchDataAndNormalize("dist/data/json/CLS_DanhMucMayCls.json", 'ten', 'viettat'),
-    //};
+
     const dataPromises = {
         phongBuong: fetchDataAndNormalize("dist/data/json/DM_PhongBuong.json", 'ten', 'viettat', _idcn),
         phanLoai: fetchDataAndNormalize("dist/data/json/DM_LoaiThuThuatPhauThuat.json", 'ten', 'viettat', _idcn),
@@ -895,8 +859,6 @@ async function handleSaveThongTin() {
     const tenICDVaoKhoa = $('#ten_icd_vao_khoa').val();
     const tenICDTruoc = $('#ten_icd_truoc_thuat').val();
     const tenICDSau = $('#ten_icd_sau_thuat').val();
-
-    console.log("Mã ICD Vào Khoa:", maIcdVaoKhoa);
 
     const maPhongThucHien = $('.cbPhongThucHien').val();
     const maPhanLoai = $('.cbPhanLoai').val();

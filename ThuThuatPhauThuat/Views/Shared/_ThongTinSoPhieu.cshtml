@@ -1,6 +1,4 @@
-﻿
-
-@model ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat.M0302PhieuThuThuatPhauThuatModel
+﻿@model ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat.M0302PhieuThuThuatPhauThuatModel
 @{
     var tabIndex = ViewBag.TabIndex ?? 0;
     bool isEmptyModel = Model == null || string.IsNullOrEmpty(Model.SoPhieu);
@@ -15,7 +13,7 @@
                 <label class="form-label fw-bold me-2" style="min-width: 100px;">Số phiếu:</label>
                 @if (isEmptyModel)
                 {
-                    <input class="form-select form-select-md"></input>
+                    <input class="form-select form-select-md" id="soPhieu" />
                 }
                 else
                 {
@@ -37,8 +35,13 @@
             <div class="d-flex align-items-center mb-2 mb-md-0">
                 <label class="form-label fw-bold me-2" style="min-width: 140px;">Bắt đầu thủ thuật:</label>
                 <div class="input-icon w-100">
-                    <input type="text" class="form-control form-control-md txtDateTimeBatDauThuThuat-@tabIndex text-dark"
-                           value="@(Model?.BatDauThuThuat?.ToString("dd/MM/yyyy HH:mm") ?? "")" autocomplete="off" readonly="@(isEmptyModel ? "false" : "true")">
+                    <input type="text"
+                           class="form-control form-control-md txtDateTimeBatDauThuThuat-@tabIndex text-dark"
+                           value="@(isEmptyModel
+                                                               ? DateTime.Now.ToString("dd-MM-yyyy HH:mm")
+                                                               : Model?.BatDauThuThuat?.ToString("dd-MM-yyyy HH:mm") ?? "")"
+                           autocomplete="off"
+                           @(isEmptyModel ? "" : "")>
                     <span class="input-icon-addon">
                         <i class="ti ti-calendar-event"></i>
                     </span>
@@ -49,8 +52,19 @@
         <!-- Thời gian khóa -->
         <div class="col-12 col-md-4">
             <div class="d-flex align-items-center mb-2 mb-md-0">
-                <label class="form-label fw-bold me-2" style="min-width: 140px;">Thời gian khóa:</label>
-                <input type="text" class="form-control form-control-md text-dark" readonly />
+                <label class="form-label fw-bold me-2" style="min-width: 140px;">Thời gian khoá</label>
+                <div class="input-icon w-100">
+                    <input type="text"
+                           class="form-control form-control-md txtDateTimeThoiGianKhoa-@tabIndex text-dark"
+                           value="@(isEmptyModel
+                                                                                          ? DateTime.Now.ToString("dd-MM-yyyy HH:mm")
+                                                                                          : Model?.ThoiGianKhoa?.ToString("dd-MM-yyyy HH:mm") ?? "")"
+                           autocomplete="off"
+                           @(isEmptyModel ? "" : "")>
+                    <span class="input-icon-addon">
+                        <i class="ti ti-calendar-event"></i>
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -62,11 +76,11 @@
                 <label class="form-label fw-bold me-2" style="min-width: 100px;">Nguồn bệnh:</label>
                 @if (isEmptyModel)
                 {
-                    <select class="form-select form-select-md  thuThuat__nguonBenh-tom-select-@tabIndex"></select>
+                    <select class="form-select form-select-md thuThuat__nguonBenh-tom-select-@tabIndex"></select>
                 }
                 else
                 {
-                    <input type="text" class="form-control" value="@Model.IDNguonBenh" readonly />
+                    <input type="text" class="form-control" value="@Model.IDNguonBenh"  />
                 }
             </div>
         </div>
@@ -75,7 +89,7 @@
         <div class="col-4 col-md-1">
             <div class="d-flex align-items-center mb-2 mb-md-0">
                 <label class="form-label fw-bold me-2" style="min-width: 72px;">Yếu tố Rh:</label>
-                <span class="form-label text-dark">@Model?.YeuToRh </span>
+                <span class="form-label text-dark">@Model?.YeuToRh</span>
             </div>
         </div>
 
@@ -84,8 +98,13 @@
             <div class="d-flex align-items-center mb-2 mb-md-0">
                 <label class="form-label fw-bold me-2" style="min-width: 140px;">Kết thúc thủ thuật:</label>
                 <div class="input-icon w-100">
-                    <input type="text" class="form-control form-control-md txtDateTimeKetThucThuThuat-@tabIndex text-dark"
-                           value="@(Model?.KetThucThuThuat?.ToString("dd/MM/yyyy HH:mm") ?? "")" autocomplete="off" readonly="@(isEmptyModel ? "false" : "true")">
+                    <input type="text"
+                           class="form-control form-control-md txtDateTimeKetThucThuThuat-@tabIndex text-dark"
+                           value="@(isEmptyModel
+                                                               ? DateTime.Now.ToString("dd-MM-yyyy HH:mm")
+                                                               : Model?.KetThucThuThuat?.ToString("dd-MM-yyyy HH:mm") ?? "")"
+                           autocomplete="off"
+                           @(isEmptyModel ? "" : "")>
                     <span class="input-icon-addon">
                         <i class="ti ti-calendar-event"></i>
                     </span>
@@ -97,23 +116,21 @@
         <div class="col-12 col-md-4">
             <div class="d-flex align-items-center mb-2 mb-md-0">
                 <label class="form-label fw-bold me-2" style="min-width: 140px;">Người khóa:</label>
-                <input type="text" class="form-control form-control-md text-dark" readonly />
+                <input type="text" id="nguoiKhoa" class="form-control form-control-md text-dark" value="@Model?.NguoiKhoa" />
             </div>
         </div>
     </div>
 </div>
+
 <script>
-     
     var nguonBenhData = [
-        { ma: "TB", ten: "Trong Bệnh viện", vietTat: "tbv" },
-        { ma: "NB", ten: "Ngoài Bệnh viện", vietTat: "nbv" },
-        { ma: "CK", ten: "Chuyển khoa", vietTat: "ck" },
-        { ma: "TC", ten: "Tự chuyển", vietTat: "tc" }
+        { ma: "1", ten: "Trong Bệnh viện", vietTat: "tbv" },
+        { ma: "2", ten: "Ngoài Bệnh viện", vietTat: "nbv" },
+        { ma: "3", ten: "Chuyển khoa", vietTat: "ck" },
+        { ma: "4", ten: "Tự chuyển", vietTat: "tc" }
     ];
 
-    function khoiTaoThongTinSoPhieu(tabIndex) {
-      
-
+    function khoiTaoThongTinSoPhieu(tabIndex, isEmpty) {
         if ($('.thuThuat__nguonBenh-tom-select-' + tabIndex).length) {
             new TomSelect('.thuThuat__nguonBenh-tom-select-' + tabIndex, {
                 options: nguonBenhData,
@@ -125,14 +142,26 @@
             });
         }
 
-        $('.txtDateTimeBatDauThuThuat-' + tabIndex + ', .txtDateTimeKetThucThuThuat-' + tabIndex).attachDateTimeGroups();
+        $('.txtDateTimeBatDauThuThuat-' + tabIndex + ', .txtDateTimeKetThucThuThuat-' + tabIndex + ',.txtDateTimeThoiGianKhoa-' + tabIndex).attachDateTimeGroups();
+
+        // Nếu phiếu rỗng → set mặc định là thời gian hiện tại
+           if (isEmpty) {
+        var now = new Date();
+        var formatted = ("0" + now.getDate()).slice(-2) + "-" +
+                        ("0" + (now.getMonth() + 1)).slice(-2) + "-" +
+                        now.getFullYear() + " " +
+                        ("0" + now.getHours()).slice(-2) + ":" +
+                        ("0" + now.getMinutes()).slice(-2);
+
+        $('.txtDateTimeBatDauThuThuat-' + tabIndex).val(formatted);
+        $('.txtDateTimeKetThucThuThuat-' + tabIndex).val(formatted);
+        $('.txtDateTimeThoiGianKhoa-' + tabIndex).val(formatted);
     }
 
-    khoiTaoThongTinSoPhieu(@tabIndex);
+    }
 
+    khoiTaoThongTinSoPhieu(@tabIndex, @(isEmptyModel.ToString().ToLower()));
 </script>
-
-
 @* 
 
 @{
