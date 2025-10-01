@@ -22,15 +22,15 @@ function updateDateTime() {
 }
 
 $(document).on("click", "#example tbody tr", function () {
-    IDPhieuTTPT = null;
+   
     var tenBN = $(this).find("td:eq(2)").text().trim();
     var namSinh = $(this).find("td:eq(3)").text().trim();
     var gioiTinh = $(this).find("td:eq(4)").text().trim();
     var bacSi = $(this).find("td:eq(10)").text().trim();
     selectedIdVaoVien = $(this).data("idvaovien");
     selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
-    IDPhieuTTPT = $(this).data("idphieu");
-
+    window.IDPhieuTTPT = $(this).data("idphieu");
+    console.log("ID phiếu đang chọn là :", window.IDPhieuTTPT);
 
 
     var dateStr = decodeURIComponent($(this).attr("data-ngaygiochidinh"));
