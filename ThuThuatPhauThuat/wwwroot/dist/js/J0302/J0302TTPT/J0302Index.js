@@ -24,7 +24,7 @@ var selectedIdVaoVien = null;
 var selectedIdChiDinhChiTiet = null;
 var tabLoaded = {};
 var IDPhieuTTPT = null;
-// Hàm format ngày giờ theo local (yyyy-MM-ddTHH:mm:ss)
+
 function formatLocalDateTime(str) {
     if (!str) return null;
     const parts = str.split(/[- :]/);
@@ -154,6 +154,7 @@ $(document).ready(function () {
 
 
         if (typeof handleSaveThongTin === 'function') {
+            console.log("ádfAsfdfasdfasd");
             handleSaveThongTin();
         }
         //if (typeof handleSaveTrinhTu === 'function') {
