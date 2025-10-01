@@ -9,25 +9,17 @@
     }
 
     function saveTrinhTu($btn, originalText) {
-        console.log('=== BẮT ĐẦU SAVE TRÌNH TỰ ===');
 
         var content = $('#editorContent').html();
         var summary = $('.editor-summary').val();
-
-        console.log('Content length:', content?.length);
-        console.log('Summary:', summary);
 
         var formData = {
             IDPhieuTTPT: 1,
             TrinhTu: content || '',
             KetLuan: summary || '', 
         };
-
-        console.log('Form data to send:', JSON.stringify(formData, null, 2));
-
         try {
             var jsonData = JSON.stringify(formData);
-            console.log('JSON data length:', jsonData.length);
         } catch (jsonError) {
             console.error('JSON stringify error:', jsonError);
             toastr.error('Lỗi định dạng dữ liệu');
@@ -41,10 +33,10 @@
             contentType: 'application/json',
             data: jsonData,
             beforeSend: function () {
-                console.log('AJAX beforeSend - Đang gửi request...');
+            //    console.log('AJAX beforeSend - Đang gửi request...');
             },
             success: function (response) {
-                console.log('AJAX Success - Response:', response);
+                //console.log('AJAX Success - Response:', response);
                 if (response.success) {
                     toastr.success(response.message);
                 } else {
@@ -67,7 +59,6 @@
                 toastr.error(errorMessage);
             },
             complete: function () {
-                console.log('AJAX Complete - Kết thúc request');
                 $btn.prop('disabled', false).html(originalText);
             }
         });

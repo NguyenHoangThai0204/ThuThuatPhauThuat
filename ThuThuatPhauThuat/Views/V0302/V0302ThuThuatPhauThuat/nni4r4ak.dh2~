@@ -84,7 +84,7 @@
                     title="Chèn ảnh từ máy">
                 <i class="ti ti-upload"></i>
             </button>
-            <input type="file" id="inputLocalImage" accept="image/*" style="display:none;" multiple>
+            <input type="file" id="inputLocalImage" accept="image" style="display:none;" multiple>
             <!-- Insert image by URL -->
             <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('insertImage', prompt('Nhập URL hình:','https://'))"
                     data-bs-toggle="tooltip" title="Chèn ảnh từ link">
@@ -444,6 +444,7 @@
             try {
                 const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/get-images/${idPhieuTTPT}`);
                 const result = await response.json();
+                // console.log('Fetched images:', result);
 
                 if (result.success && result.data) {
                     result.data.forEach(image => {
@@ -643,7 +644,7 @@
                 const editorSummary = document.querySelector('.editor-summary');
 
                 const trinhTuData = {
-                    IDPhieuTTPT: 1, // Thay bằng ID phiếu thực tế của bạn
+                    IDPhieuTTPT: 1,
                     TrinhTu: editorContent.innerHTML,
                     KetLuan: editorSummary.value
                 };
@@ -897,7 +898,7 @@
         }
     }
 
-    /*============================== Hàm xử lý căn chỉnh thông minh ==============================*/
+    /*============================== Hàm xử lý căn chỉnh thông minh ==============================
     function handleAlignment(command) {
         const selectedImg = document.querySelector('.img-wrapper.selected');
         const hasSelection = window.getSelection().toString().length > 0;
