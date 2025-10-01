@@ -112,7 +112,7 @@ function addICDTag(type, icdId, icdCode, icdName) {
 
     tag.innerHTML = `
     ${icdCode}
-    <button type="button" class="remove-btn" onclick="removeICDTag('${type}', '${escapedIcdId}')">×</button>
+    <button type="button" class="remove-btn btn-sm" onclick="removeICDTag('${type}', '${escapedIcdId}')">×</button>
   `
     displayArea.appendChild(tag)
     updateICDTextArea(type)
@@ -358,6 +358,179 @@ $(function () {
     $('#ngay_cat_chi').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
 });
 
+//function bindDataToForm(data) {
+//    if (!data) return;
+
+//    // Bind dữ liệu vào các trường
+//    console.log(data)
+//    document.getElementById('ten_icd_vao_khoa').value = data.tenChanDoanVao || '';
+//    document.getElementById('hien_thi_icd_vao_khoa').innerText = data.maChanDoanVao || '';
+
+
+//    document.getElementById('ten_icd_truoc_thuat').value = data.tenChanDoanTruoc || '';
+//    document.getElementById('hien_thi_icd_truoc_thuat').innerText = data.maChanDoanTruoc || '';
+
+//    document.getElementById('ten_icd_sau_thuat').value = data.tenChanDoanSau || '';
+//    document.getElementById('hien_thi_icd_sau_thuat').innerText = data.maChanDoanSau || '';
+
+//    document.getElementById('can_thiep_thu_thuat').value = data.canThiepThuThuat || '';
+//    document.getElementById('so_lan_mo_lai').value = data.soLanMoLai || '';
+//    document.getElementById('ly_do_mo_lai').value = data.lyDoMoLai || '';
+//    document.getElementById('dan_luu').value = data.danLuu || '';
+//    document.getElementById('ngay_rut_ong_dan_luu').value = formatDate(data.ngayRutOngDanLuu);
+//    document.getElementById('ngay_cat_chi').value = formatDate(data.ngayCatChi);
+//    document.getElementById('khac').value = data.khac || '';
+//    document.getElementById('ma_fna').value = data.maFNA || '';
+//    document.getElementById('tien_can').value = data.tienCan || '';
+//    document.getElementById('ket_qua_xet_nghiem').value = data.ketQuaXNFNAGBP || '';
+//    document.getElementById('chi_dinh_vi_tri_ton_thuong_fna').value = data.chiDinhViTriTonThuongFNA || '';
+//    document.getElementById('yeu_cau_xet_nghiem').value = data.yeuCauXetNghiem || '';
+
+//    if (data.idPhongThucHien) {
+//        const phongSelect = document.querySelector(".cbPhongThucHien")?.tomselect;
+//        if (phongSelect) phongSelect.setValue(String(data.idPhongThucHien));
+//    }
+
+//    if (data.idThietBi) {
+//        const thietBiSelect = document.querySelector(".cbThietBi")?.tomselect;
+//        if (thietBiSelect) thietBiSelect.setValue(String(data.idThietBi));
+//    }
+
+//    if (data.idLoaiTTPT) {
+//        const plSelect = document.querySelector(".cbPhanLoai")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idLoaiTTPT));
+//    }
+//    if (data.idTaiBienBienChung) {
+//        const plSelect = document.querySelector(".cbBienChung")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idTaiBienBienChung));
+//    }
+//    if (data.idCheDoThuThuat) {
+//        const plSelect = document.querySelector(".cbCheDoThuThuat")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idCheDoThuThuat));
+//    }
+//    if (data.idViTriThucHien) {
+//        const plSelect = document.querySelector(".cbViTriThucHien")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idViTriThucHien));
+//    }
+//    if (data.idTuVong) {
+//        const plSelect = document.querySelector(".cbTuVong")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idTuVong));
+//    }
+//    if (data.idPhuongPhapVoCam) {
+//        const plSelect = document.querySelector(".cbPTVoCam")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idPhuongPhapVoCam));
+//    }
+//}
+function processICDLoading(type, maChanDoanStr) {
+    console.log("icdData = ", icdData);
+    if (!maChanDoanStr) return;
+
+    selectedICDs[type] = [];
+    const displayArea = document.getElementById(`hien_thi_icd_${type}`);
+    displayArea.innerHTML = '';
+
+    const maCodes = maChanDoanStr.split(',').map(m => m.trim()).filter(m => m.length > 0);
+
+    maCodes.forEach(code => {
+
+        const icdItem = icdData.find(item => item.id == code);
+        console.log("Ma ICD : id ", code, icdItem);
+        if (icdItem) {
+            addICDTag(type, icdItem.id, icdItem.ma, icdItem.ten);
+        } else {
+            console.warn(`[v0] Mã ICD không tìm thấy trong dữ liệu tra cứu: ${code}`);
+        }
+    });
+
+}
+//function bindDataToForm(data) {
+//    if (!data) return;
+
+//    // Bind dữ liệu vào các trường
+//    processICDLoading('vao_khoa', data.maChanDoanVao);
+//    processICDLoading('truoc_thuat', data.maChanDoanTruoc);
+//    processICDLoading('sau_thuat', data.maChanDoanSau);
+
+//    document.getElementById('can_thiep_thu_thuat').value = data.canThiepThuThuat || '';
+//    document.getElementById('so_lan_mo_lai').value = data.soLanMoLai || '';
+//    document.getElementById('ly_do_mo_lai').value = data.lyDoMoLai || '';
+//    document.getElementById('dan_luu').value = data.danLuu || '';
+//    document.getElementById('ngay_rut_ong_dan_luu').value = formatDate(data.ngayRutOngDanLuu);
+//    document.getElementById('ngay_cat_chi').value = formatDate(data.ngayCatChi);
+//    document.getElementById('khac').value = data.khac || '';
+//    document.getElementById('ma_fna').value = data.maFNA || '';
+//    document.getElementById('tien_can').value = data.tienCan || '';
+//    document.getElementById('ket_qua_xet_nghiem').value = data.ketQuaXNFNAGBP || '';
+//    document.getElementById('chi_dinh_vi_tri_ton_thuong_fna').value = data.chiDinhViTriTonThuongFNA || '';
+//    document.getElementById('yeu_cau_xet_nghiem').value = data.yeuCauXetNghiem || '';
+
+//    if (data.idPhongThucHien) {
+//        const phongSelect = document.querySelector(".cbPhongThucHien")?.tomselect;
+//        if (phongSelect) phongSelect.setValue(String(data.idPhongThucHien));
+//    }
+
+//    if (data.idThietBi) {
+//        const thietBiSelect = document.querySelector(".cbThietBi")?.tomselect;
+//        if (thietBiSelect) thietBiSelect.setValue(String(data.idThietBi));
+//    }
+
+//    if (data.idLoaiTTPT) {
+//        const plSelect = document.querySelector(".cbPhanLoai")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idLoaiTTPT));
+//    }
+//    if (data.idTaiBienBienChung) {
+//        const plSelect = document.querySelector(".cbBienChung")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idTaiBienBienChung));
+//    }
+//    if (data.idCheDoThuThuat) {
+//        const plSelect = document.querySelector(".cbCheDoThuThuat")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idCheDoThuThuat));
+//    }
+//    if (data.idViTriThucHien) {
+//        cfunction processICDLoading(type, maChanDoanStr) {
+//            console.log("icdData = ", icdData);
+//            if (!maChanDoanStr) return;
+
+//            selectedICDs[type] = [];
+//            const displayArea = document.getElementById(`hien_thi_icd_${type}`);
+//            displayArea.innerHTML = '';
+
+//            const maCodes = maChanDoanStr.split(',').map(m => m.trim()).filter(m => m.length > 0);
+
+//            maCodes.forEach(code => {
+
+//                const icdItem = icdData.find(item => item.id == code);
+//                console.log("Ma ICD : id ", code, icdItem);
+//                if (icdItem) {
+//                    addICDTag(type, icdItem.id, icdItem.ma, icdItem.ten);
+//                } else {
+//                    console.warn(`[v0] Mã ICD không tìm thấy trong dữ liệu tra cứu: ${code}`);
+//                }
+//            });
+
+//        }
+function processICDLoading(type, maChanDoanStr) {
+    console.log("icdData = ", icdData);
+    if (!maChanDoanStr) return;
+
+    selectedICDs[type] = [];
+    const displayArea = document.getElementById(`hien_thi_icd_${type}`);
+    displayArea.innerHTML = '';
+
+    const maCodes = maChanDoanStr.split(',').map(m => m.trim()).filter(m => m.length > 0);
+
+    maCodes.forEach(code => {
+
+        const icdItem = icdData.find(item => item.id == code);
+        console.log("Ma ICD : id ", code, icdItem);
+        if (icdItem) {
+            addICDTag(type, icdItem.id, icdItem.ma, icdItem.ten);
+        } else {
+            console.warn(`[v0] Mã ICD không tìm thấy trong dữ liệu tra cứu: ${code}`);
+        }
+    });
+
+}
 function bindDataToForm(data) {
     if (!data) return;
 
@@ -414,6 +587,7 @@ function bindDataToForm(data) {
         if (plSelect) plSelect.setValue(String(data.idTuVong));
     }
 }
+
 
 
 function loadData(idVaoVien, idChiNhanh, soPhieu) {

@@ -22,6 +22,7 @@ function updateDateTime() {
 }
 
 $(document).on("click", "#example tbody tr", function () {
+    IDPhieuTTPT = null;
     var tenBN = $(this).find("td:eq(2)").text().trim();
     var namSinh = $(this).find("td:eq(3)").text().trim();
     var gioiTinh = $(this).find("td:eq(4)").text().trim();
@@ -30,8 +31,8 @@ $(document).on("click", "#example tbody tr", function () {
     selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
     IDPhieuTTPT = $(this).data("idphieu");
 
-    console.log("asdfads fjasduhf goufasdhuig ", IDPhieuTTPT);
-    console.log("asdfads fjasduhf  ", selectedIdVaoVien);
+
+
     var dateStr = decodeURIComponent($(this).attr("data-ngaygiochidinh"));
     var date = formatDateTime(new Date(dateStr));
 
