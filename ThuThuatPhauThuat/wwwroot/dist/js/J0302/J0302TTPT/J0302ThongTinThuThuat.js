@@ -6,7 +6,6 @@ function resetThongTinState() {
         truoc_thuat: [],
         sau_thuat: [],
     };
-    console.log("Đã reset thông tin : ", sampleDataThongTin, icdData, selectedICDs);
 }
 
 function toIsoDate(dateString) {
@@ -29,7 +28,6 @@ function toIsoDate(dateString) {
 
 if (typeof icdData === "undefined") {
     var icdData = [];
-    console.log("Đã khởi tạo icd data");
 }
 if (typeof selectedICDs === "undefined") {
     var selectedICDs = {
@@ -37,7 +35,6 @@ if (typeof selectedICDs === "undefined") {
         truoc_thuat: [],
         sau_thuat: [],
     }
-    console.log("Đã khởi tạo selectedICDs data");
 }
 function normalizeICDData(data) {
     if (!Array.isArray(data)) {
@@ -57,7 +54,6 @@ async function loadICDData() {
         const response = await fetch("dist/data/json/DM_ICD.json")
         const data = await response.json()
         icdData = normalizeICDData(data)
-        console.log("[v0] Loaded ICD data:", icdData.length, "items")
     } catch (error) {
         console.error("[v0] Error loading ICD data:", error)
         icdData = [
@@ -92,8 +88,6 @@ function addICDTag(type, icdId, icdCode, icdName) {
   `
     displayArea.appendChild(tag)
     updateICDTextArea(type)
-
-    console.log(`[v0] Added ICD tag: ${icdCode} (${icdId}) to ${type}`)
 }
 
 function removeICDTag(type, icdId) {
@@ -111,7 +105,6 @@ function removeICDTag(type, icdId) {
 
     updateICDTextArea(type)
 
-    console.log(`[v0] Removed ICD tag with ID: ${icdId} from ${type}`)
 }
 
 function updateICDTextArea(type) {
@@ -132,7 +125,7 @@ function configureICDTomSelect() {
         if (element && !element.tomselect) {
             const tomSelectInstance = new window.TomSelect(config.className, {
                 options: icdData,
-                valueField: "id", // <-- ĐÃ SỬA: Dùng ID
+                valueField: "id",
                 labelField: "ma",
                 searchField: ["ten", "ma"],
                 placeholder: "-- Mã ICD --",
@@ -154,7 +147,6 @@ function configureICDTomSelect() {
                     if (value) {
                         const selectedItem = icdData.find((item) => String(item.id) === value)
                         if (selectedItem) {
-                            // Truyền ID, Mã và Tên
                             addICDTag(config.displayType, selectedItem.id, selectedItem.ma, selectedItem.ten)
                             this.clear()
                         }
@@ -380,7 +372,6 @@ $(function () {
 //    }
 //}
 function processICDLoading(type, maChanDoanStr) {
-    console.log("icdData = ", icdData);
     if (!maChanDoanStr) return;
 
     selectedICDs[type] = [];
@@ -392,7 +383,6 @@ function processICDLoading(type, maChanDoanStr) {
     maCodes.forEach(code => {
 
         const icdItem = icdData.find(item => item.id == code);
-        console.log("Ma ICD : id ", code, icdItem);
         if (icdItem) {
             addICDTag(type, icdItem.id, icdItem.ma, icdItem.ten);
         } else {
@@ -468,7 +458,6 @@ function processICDLoading(type, maChanDoanStr) {
 
 //        }
 function processICDLoading(type, maChanDoanStr) {
-    console.log("icdData = ", icdData);
     if (!maChanDoanStr) return;
 
     selectedICDs[type] = [];
@@ -480,7 +469,6 @@ function processICDLoading(type, maChanDoanStr) {
     maCodes.forEach(code => {
 
         const icdItem = icdData.find(item => item.id == code);
-        console.log("Ma ICD : id ", code, icdItem);
         if (icdItem) {
             addICDTag(type, icdItem.id, icdItem.ma, icdItem.ten);
         } else {
@@ -541,20 +529,18 @@ function bindDataToForm(data) {
         if (plSelect) plSelect.setValue(String(data.idTuVong));
     }
     if (data.idPhuongPhapVoCam) {
-        const plSelect = document.querySelector(".cbPTVoCam")?.tomselect;
-        if (plSelect) plSelect.setValue(String(data.idTuVong));
-    }
+            const plSelect = document.querySelector(".cbPTVoCam")?.tomselect;
+            if (plSelect) plSelect.setValue(data.idPhuongPhapVoCam);
+        }
 }
 
 
 
 function loadData(idVaoVien, idChiNhanh, soPhieu) {
-    //console.log("Bắt đầu loadData", idVaoVien, idChiNhanh);
     if (idVaoVien && idChiNhanh && soPhieu) {
         fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${soPhieu}`)
             .then(response => response.json())
             .then(data => {
-                //console.log("Dữ liệu loadData trả về", data);
                 if (data.success) {
                     bindDataToForm(data.data);
                 } else {
@@ -602,13 +588,12 @@ async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
     const configs = getTomSelectConfigs(allData);
     configCbThongTin(configs);
     $('#btn_saveThongTin').on('click', handleSaveThongTin);
-    console.log("Khởi tạo Tab thông tin hoàn tất. Dữ liệu đã được tải.");
 
 }
 function formatDate(date) {
     if (!date) return '';
     const d = new Date(date);
-    if (isNaN(d)) return ''; // tránh lỗi khi date null/undefined
+    if (isNaN(d)) return '';
 
     const dd = String(d.getDate()).padStart(2, '0');
     const MM = String(d.getMonth() + 1).padStart(2, '0');
@@ -631,12 +616,10 @@ function updateDateTime() {
     $("#info-datetime", window.parent.document).text(formatted);
 }
 function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
-    //console.log("Bắt đầu loadData", idVaoVien, idChiNhanh); 
     if (idVaoVien && idChiNhanh && idChiDinhChiTiet) {
         fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${idChiDinhChiTiet}`)
             .then(response => response.json())
             .then(data => {
-                //console.log("Dữ liệu loadData trả về", data);
                 if (data.success) {
                     bindDataToForm(data.data);
                 } else {
@@ -711,7 +694,6 @@ function resetModalForm(modalId) {
 
         if (formElement && typeof formElement.reset === 'function') {
             formElement.reset();
-            console.log(`Đã reset form: ${formId}`);
         }
     }
 }
@@ -782,7 +764,6 @@ async function saveThietBi() {
             closeModal('thietBiModal');
             toastr.success("Thêm mới thiết bị thủ thuật thành công", "Thông báo");
 
-            console.log('[v0] Added new thiết bị:', newItem);
         } else {
 
             toastr.success('Có lỗi xảy ra khi lưu thiết bị!', "Thông báo");
@@ -825,7 +806,6 @@ async function saveBienChung() {
             document.getElementById('bienChungForm').reset();
             closeModal('bienChungModal');
             toastr.success("Thêm mới tai biến biến chứng thành công", "Thông báo");
-            console.log('[v0] Added new biến chứng:', newItem);
         } else {
             toastr.error('Có lỗi xảy ra khi lưu tai biến/biến chứng!', "Thông báo");
         }
@@ -868,7 +848,6 @@ async function saveCheDoThuThuat() {
             document.getElementById('cheDoThuThuatForm').reset();
             closeModal('cheDoThuThuatModal');
             toastr.success("Thêm mới chế độ thủ thuật thành công", "Thông báo");
-            console.log('[v0] Added new chế độ thủ thuật:', newItem);
         } else {
             toastr.error('Có lỗi xảy ra khi lưu chế độ thủ thuật!', "Thông báo");
         }
@@ -912,7 +891,6 @@ async function saveViTriThucHien() {
             document.getElementById('viTriThucHienForm').reset();
             closeModal('viTriThucHienModal');
             toastr.success("Thêm vị trí thực hiện thành công", "Thông báo");
-            console.log('[v0] Added new vị trí thực hiện:', newItem);
         } else {
             toastr.error('Có lỗi xảy ra khi lưu vị trí thực hiện!', "Thông báo");
         }
@@ -954,7 +932,6 @@ async function saveTuVong() {
             document.getElementById('tuVongForm').reset();
             closeModal('tuVongModal');
             toastr.success("Thêm mục tử vong thành công", "Thông báo");
-            console.log('[v0] Added new vị trí thực hiện:', newItem);
         } else {
             toastr.error('Có lỗi xảy ra khi mục tử vong!', "Thông báo");
         }
@@ -975,17 +952,13 @@ function refreshTomSelect(selector, newData) {
 
 //==================== SAVE THÔNG TIN TRƯỜNG TRÌNH =======================
 function validateForm() {
-    // 1. Reset tất cả các đánh dấu lỗi trước
     $('.validation-error').removeClass('validation-error');
 
-    // 2. Định nghĩa các trường cần kiểm tra và tên hiển thị (Tiếng Việt)
     const fieldsToValidate = [
-        // ICDs (Kiểm tra xem mảng đã chọn có ít nhất 1 item không)
         { data: selectedICDs.vao_khoa, element: '.cbCDVaoKhoa', name: 'Chẩn đoán vào khoa' },
         { data: selectedICDs.truoc_thuat, element: '.cbTruocThuThuat', name: 'Chẩn đoán trước thủ thuật' },
         { data: selectedICDs.sau_thuat, element: '.cbSauThuThuat', name: 'Chẩn đoán sau thủ thuật' },
 
-        // Các trường TomSelect đơn
         { data: $('.cbPhongThucHien').val(), element: '.cbPhongThucHien', name: 'Phòng thực hiện' },
         { data: $('.cbPhanLoai').val(), element: '.cbPhanLoai', name: 'Phân loại' },
         { data: $('.cbThietBi').val(), element: '.cbThietBi', name: 'Thiết bị' },
@@ -1004,17 +977,15 @@ function validateForm() {
     let firstErrorElement = null;
     let firstErrorName = '';
 
-    // 3. Lặp và kiểm tra
     for (const field of fieldsToValidate) {
         let isFieldInvalid = false;
 
-        // Xử lý dữ liệu ICD (là một mảng/Set)
-        if (field.data && typeof field.data.size === 'number') { // Check cho Set (ICD)
+        if (field.data && typeof field.data.size === 'number') { 
             isFieldInvalid = field.data.size === 0;
-        } else if (Array.isArray(field.data)) { // Check cho Array (ICD nếu là array)
+        } else if (Array.isArray(field.data)) { 
             isFieldInvalid = field.data.length === 0;
         }
-        // Xử lý dữ liệu TomSelect đơn (là chuỗi mã, check giá trị falsy)
+
         else if (!field.data) {
             isFieldInvalid = true;
         }
@@ -1026,13 +997,11 @@ function validateForm() {
                 firstErrorName = field.name;
             }
 
-            // Tìm phần tử hiển thị TomSelect (wrapper) và áp dụng class lỗi
             const tomSelectWrapper = $(field.element).next('.ts-wrapper').length ?
                 $(field.element).next('.ts-wrapper') :
                 $(field.element);
             tomSelectWrapper.addClass('validation-error');
 
-            // Xử lý đặc biệt cho ICDs: đánh dấu form-control hiển thị tags
             if (field.element.includes('cbCDVaoKhoa')) {
                 $('#hien_thi_icd_vao_khoa').addClass('validation-error');
             } else if (field.element.includes('cbTruocThuThuat')) {
@@ -1043,19 +1012,16 @@ function validateForm() {
         }
     }
 
-    // 4. Hiển thị cảnh báo nếu có lỗi
     if (!isValid) {
         if (typeof toastr !== 'undefined') {
             toastr.error(`Vui lòng nhập thông tin: ${firstErrorName}.`);
         }
 
-        // Cuộn đến phần tử lỗi đầu tiên và focus
         if (firstErrorElement) {
             $('html, body').animate({
-                scrollTop: firstErrorElement.offset().top - 100 // -100 để có thêm khoảng trống
+                scrollTop: firstErrorElement.offset().top - 100 
             }, 500);
 
-            // Nếu là TomSelect, focus vào input bên trong wrapper
             const inputInsideTomSelect = firstErrorElement.next('.ts-wrapper').find('input[type="select-one"]');
             if (inputInsideTomSelect.length) {
                 inputInsideTomSelect.focus();
@@ -1144,7 +1110,7 @@ async function handleSaveThongTin() {
         IDPhuongPhapVoCam: idPhuongPhapVoCam
     };
 
-    console.log("-> Dữ liệu Thông Tin Thủ Thuật gửi đi:", dataToSend);
+    //console.log("-> Dữ liệu Thông Tin Thủ Thuật gửi đi:", dataToSend);
 
     $.ajax({
         url: "/thu_thuat_phau_thuat/thong-tin/save-thong-tin",
@@ -1152,7 +1118,7 @@ async function handleSaveThongTin() {
         contentType: 'application/json',
         data: JSON.stringify(dataToSend),
         success: function (response) {
-            console.log("Lưu dữ liệu Thông Tin Thủ Thuật thành công:", response);
+            //console.log("Lưu dữ liệu Thông Tin Thủ Thuật thành công:", response);
             if (response.success) {
                 if (typeof toastr !== 'undefined') {
                     toastr.success("Đã lưu thông tin thủ thuật thành công!");

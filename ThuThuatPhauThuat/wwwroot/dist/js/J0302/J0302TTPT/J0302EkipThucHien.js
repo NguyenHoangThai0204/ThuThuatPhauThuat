@@ -1,5 +1,4 @@
-﻿(function () {
-    function normalizeData(data, tenField = 'ten', viettatField = 'viettat') {
+﻿function normalizeData(data, tenField = 'ten', viettatField = 'viettat') {
         if (!Array.isArray(data)) {
             console.warn("normalizeData nhận dữ liệu không phải mảng:", data);
             return [];
@@ -32,14 +31,6 @@
             });
     }
 
-    /**
-     * Tải dữ liệu từ URL (JSON file hoặc API) và chuẩn hóa.
-     * Sử dụng giả định jQuery/$.getJSON/$.ajax có sẵn.
-     * @param {string} url - Đường dẫn file JSON hoặc endpoint API.
-     * @param {string} tenField - Tên trường chứa tên/tiêu đề.
-     * @param {string} viettatField - Tên trường chứa viết tắt.
-     * @returns {Promise<Array<object>>} Promise trả về mảng dữ liệu đã chuẩn hóa.
-     */
     function fetchDataAndNormalize(url, tenField = 'ten', viettatField = 'viettat') {
         if (url.endsWith('.json')) {
             return new Promise((resolve, reject) => {
@@ -53,13 +44,13 @@
             });
         }
         return new Promise((resolve, reject) => {
-            // Giả định $.ajax có sẵn
+          
             $.ajax({
                 url: url,
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    // Giả định API trả về { success: true, data: [...] }
+                  
                     const dataArray = data.success ? data.data : data;
                     resolve(normalizeData(dataArray, tenField, viettatField));
                 },
@@ -71,30 +62,16 @@
         });
     }
 
-    /**
-     * Tìm một đối tượng trong mảng bằng giá trị trường
-     * @param {Array<object>} list - Mảng dữ liệu.
-     * @param {*} value - Giá trị cần tìm.
-     * @param {string} field - Tên trường để so sánh.
-     * @returns {object | undefined} Đối tượng tìm thấy.
-     */
+
     function findItem(list, value, field = 'id') {
-        // So sánh lỏng lẻo (==) để hỗ trợ so sánh chuỗi ID với số ID
         return list.find(item => item[field] == value);
     }
 
 
-    // =========================================================================
-    // LOGIC CHÍNH CỦA EKIP THỰC HIỆN
-    // =========================================================================
+if (typeof ekipList === "undefined") {
+    var ekipList = [];
+}
 
-    // Mảng chứa danh sách ekip đang hiển thị
-    let ekipList = [];
-
-    /**
-     * Định nghĩa cấu hình TomSelect cho tab Ekip dựa trên dữ liệu đã tải.
-     * @param {object} allData - Object chứa dữ liệu nhân viên và vai trò đã tải.
-     */
     function getEkipTomSelectConfigs(allData) {
         return [
             {
@@ -114,10 +91,6 @@
         ];
     }
 
-/**
- * Hàm cấu hình TomSelect cho các ô chọn trong tab Ekip.
- * @param {Array<object>} configs - Mảng cấu hình TomSelect.
- */
 function configCbEkip(configs) {
     configs.forEach(cfg => {
         const element = document.querySelector(cfg.className);
@@ -152,11 +125,8 @@ function configCbEkip(configs) {
         });
     }
 
-    /**
-     * Hàm vẽ lại nội dung bảng Ekip
-     */
+ 
     function renderEkipTable() {
-        console.log("-> Bắt đầu vẽ lại bảng Ekip. Số lượng: " + ekipList.length);
         const tableBody = document.getElementById('ekipTableBody');
         if (!tableBody) return;
 
@@ -199,10 +169,6 @@ function configCbEkip(configs) {
         `;
         });
     }
-
-    /**
-     * Hàm xử lý khi nhấn nút Thêm (+)
-     */
     function handleAddEkip() {
         const nhanVienSelectElement = document.getElementById('cb_NhanVien');
         const vaiTroSelectElement = document.getElementById('cb_VaiTro');
@@ -284,7 +250,6 @@ function configCbEkip(configs) {
      * @param {string} maNhanVien - Mã nhân viên cần xóa (đã được sửa thành ID)
      */
     function handleRemoveEkip(maNhanVien) {
-        console.log("-> Xóa nhân viên: " + maNhanVien);
 
         const memberToRemove = ekipList.find(item => item.nhanVienMa === maNhanVien);
 
@@ -300,11 +265,6 @@ function configCbEkip(configs) {
     }
 
 
-    /**
-     * HÀM MỚI: Tải dữ liệu ekip hiện có từ server và ánh xạ tên nhân viên.
-     * @param {long} idPhieuTTPT - ID của phiếu cần đọc ekip.
-     * @param {object} allData - Dữ liệu danh mục đã tải (nhanVien, vaiTro).
-     */
     async function loadEkipByPhieuId(idPhieuTTPT, allData) {
         if (!idPhieuTTPT) {
             console.warn("Không có ID Phiếu TTPT, bỏ qua tải dữ liệu ekip.");
@@ -312,31 +272,25 @@ function configCbEkip(configs) {
         }
 
         const endpoint = `/thu_thuat_phau_thuat/ekip/list-by-idttpt/${idPhieuTTPT}`;
-        console.log(`-> Đang tải dữ liệu ekip hiện có từ: ${endpoint}`);
 
-        // Sử dụng khối try/catch chỉ để bắt lỗi mạng thực sự (Status 0 hoặc 500)
         try {
             const response = await $.ajax({
                 url: endpoint,
                 method: 'GET',
                 dataType: 'json',
-                // *** ĐÃ LOẠI BỎ KHỐI error: function (...) GÂY LỖI THROW ***
             });
 
-            // Response đã được giải quyết (resolved), tức là HTTP Status là 2xx
-            console.log("Response nhận được (đã resolved): ", response);
+            //console.log("Response nhận được (đã resolved): ", response);
 
-            // Bắt đầu xử lý dữ liệu từ response
             if (response.success && Array.isArray(response.data)) {
                 const serverEkipList = response.data;
 
-                // Logic mapping của bạn (giữ nguyên)
                 ekipList = serverEkipList.map(item => {
-                    const nhanVienData = findItem(allData.nhanVien, item.idNhanVien, 'id'); // Dùng idNhanVien (lowercase 'id' trong JSON) và tìm theo 'id'
+                    const nhanVienData = findItem(allData.nhanVien, item.idNhanVien, 'id');
                     const vaiTroData = findItem(allData.vaiTro, item.tenVaiTro, 'ten');
 
                     return {
-                        nhanVienMa: item.idNhanVien.toString(), // Sửa thành item.idNhanVien
+                        nhanVienMa: item.idNhanVien.toString(), 
                         nhanVienTen: nhanVienData ? nhanVienData.ten : `ID ${item.idNhanVien} (Lỗi map)`,
                         vaiTroMa: vaiTroData ? vaiTroData.ma : item.tenVaiTro,
                         vaiTroTen: item.tenVaiTro,
@@ -349,7 +303,6 @@ function configCbEkip(configs) {
                     toastr.info(`Đã tải thành công ${ekipList.length} thành viên ekip.`);
                 }
             } else {
-                // Trường hợp success: false (nếu Server trả về lỗi logic nghiệp vụ với 200 OK)
                 console.error("Lỗi logic khi tải dữ liệu ekip:", response.message || "Không có success: true");
                 if (typeof toastr !== 'undefined') toastr.error(`Lỗi tải ekip: ${response.message || 'Lỗi server không rõ'}`);
                 ekipList = [];
@@ -357,9 +310,8 @@ function configCbEkip(configs) {
             }
 
         } catch (jqXHR) {
-            // Khối catch này chỉ chạy khi có lỗi mạng thực sự (HTTP Status 500, 404, hoặc lỗi kết nối)
             let message = "Lỗi kết nối Server.";
-            if (jqXHR.status) { // Nếu có status code (500, 404, ...)
+            if (jqXHR.status) { 
                 message = `Lỗi Server (${jqXHR.status}): ${jqXHR.responseJSON?.message || jqXHR.responseText || "Không rõ."}`;
             }
             console.error("Lỗi AJAX khi tải ekip:", message);
@@ -370,16 +322,10 @@ function configCbEkip(configs) {
     }
 
 
-    /**
-     * Hàm khởi tạo chính cho tab Ekip.
-     * Tải dữ liệu và cấu hình TomSelects.
-     */
-    async function initEkipTab() {
-        console.log("-> Bắt đầu tải dữ liệu và khởi tạo Tab Ekip.");
 
-        // 1. Định nghĩa các lời gọi bất đồng bộ để tải dữ liệu danh mục
+    async function initEkipTab() {
+
         const dataPromises = {
-            // Lưu ý: Đã sửa 'ma' -> 'id' trong TomSelect, nhưng fetchDataAndNormalize vẫn dùng 'ma' để tải
             nhanVien: fetchDataAndNormalize("dist/data/json/DM_NhanVien.json", 'ten', 'viettat'),
             vaiTro: fetchDataAndNormalize("dist/data/json/DM_ViTriThuThuat.json", 'ten', 'viettat'),
         };
@@ -392,49 +338,39 @@ function configCbEkip(configs) {
             allData[key] = results[index];
         });
 
-        // 2. Lấy cấu hình và khởi tạo TomSelects
         const configs = getEkipTomSelectConfigs(allData);
         configCbEkip(configs);
 
-        // 3. Tải dữ liệu ekip hiện có (GỌI HÀM MỚI Ở ĐÂY)
-        await loadEkipByPhieuId(IDPhieuTTPT_HienTai, allData);
+        await loadEkipByPhieuId(window.IDPhieuTTPT, allData);
 
-        // 4. Thêm Listener cho nút Thêm
         const btnAdd = document.getElementById('btn_addEkip');
         if (btnAdd) {
             btnAdd.removeEventListener('click', handleAddEkip);
             btnAdd.addEventListener('click', handleAddEkip);
-            console.log("-> Đã gắn sự kiện cho nút Thêm.");
         }
 
-        // 5. Thêm Listener cho nút Lưu
         const btnSave = document.getElementById('btn_saveEkip');
         if (btnSave) {
             btnSave.removeEventListener('click', handleSaveEkip);
             btnSave.addEventListener('click', handleSaveEkip);
-            console.log("-> Đã gắn sự kiện cho nút Lưu.");
         }
 
-        console.log("-> Khởi tạo Tab Ekip hoàn tất.");
     }
 
-    // Khởi chạy
-    const IDPhieuTTPT_HienTai = IDPhieuTTPT; // <--- CẦN LẤY ID THỰC TẾ TỪ URL/SESSION/VIEWDATA
     function handleSaveEkip() {
         if (ekipList.length === 0) {
             if (typeof toastr !== 'undefined') toastr.warning("Danh sách ekip rỗng, không có dữ liệu để lưu.");
             return;
         }
 
-        // Chuẩn bị dữ liệu để gửi
         const dataToSend = ekipList.map(item => ({
-            IDPhieuTTPT: IDPhieuTTPT_HienTai,
-            IDNhanVien: item.nhanVienMa, // <--- ĐÃ SỬA: Gửi IDNhanVien để khớp với C# Model
+            IDPhieuTTPT: window.IDPhieuTTPT,
+            IDNhanVien: item.nhanVienMa,
             TenVaiTro: item.vaiTroTen,
             GhiChu: item.ghiChu
         }));
 
-        console.log("-> Dữ liệu gửi đi:", dataToSend);
+        //console.log("-> Dữ liệu Ekip gửi đi:", dataToSend);
 
         $.ajax({
             url: "/thu_thuat_phau_thuat/ekip/create",
@@ -442,7 +378,7 @@ function configCbEkip(configs) {
             contentType: 'application/json',
             data: JSON.stringify(dataToSend),
             success: function (response) {
-                console.log("Lưu dữ liệu Ekip thành công:", response);
+                //console.log("Lưu dữ liệu Ekip thành công:", response);
                 if (typeof toastr !== 'undefined') {
                     toastr.success("Đã lưu dữ liệu ekip thành công!");
                 }
@@ -457,5 +393,4 @@ function configCbEkip(configs) {
         });
     }
     window.initEkipTab = initEkipTab;
-    console.log(" ts nè asdf fasfd", IDPhieuTTPT);
-})();
+    window.handleSaveEkip = window.handleSaveEkip || function () { };

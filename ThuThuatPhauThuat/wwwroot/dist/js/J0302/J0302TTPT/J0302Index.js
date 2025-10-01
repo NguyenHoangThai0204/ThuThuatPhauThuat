@@ -1,4 +1,7 @@
-﻿function khoiTaoJSChoTab(tabIndex) {
+﻿
+
+
+function khoiTaoJSChoTab(tabIndex) {
     // Khởi tạo datetimepicker
     $('.datetimepicker-' + tabIndex).each(function () {
         if (!$(this).data("DateTimePicker")) {
@@ -41,7 +44,6 @@ function formatLocalDateTime(str) {
 // Khi thu thập dữ liệu để lưu
 
 $(document).ready(function () {
-    // Load tab danh sách mặc định
     $("#tabs-danhsach-7").load("/thu_thuat_phau_thuat/danh_sach");
 
     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -52,7 +54,7 @@ $(document).ready(function () {
         else if (target === "#tabs-trinhtu-7") tabNumber = 3;
         else if (target === "#tabs-ekip-7") tabNumber = 4;
         else if (target === "#tabs-thuoc-7") tabNumber = 5;
-        khoiTaoJSChoTab(tabNumber); // Khởi tạo lại JS cho tab
+        khoiTaoJSChoTab(tabNumber);
         if (target === "#tabs-danhsach-7" && $(target).is(':empty')) {
             $(target).load("/thu_thuat_phau_thuat/danh_sach");
         }
@@ -94,6 +96,10 @@ $(document).ready(function () {
                 if (tabNumber === 2 && selectedIdVaoVien && selectedIdChiDinhChiTiet && window._idcn) {
                     khoiTaoJSChoTab(tabNumber);
                     loadData(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
+                }
+                if (tabNumber === 4 ) {
+                    khoiTaoJSChoTab(tabNumber);
+                    initEkipTab();
                 }
             }
         }
@@ -148,3 +154,9 @@ $(document).ready(function () {
 
     });
 });
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "timeOut": "2000"
+};

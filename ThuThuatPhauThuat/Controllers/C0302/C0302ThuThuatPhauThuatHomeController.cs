@@ -473,6 +473,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         [Route("ekip/create")]
         public IActionResult CreateEkip([FromBody] List<EkipRequest> ekipList)
         {
+
             if (ekipList == null || ekipList.Count == 0)
             {
                 return BadRequest(new { success = false, message = "Danh sách ekip rỗng, không có dữ liệu để lưu." });
@@ -489,6 +490,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             foreach (var item in ekipList)
             {
                 dt.Rows.Add(item.IDPhieuTTPT, item.IDNhanVien, item.TenVaiTro, item.GhiChu);
+                _logger.LogWarning($"item : {item.IDPhieuTTPT}");
             }
 
             // --- BƯỚC 2: TẠO THAM SỐ SQL TVP ---

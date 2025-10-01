@@ -30,7 +30,6 @@ $(document).on("click", "#example tbody tr", function () {
     selectedIdVaoVien = $(this).data("idvaovien");
     selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
     window.IDPhieuTTPT = $(this).data("idphieu");
-    console.log("ID phiếu đang chọn là :", window.IDPhieuTTPT);
 
 
     var dateStr = decodeURIComponent($(this).attr("data-ngaygiochidinh"));
@@ -281,7 +280,6 @@ $(document).on("click", "#btnLocDanhSachTTPT, #btnSearchNangCao", function (e) {
         }
         currentPage = 1;
         renderTable(allData, currentPage, pageSize);
-        //console.log("asdf", allData);
     }).fail(function () {
         allData = [];
         renderTable(allData, currentPage, pageSize);
