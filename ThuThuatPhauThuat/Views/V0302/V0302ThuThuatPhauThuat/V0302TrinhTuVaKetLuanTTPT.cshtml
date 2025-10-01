@@ -1,10 +1,4 @@
-﻿@* @using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat; *@
-
-@{
-    // var trinhTuPhauThuatModel = ViewBag.model as M0305TrinhTuVaKetLuanModel;
-}
-
-<div class="report-template-editor">
+﻿<div class="report-template-editor">
     <!-- Left column: Image panel -->
     <div class="image-panel">
         <div class="image-panel-header" style="font-size: 1.05rem;">
@@ -103,13 +97,9 @@
                 <i class="ti ti-clear-formatting"></i>
             </button>
         </div>
-        <div id="editorContent" class="editor-content" contenteditable="true">
-            @* @Html.Raw(trinhTuPhauThuatModel.TrinhTu ?? "Kiểm tra bằng siêu âm trước mổ vùng cổ phải bình thường...") *@
-        </div>
+        <div id="editorContent" class="editor-content" contenteditable="true"></div>
         <div class="editor-footer">
-            <textarea class="editor-summary" placeholder="Kết luận / Tóm tắt">
-                @* @trinhTuPhauThuatModel.KetLuan *@
-            </textarea>
+            <textarea class="editor-summary" placeholder="Kết luận / Tóm tắt"></textarea>
         </div>
     </div>
 </div>
@@ -207,358 +197,7 @@
     </div>
 </div>
 
-<style>
-    .report-template-editor {
-        height: calc(100vh - 200px);
-        margin: 10px;
-        min-height: 400px;
-        display: flex;
-        border: 1px solid #ccc;
-    }
-
-    /* Cột trái */
-    .image-panel {
-        width: 280px;
-        display: flex;
-        flex-direction: column;
-        border-right: 1px solid #ccc;
-    }
-
-    .image-panel-header {
-        background: #006d77;
-        color: #fff;
-        font-weight: bold;
-        padding: 6px 10px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .image-panel-body {
-        flex: 1;
-        overflow-y: auto;
-        background: #f8f9fa;
-    }
-
-    .image-item {
-        padding: 8px 10px;
-        cursor: pointer;
-        border-bottom: 1px solid #e1e1e1;
-        position: relative;
-        transition: all 0.2s ease;
-    }
-
-        .image-item.active {
-            background: #e0f2f1;
-            font-weight: bold;
-        }
-
-        .image-item:hover {
-            background: #f0f0f0;
-        }
-
-        .image-item.selected {
-            background: #d1ecf1;
-            border-left: 4px solid #006d77;
-        }
-
-    .editor-content.drag-over {
-        border: 2px dashed #006d77;
-        background-color: #e0f2f1;
-    }
-
-    /* Image trong editor có thể resize */
-    .editor-content img {
-        max-width: 100%;
-        cursor: move;
-        border: 2px solid transparent;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-        .editor-content img:hover {
-            border-color: #006d77;
-        }
-
-        .editor-content img.selected {
-            border-color: #006d77;
-            box-shadow: 0 0 0 2px rgba(0, 109, 119, 0.3);
-        }
-
-        .editor-content img.resizing {
-            border-color: #0056b3;
-        }
-
-    /* Resize handles */
-    .img-wrapper {
-        display: inline-block;
-        position: relative;
-        margin: 10px 0;
-        transition: all 0.2s ease;
-    }
-
-        .img-wrapper.selected {
-            outline: 2px solid #006d77;
-            outline-offset: 2px;
-        }
-
-            .img-wrapper.selected .resize-handle {
-                display: block;
-            }
-
-    .resize-handle {
-        display: none;
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        background: #006d77;
-        border: 1px solid #fff;
-        cursor: nwse-resize;
-        z-index: 10;
-    }
-
-        .resize-handle.se {
-            bottom: -5px;
-            right: -5px;
-        }
-
-    /* Image preview trong panel trái */
-    .image-item-preview {
-        width: 100%;
-        height: 100px;
-        object-fit: cover;
-        margin-top: 5px;
-        border-radius: 4px;
-        transition: transform 0.2s ease;
-    }
-
-    .image-item:hover .image-item-preview {
-        transform: scale(1.02);
-    }
-
-    .image-item .delete-image-btn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background: rgba(220, 53, 69, 0.9);
-        color: white;
-        border: none;
-        border-radius: 3px;
-        padding: 2px 6px;
-        cursor: pointer;
-        font-size: 12px;
-        display: none;
-        transition: background-color 0.2s ease;
-    }
-
-    .image-item:hover .delete-image-btn {
-        display: block;
-    }
-
-    .image-item .delete-image-btn:hover {
-        background: rgba(220, 53, 69, 1);
-    }
-
-    /* Cột phải */
-    .editor-panel {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .editor-header {
-        background: #f1f1f1;
-        padding: 6px 10px;
-        border-bottom: 1px solid #ccc;
-        font-weight: bold;
-    }
-
-    .editor-toolbar {
-        padding: 6px;
-        border-bottom: 1px solid #ccc;
-        background: #f9f9f9;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        align-items: center;
-    }
-
-        .editor-toolbar button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            padding: 0;
-            transition: all 0.2s ease;
-        }
-
-            .editor-toolbar button:hover {
-                background-color: #e9ecef;
-                transform: translateY(-1px);
-            }
-
-        .editor-toolbar select {
-            height: 32px;
-        }
-
-    .toolbar-separator {
-        width: 1px;
-        height: 24px;
-        background: #ccc;
-        margin: 0 4px;
-    }
-
-    .color-picker {
-        width: 32px;
-        height: 32px;
-        border: 1px solid #ccc;
-        cursor: pointer;
-        padding: 0;
-        transition: transform 0.2s ease;
-    }
-
-        .color-picker:hover {
-            transform: scale(1.1);
-        }
-
-    .editor-content {
-        flex: 1;
-        padding: 10px;
-        overflow-y: auto;
-        border: none;
-        outline: none;
-        line-height: 1.6;
-    }
-
-    .editor-footer {
-        border-top: 1px solid #ccc;
-        padding: 4px 10px;
-        background: #fff;
-    }
-
-    .editor-summary {
-        width: 100%;
-        height: 40px;
-        resize: none;
-        border: none;
-        outline: none;
-        font-size: 13px;
-        color: #666;
-        background: transparent;
-    }
-
-    /* Căn chỉnh ảnh trong editor */
-    .editor-content .img-wrapper {
-        margin: 10px 0;
-        width: fit-content;
-    }
-
-    /* Đảm bảo ảnh có thể căn giữa */
-    .editor-content {
-        text-align: left;
-    }
-
-    .img-wrapper.align-left {
-        margin-right: auto;
-        margin-left: 0;
-    }
-
-    .img-wrapper.align-center {
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-    }
-
-    .img-wrapper.align-right {
-        margin-left: auto;
-        margin-right: 0;
-    }
-
-    .input-group-ellipsis {
-        position: relative;
-    }
-
-    .ellipsis-btn {
-        position: absolute;
-        right: -15px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        cursor: pointer;
-        z-index: 10;
-        padding: 2px;
-        border-radius: 3px;
-        transition: background-color 0.2s;
-    }
-
-        .ellipsis-btn:hover {
-            background-color: #ccc;
-        }
-
-        .ellipsis-btn svg {
-            width: 16px;
-            height: 16px;
-            color: #6c757d;
-        }
-
-    /* MODAL */
-    .custom-modal-body {
-        min-height: 400px;
-        padding-bottom: 0.5rem !important;
-    }
-
-    .custom-content-area {
-        height: calc(100% - 40px);
-        min-height: 350px;
-    }
-
-    .custom-table-scroll {
-        height: 100%;
-        max-height: 100%;
-        overflow-y: auto;
-    }
-
-    .textarea-fixed-height {
-        resize: none;
-        min-height: 150px;
-        max-height: 350px;
-    }
-
-    #chiTietTitleInput:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
-    }
-
-    .img-wrapper.click-effect {
-        animation: clickAnimation 0.3s ease;
-    }
-
-    @@keyframes clickAnimation {
-        0%
-
-    {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(0.95);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-
-    }
-
-    .editor-content ::selection {
-        background-color: rgba(0, 109, 119, 0.2);
-    }
-
-    .editor-content img::selection {
-        background-color: transparent;
-    }
-</style>
+<link href="~/dist/css/CSS0305/CSS0305TTPT/CSS0305TrinhTuVaKetLuan.css" rel="stylesheet" />
 
 <script>
     // ====== Khởi tạo TomSelect cho chọn mẫu ======
@@ -649,6 +288,32 @@
         let uploadedImages = [];
         let imageCounter = 0;
 
+        // Upload ảnh lên FTP
+        async function uploadImageToFTP(file, idPhieuTTPT) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('idPhieuTTPT', idPhieuTTPT);
+
+            try {
+                const response = await fetch('/thu_thuat_phau_thuat/trinh-tu/upload-image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    return result.data; // Trả về toàn bộ data bao gồm id, url, httpUrl
+                } else {
+                    console.error('Upload failed:', result.message);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                return null;
+            }
+        }
+
         // Hàm khởi tạo sự kiện cho tất cả ảnh trong editor
         function initializeImageEvents() {
             document.querySelectorAll('.img-wrapper').forEach(wrapper => {
@@ -661,38 +326,60 @@
             });
         }
 
-        window.insertImageAtCursor = function (src, alt, imgId = null) {
-            let panelImage = uploadedImages.find(img => img.src === src);
-            if (!panelImage) {
-                panelImage = {
-                    id: ++imageCounter,
-                    name: alt || `Ảnh ${imageCounter}`,
-                    src: src,
-                    timestamp: new Date()
-                };
-                uploadedImages.push(panelImage);
-                addImageToPanel(panelImage);
+        window.insertImageAtCursor = async function (src, alt, imgId = null, isFromFTP = false) {
+            let panelImage;
+            let httpUrl = src;
+            let ftpUrl = src;
+            let imageId = imgId;
+
+            if (!isFromFTP) {
+                // Nếu là ảnh mới upload, cần upload lên FTP trước
+                const response = await fetch(src);
+                const blob = await response.blob();
+                const file = new File([blob], alt, { type: blob.type });
+
+                // Upload và nhận kết quả bao gồm ID mới
+                const uploadResult = await uploadImageToFTP(file, 1);
+
+                if (!uploadResult || !uploadResult.id) {
+                    alert('Lỗi upload ảnh lên server');
+                    return;
+                }
+
+                imageId = uploadResult.id;
+                ftpUrl = uploadResult.url;
+                httpUrl = uploadResult.httpUrl;
             }
 
-            // Wrapper
+            panelImage = {
+                id: imageId,
+                name: alt || `Ảnh ${imageId}`,
+                src: httpUrl,
+                ftpUrl: ftpUrl,
+                timestamp: new Date(),
+                isFromFTP: true
+            };
+
+            uploadedImages.push(panelImage);
+            addImageToPanel(panelImage);
+
             const wrapper = document.createElement('div');
             wrapper.className = 'img-wrapper';
             wrapper.contentEditable = false;
             wrapper.style.display = 'inline-block';
             wrapper.style.position = 'relative';
             wrapper.style.textAlign = 'center';
-            wrapper.dataset.imageId = panelImage.id;
+            wrapper.dataset.imageId = panelImage.id; 
+            wrapper.dataset.ftpUrl = ftpUrl;
 
-            // Image
             const img = document.createElement('img');
-            img.src = src;
+            img.src = httpUrl;
             img.alt = alt;
             img.style.maxWidth = '500px';
             img.style.height = 'auto';
             img.style.width = '300px';
             img.style.display = 'block';
 
-            // Resize handle (trực tiếp trên ảnh, góc phải dưới)
             const resizeHandle = document.createElement('div');
             resizeHandle.className = 'resize-handle se';
 
@@ -705,7 +392,6 @@
                 const range = sel.getRangeAt(0);
                 range.collapse(false);
                 range.insertNode(wrapper);
-                // Đặt con trỏ sau ảnh
                 const br = document.createElement('br');
                 wrapper.parentNode.insertBefore(br, wrapper.nextSibling);
                 range.setStartAfter(br);
@@ -716,9 +402,42 @@
                 editorContent.appendChild(wrapper);
                 editorContent.appendChild(document.createElement('br'));
             }
+
             setupImageResize(wrapper, img, resizeHandle);
             setupImageSelect(wrapper, img);
+
+            return panelImage.id; 
         };
+
+        // Hàm load ảnh từ server khi mở form
+        async function loadImagesFromServer(idPhieuTTPT) {
+            try {
+                const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/get-images/${idPhieuTTPT}`);
+                const result = await response.json();
+                console.log('Fetched images:', result);
+
+                if (result.success && result.data) {
+                    result.data.forEach(image => {
+                        const panelImage = {
+                            id: image.id, 
+                            name: image.tenAnh,
+                            src: image.httpUrl,
+                            ftpUrl: image.url,
+                            timestamp: new Date(image.thoiGianTao),
+                            isFromFTP: true
+                        };
+
+                        uploadedImages.push(panelImage);
+                        addImageToPanel(panelImage);
+
+                        insertImageAtCursor(image.httpUrl, image.tenAnh, image.id, true);
+                    });
+                    initializeImageEvents();
+                }
+            } catch (error) {
+                console.error('Error loading images:', error);
+            }
+        }
 
         // Resize logic
         function setupImageResize(wrapper, img, resizeHandle) {
@@ -852,14 +571,39 @@
         }
 
         // Xóa ảnh
-        window.deleteImage = function (imageId) {
+        window.deleteImage = async function (imageId) {
             if (!confirm('Bạn có chắc muốn xóa ảnh này?')) return;
+
+            const image = uploadedImages.find(img => img.id === imageId);
+
+            if (image && image.isFromFTP) {
+                try {
+                    // Xóa từ server - backend sẽ dùng FTP URL từ database
+                    const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/delete-image/${imageId}`, {
+                        method: 'DELETE'
+                    });
+
+                    const result = await response.json();
+                    if (!result.success) {
+                        alert('Lỗi xóa ảnh từ server: ' + result.message);
+                        return;
+                    }
+                    toastr.success("Xóa ảnh thành công");
+                } catch (error) {
+                    console.error('Delete error:', error);
+                    alert('Lỗi xóa ảnh từ server');
+                    return;
+                }
+            }
+
+            // Xóa local
             uploadedImages = uploadedImages.filter(img => img.id !== imageId);
             const panelItem = imagePanel.querySelector(`[data-image-id="${imageId}"]`);
             if (panelItem) panelItem.remove();
             const editorImgs = editorContent.querySelectorAll(`[data-image-id="${imageId}"]`);
             editorImgs.forEach(img => img.remove());
         };
+
 
         // Click ngoài ảnh để deselect
         document.addEventListener('click', function (e) {
@@ -874,7 +618,6 @@
             }
         });
 
-        // Xử lý Enter trong editor content - ĐÃ SỬA: Cho phép Enter hoạt động bình thường
         editorContent.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 // Nếu đang chọn ảnh, xử lý xuống dòng sau ảnh và bỏ focus
@@ -1038,25 +781,20 @@
         }
         setupAlignToolbar();
 
+        loadImagesFromServer(1);
         // Khởi tạo sự kiện cho ảnh hiện có
         initializeImageEvents();
-
     })();
 
     // --- Toolbar commands ---
     function execCmd(command, value = null) {
-        // Xử lý căn chỉnh thông minh: ưu tiên ảnh nếu có ảnh được chọn
         if (command.startsWith('justify')) {
             handleAlignment(command);
             return;
         }
-
-        // Các command khác hoạt động bình thường
         document.execCommand(command, false, value);
         document.getElementById('editorContent').focus();
     }
-
-    // Kiểm tra xem có ảnh nào đang được chọn không
     function isImageSelected() {
         return document.querySelector('.img-wrapper.selected') !== null;
     }
@@ -1065,18 +803,11 @@
     function alignSelectedImage(align) {
         const selected = document.querySelector('.img-wrapper.selected');
         if (selected) {
-            // Xóa các class align cũ
             selected.classList.remove('align-left', 'align-center', 'align-right');
-
-            // Thêm class align mới
             selected.classList.add(`align-${align}`);
-
-            // Xóa các style căn chỉnh cũ
             selected.style.marginLeft = '';
             selected.style.marginRight = '';
             selected.style.display = 'block';
-
-            // Áp dụng căn chỉnh mới
             switch(align) {
                 case 'left':
                     selected.style.marginRight = 'auto';
@@ -1091,14 +822,12 @@
                     selected.style.marginRight = '0';
                     break;
             }
-
-            // Đảm bảo wrapper chiếm toàn bộ chiều rộng để căn giữa hoạt động
             selected.style.width = 'fit-content';
             selected.parentElement.style.textAlign = align;
         }
     }
 
-    // Hàm xử lý căn chỉnh thông minh
+    /*============================== Hàm xử lý căn chỉnh thông minh ==============================*/
     function handleAlignment(command) {
         const selectedImg = document.querySelector('.img-wrapper.selected');
         const hasSelection = window.getSelection().toString().length > 0;
@@ -1125,21 +854,42 @@
         .forEach(el => new bootstrap.Tooltip(el));
 </script>
 <script>
-    async function loadTrinhTuVaKetLuan(idPhieuTTPT) {
+    async function loadTrinhTuVaKetLuanWithFocus(idPhieuTTPT) {
         try {
             var response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/list-by-idttpt/${idPhieuTTPT}`);
             if (!response.ok) throw new Error('Network response was not ok');
             var data = await response.json();
-            console.log('Fetched data:', data);
-            document.getElementById('editorContent').innerHTML = data.data[0].trinhTu || '';
-            document.querySelector('.editor-summary').innerText = data.data[0].ketLuan || '';
+            // console.log('Fetched data:', data);
 
+            const editorContent = document.getElementById('editorContent');
+            editorContent.innerHTML = data.data[0].trinhTu || '';
+            document.querySelector('.editor-summary').innerText = data.data[0].ketLuan || '';
+            setTimeout(() => {
+                editorContent.focus();
+
+                const range = document.createRange();
+                const selection = window.getSelection();
+
+                if (editorContent.childNodes.length > 0) {
+                    range.selectNodeContents(editorContent);
+                    range.collapse(false);
+                } else {
+                    const p = document.createElement('p');
+                    p.innerHTML = '&nbsp;';
+                    editorContent.appendChild(p);
+                    range.setStart(p, 0);
+                    range.collapse(true);
+                }
+
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }, 100);
         }
         catch (error) {
             console.error('Error fetching data:', error);
         }
     }
-    loadTrinhTuVaKetLuan(1)
+    loadTrinhTuVaKetLuanWithFocus(1);
 </script>
 
 <script src="~/dist/js/J0302/J0302TTPT/J0303TemplateTuongTrinh.js" asp-append-version="true" defer></script>

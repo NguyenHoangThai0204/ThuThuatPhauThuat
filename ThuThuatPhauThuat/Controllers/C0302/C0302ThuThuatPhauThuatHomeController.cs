@@ -5,6 +5,7 @@ using System.Data;
 using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
 using ThuThuatPhauThuat.Services.S0302.IS0302;
+using ThuThuatPhauThuat.Services.S0305.IS0305;
 
 namespace ThuThuatPhauThuat.Controllers.C0302
 {
@@ -15,14 +16,22 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         //private IMemoryCachingServices _memoryCache;
 
         private readonly IS0302ThuThuatPhauThuatInterface _service;
+        private readonly IS0305FtpService _ftpService;
         private readonly Context0302 _context;
         private readonly ILogger<C0302ThuThuatPhauThuatHomeController> _logger;
 
-        public C0302ThuThuatPhauThuatHomeController(IS0302ThuThuatPhauThuatInterface service, Context0302 context, ILogger<C0302ThuThuatPhauThuatHomeController> logger /*, IMemoryCachingServices memoryCache*/)
+        public C0302ThuThuatPhauThuatHomeController(
+            IS0302ThuThuatPhauThuatInterface service, 
+            Context0302 context, 
+            ILogger<C0302ThuThuatPhauThuatHomeController> logger,
+            IS0305FtpService ftpService
+            /*, IMemoryCachingServices memoryCache*/
+        )
         {
             _service = service;
             _context = context;
             _logger = logger;
+            _ftpService = ftpService;
             //_memoryCache = memoryCache;
         }
 
@@ -363,6 +372,142 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = $"Lỗi Server: Không thể đọc dữ liệu trình tự. Chi tiết: {ex.Message}" });
+            }
+        }
+
+        [HttpPost("trinh-tu/upload-image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] long idPhieuTTPT)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new { success = false, message = "File không hợp lệ." });
+            }
+
+            try
+            {
+                var remoteFilePath = await _ftpService.UploadFileAsync(file, "ttpt_images");
+
+                var newImageIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC S0305_TTPT_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT",
+                    new SqlParameter("@IDPhieuTTPT", idPhieuTTPT),
+                    new SqlParameter("@URL", remoteFilePath),
+                    new SqlParameter("@TenAnh", file.FileName),
+                    newImageIdParam
+                );
+
+                var newImageId = (long)newImageIdParam.Value;
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Upload ảnh thành công.",
+                    data = new
+                    {
+                        id = newImageId,
+                        url = remoteFilePath,
+                        fileName = file.FileName,
+                        httpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(remoteFilePath)}"
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Lỗi upload ảnh: {ex.Message}" });
+            }
+        }
+
+
+        [HttpGet("trinh-tu/get-images/{idPhieuTTPT}")]
+        public async Task<IActionResult> GetImagesByPhieuId(long idPhieuTTPT)
+        {
+            try
+            {
+                var sql = "EXEC dbo.S0305_TTPT_GetAnhTruongTrinhTheoIDPhieuTTPT @IDPhieuTTPT";
+                var idParam = new SqlParameter("@IDPhieuTTPT", idPhieuTTPT);
+
+                var images = await _context.AnhTruongTrinh
+                                         .FromSqlRaw(sql, idParam)
+                                         .ToListAsync();
+
+                var imagesWithHttpUrl = images.Select(img => new
+                {
+                    img.ID,
+                    img.TenAnh,
+                    img.ThoiGianTao,
+                    URL = img.URL, // FTP URL gốc (để xóa)
+                    HttpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(img.URL)}" // HTTP URL để hiển thị
+                }).ToList();
+
+                return Ok(new { success = true, data = imagesWithHttpUrl });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Lỗi: {ex.Message}" });
+            }
+        }
+
+        [HttpDelete("trinh-tu/delete-image/{id}")]
+        public async Task<IActionResult> DeleteImage(long id)
+        {
+            try
+            {
+                // Lấy thông tin ảnh trước khi xóa
+                var image = await _context.AnhTruongTrinh
+                                        .FromSqlRaw(@"SELECT ID, IDPhieuTTPT, URL, TenAnh, ThoiGianTao
+                                                      FROM QL_TTPT_AnhTruongTrinh 
+                                                      WHERE ID = @ID", new SqlParameter("@ID", id))
+                                        .AsNoTracking()
+                                        .FirstOrDefaultAsync();
+                if (image == null)
+                {
+                    return NotFound(new { success = false, message = "Không tìm thấy ảnh." });
+                }
+
+                // Xóa file từ FTP 
+                await _ftpService.DeleteFileAsync(image.URL);
+
+                // Xóa record từ database
+                var sqlQuery = @"EXEC S0305_TTPT_XoaAnhTruongTrinh @ID";
+                await _context.Database.ExecuteSqlRawAsync(sqlQuery, new SqlParameter("@ID", id));
+
+                return Ok(new { success = true, message = "Xóa ảnh thành công." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Lỗi xóa ảnh: {ex.Message}" });
+            }
+        }
+
+        [HttpGet("image/view")]
+        public async Task<IActionResult> ViewImage(string path)
+        {
+            try
+            {
+                var stream = await _ftpService.DownloadAsync(path);
+
+                var extension = Path.GetExtension(path).ToLower();
+                var contentType = extension switch
+                {
+                    ".png" => "image/png",
+                    ".jpg" or ".jpeg" => "image/jpeg",
+                    ".gif" => "image/gif",
+                    ".bmp" => "image/bmp",
+                    _ => "application/octet-stream"
+                };
+
+                return File(stream, contentType);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error viewing image: {ex.Message}");
+                return NotFound();
             }
         }
 
