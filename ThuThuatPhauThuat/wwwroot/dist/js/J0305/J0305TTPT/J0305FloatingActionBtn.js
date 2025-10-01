@@ -86,7 +86,7 @@
         e.preventDefault();
         e.stopPropagation();
 
-        console.log('=== CLICK NÚT LƯU ===');
+        //console.log('=== CLICK NÚT LƯU ===');
 
         var $btn = $(this);
         var originalText = $btn.html();
@@ -102,7 +102,7 @@
                 saveThongTin();
                 break;
             case 'tabs-trinhtu-7':
-                console.log('→ Gọi saveTrinhTu()');
+                //console.log('→ Gọi saveTrinhTu()');
                 saveTrinhTu($btn, originalText);
                 break;
             case 'tabs-ekip-7':
