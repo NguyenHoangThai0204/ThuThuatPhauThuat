@@ -19,6 +19,7 @@ namespace ThuThuatPhauThuat.Models.M0302
         public DbSet<HH_DM_KhoHang> HH_DM_KhoHang { get; set; }
         public DbSet<EkipResult> EkipResult { get; set; }
         public DbSet<M0301ViTriThucHienTTPT> ViTriThucHien { get; set; }
+        public DbSet<M0302ThongTinXuatPDFTTPTModel> M0302ThongTinXuatPDFTTPTModels { get; set; }
         public DbSet<M0302PhieuThuThuatPhauThuatModel> M0302PhieuThuThuatPhauThuatModels { get; set; }
         public DbSet<M0302ThongTinThuThuatPhauThuatModel> M0302ThongTinThuThuatPhauThuatModels { get; set; }
 
@@ -36,6 +37,7 @@ namespace ThuThuatPhauThuat.Models.M0302
             modelBuilder.Entity<HH_DM_KhoHang>().HasNoKey();
             modelBuilder.Entity<TaoPhieuResult>().HasNoKey();
             modelBuilder.Entity<M0302PhieuThuThuatPhauThuatModel>().HasNoKey();
+            modelBuilder.Entity<M0302ThongTinXuatPDFTTPTModel>().HasNoKey();
             modelBuilder.Entity<M0302ThuThuatPhauThuatModelList>().HasNoKey();
             modelBuilder.Entity<M0302ThongTinThuThuatPhauThuatModel>().HasNoKey();
             modelBuilder.Entity<M0303TemplateTTPT>().HasIndex(v => v.ID)

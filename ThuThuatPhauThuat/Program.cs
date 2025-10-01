@@ -1,6 +1,7 @@
 ﻿
 using CloudinaryDotNet;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
@@ -29,7 +30,8 @@ builder.Services.AddControllersWithViews()
         options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
-
+// Cấu hình QuestPDF
+QuestPDF.Settings.License = LicenseType.Community;
 // Đăng ký DbContext với connection string
 builder.Services.AddDbContext<Context0302>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));

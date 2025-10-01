@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DemoCauTruc.Models.M0302;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
 using System.Data;
 using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
 using ThuThuatPhauThuat.Services.S0302.IS0302;
-
 namespace ThuThuatPhauThuat.Controllers.C0302
 {
     [Route("thu_thuat_phau_thuat")]
@@ -25,6 +27,57 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             _logger = logger;
             //_memoryCache = memoryCache;
         }
+        public class ExportPdfRequest
+        {
+            public long IDVaoVien { get; set; }
+            public long IDChiDinhChiTiet { get; set; }
+            public long IDChiNhanh { get; set; }
+        }
+
+        [HttpPost("xuat-pdf")]
+        public async Task<IActionResult> ExportToPDF([FromBody] ExportPdfRequest request)
+        {
+            _logger.LogInformation("👉 Bắt đầu ExportToPDF với tham số: IDVaoVien={IDVaoVien}, IDChiDinhChiTiet={IDChiDinhChiTiet}, IDChiNhanh={IDChiNhanh}",
+                request.IDVaoVien, request.IDChiDinhChiTiet, request.IDChiNhanh);
+
+            var parameters = new[]
+                    {
+                new SqlParameter("@IdVaoVien", request.IDVaoVien),
+                new SqlParameter("@IdChiNhanh", request.IDChiNhanh),
+                new SqlParameter("@IdChiDinhCT", request.IDChiDinhChiTiet)
+            };
+
+            var sql = @"EXEC S0302_GetThongTinXuatPDFTTPT @IdVaoVien, @IdChiNhanh, @IdChiDinhCT";
+
+            var data = _context.M0302ThongTinXuatPDFTTPTModels
+                .FromSqlRaw(sql, parameters)
+                .AsNoTracking()
+                .AsEnumerable()
+                .FirstOrDefault();
+
+            if (data == null)
+                return NotFound("Không có dữ liệu để xuất PDF");
+
+            var parameters1 = new[] { new SqlParameter("@IdChiNhanh", request.IDChiNhanh) };
+            var sql1 = @"EXEC S0302_GetThongTinDoanhNghiep @IdChiNhanh ";
+
+            var doanhN = _context.ThongTinDoanhNghieps
+                .FromSqlRaw(sql1, parameters1)
+                .AsNoTracking()
+                .AsEnumerable()
+                .FirstOrDefault();
+
+            var document = new P0302ThuThuatPhauThuatPDF(data, doanhN);
+
+            using var stream = new MemoryStream();
+            document.GeneratePdf(stream);
+
+            var fileName = $"ThuThuatPhauThuat_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            stream.Position = 0; // Reset stream trước khi trả về
+
+            return File(stream.ToArray(), "application/pdf", fileName);
+        }
+
 
         public IActionResult Index()
         {
