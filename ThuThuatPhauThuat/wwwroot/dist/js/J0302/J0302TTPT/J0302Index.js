@@ -43,7 +43,7 @@ function formatLocalDateTime(str) {
 }
 // Khi thu thập dữ liệu để lưu
 
-$(document).ready(function () {
+$(document).ready( async function () {
     $("#tabs-danhsach-7").load("/thu_thuat_phau_thuat/danh_sach");
 
     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -68,10 +68,10 @@ $(document).ready(function () {
 
             var tabKey = tabNumber + '_' + selectedIdVaoVien + '_' + selectedIdChiDinhChiTiet;
 
-            if (!tabLoaded[tabKey] || tabNumber === 2) {
+            if (!tabLoaded[tabKey] || tabNumber === 2 || tabNumber === 4) {
                 // Luôn load lại tab 2 khi có ID mới
-                $(target).load(urlMap[tabNumber], function () {
-                    $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu", {
+                 $(target).load(urlMap[tabNumber], function () {
+                     $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu", {
                         tabIndex: tabNumber,
                         idVaoVien: selectedIdVaoVien,
                         idcn: window._idcn,
@@ -97,10 +97,7 @@ $(document).ready(function () {
                     khoiTaoJSChoTab(tabNumber);
                     loadData(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
                 }
-                if (tabNumber === 4 ) {
-                    khoiTaoJSChoTab(tabNumber);
-                    initEkipTab();
-                }
+              
             }
         }
     });
