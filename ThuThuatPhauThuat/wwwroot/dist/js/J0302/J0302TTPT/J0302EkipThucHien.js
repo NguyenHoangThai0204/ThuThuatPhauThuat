@@ -114,27 +114,24 @@
         ];
     }
 
-    /**
-     * Hàm cấu hình TomSelect cho các ô chọn trong tab Ekip.
-     * @param {Array<object>} configs - Mảng cấu hình TomSelect.
-     */
-    function configCbEkip(configs) {
-        configs.forEach(cfg => {
-            var element = document.querySelector(cfg.className);
-            if (element) {
-                if (element.tomselect) {
-                    element.tomselect.destroy();
-                }
-                new TomSelect(element, {
-                    options: cfg.data,
-                    valueField: cfg.valueField || "ma",
-                    labelField: cfg.labelField || "ten",
-                    searchField: ["ten", "alias"],
-                    placeholder: cfg.placeholder,
-                    maxItems: 1,
-                    render: {
-                        option: function (data, escape) {
-                            if (!data.ten && !data.alias) return `<div class="no-results" style="padding:6px 10px;color:#999;">Đang tải dữ liệu...</div>`;
+/**
+ * Hàm cấu hình TomSelect cho các ô chọn trong tab Ekip.
+ * @param {Array<object>} configs - Mảng cấu hình TomSelect.
+ */
+function configCbEkip(configs) {
+    configs.forEach(cfg => {
+        const element = document.querySelector(cfg.className);
+        if (element && !element.tomselect) { 
+            new window.TomSelect(element, {
+                options: cfg.data,
+                valueField: cfg.valueField || "ma",
+                labelField: cfg.labelField || "ten",
+                searchField: ["ten", "alias"],
+                placeholder: cfg.placeholder,
+                maxItems: 1,
+                render: {
+                    option: function (data, escape) {
+                        if (!data.ten && !data.alias) return `<div class="no-results" style="padding:6px 10px;color:#999;">Đang tải dữ liệu...</div>`;
 
                             return `
                         <div style="display:flex; justify-content:space-between; width:100%;">

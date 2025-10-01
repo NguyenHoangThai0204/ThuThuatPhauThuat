@@ -87,7 +87,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
         [HttpGet("danh_sach")]
         public async Task<IActionResult> Home()
-        { 
+        {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
             //{
@@ -120,7 +120,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                     new SqlParameter("@IdChiDinhCT", idChiDinhChiTiet)
 
                 };
-                
+
 
                 var data = await _context.M0302ThongTinThuThuatPhauThuatModels
                     .FromSqlRaw("EXEC S0302_GetThongTinThuThuatPhauThuat @IdVaoVien, @IdChiNhanh, @IdChiDinhCT", parameters)
@@ -169,7 +169,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             return Json(new { Success = true, Message = message, Data = data });
         }
-      
+
 
         [HttpGet("thong_tin")]
         public IActionResult ThongTin(long? idVaoVien, int tabIndex = 0)
@@ -433,7 +433,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                     {
                         success = true,
                         message = "Không tìm thấy trình tự nào cho phiếu này.",
-                        data = new List<object>() 
+                        data = new List<object>()
                     });
                 }
 
@@ -579,7 +579,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         {
             public int Result { get; set; }
             public string Message { get; set; }
-        }           
+        }
 
 
         [HttpGet("ghi_nhan_thuoc_vat_tu")]

@@ -1,3 +1,4 @@
+(function () {
 function toIsoDate(dateString) {
     if (!dateString) return null;
 
@@ -75,7 +76,7 @@ function normalizeICDData(data) {
         active: item.active !== undefined ? item.active : true,
     }));
 }
-async function loadICDData() {
+async function loadICDData() {  
     try {
         const response = await fetch("dist/data/json/DM_ICD.json")
         const data = await response.json()
@@ -115,8 +116,30 @@ function addICDTag(type, icdId, icdCode, icdName) {
   `
     displayArea.appendChild(tag)
     updateICDTextArea(type)
-
+    console.log("selectedICDs = ", selectedICDs);
     console.log(`[v0] Added ICD tag: ${icdCode} (${icdId}) to ${type}`)
+}
+function processICDLoading(type, maChanDoanStr) {
+    console.log("icdData = ", icdData);
+    if (!maChanDoanStr) return;
+
+    selectedICDs[type] = [];
+    const displayArea = document.getElementById(`hien_thi_icd_${type}`);
+    displayArea.innerHTML = '';
+
+    const maCodes = maChanDoanStr.split(',').map(m => m.trim()).filter(m => m.length > 0);
+
+    maCodes.forEach(code => {
+        
+        const icdItem = icdData.find(item => item.id == code);
+        console.log("Ma ICD : id ", code, icdItem);
+        if (icdItem) {
+            addICDTag(type, icdItem.id, icdItem.ma, icdItem.ten);
+        } else {
+            console.warn(`[v0] Mã ICD không tìm thấy trong dữ liệu tra cứu: ${code}`);
+        }
+    });
+
 }
 
 function removeICDTag(type, icdId) {
@@ -148,43 +171,42 @@ function configureICDTomSelect() {
         { className: ".cbCDVaoKhoa", type: "vao_khoa", displayType: "vao_khoa" },
         { className: ".cbTruocThuThuat", type: "truoc_thuat", displayType: "truoc_thuat" },
         { className: ".cbSauThuThuat", type: "sau_thuat", displayType: "sau_thuat" },
-    ]
+    ];
 
     icdConfigs.forEach((config) => {
-        const element = document.querySelector(config.className)
-        if (element) {
-            const tomSelectInstance = new window.TomSelect(config.className, {
+        const element = document.querySelector(config.className);
+        if (element && !element.tomselect) { 
+            new window.TomSelect(element, {
                 options: icdData,
-                valueField: "id", // <-- ĐÃ SỬA: Dùng ID
+                valueField: "id",
                 labelField: "ten",
-                searchField: ["ten","ma"],
+                searchField: ["ten", "ma"],
                 placeholder: "-- Mã ICD --",
                 maxItems: 1,
                 render: {
                     option: (data, escape) => `
-            <div style="display:flex; justify-content:space-between; width:100%;">
-              <span><strong>${escape(data.ma)}</strong></span>
-            </div>`,
+                        <div style="display:flex; justify-content:space-between; width:100%;">
+                            <span><strong>${escape(data.ma)}</strong></span>
+                        </div>`,
                     item: (data, escape) => `
-            <div style="display:flex; justify-content:space-between; width:100%;">
-              <span><strong>${escape(data.ma)}</strong></span>
-            </div>`,
+                        <div style="display:flex; justify-content:space-between; width:100%;">
+                            <span><strong>${escape(data.ma)}</strong></span>
+                        </div>`,
                 },
                 onChange: function (value) {
                     if (value) {
-                        const selectedItem = icdData.find((item) => String(item.id) === value)
+                        const selectedItem = icdData.find((item) => String(item.id) === value);
                         if (selectedItem) {
-                            // Truyền ID, Mã và Tên
-                            addICDTag(config.displayType, selectedItem.id, selectedItem.ma, selectedItem.ten)
-                            this.clear()
+                            addICDTag(config.displayType, selectedItem.id, selectedItem.ma, selectedItem.ten);
+                            this.clear();
                         }
                     }
                 },
-                
-            })
+            });
         }
-    })
+    });
 }
+
 
 function normalizeData(data, tenField = 'ten', viettatField = 'viettat') {
     if (!Array.isArray(data)) {
@@ -340,16 +362,9 @@ function bindDataToForm(data) {
     if (!data) return;
 
     // Bind dữ liệu vào các trường
-    console.log(data)
-    document.getElementById('ten_icd_vao_khoa').value = data.tenChanDoanVao || '';
-    document.getElementById('hien_thi_icd_vao_khoa').innerText = data.maChanDoanVao || '';
-
-
-    document.getElementById('ten_icd_truoc_thuat').value = data.tenChanDoanTruoc || '';
-    document.getElementById('hien_thi_icd_truoc_thuat').innerText = data.maChanDoanTruoc || '';
-
-    document.getElementById('ten_icd_sau_thuat').value = data.tenChanDoanSau || '';
-    document.getElementById('hien_thi_icd_sau_thuat').innerText = data.maChanDoanSau || '';
+    processICDLoading('vao_khoa', data.maChanDoanVao);
+    processICDLoading('truoc_thuat', data.maChanDoanTruoc);
+    processICDLoading('sau_thuat', data.maChanDoanSau);
 
     document.getElementById('can_thiep_thu_thuat').value = data.canThiepThuThuat || '';
     document.getElementById('so_lan_mo_lai').value = data.soLanMoLai || '';
@@ -396,18 +411,16 @@ function bindDataToForm(data) {
     }
     if (data.idPhuongPhapVoCam) {
         const plSelect = document.querySelector(".cbPTVoCam")?.tomselect;
-        if (plSelect) plSelect.setValue(String(data.idPhuongPhapVoCam));
+        if (plSelect) plSelect.setValue(String(data.idTuVong));
     }
 }
 
 
 function loadData(idVaoVien, idChiNhanh, soPhieu) {
-    //console.log("Bắt đầu loadData", idVaoVien, idChiNhanh);
     if (idVaoVien && idChiNhanh && soPhieu) {
         fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${soPhieu}`)
             .then(response => response.json())
             .then(data => {
-                //console.log("Dữ liệu loadData trả về", data);
                 if (data.success) {
                     bindDataToForm(data.data);
                 } else {
@@ -428,12 +441,12 @@ async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
         cheDoThuThuat: fetchDataAndNormalize("/CheDoThuThuat/List", 'ten', 'viettat', _idcn),
         thietBi: fetchDataAndNormalize("dist/data/json/CLS_DanhMucMayCls.json", 'ten', 'viettat', _idcn),
     };
+    await loadICDData()
 
     const results = await Promise.all(Object.values(dataPromises));
     if (idVaoVien !== null && idChiNhanh !== null && idChiDinhChiTiet !== null) {
         loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet)
     }
-
 
     const allData = {};
     const keys = Object.keys(dataPromises);
@@ -441,7 +454,7 @@ async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
         allData[key] = results[index];
     });
 
-    await loadICDData()
+
 
     configureICDTomSelect()
 
@@ -493,13 +506,11 @@ function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
             .catch(error => console.error("Lỗi:", error));
     }
 }
-// Gọi hàm khởi tạo
-initThongTinTab();
 
 function configCbThongTin(configs) {
     configs.forEach((cfg) => {
         const element = document.querySelector(cfg.className);
-        if (element) {
+        if (element && !element.tomselect) {
             const tomSelectInstance = new window.TomSelect(cfg.className, {
                 options: cfg.data,
                 valueField: "id",
@@ -845,7 +856,7 @@ function validateForm() {
 }
 async function handleSaveThongTin() {
     if (!validateForm()) {
-        return; // Dừng hàm nếu validate thất bại
+        return; 
     }
     const IDPhieuTTPT_HienTai = IDPhieuTTPT;
 
@@ -948,5 +959,6 @@ async function handleSaveThongTin() {
 }
 
 console.log("Đã gắn sự kiện 'click' cho nút Lưu Thông Tin Thủ Thuật.");
+    window.initThongTinTab = initThongTinTab;
 
-
+})(); 

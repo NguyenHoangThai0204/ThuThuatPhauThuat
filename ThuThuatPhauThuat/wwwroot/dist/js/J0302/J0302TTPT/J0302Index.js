@@ -118,7 +118,7 @@ $(document).ready(function () {
         };
         if (!IDPhieuTTPT || IDPhieuTTPT === 0) {
             // Thu thập dữ liệu từ form
-            
+
             $.ajax({
                 url: '/thu_thuat_phau_thuat/create-phieu',
                 type: 'POST',
@@ -131,7 +131,7 @@ $(document).ready(function () {
                 }
             });
         } else {
-            
+
             data.IDPhieuTTPT = IDPhieuTTPT; // Gắn ID để server biết update
             console.log(data);
             $.ajax({
