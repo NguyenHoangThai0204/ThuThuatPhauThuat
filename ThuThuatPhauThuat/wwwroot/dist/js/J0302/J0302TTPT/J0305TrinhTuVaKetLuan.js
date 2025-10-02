@@ -25,16 +25,16 @@ function getUploadedImages() {
 }
 
 function saveTrinhTu($btn, originalText) {
-    console.log('=== BẮT ĐẦU SAVE TRÌNH TỰ ===');
+    //console.log('=== BẮT ĐẦU SAVE TRÌNH TỰ ===');
 
     var content = $('#editorContent').html();
     var summary = $('.editor-summary').val();
 
-    console.log('Content:', content);
-    console.log('Summary:', summary);
+    //console.log('Content:', content);
+    //console.log('Summary:', summary);
 
     var formData = {
-        IDPhieuTTPT: 1,
+        IDPhieuTTPT: window.IDPhieuTTPT,
         TrinhTu: content,
         KetLuan: summary,
         DanhSachHinhAnh: getUploadedImages()
@@ -73,3 +73,4 @@ function saveTrinhTu($btn, originalText) {
         }
     });
 }
+window.saveTrinhTu = saveTrinhTu;

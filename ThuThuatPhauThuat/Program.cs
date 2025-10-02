@@ -1,10 +1,10 @@
 ﻿
-using CloudinaryDotNet;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Infrastructure;
 using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using ThuThuatPhauThuat.Configurations.FtpConfig;
 using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Services.S0302;
 using ThuThuatPhauThuat.Services.S0302.IS0302;
@@ -36,15 +36,11 @@ QuestPDF.Settings.License = LicenseType.Community;
 builder.Services.AddDbContext<Context0302>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
 
-// Đăng ký dịch vụ Cloudinary => Sau này sẽ thay bằng FTP khác :))
-var cloudinarySettings = builder.Configuration.GetSection("Cloudinary");
-var account = new Account(
-    cloudinarySettings["CloudName"],
-    cloudinarySettings["ApiKey"],
-    cloudinarySettings["ApiSecret"]
-);
-builder.Services.AddSingleton(new Cloudinary(account));
-builder.Services.AddScoped<IS0305CloudinaryService, S0305CloudinaryService>();
+// Cấu hình FTP lưu ảnh
+builder.Services.Configure<FtpSettings>(
+    builder.Configuration.GetSection("FtpServer"));
+builder.Services.AddScoped<IS0305FtpService, S0305FtpService>();
+
 
 // Cấu hình Session (CÁCH MỚI)
 builder.Services.AddDistributedMemoryCache(); // THÊM DÒNG NÀY

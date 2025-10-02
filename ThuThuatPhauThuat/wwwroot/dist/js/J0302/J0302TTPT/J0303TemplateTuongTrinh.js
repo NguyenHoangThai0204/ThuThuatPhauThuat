@@ -268,7 +268,9 @@ async function createNewTemplate() {
     const textarea = tbody?.querySelector("textarea");
     const noiDung = textarea?.value.trim() ?? "";
 
+    // ✅ FIX: Chuyển giá trị TomSelect sang Number để tránh HTTP 400
     const idKhoa = Number(selectKhoa?.getValue());
+    console.log(idKhoa);
     const newData = {
         ten: newTitle,
         noiDung: noiDung,
@@ -451,9 +453,11 @@ function isValidation(checkId = true) {
 
 // --- save all ---
 async function saveAllEdits() {
+    // Ép kiểu sang Number
     const currentKhoaId = Number(selectKhoa?.getValue());
+    console.log("currentKhoaId = ", currentKhoaId);
 
-    if (!isValidation(isEdit)) return; 
+    if (!isValidation(isEdit)) return; // isValidation đã kiểm tra currentKhoaId
 
     let success = false;
     if (isEdit) {
@@ -463,14 +467,15 @@ async function saveAllEdits() {
         success = titleResult || detailsResult;
         if (success) {
             toastr && toastr.success("Cập nhật thành công!");
-
+            // loadTemplatesByKhoa(currentKhoaId); // Không cần load lại, chỉ cần update lại data-dv (đã làm trong saveTitle/saveDetails)
         } else {
             toastr && toastr.info("Không có thay đổi nào để lưu.");
         }
     } else {
+        // Add new
         success = await createNewTemplate();
         if (success) {
-            loadTemplatesByKhoa(currentKhoaId);
+            loadTemplatesByKhoa(currentKhoaId); // Load lại danh sách để mẫu mới hiện ra
         }
     }
 }

@@ -68,7 +68,7 @@ $(document).ready( async function () {
 
             var tabKey = tabNumber + '_' + selectedIdVaoVien + '_' + selectedIdChiDinhChiTiet;
 
-            if (!tabLoaded[tabKey] || tabNumber === 2 || tabNumber === 4) {
+            if (!tabLoaded[tabKey] || tabNumber === 2 || tabNumber === 4 || tabNumber === 3) {
                 // Luôn load lại tab 2 khi có ID mới
                  $(target).load(urlMap[tabNumber], function () {
                      $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu", {
@@ -87,6 +87,8 @@ $(document).ready( async function () {
                         }
                         else if (tabNumber === 4) {
                             initEkipTab();
+                        } else if (tabNumber === 3) {
+                            loadTrinhTuVaKetLuanWithFocus(window.IDPhieuTTPT);
                         }
                     });
                 });
@@ -139,9 +141,9 @@ $(document).ready( async function () {
         if (typeof handleSaveThongTin === 'function') {
             handleSaveThongTin();
         }
-        //if (typeof handleSaveTrinhTu === 'function') {
-        //    handleSaveTrinhTu();
-        //}
+        if (typeof handleSaveTrinhTu === 'function') {
+            handleSaveTrinhTu();
+        }
         if (typeof handleSaveEkip === 'function') {
             handleSaveEkip();
         }
