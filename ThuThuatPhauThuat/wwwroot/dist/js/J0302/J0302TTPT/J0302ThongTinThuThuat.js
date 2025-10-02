@@ -536,13 +536,64 @@ function bindDataToForm(data) {
 
 
 
-function loadData(idVaoVien, idChiNhanh, soPhieu) {
-    if (idVaoVien && idChiNhanh && soPhieu) {
-        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${soPhieu}`)
+//function loadData(idVaoVien, idChiNhanh, soPhieu) {
+//    if (idVaoVien && idChiNhanh && soPhieu) {
+//        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${soPhieu}`)
+//            .then(response => response.json())
+//            .then(data => {
+//                if (data.success) {
+//                    bindDataToForm(data.data);
+//                } else {
+//                    console.error("Lỗi khi tải dữ liệu:", data.message);
+//                }
+//            })
+//            .catch(error => console.error("Lỗi:", error));
+//    }
+//}
+// Thêm vào J0302ThongTinThuThuat.js
+var isFormDirty = false;
+
+function markFormAsDirty() {
+    isFormDirty = true;
+}
+
+function markFormAsClean() {
+    isFormDirty = false;
+}
+
+// Gắn sự kiện cho các input
+function attachDirtyListeners() {
+    $('input, select, textarea').on('change input', function () {
+        markFormAsDirty();
+    });
+}
+
+// Gọi sau khi bind data hoặc init form
+function initFormState() {
+    markFormAsClean();
+    attachDirtyListeners();
+}
+
+// Kiểm tra trước khi load lại data
+function shouldPreventDataReload() {
+    if (isFormDirty) {
+        return confirm('Bạn có thay đổi chưa lưu. Tiếp tục sẽ mất dữ liệu. Tiếp tục?');
+    }
+    return true;
+}
+function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
+    // Kiểm tra xem có nên ngăn load data không
+    if (!shouldPreventDataReload()) {
+        return; // Người dùng chọn hủy
+    }
+
+    if (idVaoVien && idChiNhanh && idChiDinhChiTiet) {
+        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${idChiDinhChiTiet}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     bindDataToForm(data.data);
+                    markFormAsClean(); // Đánh dấu form sạch sau khi load data
                 } else {
                     console.error("Lỗi khi tải dữ liệu:", data.message);
                 }
@@ -550,10 +601,14 @@ function loadData(idVaoVien, idChiNhanh, soPhieu) {
             .catch(error => console.error("Lỗi:", error));
     }
 }
-
 async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
 
+
     resetThongTinState();
+
+    // CHỈ load data từ DB khi có ID mới, không load khi chỉ chuyển tab
+    const shouldLoadData = (idVaoVien !== null && idChiNhanh !== null && idChiDinhChiTiet !== null &&
+        isNewPatientSelection()); // Sử dụng hàm kiểm tra từ file chính
     const dataPromises = {
         phongBuong: fetchDataAndNormalize("dist/data/json/DM_PhongBuong.json", 'ten', 'viettat', _idcn),
         phanLoai: fetchDataAndNormalize("dist/data/json/DM_LoaiThuThuatPhauThuat.json", 'ten', 'viettat', _idcn),
@@ -568,6 +623,9 @@ async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
     };
 
     const results = await Promise.all(Object.values(dataPromises));
+    if (shouldLoadData) {
+        loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet);
+    }
     if (idVaoVien !== null && idChiNhanh !== null && idChiDinhChiTiet !== null) {
         loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet)
     }
