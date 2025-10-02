@@ -41,10 +41,10 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             var fontSet = new FontSet();
 
             // Đăng ký từng font vào "Times New Roman" family
-            fontSet.AddFont(Path.Combine(fontFolder, "times.ttf"));                        // Regular
-            fontSet.AddFont(Path.Combine(fontFolder, "times new roman bold.ttf"));         // Bold
-            fontSet.AddFont(Path.Combine(fontFolder, "times new roman italic.ttf"));       // Italic
-            fontSet.AddFont(Path.Combine(fontFolder, "times new roman bold italic.ttf"));  // BoldItalic
+            fontSet.AddFont(Path.Combine(fontFolder, "times.ttf"));      // Regular
+            fontSet.AddFont(Path.Combine(fontFolder, "timesbd.ttf"));    // Bold
+            fontSet.AddFont(Path.Combine(fontFolder, "timesi.ttf"));     // Italic
+            fontSet.AddFont(Path.Combine(fontFolder, "timesbi.ttf"));    // Bold Italic
 
             var fontProvider = new FontProvider(fontSet);
 
@@ -52,7 +52,6 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                 .SetFontProvider(fontProvider)
                 .SetCharset("utf-8");
 
-            // Quan trọng: ép CSS dùng đúng family "Times New Roman"
             htmlContent = "<style> body { font-family: 'Times New Roman'; } </style>" + htmlContent;
 
             HtmlConverter.ConvertToPdf(htmlContent, pdfDocument, converterProperties);
@@ -66,275 +65,6 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             var pdfBytes = GeneratePdf();
             File.WriteAllBytes(outputPath, pdfBytes);
         }
-
-
-        //private string GenerateHtmlContent()
-        //{
-        //    var sb = new StringBuilder();
-
-        //    // Logo base64
-        //    string logoBase64 = "";
-        //    if (File.Exists(_logoPath))
-        //    {
-        //        byte[] imageBytes = File.ReadAllBytes(_logoPath);
-        //        logoBase64 = Convert.ToBase64String(imageBytes);
-        //    }
-
-        //    sb.Append(@"
-        //            <!DOCTYPE html>
-        //            <html>
-        //            <head>
-        //                <meta charset='UTF-8'>
-        //                <style>
-        //                    @page {
-        //                        size: A4;
-        //                        margin: 25px;
-        //                    }
-        //                    body {
-        //                        font-family: 'Times New Roman', serif;;
-        //                        font-size: 12px;
-        //                        color: black;
-        //                        line-height: 1.4;
-        //                    }
-        //                    .header-row {
-        //                        display: table;
-        //                        width: 100%;
-        //                        margin-bottom: 10px;
-        //                    }
-        //                    .header-left {
-        //                        display: table-cell;
-        //                        width: 70%;
-        //                        vertical-align: top;
-        //                    }
-        //                    .header-left-content {
-        //                        display: flex;
-        //                        align-items: flex-start;
-        //                    }
-        //                    .logo {
-        //                        width: 28px;
-        //                        height: 31px;
-        //                        margin-right: 5px;
-
-        //                    }
-        //                    .header-text {
-        //                        flex: 1;
-        //                    }
-        //                    .header-text div {
-        //                        font-weight: bold;
-        //                        font-size: 12px;
-        //                    }
-        //                    .header-right {
-        //                        display: table-cell;
-        //                        width: 30%;
-        //                        vertical-align: top;
-        //                    }
-        //                    .header-right-row {
-        //                        font-size: 10px;
-        //                        font-style: italic;
-        //                        margin-bottom: 2px;
-        //                    }
-        //                    .header-right-label {
-        //                        display: inline-block;
-        //                        width: 80px;
-        //                    }
-        //                    .title {
-        //                        text-align: center;
-        //                        font-size: 16px;
-        //                        font-weight: bold;
-        //                        margin: 15px 0;
-        //                    }
-        //                    .info-row {
-        //                        margin-bottom: 5px;
-        //                    }
-        //                    .bold {
-        //                        font-weight: bold;
-        //                    }
-        //                    .border-box {
-        //                        border: 1px solid black;
-        //                        padding: 5px;
-        //                        height: 200px;
-        //                        text-align: center;
-        //                        font-size: 11px;
-        //                        font-style: italic;
-        //                        margin-top: 10px;
-        //                    }
-        //                    .page-break {
-        //                        page-break-after: always;
-        //                    }
-        //                    .signature-section {
-        //                        margin-top: 20px;
-        //                        text-align: right;
-        //                    }
-        //                    .signature-box {
-        //                        display: inline-block;
-        //                        text-align: center;
-        //                        width: 200px;
-        //                    }
-        //                    .signature-date {
-        //                        font-size: 10px;
-        //                        font-style: italic;
-        //                    }
-        //                    .signature-title {
-        //                        font-size: 11px;
-        //                        font-weight: bold;
-        //                        margin-top: 5px;
-        //                    }
-        //                    .signature-note {
-        //                        font-size: 9px;
-        //                        font-style: italic;
-        //                    }
-
-        //                    .hang-1-pdf, .hang-2-pdf {
-        //                        display: flex;
-        //                        justify-content: space-between;
-        //                    }
-        //                    .hang-2-pdf__right {
-        //                        margin-right: 30px;
-        //                    }
-        //                </style>
-        //            </head>
-        //            <body>");
-
-        //    // ===== HEADER =====
-        //    sb.Append("<div class='header-row'>");
-        //    sb.Append("<div class='header-left'>");
-        //    sb.Append("<div class='header-left-content'>");
-
-        //    if (!string.IsNullOrEmpty(logoBase64))
-        //    {
-        //        sb.Append($"<img src='data:image/jpeg;base64,{logoBase64}' class='logo' />");
-        //    }
-
-        //    sb.Append("<div class='header-text'>");
-        //    sb.Append($"<div>{_thongTinDoanhNghiep.TenCoQuanChuyenMon ?? ""}</div>");
-        //    sb.Append($"<div>{_thongTinDoanhNghiep.TenCSKCB ?? ""}</div>");
-        //    sb.Append("</div>");
-        //    sb.Append("</div>");
-        //    sb.Append("</div>");
-
-        //    sb.Append("<div class='header-right'>");
-        //    sb.Append("<div class='header-right-row'>");
-        //    sb.Append("<span class='header-right-label'>Mã số:</span>");
-        //    sb.Append("<span>14/BV-01</span>");
-        //    sb.Append("</div>");
-        //    sb.Append("<div class='header-right-row'>");
-        //    sb.Append("<span class='header-right-label'>Mã số đợt/MYT:</span>");
-        //    sb.Append($"<span class='bold'>{_data.MaVaoVien ?? ""}</span>");
-        //    sb.Append("</div>");
-        //    sb.Append("</div>");
-        //    sb.Append("</div>");
-
-        //    // ===== TIÊU ĐỀ =====
-        //    sb.Append("<div class='title'>PHIẾU PHẪU THUẬT / THỦ THUẬT</div>");
-
-        //    // ===== THÔNG TIN NGƯỜI BỆNH =====
-        //    int tuoi = DateTime.Now.Year - (_data.NamSinh ?? DateTime.Now.Year);
-
-        //    sb.Append($@"
-        //                <div class='info-row hang-1-pdf'>
-        //                    <div>
-        //                        <span>- Họ tên người bệnh: </span><span class='bold'>{_data.TenBN ?? ""}</span>  
-        //                    </div>
-        //                    <div>  
-        //                        <span style='margin-left: 20px;'>Tuổi: </span><span class='bold'>{tuoi}</span>
-        //                        <span style='margin-left: 20px;'>Giới tính: </span><span class='bold'>{_data.TenGioiTinh ?? ""}</span>  
-        //                    </div>
-        //                </div>");
-
-
-        //    sb.Append($@"
-        //                <div class='info-row hang-2-pdf'>
-        //                    <div>
-        //                        <span>- Khoa/Phòng: </span><span class='bold'>{_data.Khoa ?? ""}</span>
-        //                    </div>
-        //                    <div class='hang-2-pdf__right'>  
-        //                        <span style='margin-left: 20px;'>Buồng: </span><span class='bold'>{_data.Buong}</span>
-        //                        <span style='margin-left: 20px;'>Giường: </span><span class='bold'>{_data.Giuong}</span>
-        //                    </div>
-        //                </div>");
-
-        //    // Vào viện lúc
-        //    string vaoVienText = "";
-        //    if (_data.VaoVienLuc.HasValue)
-        //    {
-        //        var dt = _data.VaoVienLuc.Value;
-        //        vaoVienText = $"{dt:HH} giờ {dt:mm} phút {dt:ss} giây, ngày {dt:dd}-{dt:MM}-{dt:yyyy}";
-        //    }
-        //    sb.Append($"<div class='info-row'><span>- Vào viện lúc: </span><span class='bold'>{vaoVienText}</span></div>");
-
-        //    // Bắt đầu thủ thuật
-        //    string batDauText = "";
-        //    if (_data.BatDauThuThuat.HasValue)
-        //    {
-        //        var dt = _data.BatDauThuThuat.Value;
-        //        batDauText = $"{dt:HH} giờ {dt:mm} phút, ngày {dt:dd}-{dt:MM}-{dt:yyyy}";
-        //    }
-        //    sb.Append($"<div class='info-row'><span>- Phẩu thuật/ Thủ thuật lúc: </span><span class='bold'>{batDauText}</span></div>");
-
-        //    // Kết thúc thủ thuật
-        //    string ketThucText = "";
-        //    if (_data.KetThucThuThuat.HasValue)
-        //    {
-        //        var dt = _data.KetThucThuThuat.Value;
-        //        ketThucText = $"{dt:HH} giờ {dt:mm} phút, ngày {dt:dd}-{dt:MM}-{dt:yyyy}";
-        //    }
-        //    sb.Append($"<div class='info-row'><span>- Phẩu thuật/ Thủ thuật kết thúc: </span><span class='bold'>{ketThucText}</span></div>");
-
-        //    // Chẩn đoán
-        //    sb.Append($@"
-        //            <div class='info-row'>
-        //                <span>- Chẩn đoán: </span>
-        //                <span>Trước phẫu thuật/ thủ thuật: </span>
-        //                <span class='bold'>{_data.TenChanDoanTruoc ?? ""}</span>
-        //            </div>");
-
-        //     sb.Append($@"
-        //            <div class='info-row'>
-        //                <span style='margin-left: 65px;'>Sau phẫu thuật/ thủ thuật: </span>
-        //                <span class='bold'>{_data.TenChanDoanSau ?? ""}</span>
-        //            </div>");
-
-        //    // Các thông tin khác
-        //    sb.Append($"<div class='info-row'><span>- Phương pháp phẫu thuật/ thủ thuật: </span><span class='bold'>{_data.PhuongPhapTTPT ?? ""}</span></div>");
-        //    sb.Append(@$"<div class='info-row hang-2-pdf'>
-        //                    <div>
-        //                        <span>- Phương pháp vô cảm: </span>
-        //                        <span class='bold'>{_data.PhuongPhapVoCam ?? ""}</span>                            
-        //                    </div>
-        //                    <div class='hang-2-pdf__right'>  
-        //                        <span style='margin-left: 20px;'>Loại: </span><span class='bold'>{_data.LoaiTTPT ?? ""}</span>
-        //                    </div>
-
-        //                </div>");
-        //    sb.Append($"<div class='info-row'><span>- Can thiệp phẫu thuật: </span><span class='bold'>{_data.CanThiepPhauThuat ?? ""}</span></div>");
-        //    sb.Append($"<div class='info-row'><span>- Bác sĩ phẫu thuật: </span><span class='bold'>{_data.BacSiPhauThuat ?? ""}</span></div>");
-        //    sb.Append($"<div class='info-row'><span>- Phụ mổ: </span><span class='bold'>{_data.PhuTTPT ?? ""}</span></div>");
-        //    sb.Append($"<div class='info-row'><span>- Bác sĩ gây mê: </span><span class='bold'>{_data.BacSiGayMe ?? ""}</span></div>");
-        //    sb.Append($"<div class='info-row'><span>- KTV gây mê: </span><span class='bold'>{_data.KyThuatVienGayMe ?? ""}</span></div>");
-
-        //    // ===== LƯỢC ĐỒ =====
-        //    sb.Append("<div class='border-box'>LƯỢC ĐỒ PHẪU THUẬT / THỦ THUẬT (vẽ hoặc mô tả)</div>");
-
-        //    // Page break
-        //    sb.Append("<div class='page-break'></div>");
-
-        //    // ===== TƯỜNG TRÌNH =====
-        //    sb.Append("<div class='border-box'>TƯỜNG TRÌNH PHẪU THUẬT / THỦ THUẬT</div>");
-
-        //    // ===== CHỮ KÝ =====
-        //    sb.Append("<div class='signature-section'>");
-        //    sb.Append("<div class='signature-box'>");
-        //    sb.Append($"<div class='signature-date'>Ngày {DateTime.Now:dd} tháng {DateTime.Now:MM} năm {DateTime.Now:yyyy}</div>");
-        //    sb.Append("<div class='signature-title'>PHẨU THUẬT/ THỦ THUẬT VIÊN</div>");
-        //    sb.Append("<div class='signature-note'>(Ký, ghi rõ họ tên)</div>");
-        //    sb.Append("</div>");
-        //    sb.Append("</div>");
-
-        //    sb.Append("</body></html>");
-
-        //    return sb.ToString();
-        //}
-
         private string GenerateHtmlContent()
         {
             var sb = new StringBuilder();
@@ -348,81 +78,81 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             }
 
             sb.Append(@"
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset='UTF-8'>
-            <style>
-                @page {
-                    size: A4;
-                    margin: 25px;
-                }
-                body {
-                    font-family: 'Times New Roman', serif;
-                    font-size: 12px;
-                    color: black;
-                    line-height: 1.4;
-                }
-                .title {
-                    text-align: center;
-                    font-size: 16px;
-                    font-weight: bold;
-                    margin: 15px 0;
-                }
-                .bold { font-weight: bold; }
-                .border-box {
-                    border: 1px solid black;
-                    padding: 5px;
-                    height: 200px;
-                    text-align: center;
-                    font-size: 11px;
-                    font-style: italic;
-                    margin-top: 10px;
-                }
-                .page-break { page-break-after: always; }
-                .signature-section {
-                    margin-top: 20px;
-                    text-align: right;
-                }
-                .signature-box {
-                    display: inline-block;
-                    text-align: center;
-                    width: 200px;
-                }
-                .signature-date {
-                    font-size: 10px;
-                    font-style: italic;
-                }
-                .signature-title {
-                    font-size: 11px;
-                    font-weight: bold;
-                    margin-top: 5px;
-                }
-                .signature-note {
-                    font-size: 9px;
-                    font-style: italic;
-                }
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                }
-                td {
-                    vertical-align: top;
-                }
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset='UTF-8'>
+                            <style>
+                                @page {
+                                    size: A4;
+                                    margin: 25px;
+                                }
+                                body {
+                                    font-family: 'Times New Roman', serif;
+                                    font-size: 12px;
+                                    color: black;
+                                    line-height: 1.4;
+                                }
+                                .title {
+                                    text-align: center;
+                                    font-size: 16px;
+                                    font-weight: bold;
+                                    margin: 15px 0;
+                                }
+                                .bold { font-weight: bold; }
+                                .border-box {
+                                    border: 1px solid black;
+                                    padding: 5px;
+                                    height: 200px;
+                                    text-align: center;
+                                    font-size: 11px;
+                                    font-style: italic;
+                                    margin-top: 10px;
+                                }
+                                .page-break { page-break-after: always; }
+                                .signature-section {
+                                    margin-top: 20px;
+                                    text-align: right;
+                                }
+                                .signature-box {
+                                    display: inline-block;
+                                    text-align: center;
+                                    width: 200px;
+                                }
+                                .signature-date {
+                                    font-size: 10px;
+                                    font-style: italic;
+                                }
+                                .signature-title {
+                                    font-size: 11px;
+                                    font-weight: bold;
+                                    margin-top: 5px;
+                                }
+                                .signature-note {
+                                    font-size: 9px;
+                                    font-style: italic;
+                                }
+                                table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                }
+                                td {
+                                    vertical-align: top;
+                                }
 
-                .box-title {
-                    margin-top: 5px;
-                    margin-bottom: 5px;
-                }
+                                .box-title {
+                                    margin-top: 5px;
+                                    margin-bottom: 5px;
+                                }
     
-                .box-text {
-                    text-align: left;
-                    margin-top: 2px;
-                    margin-bottom: 2px;;
-                }
-            </style>
-        </head>
-        <body>");
+                                .box-text {
+                                    text-align: left;
+                                    margin-top: 2px;
+                                    margin-bottom: 2px;;
+                                }
+                            </style>
+                        </head>
+                        <body>");
 
             // ===== HEADER =====
             sb.Append("<table style='width:100%; margin-bottom:10px;'>");
@@ -523,7 +253,6 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             sb.Append(@$"<div class='border-box'>
                         <h2> TƯỜNG TRÌNH PHẪU THUẬT / THỦ THUẬT </h2>
                         <img src='https://vn1.vdrive.vn/alohamedia.vn/2025/02/632fbd20f18a2a1bc6df569b31eda210.jpg' alt='' width ='20' height ='20'>
-
                         <p class='box-text'>- Dẫn lưu: {_data.DanLuu ?? ""}</p>
                         <p class='box-text'>- Bấc: </p>
                         <p class='box-text'>- Ngày rút chỉ: </p>

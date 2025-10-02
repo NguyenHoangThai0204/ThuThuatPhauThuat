@@ -70,10 +70,120 @@
     transform: scale(1.02);
 }
 
+.sequence-container {
+    display: flex;
+    flex: 1;
+    border-top: 1px solid #ccc;
+}
+
+/* Cột trái: Thông tin lược đồ */
+.sequence-info-panel {
+    width: 30%;
+    min-width: 220px;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ccc;
+    background: #f8f9fa;
+}
+
+    .sequence-info-panel .info-panel-header {
+        background: #495057;
+        color: #fff;
+        font-weight: bold;
+        padding: 8px 12px;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .sequence-info-panel .info-panel-body {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background: #f8f9fa;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+    .info-list li {
+        padding: 6px 0;
+        border-bottom: 1px solid #e9ecef;
+        color: #495057;
+        font-weight: 500;
+    }
+
+/* Cột phải: Editor nội dung */
+.sequence-editor-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+sequence-editor-panel .editor-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    border: none;
+    outline: none;
+    line-height: 1.6;
+    background: #fff;
+    min-height: 200px;
+}
+
+.sequence-editor-panel .editor-footer {
+    border-top: 1px solid #ccc;
+    padding: 8px 12px;
+    background: #fff;
+}
+
 .editor-content.drag-over {
     border: 2px dashed #006d77;
     background-color: #e0f2f1;
 }
+/* Responsive */
+@media (max-width: 1200px) {
+    .sequence-container {
+        flex-direction: column;
+    }
+
+    .sequence-info-panel {
+        width: 100%;
+        max-width: none;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+        min-height: 120px;
+    }
+
+        .sequence-info-panel .info-panel-body {
+            padding: 10px;
+        }
+
+    .info-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+        .info-list li {
+            border-bottom: none;
+            padding: 4px 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+        }
+}
+
+
 
 /* Image trong editor có thể resize */
 .editor-content img {
@@ -171,6 +281,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .editor-header {
@@ -421,3 +532,44 @@
 .pdf-import-section .pdf-page {
     border-left: 4px solid #006d77;
 }
+
+/* Modal xem ảnh lớn */
+#imagePreviewModal .modal-content {
+    background: rgba(0,0,0,0.95);
+    border: none;
+}
+
+#imagePreviewModal .modal-header {
+    border-bottom: none;
+    color: #fff;
+}
+
+#imagePreviewModal .modal-title {
+    color: #fff;
+    font-size: 1.15rem;
+}
+
+#imagePreviewModal .btn-close {
+    filter: invert(1);
+    opacity: 0.85;
+}
+
+#imagePreviewModal .modal-body {
+    padding: 1.5rem 1rem;
+    text-align: center;
+}
+
+#imagePreviewModalImg {
+    max-width: 98vw;
+    max-height: 80vh;
+    margin: 0 auto;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+}
+
+    #imagePreviewModalImg:hover {
+        box-shadow: 0 8px 36px rgba(0,109,119,0.25);
+    }

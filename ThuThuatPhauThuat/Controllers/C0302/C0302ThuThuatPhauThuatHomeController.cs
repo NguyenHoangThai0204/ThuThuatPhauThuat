@@ -48,7 +48,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         [HttpPost("xuat-pdf")]
         public async Task<IActionResult> ExportToPDF([FromBody] ExportPdfRequest request)
         {
-            _logger.LogInformation("👉 Bắt đầu ExportToPDF với tham số: IDVaoVien={IDVaoVien}, IDChiDinhChiTiet={IDChiDinhChiTiet}, IDChiNhanh={IDChiNhanh}",
+            _logger.LogInformation("Bắt đầu ExportToPDF với tham số: IDVaoVien={IDVaoVien}, IDChiDinhChiTiet={IDChiDinhChiTiet}, IDChiNhanh={IDChiNhanh}",
                 request.IDVaoVien, request.IDChiDinhChiTiet, request.IDChiNhanh);
 
             var parameters = new[]
@@ -92,7 +92,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         [HttpPost("xuat-pdf-bang-html")]
         public async Task<IActionResult> ExportToPDFHTML([FromBody] ExportPdfRequest request)
         {
-            _logger.LogInformation("👉 Bắt đầu ExportToPDFHTML với tham số: IDVaoVien={IDVaoVien}, IDChiDinhChiTiet={IDChiDinhChiTiet}, IDChiNhanh={IDChiNhanh}",
+            _logger.LogInformation("Bắt đầu ExportToPDFHTML với tham số: IDVaoVien={IDVaoVien}, IDChiDinhChiTiet={IDChiDinhChiTiet}, IDChiNhanh={IDChiNhanh}",
                 request.IDVaoVien, request.IDChiDinhChiTiet, request.IDChiNhanh);
 
             try
