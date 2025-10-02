@@ -52,6 +52,7 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddScoped<IS0303TemplateTTPT, S0303TemplateTTPT>();
 builder.Services.AddScoped<IS0302ThuThuatPhauThuatInterface, S0302ThuThuatPhauThuatService>();
+builder.Services.AddScoped<S0305PdfExtractionService>();
 
 
 
@@ -83,7 +84,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
-app.UseSession();  // ĐẶT SAU UseRouting() và TRƯỚC MapControllerRoute()
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

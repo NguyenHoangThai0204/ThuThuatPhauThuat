@@ -162,7 +162,7 @@ $(document).ready( async function () {
 
         if (selectedIdChiDinhChiTiet && selectedIdVaoVien && IDPhieuTTPT) {
 
-            fetch("/thu_thuat_phau_thuat/xuat-pdf", {
+            fetch("/thu_thuat_phau_thuat/xuat-pdf-bang-html", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

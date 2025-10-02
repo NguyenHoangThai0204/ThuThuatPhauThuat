@@ -1,4 +1,6 @@
-﻿.report-template-editor {
+﻿/*CSS0305TrinhTuVaKetLuan.css*/
+
+.report-template-editor {
     height: calc(100vh - 200px);
     margin: 10px;
     min-height: 400px;
@@ -58,8 +60,14 @@
 
 .image-item-preview {
     max-width: 100%;
-    height: auto;
+    height: 100px;
+    object-fit: cover;
+    margin-top: 5px;
     border-radius: 4px;
+    transition: transform 0.2s ease;
+}
+.image-item:hover .image-item-preview {
+    transform: scale(1.02);
 }
 
 .editor-content.drag-over {
@@ -354,4 +362,62 @@
 
 .editor-content img::selection {
     background-color: transparent;
+}
+
+/* PDF Import Styles */
+.pdf-import-section {
+    border-left: 4px solid #006d77;
+    padding-left: 15px;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+    .pdf-import-section h6 {
+        color: #006d77;
+        margin-bottom: 10px;
+    }
+
+.pdf-content {
+    font-family: 'Times New Roman', serif;
+    line-height: 1.6;
+}
+
+    .pdf-content p {
+        margin-bottom: 8px;
+    }
+
+.pdf-page {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: white;
+    border: 1px solid #e0e0e0;
+}
+
+.pdf-header {
+    color: #006d77;
+    font-weight: bold;
+    text-align: center;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.pdf-field {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+    .pdf-field .label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .pdf-field .value {
+        color: #000;
+        font-weight: bold;
+    }
+
+.pdf-import-section .pdf-page {
+    border-left: 4px solid #006d77;
 }

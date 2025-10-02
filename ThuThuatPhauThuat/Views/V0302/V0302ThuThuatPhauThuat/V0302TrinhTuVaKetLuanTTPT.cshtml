@@ -1,4 +1,4 @@
-﻿﻿<div class="report-template-editor">
+﻿<div class="report-template-editor">
     <!-- Left column: Image panel -->
     <div class="image-panel">
         <div class="image-panel-header" style="font-size: 1.05rem;">
@@ -79,23 +79,16 @@
                 <input type="color" class="color-picker" onchange="execCmd('hiliteColor', this.value)" value="#ffff00">
             </label>
             <div class="toolbar-separator"></div>
-            <!-- Insert image from local -->
-            <button class="btn btn-sm btn-outline-secondary" id="btnInsertLocalImage" data-bs-toggle="tooltip"
-                    title="Chèn ảnh từ máy">
-                <i class="ti ti-upload"></i>
-            </button>
-            <input type="file" id="inputLocalImage" accept="image/*" style="display:none;" multiple>
-            <!-- Insert image by URL -->
-            <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('insertImage', prompt('Nhập URL hình:','https://'))"
-                    data-bs-toggle="tooltip" title="Chèn ảnh từ link">
-                <i class="ti ti-photo"></i>
-            </button>
-            <div class="toolbar-separator"></div>
             <!-- Clear -->
             <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('removeFormat')" data-bs-toggle="tooltip"
                     title="Xóa định dạng">
                 <i class="ti ti-clear-formatting"></i>
             </button>
+            <!-- PDF Upload -->
+            <label class="btn btn-sm btn-outline-primary" for="pdfUpload" data-bs-toggle="tooltip" title="Import từ PDF">
+                <i class="ti ti-file-type-pdf"></i> Import PDF
+                <input type="file" id="pdfUpload" accept=".pdf" style="display: none;">
+            </label>
         </div>
         <div id="editorContent" class="editor-content" contenteditable="true"></div>
         <div class="editor-footer">
@@ -103,6 +96,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl custom-modal">
         <div class="modal-content">
@@ -197,16 +191,44 @@
     </div>
 </div>
 
+<!-- Modal preview PDF -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xem trước và Import PDF</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <h6>Nội dung trích xuất:</h6>
+                        <div id="pdfExtractedContent" class="border p-3" style="height: 400px; overflow-y: auto;"></div>
+                    </div>
+                    <div class="col-6">
+                        <h6>Áp dụng vào:</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="applyToTuongTrinh" checked>
+                            <label class="form-check-label" for="applyToTuongTrinh">
+                                Tường trình phẫu thuật
+                            </label>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-primary" onclick="applyPdfContent()">Áp dụng nội dung</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <link href="~/dist/css/CSS0305/CSS0305TTPT/CSS0305TrinhTuVaKetLuan.css" rel="stylesheet" />
 
 <script>
-    // ====== Khởi tạo TomSelect cho chọn mẫu ======
     var DEFAULT_KHOA_ID = 1;
-    let templateTomSelectInstance;
-    let allTemplatesData = [];
-
-    // ĐỊNH NGHĨA initializeImageEvents Ở PHẠM VI TOÀN CỤC
-    let initializeImageEvents = null;
+    window.templateTomSelectInstance = window.templateTomSelectInstance || null;
+    window.allTemplatesData = window.allTemplatesData || [];
 
     function normalizeData(data, tenField = 'Ten', viettatField = 'alias') {
         if (!Array.isArray(data)) return [];
@@ -264,31 +286,6 @@
     }
     initTemplateTomSelect(`/template_tuong_trinh/LayDanhSachTheoIDKhoa/${DEFAULT_KHOA_ID}`);
 
-    function wrapImagesWithResizeHandle(container) {
-        container.querySelectorAll('img:not([data-processed])').forEach(img => {
-            img.setAttribute('data-processed', 'true');
-            if (img.closest('.img-wrapper')) return;
-
-            const wrapper = document.createElement('div');
-            wrapper.className = 'img-wrapper';
-            wrapper.contentEditable = false;
-            wrapper.style.display = 'inline-block';
-            wrapper.style.position = 'relative';
-            wrapper.style.textAlign = 'center';
-
-            // Nếu ảnh có data-image-id thì gắn vào wrapper
-            if (img.dataset.imageId) wrapper.dataset.imageId = img.dataset.imageId;
-
-            const resizeHandle = document.createElement('div');
-            resizeHandle.className = 'resize-handle se';
-
-            // Chèn wrapper vào DOM
-            img.parentNode.insertBefore(wrapper, img);
-            wrapper.appendChild(img);
-            wrapper.appendChild(resizeHandle);
-        });
-    }
-
     function applyTemplate() {
         if (!templateTomSelectInstance) return;
         const selectedTemplateId = templateTomSelectInstance.getValue();
@@ -301,22 +298,16 @@
         const selectedTemplate = allTemplatesData.find(t => t.id.toString() === selectedTemplateId.toString());
         if (selectedTemplate && selectedTemplate.noiDung) {
             editorContent.innerHTML = selectedTemplate.noiDung;
-            wrapImagesWithResizeHandle(editorContent);
-            // KIỂM TRA TRƯỚC KHI GỌI
-            if (typeof initializeImageEvents === 'function') {
-                initializeImageEvents();
-            }
         } else {
             alert("Lỗi: Không tìm thấy nội dung mẫu tường trình.");
         }
     }
 
-    // --- IMAGE INSERTION, RESIZE, ALIGN, PANEL ---
+    // ==== IMAGE PANEL LOGIC: Chỉ cho phép quản lý ảnh ở panel trái ====
+    // Không còn hàm insertImageAtCursor vào editor, toàn bộ thao tác ảnh chỉ ở panel trái
     (function () {
-        const editorContent = document.getElementById('editorContent');
         const imagePanel = document.querySelector('.image-panel-body');
         let uploadedImages = [];
-        let imageCounter = 0;
 
         // Upload ảnh lên FTP
         async function uploadImageToFTP(file, idPhieuTTPT) {
@@ -329,238 +320,18 @@
                     method: 'POST',
                     body: formData
                 });
-
                 const result = await response.json();
-
                 if (result.success) {
-                    return result.data; // Trả về toàn bộ data bao gồm id, url, httpUrl
+                    return result.data; // { id, url, httpUrl }
                 } else {
-                    console.error('Upload failed:', result.message);
+                    // console.error('Upload failed:', result.message);
+                    alert('Vui lòng chọn bệnh nhân từ danh sách');
                     return null;
                 }
             } catch (error) {
                 console.error('Upload error:', error);
                 return null;
             }
-        }
-
-        // Hàm khởi tạo sự kiện cho tất cả ảnh trong editor - GÁN VÀO BIẾN TOÀN CỤC
-        initializeImageEvents = function() {
-            document.querySelectorAll('.img-wrapper').forEach(wrapper => {
-                const img = wrapper.querySelector('img');
-                const resizeHandle = wrapper.querySelector('.resize-handle');
-                if (img && resizeHandle) {
-                    setupImageResize(wrapper, img, resizeHandle);
-                    setupImageSelect(wrapper, img);
-                }
-            });
-        };
-
-        window.insertImageAtCursor = async function (src, alt, imgId = null, isFromFTP = false) {
-            let panelImage;
-            let httpUrl = src;
-            let ftpUrl = src;
-            let imageId = imgId;
-
-            if (!isFromFTP) {
-                // Nếu là ảnh mới upload, cần upload lên FTP trước
-                const response = await fetch(src);
-                const blob = await response.blob();
-                const file = new File([blob], alt, { type: blob.type });
-
-                // Upload và nhận kết quả bao gồm ID mới
-                const uploadResult = await uploadImageToFTP(file, window.IDphi);
-
-                if (!uploadResult || !uploadResult.id) {
-                    alert('Lỗi upload ảnh lên server');
-                    return;
-                }
-
-                imageId = uploadResult.id;
-                ftpUrl = uploadResult.url;
-                httpUrl = uploadResult.httpUrl;
-            }
-
-            panelImage = {
-                id: imageId,
-                name: alt || `Ảnh ${imageId}`,
-                src: httpUrl,
-                ftpUrl: ftpUrl,
-                timestamp: new Date(),
-                isFromFTP: true
-            };
-
-            uploadedImages.push(panelImage);
-            addImageToPanel(panelImage);
-
-            const wrapper = document.createElement('div');
-            wrapper.className = 'img-wrapper';
-            wrapper.contentEditable = false;
-            wrapper.style.display = 'inline-block';
-            wrapper.style.position = 'relative';
-            wrapper.style.textAlign = 'center';
-            wrapper.dataset.imageId = panelImage.id;
-            wrapper.dataset.ftpUrl = ftpUrl;
-
-            const img = document.createElement('img');
-            img.src = httpUrl;
-            img.alt = alt;
-            img.style.maxWidth = '500px';
-            img.style.height = 'auto';
-            img.style.width = '300px';
-            img.style.display = 'block';
-
-            const resizeHandle = document.createElement('div');
-            resizeHandle.className = 'resize-handle se';
-
-            wrapper.appendChild(img);
-            wrapper.appendChild(resizeHandle);
-
-            // Insert at cursor
-            const sel = window.getSelection();
-            if (sel.rangeCount > 0) {
-                const range = sel.getRangeAt(0);
-                range.collapse(false);
-                range.insertNode(wrapper);
-                const br = document.createElement('br');
-                wrapper.parentNode.insertBefore(br, wrapper.nextSibling);
-                range.setStartAfter(br);
-                range.collapse(true);
-                sel.removeAllRanges();
-                sel.addRange(range);
-            } else {
-                editorContent.appendChild(wrapper);
-                editorContent.appendChild(document.createElement('br'));
-            }
-
-            setupImageResize(wrapper, img, resizeHandle);
-            setupImageSelect(wrapper, img);
-
-            return panelImage.id;
-        };
-
-        // Hàm load ảnh từ server khi mở form
-        async function loadImagesFromServer(idPhieuTTPT) {
-            try {
-                const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/get-images/${idPhieuTTPT}`);
-                const result = await response.json();
-
-                if (result.success && result.data) {
-                    result.data.forEach(image => {
-                        const panelImage = {
-                            id: image.id,
-                            name: image.tenAnh,
-                            src: image.httpUrl,
-                            ftpUrl: image.url,
-                            timestamp: new Date(image.thoiGianTao),
-                            isFromFTP: true
-                        };
-
-                        uploadedImages.push(panelImage);
-                        addImageToPanel(panelImage);
-
-                        insertImageAtCursor(image.httpUrl, image.tenAnh, image.id, true);
-                    });
-                    // GỌI HÀM SAU KHI ĐÃ ĐƯỢC ĐỊNH NGHĨA
-                    if (typeof initializeImageEvents === 'function') {
-                        initializeImageEvents();
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading images:', error);
-            }
-        }
-
-        // Resize logic
-        function setupImageResize(wrapper, img, resizeHandle) {
-            let isResizing = false, startX, startY, startWidth, startHeight;
-
-            resizeHandle.addEventListener('mousedown', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                isResizing = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                startWidth = img.offsetWidth;
-                startHeight = img.offsetHeight;
-                img.classList.add('resizing');
-                document.body.style.cursor = 'nwse-resize';
-
-                function resizeMove(ev) {
-                    if (!isResizing) return;
-                    let newWidth = startWidth + (ev.clientX - startX);
-                    if (newWidth > 50 && newWidth < 1000) {
-                        img.style.width = newWidth + 'px';
-                        img.style.maxWidth = newWidth + 'px';
-                        img.style.height = 'auto';
-                    }
-                }
-                function stopResize() {
-                    isResizing = false;
-                    img.classList.remove('resizing');
-                    document.removeEventListener('mousemove', resizeMove);
-                    document.removeEventListener('mouseup', stopResize);
-                    document.body.style.cursor = '';
-                }
-                document.addEventListener('mousemove', resizeMove);
-                document.addEventListener('mouseup', stopResize);
-            });
-        }
-
-        // Click select logic với hiệu ứng
-        function setupImageSelect(wrapper, img) {
-            img.addEventListener('click', function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-
-                // Thêm hiệu ứng click
-                wrapper.classList.add('click-effect');
-                setTimeout(() => {
-                    wrapper.classList.remove('click-effect');
-                }, 300);
-
-                // Xóa selection cũ
-                document.querySelectorAll('.img-wrapper').forEach(w => {
-                    w.classList.remove('selected');
-                    w.querySelector('img')?.classList.remove('selected');
-                });
-
-                // Thêm selection mới
-                wrapper.classList.add('selected');
-                img.classList.add('selected');
-
-                // Tự động focus wrapper để nhận sự kiện keydown (Enter)
-                wrapper.setAttribute('tabindex', '-1');
-                wrapper.focus();
-            });
-
-            // Xử lý sự kiện keydown trực tiếp trên wrapper ảnh
-            wrapper.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    // Bỏ focus và selection khỏi ảnh
-                    wrapper.classList.remove('selected');
-                    img.classList.remove('selected');
-                    wrapper.blur();
-
-                    // Tạo một paragraph mới sau ảnh
-                    const newParagraph = document.createElement('p');
-                    newParagraph.innerHTML = '&nbsp;';
-
-                    // Chèn paragraph mới sau ảnh
-                    wrapper.parentNode.insertBefore(newParagraph, wrapper.nextSibling);
-
-                    // Đặt con trỏ vào paragraph mới
-                    const range = document.createRange();
-                    const selection = window.getSelection();
-                    range.setStart(newParagraph, 0);
-                    range.collapse(true);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                }
-            });
         }
 
         // Panel trái: Danh sách ảnh
@@ -582,140 +353,35 @@
                     <i class="ti ti-trash"></i>
                 </button>
             `;
-            imageItem.addEventListener('click', function () {
-                document.querySelectorAll('.image-item').forEach(item => item.classList.remove('active', 'selected'));
-                imageItem.classList.add('active', 'selected');
-
-                // focus ảnh trong editor
-                const imgWrapper = editorContent.querySelector(`[data-image-id="${imageData.id}"]`);
-                if (imgWrapper) {
-                    imgWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    document.querySelectorAll('.img-wrapper').forEach(w => {
-                        w.classList.remove('selected');
-                        w.querySelector('img')?.classList.remove('selected');
-                    });
-                    imgWrapper.classList.add('selected');
-                    imgWrapper.querySelector('img')?.classList.add('selected');
-                    imgWrapper.focus();
-                }
-            });
             imagePanel.appendChild(imageItem);
         }
 
         // Xóa ảnh
         window.deleteImage = async function (imageId) {
             if (!confirm('Bạn có chắc muốn xóa ảnh này?')) return;
-
             const image = uploadedImages.find(img => img.id === imageId);
-
-            if (image && image.isFromFTP) {
+            if (image) {
                 try {
-                    // Xóa từ server - backend sẽ dùng FTP URL từ database
                     const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/delete-image/${imageId}`, {
                         method: 'DELETE'
                     });
-
                     const result = await response.json();
                     if (!result.success) {
                         alert('Lỗi xóa ảnh từ server: ' + result.message);
                         return;
                     }
                     toastr.success("Xóa ảnh thành công");
-                    await updateTrinhTuContent();
                 } catch (error) {
                     console.error('Delete error:', error);
                     alert('Lỗi xóa ảnh từ server');
                     return;
                 }
             }
-
             // Xóa local
             uploadedImages = uploadedImages.filter(img => img.id !== imageId);
             const panelItem = imagePanel.querySelector(`[data-image-id="${imageId}"]`);
             if (panelItem) panelItem.remove();
-            const editorImgs = editorContent.querySelectorAll(`[data-image-id="${imageId}"]`);
-            editorImgs.forEach(img => img.remove());
         };
-
-        async function updateTrinhTuContent() {
-            try {
-                const editorContent = document.getElementById('editorContent');
-                const editorSummary = document.querySelector('.editor-summary');
-
-                const trinhTuData = {
-                    IDPhieuTTPT: window.IDPhieuTTPT, // Thay bằng ID phiếu thực tế của bạn
-                    TrinhTu: editorContent.innerHTML,
-                    KetLuan: editorSummary.value
-                };
-
-                const response = await fetch('/thu_thuat_phau_thuat/trinh-tu/save', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(trinhTuData)
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    console.log('Cập nhật trình tự thành công sau khi xóa ảnh');
-                    // Có thể thêm thông báo thành công nếu cần
-                    // toastr.success("Đã cập nhật nội dung trình tự");
-                } else {
-                    console.error('Lỗi cập nhật trình tự:', result.message);
-                    toastr.error("Lỗi cập nhật nội dung trình tự: " + result.message);
-                }
-            } catch (error) {
-                console.error('Lỗi khi cập nhật trình tự:', error);
-                toastr.error("Lỗi kết nối khi cập nhật trình tự");
-            }
-        }
-
-
-        // Click ngoài ảnh để deselect
-        document.addEventListener('click', function (e) {
-            if (!e.target.closest('.img-wrapper') && !e.target.closest('.image-item')) {
-                document.querySelectorAll('.img-wrapper').forEach(w => {
-                    w.classList.remove('selected');
-                    w.querySelector('img')?.classList.remove('selected');
-                });
-                document.querySelectorAll('.image-item').forEach(item => {
-                    item.classList.remove('selected');
-                });
-            }
-        });
-
-        editorContent.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                // Nếu đang chọn ảnh, xử lý xuống dòng sau ảnh và bỏ focus
-                const selectedImg = document.querySelector('.img-wrapper.selected');
-                if (selectedImg) {
-                    e.preventDefault();
-
-                    // Bỏ focus và selection khỏi ảnh
-                    selectedImg.classList.remove('selected');
-                    selectedImg.querySelector('img')?.classList.remove('selected');
-                    selectedImg.blur();
-
-                    // Tạo một paragraph mới sau ảnh
-                    const newParagraph = document.createElement('p');
-                    newParagraph.innerHTML = '&nbsp;';
-
-                    // Chèn paragraph mới sau ảnh
-                    selectedImg.parentNode.insertBefore(newParagraph, selectedImg.nextSibling);
-
-                    // Đặt con trỏ vào paragraph mới
-                    const range = document.createRange();
-                    const selection = window.getSelection();
-                    range.setStart(newParagraph, 0);
-                    range.collapse(true);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                }
-                // Nếu không có ảnh được chọn, để Enter hoạt động bình thường
-            }
-        });
 
         // Nút upload ảnh trong panel trái
         const addImageBtn = document.getElementById('btnAddImagePanel');
@@ -727,195 +393,57 @@
             fileInput.style.display = 'none';
             document.body.appendChild(fileInput);
             addImageBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', function () {
-                [...this.files].forEach(file => {
-                    if (file.type.startsWith('image/')) window.insertImageAtCursor(URL.createObjectURL(file), file.name);
-                });
+            fileInput.addEventListener('change', async function () {
+                for (const file of this.files) {
+                    if (file.type.startsWith('image/')) {
+                        // Upload lên server và add vào panel
+                        const uploadResult = await uploadImageToFTP(file, window.IDPhieuTTPT);
+                        if (uploadResult && uploadResult.id) {
+                            const panelImage = {
+                                id: uploadResult.id,
+                                name: file.name,
+                                src: uploadResult.httpUrl,
+                                ftpUrl: uploadResult.url,
+                                timestamp: new Date(),
+                            };
+                            uploadedImages.push(panelImage);
+                            addImageToPanel(panelImage);
+                        }
+                    }
+                }
                 this.value = '';
             });
         }
 
-        // Drag & drop ảnh vào editor
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            editorContent.addEventListener(eventName, e => {
-                e.preventDefault(); e.stopPropagation();
-                if (eventName === 'dragenter' || eventName === 'dragover')
-                    editorContent.classList.add('drag-over');
-                else
-                    editorContent.classList.remove('drag-over');
-            }, false);
-        });
-        editorContent.addEventListener('drop', function (e) {
-            [...e.dataTransfer.files].forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = evt => window.insertImageAtCursor(evt.target.result, file.name);
-                    reader.readAsDataURL(file);
+        // Hàm load ảnh từ server khi mở form
+        async function loadImagesFromServer(idPhieuTTPT) {
+            try {
+                const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/get-images/${idPhieuTTPT}`);
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    result.data.forEach(image => {
+                        const panelImage = {
+                            id: image.id,
+                            name: image.tenAnh,
+                            src: image.httpUrl,
+                            ftpUrl: image.url,
+                            timestamp: new Date(image.thoiGianTao)
+                        };
+                        uploadedImages.push(panelImage);
+                        addImageToPanel(panelImage);
+                    });
                 }
-            });
-        });
-
-        // Nút upload ảnh trên toolbar
-        document.getElementById('btnInsertLocalImage').addEventListener('click', function () {
-            document.getElementById('inputLocalImage').click();
-        });
-        document.getElementById('inputLocalImage').addEventListener('change', function () {
-            [...this.files].forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = evt => window.insertImageAtCursor(evt.target.result, file.name);
-                    reader.readAsDataURL(file);
-                }
-            });
-            this.value = '';
-        });
-
-        // --- ALIGN IMAGE WITH TOOLBAR BUTTONS ---
-        function setupAlignToolbar() {
-            // Lấy 3 nút align
-            const btnLeft = document.querySelector('button[title="Căn trái"]');
-            const btnCenter = document.querySelector('button[title="Căn giữa"]');
-            const btnRight = document.querySelector('button[title="Căn phải"]');
-            if (!(btnLeft && btnCenter && btnRight)) return;
-
-            // Xóa event listeners cũ và thêm mới
-            btnLeft.replaceWith(btnLeft.cloneNode(true));
-            btnCenter.replaceWith(btnCenter.cloneNode(true));
-            btnRight.replaceWith(btnRight.cloneNode(true));
-
-            const newBtnLeft = document.querySelector('button[title="Căn trái"]');
-            const newBtnCenter = document.querySelector('button[title="Căn giữa"]');
-            const newBtnRight = document.querySelector('button[title="Căn phải"]');
-
-            newBtnLeft.addEventListener('click', () => handleAlignment('justifyLeft'));
-            newBtnCenter.addEventListener('click', () => handleAlignment('justifyCenter'));
-            newBtnRight.addEventListener('click', () => handleAlignment('justifyRight'));
-        }
-
-        function handleAlignment(command) {
-            const selectedImg = document.querySelector('.img-wrapper.selected');
-            const hasSelection = window.getSelection().toString().length > 0;
-
-            // Nếu có ảnh được chọn, căn chỉnh ảnh
-            if (selectedImg) {
-                const align = command.replace('justify', '').toLowerCase();
-                alignSelectedImage(align);
-            }
-            // Nếu có vùng text được chọn, sử dụng execCommand bình thường
-            else if (hasSelection) {
-                document.execCommand(command, false, null);
-            }
-            // Nếu không có gì được chọn, sử dụng execCommand cho toàn bộ đoạn
-            else {
-                document.execCommand(command, false, null);
-            }
-
-            document.getElementById('editorContent').focus();
-        }
-
-        function alignSelectedImage(align) {
-            const selected = document.querySelector('.img-wrapper.selected');
-            if (selected) {
-                // Xóa các class align cũ
-                selected.classList.remove('align-left', 'align-center', 'align-right');
-
-                // Thêm class align mới
-                selected.classList.add(`align-${align}`);
-
-                // Áp dụng style cho wrapper
-                selected.style.marginLeft = '';
-                selected.style.marginRight = '';
-                selected.style.display = 'block';
-
-                switch(align) {
-                    case 'left':
-                        selected.style.marginRight = 'auto';
-                        selected.style.marginLeft = '0';
-                        break;
-                    case 'center':
-                        selected.style.marginLeft = 'auto';
-                        selected.style.marginRight = 'auto';
-                        break;
-                    case 'right':
-                        selected.style.marginLeft = 'auto';
-                        selected.style.marginRight = '0';
-                        break;
-                }
-
-                // Đảm bảo wrapper chiếm toàn bộ chiều rộng để căn giữa hoạt động
-                selected.style.width = 'fit-content';
-                selected.parentElement.style.textAlign = align;
+            } catch (error) {
+                console.error('Error loading images:', error);
             }
         }
-        setupAlignToolbar();
-
-        loadImagesFromServer(1);
-        // Khởi tạo sự kiện cho ảnh hiện có - ĐẢM BẢO HÀM ĐÃ ĐƯỢC ĐỊNH NGHĨA
-        if (typeof initializeImageEvents === 'function') {
-            initializeImageEvents();
-        }
+        loadImagesFromServer(window.IDPhieuTTPT);
     })();
 
     // --- Toolbar commands ---
     function execCmd(command, value = null) {
-        if (command.startsWith('justify')) {
-            handleAlignment(command);
-            return;
-        }
         document.execCommand(command, false, value);
-        document.getElementById('editorContent').focus();
-    }
-    function isImageSelected() {
-        return document.querySelector('.img-wrapper.selected') !== null;
-    }
-
-    // Căn chỉnh ảnh được chọn
-    function alignSelectedImage(align) {
-        const selected = document.querySelector('.img-wrapper.selected');
-        if (selected) {
-            selected.classList.remove('align-left', 'align-center', 'align-right');
-            selected.classList.add(`align-${align}`);
-            selected.style.marginLeft = '';
-            selected.style.marginRight = '';
-            selected.style.display = 'block';
-            switch(align) {
-                case 'left':
-                    selected.style.marginRight = 'auto';
-                    selected.style.marginLeft = '0';
-                    break;
-                case 'center':
-                    selected.style.marginLeft = 'auto';
-                    selected.style.marginRight = 'auto';
-                    break;
-                case 'right':
-                    selected.style.marginLeft = 'auto';
-                    selected.style.marginRight = '0';
-                    break;
-            }
-            selected.style.width = 'fit-content';
-            selected.parentElement.style.textAlign = align;
-        }
-    }
-
-    /*============================== Hàm xử lý căn chỉnh thông minh ==============================*/
-    function handleAlignment(command) {
-        const selectedImg = document.querySelector('.img-wrapper.selected');
-        const hasSelection = window.getSelection().toString().length > 0;
-
-        // Nếu có ảnh được chọn, căn chỉnh ảnh
-        if (selectedImg) {
-            const align = command.replace('justify', '').toLowerCase();
-            alignSelectedImage(align);
-        }
-        // Nếu có vùng text được chọn, sử dụng execCommand bình thường
-        else if (hasSelection) {
-            document.execCommand(command, false, null);
-        }
-        // Nếu không có gì được chọn, sử dụng execCommand cho toàn bộ đoạn
-        else {
-            document.execCommand(command, false, null);
-        }
-
         document.getElementById('editorContent').focus();
     }
 
@@ -924,23 +452,19 @@
         .forEach(el => new bootstrap.Tooltip(el));
 
     async function loadTrinhTuVaKetLuanWithFocus(idPhieuTTPT) {
+        if (!idPhieuTTPT || idPhieuTTPT === 0) return;
         try {
             var response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/list-by-idttpt/${idPhieuTTPT}`);
             if (!response.ok) throw new Error('Network response was not ok');
             var data = await response.json();
             const editorContent = document.getElementById('editorContent');
+            if (data.data.length === 0) return;
             editorContent.innerHTML = data.data[0].trinhTu || '';
             document.querySelector('.editor-summary').innerText = data.data[0].ketLuan || '';
-            wrapImagesWithResizeHandle(editorContent);
-            if (typeof initializeImageEvents === 'function') {
-                initializeImageEvents();
-            }
             setTimeout(() => {
                 editorContent.focus();
-
                 const range = document.createRange();
                 const selection = window.getSelection();
-
                 if (editorContent.childNodes.length > 0) {
                     range.selectNodeContents(editorContent);
                     range.collapse(false);
@@ -951,7 +475,6 @@
                     range.setStart(p, 0);
                     range.collapse(true);
                 }
-
                 selection.removeAllRanges();
                 selection.addRange(range);
             }, 100);
@@ -960,8 +483,111 @@
             console.error('Error fetching data:', error);
         }
     }
-    loadTrinhTuVaKetLuanWithFocus(window.IDPhieuTTPT);
     window.loadTrinhTuVaKetLuanWithFocus = loadTrinhTuVaKetLuanWithFocus;
+</script>
+<script>
+    window.currentPdfContent = window.currentPdfContent || '';
+
+    // Xử lý upload PDF
+    document.getElementById('pdfUpload').addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.type !== 'application/pdf') {
+            alert('Vui lòng chọn file PDF');
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) { // 10MB limit
+            alert('File PDF không được vượt quá 10MB');
+            return;
+        }
+
+        await processPdfFile(file);
+    });
+
+    async function processPdfFile(file) {
+        try {
+            const formData = new FormData();
+            formData.append('pdfFile', file);
+            formData.append('idPhieuTTPT', window.IDPhieuTTPT);
+
+            const response = await fetch('/api/pdf/extract-formatted', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showPdfPreviewWithFormat(result.data);
+            } else {
+                alert('Lỗi trích xuất PDF: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error processing PDF:', error);
+            alert('Lỗi xử lý PDF: ' + error.message);
+        }
+    }
+
+    function showPdfPreviewWithFormat(data) {
+        const previewContent = document.getElementById('pdfExtractedContent');
+        previewContent.innerHTML = data.htmlContent;
+
+        // Gán trực tiếp vào editor luôn
+        const editorContent = document.getElementById('editorContent');
+        editorContent.innerHTML = `
+            <div class="pdf-import-section">
+                <h6>📋 NỘI DUNG IMPORT TỪ PDF:</h6>
+                ${data.htmlContent}
+            </div>
+            <hr>
+        `;
+
+        // Nếu bạn vẫn muốn hiển thị modal xem trước thì giữ lại:
+        const modal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+        modal.show();
+    }
+
+    function applyPdfContent() {
+        if (!window.currentPdfData) return;
+
+        const editorContent = document.getElementById('editorContent');
+        const applyToTuongTrinh = document.getElementById('applyToTuongTrinh').checked;
+
+        if (applyToTuongTrinh) {
+            // Insert HTML content trực tiếp, giữ nguyên format
+            const importSection = `
+                <div class="pdf-import-section">
+                    <h6>📋 NỘI DUNG IMPORT TỪ PDF:</h6>
+                    ${window.currentPdfData.htmlContent}
+                </div>
+                <hr>
+            `;
+
+            editorContent.innerHTML = importSection + editorContent.innerHTML;
+        }
+
+        // Đóng modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('pdfPreviewModal'));
+        modal.hide();
+
+        toastr.success('Đã import nội dung PDF với định dạng');
+    }
+
+    function formatPdfContentForEditor(content) {
+        // Format nội dung PDF cho phù hợp với editor
+        return content
+            .split('\n')
+            .filter(line => line.trim().length > 0)
+            .map(line => {
+                if (line.includes('LƯỢC ĐỒ') || line.includes('TƯỜNG TRÌNH')) {
+                    return `<p><strong>${line.trim()}</strong></p>`;
+                }
+                return `<p>${line.trim()}</p>`;
+            })
+            .join('');
+    }
 </script>
 
 <script src="~/dist/js/J0302/J0302TTPT/J0303TemplateTuongTrinh.js" asp-append-version="true" defer></script>

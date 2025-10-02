@@ -22,5 +22,11 @@
         public string? PhuTTPT { get; set; }
         public string? BacSiGayMe { get; set; }
         public string? KyThuatVienGayMe { get; set; }
+        public string? Khac { get; set; }
+        public DateTime? NgayCatChi { get; set; }
+        public DateTime? NgayRut { get; set; }
+        public string? Bac { get; set; }
+        public string? DanLuu { get; set; }
+
     }
 }

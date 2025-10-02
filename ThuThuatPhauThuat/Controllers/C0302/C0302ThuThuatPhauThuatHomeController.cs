@@ -7,6 +7,7 @@ using QuestPDF.Infrastructure;
 using System.Data;
 using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
+using ThuThuatPhauThuat.PDFDocuments.P0302;
 using ThuThuatPhauThuat.Services.S0302.IS0302;
 using ThuThuatPhauThuat.Services.S0305.IS0305;
 
@@ -86,6 +87,58 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             stream.Position = 0; // Reset stream trước khi trả về
 
             return File(stream.ToArray(), "application/pdf", fileName);
+        }
+
+        [HttpPost("xuat-pdf-bang-html")]
+        public async Task<IActionResult> ExportToPDFHTML([FromBody] ExportPdfRequest request)
+        {
+            _logger.LogInformation("👉 Bắt đầu ExportToPDFHTML với tham số: IDVaoVien={IDVaoVien}, IDChiDinhChiTiet={IDChiDinhChiTiet}, IDChiNhanh={IDChiNhanh}",
+                request.IDVaoVien, request.IDChiDinhChiTiet, request.IDChiNhanh);
+
+            try
+            {
+                // Lấy dữ liệu từ stored procedure
+                var parameters = new[]
+                {
+                    new SqlParameter("@IdVaoVien", request.IDVaoVien),
+                    new SqlParameter("@IdChiNhanh", request.IDChiNhanh),
+                    new SqlParameter("@IdChiDinhCT", request.IDChiDinhChiTiet)
+                };
+
+                var sql = @"EXEC S0302_GetThongTinXuatPDFTTPT @IdVaoVien, @IdChiNhanh, @IdChiDinhCT";
+
+                var data = _context.M0302ThongTinXuatPDFTTPTModels
+                    .FromSqlRaw(sql, parameters)
+                    .AsNoTracking()
+                    .AsEnumerable()
+                    .FirstOrDefault();
+
+                if (data == null)
+                    return NotFound(new { success = false, message = "Không có dữ liệu để xuất PDF" });
+
+                // Lấy thông tin doanh nghiệp
+                var parameters1 = new[] { new SqlParameter("@IdChiNhanh", request.IDChiNhanh) };
+                var sql1 = @"EXEC S0302_GetThongTinDoanhNghiep @IdChiNhanh";
+
+                var doanhN = _context.ThongTinDoanhNghieps
+                    .FromSqlRaw(sql1, parameters1)
+                    .AsNoTracking()
+                    .AsEnumerable()
+                    .FirstOrDefault();
+
+                // Sử dụng class P0305ThuThuatPhauThuatPDF để generate PDF từ HTML
+                var pdfGenerator = new P0305ThuThuatPhauThuatPDF(data, doanhN);
+                var pdfBytes = pdfGenerator.GeneratePdf();
+
+                var fileName = $"ThuThuatPhauThuat_HTML_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+
+                return File(pdfBytes, "application/pdf", fileName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi xuất PDF từ HTML");
+                return StatusCode(500, new { success = false, message = $"Lỗi xuất PDF: {ex.Message}" });
+            }
         }
 
 

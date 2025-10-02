@@ -30,6 +30,7 @@ $(document).on("click", "#example tbody tr", function () {
     selectedIdVaoVien = $(this).data("idvaovien");
     selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
     window.IDPhieuTTPT = $(this).data("idphieu");
+    //console.log(window.IDPhieuTTPT);
 
 
     var dateStr = decodeURIComponent($(this).attr("data-ngaygiochidinh"));
@@ -127,7 +128,7 @@ function renderTable(data, page = 1, size = 10) {
     pageData.forEach((item, index) => {
         const ngayGioEncoded = encodeURIComponent(item.ngayGioChiDinh || "");
         tbody.append(`
-            <tr data-idvaovien="${item.idVaoVien || ''}" data-idchidinhct="${item.idChiDinhChiTiet || ''}" data-idphieu="${item.idPhieuTTPT || ''}" data-ngaygiochidinh="${ngayGioEncoded}">
+            <tr data-idvaovien="${item.idVaoVien || ''}" data-idchidinhct="${item.idChiDinhChiTiet || ''}" data-idphieu="${item.idPhieuTTPT || 0}" data-ngaygiochidinh="${ngayGioEncoded}">
                 <td class="text-center">${start + index + 1}</td>
                 <td class="text-center">${item.maBenhNhan || ""}</td>
                 <td>${item.tenBenhNhan || ""}</td>
