@@ -1,42 +1,6 @@
 ﻿
 *.sln
 
-<<<<<<< HEAD
-
-[Bb]in/
-[Oo]bj/
-
-**/[Pp]ublish/
-**/[Tt]emp.publish/
-
-*.log
-*.cache
-
-.vs/
-
-*.suo
-*.user
-
-ApplicationHost.config
-
-*.vssscc
-*.vsscc
-*.vspscc
-
-*.pdb
-*.pidb
-*.dll.config
-
-
-packages/
-node_modules/
-npm-debug.log
-bower_components/
-
-*.mdf
-*.ldf
-*.sdf
-=======
 /.vs/ThuThuatPhauThuat/FileContentIndex/af955042-79c3-4699-a4ef-ae75fd306981.vsidx
 /.vs/ProjectEvaluation/thuthuatphauthuat.metadata.v9.bin
 /.vs/ProjectEvaluation/thuthuatphauthuat.projects.v9.bin
@@ -54,4 +18,3 @@ bower_components/
 bin/
 obj/
 /ThuThuatPhauThuat/obj/
->>>>>>> origin/merge01
