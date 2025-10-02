@@ -10,13 +10,13 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
 {
     public class P0305ThuThuatPhauThuatPDF
     {
-        private readonly M0302ThongTinXuatPDFTTPTModel _data;
+        private readonly M0302ThongTinXuatPDFTTPTModel2 _data;
         private readonly M0302ThongTinDoanhNghiep _thongTinDoanhNghiep;
         private readonly string _logoPath;
 
-        public P0305ThuThuatPhauThuatPDF(M0302ThongTinXuatPDFTTPTModel data, M0302ThongTinDoanhNghiep doanhNghiep)
+        public P0305ThuThuatPhauThuatPDF(M0302ThongTinXuatPDFTTPTModel2 data, M0302ThongTinDoanhNghiep doanhNghiep)
         {
-            _data = data ?? new M0302ThongTinXuatPDFTTPTModel();
+            _data = data ?? new M0302ThongTinXuatPDFTTPTModel2();
             _thongTinDoanhNghiep = doanhNghiep ?? new M0302ThongTinDoanhNghiep
             {
                 TenCSKCB = "Tên đơn vị",
@@ -99,16 +99,14 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                     text-align: center;
                     font-size: 16px;
                     font-weight: bold;
-                    margin: 15px 0;
+                    margin: 10px 0;
                 }
                 .bold { font-weight: bold; }
                 .border-box {
                     border: 1px solid black;
                     padding: 5px;
-                    height: 200px;
-                    text-align: center;
-                    font-size: 11px;
-                    font-style: italic;
+                    height: max-content;
+                    font-size: 14px;
                     margin-top: 10px;
                 }
                 .page-break { page-break-after: always; }
@@ -148,6 +146,7 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                                 }
     
                                 .box-text {
+                                    font-size: 14px !important; 
                                     text-align: left;
                                     margin-top: 2px;
                                     margin-bottom: 2px;;
@@ -163,7 +162,7 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
 
             if (!string.IsNullOrEmpty(logoBase64))
             {
-                sb.Append($"<img src='data:image/jpeg;base64,{logoBase64}' style='width:28px; height:31px; margin-right:5px; vertical-align:top;' />");
+                sb.Append($"<img src='data:image/jpeg;base64,{logoBase64}' style='width:32px; height:33px; margin-right:5px; vertical-align:top;' />");
             }
             sb.Append("<div style='display:inline-block;'>");
             sb.Append($"<div class='bold'>{_thongTinDoanhNghiep.TenCoQuanChuyenMon ?? ""}</div>");
@@ -187,14 +186,14 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             sb.Append("<table>");
             sb.Append("<tr>");
             sb.Append($"<td>- Họ tên người bệnh: <span class='bold'>{_data.TenBN ?? ""}</span></td>");
-            sb.Append($"<td style='text-align:right;'>Tuổi: <span class='bold'>{tuoi}</span>&nbsp;&nbsp;&nbsp;Giới tính: <span class='bold'>{_data.TenGioiTinh ?? ""}</span></td>");
+            sb.Append($"<td style='text-align:right;'>Tuổi: <span class='bold' style='margin-right:8px;'>{tuoi}</span>&nbsp;&nbsp;&nbsp;Giới tính: <span class='bold' style='margin-right:5px;'>{_data.TenGioiTinh ?? ""}</span></td>");
             sb.Append("</tr>");
             sb.Append("</table>");
 
             sb.Append("<table>");
             sb.Append("<tr>");
             sb.Append($"<td>- Khoa/Phòng: <span class='bold'>{_data.Khoa ?? ""}</span></td>");
-            sb.Append($"<td style='text-align:right;'>Buồng: <span class='bold'>{_data.Buong}</span>&nbsp;&nbsp;&nbsp;Giường: <span class='bold'>{_data.Giuong}</span></td>");
+            sb.Append($"<td style='text-align:right;'>Buồng: <span class='bold' style='margin-right:20px;'>{_data.Buong}</span>&nbsp;&nbsp;&nbsp;Giường: <span class='bold' style='margin-right:10px;'>{_data.Giuong}</span></td>");
             sb.Append("</tr>");
             sb.Append("</table>");
 
@@ -227,7 +226,7 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
 
             // Chẩn đoán
             sb.Append($"<div>- Chẩn đoán: Trước phẫu thuật/ thủ thuật: <span class='bold'>{_data.TenChanDoanTruoc ?? ""}</span></div>");
-            sb.Append($"<div style='margin-left:65px;'>Sau phẫu thuật/ thủ thuật: <span class='bold'>{_data.TenChanDoanSau ?? ""}</span></div>");
+            sb.Append($"<div style='margin-left:72px;'>Sau phẫu thuật/ thủ thuật: <span class='bold'>{_data.TenChanDoanSau ?? ""}</span></div>");
 
             // Phương pháp
             sb.Append($"<div>- Phương pháp phẫu thuật/ thủ thuật: <span class='bold'>{_data.PhuongPhapTTPT ?? ""}</span></div>");
@@ -256,25 +255,28 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                 ngayCatChiText = $"{dt:HH} giờ {dt:mm} phút, ngày {dt:dd}-{dt:MM}-{dt:yyyy}";
             }
             // ===== LƯỢC ĐỒ =====
-            sb.Append(@$"<div class='border-box'>
-                        <h2> LƯỢC ĐỒ PHẪU THUẬT / THỦ THUẬT (vẽ hoặc mô tả)</h2>
-                        <img src='https://vn1.vdrive.vn/alohamedia.vn/2025/02/632fbd20f18a2a1bc6df569b31eda210.jpg' alt='' width ='80' height ='60'>
+            // ===== LƯỢC ĐỒ =====
+            sb.Append(@$"<div class='border-box' >
+                        <h2 style='text-align:center'> LƯỢC ĐỒ PHẪU THUẬT / THỦ THUẬT (vẽ hoặc mô tả)</h2>
+                        <img src='https://vn1.vdrive.vn/alohamedia.vn/2025/02/632fbd20f18a2a1bc6df569b31eda210.jpg' alt='' width ='300' height ='150'>
+                        <img src='https://vn1.vdrive.vn/alohamedia.vn/2025/02/632fbd20f18a2a1bc6df569b31eda210.jpg' alt='' width ='300' height ='150'>
+                        <img src='https://vn1.vdrive.vn/alohamedia.vn/2025/02/632fbd20f18a2a1bc6df569b31eda210.jpg' alt='' width ='300' height ='150'>
 
-                        <p class='box-text'>- Dẫn lưu: {_data.DanLuu ?? ""}</p>
-                        <p class='box-text'>- Bấc: {_data.Bac ?? ""}</p>
-                        <p class='box-text'>- Ngày rút chỉ: {ngayRutChiText}</p>
-                        <p class='box-text'>- Ngày cắt chỉ:  {ngayCatChiText}</p>
-                        <p class='box-text'>- Khác: {_data.Khac ?? ""}</p>
+                        <p class='box-text'>- Dẫn lưu: <span class='bold'> {_data.DanLuu ?? ""}</span></p>
+                        <p class='box-text'>- Bấc: <span class='bold'></span>{_data.Bac ?? ""}</p>
+                        <p class='box-text'>- Ngày rút chỉ: <span class='bold'>{ngayRutChiText}</span></p>
+                        <p class='box-text'>- Ngày cắt chỉ: <span class='bold'> {ngayCatChiText}</span></p>
+                        <p class='box-text'>- Khác: <span class='bold'>{_data.Khac ?? ""}</span></p>
                     </div>");
-
             // Page break
             sb.Append("<div class='page-break'></div>");
 
 
             // ===== TƯỜNG TRÌNH =====
             sb.Append(@$"<div class='border-box'>
-                        <h2> TƯỜNG TRÌNH PHẪU THUẬT / THỦ THUẬT </h2>
-
+                        <h2 style='text-align:center'> TƯỜNG TRÌNH PHẪU THUẬT / THỦ THUẬT </h2>
+                         {_data.TrinhTu}
+                           <p class='box-text bold'>KẾT LUẬN: {_data.KetLuan ?? ""}</p>
                     </div>");
 
             // ===== CHỮ KÝ =====

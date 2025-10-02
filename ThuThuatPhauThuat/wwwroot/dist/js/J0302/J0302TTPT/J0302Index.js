@@ -217,8 +217,8 @@ $(document).ready( async function () {
         if (typeof handleSaveThongTin === 'function') {
             handleSaveThongTin();
         }
-        if (typeof handleSaveTrinhTu === 'function') {
-            handleSaveTrinhTu();
+        if (typeof saveTrinhTu === 'function') {
+            saveTrinhTu();
         }
         if (typeof handleSaveEkip === 'function') {
             handleSaveEkip();

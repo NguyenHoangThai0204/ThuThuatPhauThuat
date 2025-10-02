@@ -533,6 +533,7 @@
             var response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/list-by-idttpt/${idPhieuTTPT}`);
             if (!response.ok) throw new Error('Network response was not ok');
             var data = await response.json();
+            console.log(data)
             const editorContent = document.getElementById('editorContent');
             if (data.data.length === 0) return;
             editorContent.innerHTML = data.data[0].trinhTu || '';
@@ -559,6 +560,7 @@
             console.error('Error fetching data:', error);
         }
     }
+    loadTrinhTuVaKetLuanWithFocus(window.IDPhieuTTPT);
     window.loadTrinhTuVaKetLuanWithFocus = loadTrinhTuVaKetLuanWithFocus;
 </script>
 <script>

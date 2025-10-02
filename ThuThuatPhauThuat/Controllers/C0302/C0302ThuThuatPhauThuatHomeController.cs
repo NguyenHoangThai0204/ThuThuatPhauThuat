@@ -105,13 +105,15 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                     new SqlParameter("@IdChiDinhCT", request.IDChiDinhChiTiet)
                 };
 
-                var sql = @"EXEC S0302_GetThongTinXuatPDFTTPT @IdVaoVien, @IdChiNhanh, @IdChiDinhCT";
+                var sql = @"EXEC S0302_GetThongTinXuatPDFTTPT2 @IdVaoVien, @IdChiNhanh, @IdChiDinhCT";
 
-                var data = _context.M0302ThongTinXuatPDFTTPTModels
+                var data = _context.M0302ThongTinXuatPDFTTPTModel2s
                     .FromSqlRaw(sql, parameters)
                     .AsNoTracking()
                     .AsEnumerable()
                     .FirstOrDefault();
+
+           
 
                 if (data == null)
                     return NotFound(new { success = false, message = "Không có dữ liệu để xuất PDF" });
