@@ -41,10 +41,10 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             var fontSet = new FontSet();
 
             // Đăng ký từng font vào "Times New Roman" family
-            fontSet.AddFont(Path.Combine(fontFolder, "times.ttf"));                        // Regular
-            fontSet.AddFont(Path.Combine(fontFolder, "times new roman bold.ttf"));         // Bold
-            fontSet.AddFont(Path.Combine(fontFolder, "times new roman italic.ttf"));       // Italic
-            fontSet.AddFont(Path.Combine(fontFolder, "times new roman bold italic.ttf"));  // BoldItalic
+            fontSet.AddFont(Path.Combine(fontFolder, "times.ttf"));      // Regular
+            fontSet.AddFont(Path.Combine(fontFolder, "timesbd.ttf"));    // Bold
+            fontSet.AddFont(Path.Combine(fontFolder, "timesi.ttf"));     // Italic
+            fontSet.AddFont(Path.Combine(fontFolder, "timesbi.ttf"));    // Bold Italic
 
             var fontProvider = new FontProvider(fontSet);
 
@@ -52,7 +52,6 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                 .SetFontProvider(fontProvider)
                 .SetCharset("utf-8");
 
-            // Quan trọng: ép CSS dùng đúng family "Times New Roman"
             htmlContent = "<style> body { font-family: 'Times New Roman'; } </style>" + htmlContent;
 
             HtmlConverter.ConvertToPdf(htmlContent, pdfDocument, converterProperties);
@@ -143,19 +142,19 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                     vertical-align: top;
                 }
 
-                .box-title {
-                    margin-top: 5px;
-                    margin-bottom: 5px;
-                }
+                                .box-title {
+                                    margin-top: 5px;
+                                    margin-bottom: 5px;
+                                }
     
-                .box-text {
-                    text-align: left;
-                    margin-top: 2px;
-                    margin-bottom: 2px;;
-                }
-            </style>
-        </head>
-        <body>");
+                                .box-text {
+                                    text-align: left;
+                                    margin-top: 2px;
+                                    margin-bottom: 2px;;
+                                }
+                            </style>
+                        </head>
+                        <body>");
 
             // ===== HEADER =====
             sb.Append("<table style='width:100%; margin-bottom:10px;'>");

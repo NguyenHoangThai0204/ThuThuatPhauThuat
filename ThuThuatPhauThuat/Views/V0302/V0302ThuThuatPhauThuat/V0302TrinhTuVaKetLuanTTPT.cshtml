@@ -1,5 +1,5 @@
 ﻿<div class="report-template-editor">
-    <!-- Left column: Image panel -->
+    <!-- Left column: Image panel (giữ nguyên) -->
     <div class="image-panel">
         <div class="image-panel-header" style="font-size: 1.05rem;">
             <span>Hình ảnh</span>
@@ -9,7 +9,8 @@
         </div>
         <div class="image-panel-body"></div>
     </div>
-    <!-- Right column: Editor panel -->
+
+    <!-- Right column: Editor panel - chia thành 2 cột -->
     <div class="editor-panel">
         <div class="editor-header d-flex align-items-center justify-content-between" style="font-size: 1.05rem;">
             <span>Mẫu tường trình</span>
@@ -32,7 +33,7 @@
             </div>
         </div>
         <div class="editor-toolbar" id="editorToolbar">
-            <!-- Undo / Redo -->
+            <!-- Toolbar giữ nguyên -->
             <button class="btn btn-sm btn-outline-secondary" onclick="execCmd('undo')" data-bs-toggle="tooltip"
                     title="Hoàn tác">
                 <i class="ti ti-arrow-back-up"></i>
@@ -90,9 +91,31 @@
                 <input type="file" id="pdfUpload" accept=".pdf" style="display: none;">
             </label>
         </div>
-        <div id="editorContent" class="editor-content" contenteditable="true"></div>
-        <div class="editor-footer">
-            <textarea class="editor-summary" placeholder="Kết luận / Tóm tắt"></textarea>
+        <!-- Phần trình tự chia 2 cột -->
+        <div class="sequence-container">
+            <!-- Cột trái: Thông tin lược đồ (read-only) -->
+            <div class="sequence-info-panel">
+                <div class="info-panel-header">
+                    <span>Thông tin lược đồ</span>
+                </div>
+                <div class="info-panel-body">
+                    <ul class="info-list">
+                        <li>- Dẫn lưu:</li>
+                        <li>- Bấc:</li>
+                        <li>- Ngày rút chỉ:</li>
+                        <li>- Ngày cắt chỉ:</li>
+                        <li>- Khác:</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Cột phải: Editor nội dung -->
+            <div class="sequence-editor-panel">
+                <div id="editorContent" class="editor-content" contenteditable="true"></div>
+                <div class="editor-footer">
+                    <textarea class="editor-summary" placeholder="Kết luận / Tóm tắt"></textarea>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -218,6 +241,21 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal preview image -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content" style="background: rgba(0,0,0,0.8);">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-white" id="imagePreviewModalLabel">Xem ảnh</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="imagePreviewModalImg" src="" alt="Preview" style="max-width:100%;max-height:80vh;border-radius:8px;box-shadow:0 2px 8px #000;">
             </div>
         </div>
     </div>
@@ -439,6 +477,44 @@
             }
         }
         loadImagesFromServer(window.IDPhieuTTPT);
+    })();
+
+    (function () {
+        // Lắng nghe click ảnh trong panel trái
+        document.addEventListener('click', function (e) {
+            // Click trên ảnh trong panel trái
+            const img = e.target.closest('.image-item-preview');
+            if (img) {
+                const modalEl = document.getElementById('imagePreviewModal');
+                const modalImg = document.getElementById('imagePreviewModalImg');
+                if (modalEl && modalImg) {
+                    modalImg.src = img.src;
+                    // Hiện modal (xử lý cho cả Bootstrap 4/5)
+                    if (window.bootstrap && window.bootstrap.Modal) {
+                        new window.bootstrap.Modal(modalEl).show();
+                    } else if ($(modalEl).modal) {
+                        $(modalEl).modal('show');
+                    }
+                }
+            }
+        });
+
+        // Ảnh trong content editor nếu có: click cũng preview
+        document.getElementById('editorContent').addEventListener('click', function (e) {
+            const img = e.target.closest('img');
+            if (img) {
+                const modalEl = document.getElementById('imagePreviewModal');
+                const modalImg = document.getElementById('imagePreviewModalImg');
+                if (modalEl && modalImg) {
+                    modalImg.src = img.src;
+                    if (window.bootstrap && window.bootstrap.Modal) {
+                        new window.bootstrap.Modal(modalEl).show();
+                    } else if ($(modalEl).modal) {
+                        $(modalEl).modal('show');
+                    }
+                }
+            }
+        });
     })();
 
     // --- Toolbar commands ---
