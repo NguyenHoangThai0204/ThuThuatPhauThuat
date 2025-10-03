@@ -130,7 +130,7 @@
     ];
 
     function khoiTaoThongTinSoPhieu(tabIndex, isEmpty) {
-        if ($('.thuThuat__nguonBenh-tom-select-' + tabIndex).length) {
+        if ($('.thuThuat__nguonBenh-tom-select-' + tabIndex).length && $('.thuThuat__nguonBenh-tom-select-' + tabIndex).tomselect) {
             new TomSelect('.thuThuat__nguonBenh-tom-select-' + tabIndex, {
                 options: nguonBenhData,
                 valueField: "ma",

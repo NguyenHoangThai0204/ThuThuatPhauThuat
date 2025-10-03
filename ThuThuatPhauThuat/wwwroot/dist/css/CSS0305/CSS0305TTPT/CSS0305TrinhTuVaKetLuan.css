@@ -1,0 +1,577 @@
+﻿/*CSS0305TrinhTuVaKetLuan.css*/
+
+.report-template-editor {
+    height: 30vh;
+/*    height: calc(100vh - 200px);*/
+    margin: 10px;
+    min-height: 400px;
+    display: flex;
+    border: 1px solid #ccc;
+}
+
+/* Cột trái */
+.image-panel {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ccc;
+}
+
+.image-panel-header {
+    background: #006d77;
+    color: #fff;
+    font-weight: bold;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.image-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    background: #f8f9fa;
+}
+
+.image-item {
+    padding: 8px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #e1e1e1;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+    .image-item.active {
+        background: #e0f2f1;
+        font-weight: bold;
+    }
+
+    .image-item:hover {
+        background: #f0f0f0;
+    }
+
+    .image-item.selected {
+        background: #d1ecf1;
+        border-left: 4px solid #006d77;
+    }
+
+    .image-item[data-from-ftp="true"] {
+        border-left: 3px solid #28a745;
+    }
+
+.image-item-preview {
+    max-width: 100%;
+    height: 100px;
+    object-fit: cover;
+    margin-top: 5px;
+    border-radius: 4px;
+    transition: transform 0.2s ease;
+}
+
+.image-item:hover .image-item-preview {
+    transform: scale(1.02);
+}
+
+.sequence-container {
+    display: flex;
+    flex: 1;
+    border-top: 1px solid #ccc;
+}
+
+/* Cột trái: Thông tin lược đồ */
+.sequence-info-panel {
+    width: 30%;
+    min-width: 220px;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ccc;
+    background: #f8f9fa;
+}
+
+    .sequence-info-panel .info-panel-header {
+        background: #495057;
+        color: #fff;
+        font-weight: bold;
+        padding: 8px 12px;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .sequence-info-panel .info-panel-body {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background: #f8f9fa;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+    .info-list li {
+        padding: 6px 0;
+        border-bottom: 1px solid #e9ecef;
+        color: #495057;
+        font-weight: 500;
+    }
+
+/* Cột phải: Editor nội dung */
+.sequence-editor-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+sequence-editor-panel .editor-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    border: none;
+    outline: none;
+    line-height: 1.6;
+    background: #fff;
+    min-height: 200px;
+}
+
+.sequence-editor-panel .editor-footer {
+    border-top: 1px solid #ccc;
+    padding: 8px 12px;
+    background: #fff;
+}
+
+.editor-content.drag-over {
+    border: 2px dashed #006d77;
+    background-color: #e0f2f1;
+}
+/* Responsive */
+@media (max-width: 1200px) {
+    .sequence-container {
+        flex-direction: column;
+    }
+
+    .sequence-info-panel {
+        width: 100%;
+        max-width: none;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+        min-height: 120px;
+    }
+
+        .sequence-info-panel .info-panel-body {
+            padding: 10px;
+        }
+
+    .info-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+        .info-list li {
+            border-bottom: none;
+            padding: 4px 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+        }
+}
+
+
+
+/* Image trong editor có thể resize */
+.editor-content img {
+    max-width: 100%;
+    cursor: move;
+    border: 2px solid transparent;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+    .editor-content img:hover {
+        border-color: #006d77;
+    }
+
+    .editor-content img.selected {
+        border-color: #006d77;
+        box-shadow: 0 0 0 2px rgba(0, 109, 119, 0.3);
+    }
+
+    .editor-content img.resizing {
+        border-color: #0056b3;
+    }
+
+/* Resize handles */
+.img-wrapper {
+    display: inline-block;
+    position: relative;
+    margin: 10px 0;
+    transition: all 0.2s ease;
+}
+
+    .img-wrapper.selected {
+        outline: 2px solid #006d77;
+        outline-offset: 2px;
+    }
+
+        .img-wrapper.selected .resize-handle {
+            display: block;
+        }
+
+.resize-handle {
+    display: none;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #006d77;
+    border: 1px solid #fff;
+    cursor: nwse-resize;
+    z-index: 10;
+}
+
+    .resize-handle.se {
+        bottom: -5px;
+        right: -5px;
+    }
+
+/* Image preview trong panel trái */
+.image-item-preview {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    margin-top: 5px;
+    border-radius: 4px;
+    transition: transform 0.2s ease;
+}
+
+.image-item:hover .image-item-preview {
+    transform: scale(1.02);
+}
+
+.image-item .delete-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 2px 6px;
+    cursor: pointer;
+    font-size: 12px;
+    display: none;
+    transition: background-color 0.2s ease;
+}
+
+.image-item:hover .delete-image-btn {
+    display: block;
+}
+
+.image-item .delete-image-btn:hover {
+    background: rgba(220, 53, 69, 1);
+}
+
+/* Cột phải */
+.editor-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.editor-header {
+    background: #f1f1f1;
+    padding: 6px 10px;
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+}
+
+.editor-toolbar {
+    padding: 6px;
+    border-bottom: 1px solid #ccc;
+    background: #f9f9f9;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+    .editor-toolbar button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        transition: all 0.2s ease;
+    }
+
+        .editor-toolbar button:hover {
+            background-color: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+    .editor-toolbar select {
+        height: 32px;
+    }
+
+.toolbar-separator {
+    width: 1px;
+    height: 24px;
+    background: #ccc;
+    margin: 0 4px;
+}
+
+.color-picker {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s ease;
+}
+
+    .color-picker:hover {
+        transform: scale(1.1);
+    }
+
+.editor-content {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    border: none;
+    outline: none;
+    line-height: 1.6;
+}
+
+.editor-footer {
+    border-top: 1px solid #ccc;
+    padding: 4px 10px;
+    background: #fff;
+}
+
+.editor-summary {
+    width: 100%;
+    height: 40px;
+    resize: none;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    color: #666;
+    background: transparent;
+}
+
+/* Căn chỉnh ảnh trong editor */
+.editor-content .img-wrapper {
+    margin: 10px 0;
+    width: fit-content;
+}
+
+/* Đảm bảo ảnh có thể căn giữa */
+.editor-content {
+    text-align: left;
+}
+
+.img-wrapper.align-left {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+.img-wrapper.align-center {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.img-wrapper.align-right {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.input-group-ellipsis {
+    position: relative;
+}
+
+.ellipsis-btn {
+    position: absolute;
+    right: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    padding: 2px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+    .ellipsis-btn:hover {
+        background-color: #ccc;
+    }
+
+    .ellipsis-btn svg {
+        width: 16px;
+        height: 16px;
+        color: #6c757d;
+    }
+
+/* MODAL */
+.custom-modal-body {
+    min-height: 400px;
+    padding-bottom: 0.5rem !important;
+}
+
+.custom-content-area {
+    height: calc(100% - 40px);
+    min-height: 350px;
+}
+
+.custom-table-scroll {
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+.textarea-fixed-height {
+    resize: none;
+    min-height: 150px;
+    max-height: 350px;
+}
+
+#chiTietTitleInput:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+.img-wrapper.click-effect {
+    animation: clickAnimation 0.3s ease;
+}
+
+@@keyframes clickAnimation {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.editor-content ::selection {
+    background-color: rgba(0, 109, 119, 0.2);
+}
+
+.editor-content img::selection {
+    background-color: transparent;
+}
+
+/* PDF Import Styles */
+.pdf-import-section {
+    border-left: 4px solid #006d77;
+    padding-left: 15px;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+    .pdf-import-section h6 {
+        color: #006d77;
+        margin-bottom: 10px;
+    }
+
+.pdf-content {
+    font-family: 'Times New Roman', serif;
+    line-height: 1.6;
+}
+
+    .pdf-content p {
+        margin-bottom: 8px;
+    }
+
+.pdf-page {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: white;
+    border: 1px solid #e0e0e0;
+}
+
+.pdf-header {
+    color: #006d77;
+    font-weight: bold;
+    text-align: center;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.pdf-field {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+    .pdf-field .label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .pdf-field .value {
+        color: #000;
+        font-weight: bold;
+    }
+
+.pdf-import-section .pdf-page {
+    border-left: 4px solid #006d77;
+}
+
+/* Modal xem ảnh lớn */
+#imagePreviewModal .modal-content {
+    background: rgba(0,0,0,0.95);
+    border: none;
+}
+
+#imagePreviewModal .modal-header {
+    border-bottom: none;
+    color: #fff;
+}
+
+#imagePreviewModal .modal-title {
+    color: #fff;
+    font-size: 1.15rem;
+}
+
+#imagePreviewModal .btn-close {
+    filter: invert(1);
+    opacity: 0.85;
+}
+
+#imagePreviewModal .modal-body {
+    padding: 1.5rem 1rem;
+    text-align: center;
+}
+
+#imagePreviewModalImg {
+    max-width: 98vw;
+    max-height: 80vh;
+    margin: 0 auto;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+}
+
+    #imagePreviewModalImg:hover {
+        box-shadow: 0 8px 36px rgba(0,109,119,0.25);
+    }

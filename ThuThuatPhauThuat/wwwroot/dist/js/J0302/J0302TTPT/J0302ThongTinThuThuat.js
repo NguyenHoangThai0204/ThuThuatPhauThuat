@@ -6,10 +6,8 @@ function resetThongTinState() {
         truoc_thuat: [],
         sau_thuat: [],
     };
-    console.log("Đã reset data Thongtin");
 }
-if (typeof IDPhieuTTPT_HienTai === 0)
-    var IDPhieuTTPT_HienTai;
+
 function toIsoDate(dateString) {
     if (!dateString) return null;
 
@@ -44,10 +42,10 @@ function normalizeICDData(data) {
         return [];
     }
     return data.map(item => ({
-        ma: item.MaBenh,
-        ten: item.TenBenh,
+        ma: item.ma,
+        ten: item.ten,
         alias: item.viettat || "",
-        id: item.id !== undefined ? item.id : item.MaBenh, // Đảm bảo luôn có id
+        id: item.id !== undefined ? item.id : item.ma, // Đảm bảo luôn có id
         active: item.active !== undefined ? item.active : true,
     }));
 }
@@ -306,6 +304,7 @@ $(function () {
     $('#ngay_cat_chi').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
 });
 
+
 function processICDLoading(type, maChanDoanStr) {
     if (!maChanDoanStr) return;
 
@@ -326,6 +325,72 @@ function processICDLoading(type, maChanDoanStr) {
     });
 
 }
+//function bindDataToForm(data) {
+//    if (!data) return;
+
+//    // Bind dữ liệu vào các trường
+//    processICDLoading('vao_khoa', data.maChanDoanVao);
+//    processICDLoading('truoc_thuat', data.maChanDoanTruoc);
+//    processICDLoading('sau_thuat', data.maChanDoanSau);
+
+//    document.getElementById('can_thiep_thu_thuat').value = data.canThiepThuThuat || '';
+//    document.getElementById('so_lan_mo_lai').value = data.soLanMoLai || '';
+//    document.getElementById('ly_do_mo_lai').value = data.lyDoMoLai || '';
+//    document.getElementById('dan_luu').value = data.danLuu || '';
+//    document.getElementById('ngay_rut_ong_dan_luu').value = formatDate(data.ngayRutOngDanLuu);
+//    document.getElementById('ngay_cat_chi').value = formatDate(data.ngayCatChi);
+//    document.getElementById('khac').value = data.khac || '';
+//    document.getElementById('ma_fna').value = data.maFNA || '';
+//    document.getElementById('tien_can').value = data.tienCan || '';
+//    document.getElementById('ket_qua_xet_nghiem').value = data.ketQuaXNFNAGBP || '';
+//    document.getElementById('chi_dinh_vi_tri_ton_thuong_fna').value = data.chiDinhViTriTonThuongFNA || '';
+//    document.getElementById('yeu_cau_xet_nghiem').value = data.yeuCauXetNghiem || '';
+
+//    if (data.idPhongThucHien) {
+//        const phongSelect = document.querySelector(".cbPhongThucHien")?.tomselect;
+//        if (phongSelect) phongSelect.setValue(String(data.idPhongThucHien));
+//    }
+
+//    if (data.idThietBi) {
+//        const thietBiSelect = document.querySelector(".cbThietBi")?.tomselect;
+//        if (thietBiSelect) thietBiSelect.setValue(String(data.idThietBi));
+//    }
+
+//    if (data.idLoaiTTPT) {
+//        const plSelect = document.querySelector(".cbPhanLoai")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idLoaiTTPT));
+//    }
+//    if (data.idTaiBienBienChung) {
+//        const plSelect = document.querySelector(".cbBienChung")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idTaiBienBienChung));
+//    }
+//    if (data.idCheDoThuThuat) {
+//        const plSelect = document.querySelector(".cbCheDoThuThuat")?.tomselect;
+//        if (plSelect) plSelect.setValue(String(data.idCheDoThuThuat));
+//    }
+//    if (data.idViTriThucHien) {
+//        cfunction processICDLoading(type, maChanDoanStr) {
+//            console.log("icdData = ", icdData);
+//            if (!maChanDoanStr) return;
+
+//            selectedICDs[type] = [];
+//            const displayArea = document.getElementById(`hien_thi_icd_${type}`);
+//            displayArea.innerHTML = '';
+
+//            const maCodes = maChanDoanStr.split(',').map(m => m.trim()).filter(m => m.length > 0);
+
+//            maCodes.forEach(code => {
+
+//                const icdItem = icdData.find(item => item.id == code);
+//                console.log("Ma ICD : id ", code, icdItem);
+//                if (icdItem) {
+//                    addICDTag(type, icdItem.id, icdItem.ma, icdItem.ten);
+//                } else {
+//                    console.warn(`[v0] Mã ICD không tìm thấy trong dữ liệu tra cứu: ${code}`);
+//                }
+//            });
+
+//        }
 function processICDLoading(type, maChanDoanStr) {
     if (!maChanDoanStr) return;
 
@@ -405,13 +470,63 @@ function bindDataToForm(data) {
 
 
 
-function loadData(idVaoVien, idChiNhanh, soPhieu) {
-    if (idVaoVien && idChiNhanh && soPhieu) {
-        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${soPhieu}`)
+//function loadData(idVaoVien, idChiNhanh, soPhieu) {
+//    if (idVaoVien && idChiNhanh && soPhieu) {
+//        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${soPhieu}`)
+//            .then(response => response.json())
+//            .then(data => {
+//                if (data.success) {
+//                    bindDataToForm(data.data);
+//                } else {
+//                    console.error("Lỗi khi tải dữ liệu:", data.message);
+//                }
+//            })
+//            .catch(error => console.error("Lỗi:", error));
+//    }
+//}
+var isFormDirty = false;
+
+function markFormAsDirty() {
+    isFormDirty = true;
+}
+
+function markFormAsClean() {
+    isFormDirty = false;
+}
+
+// Gắn sự kiện cho các input
+function attachDirtyListeners() {
+    $('input, select, textarea').on('change input', function () {
+        markFormAsDirty();
+    });
+}
+
+// Gọi sau khi bind data hoặc init form
+function initFormState() {
+    markFormAsClean();
+    attachDirtyListeners();
+}
+
+// Kiểm tra trước khi load lại data
+function shouldPreventDataReload() {
+    if (isFormDirty) {
+        return confirm('Bạn có thay đổi chưa lưu. Tiếp tục sẽ mất dữ liệu. Tiếp tục?');
+    }
+    return true;
+}
+function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
+    // Kiểm tra xem có nên ngăn load data không
+    if (!shouldPreventDataReload()) {
+        return; // Người dùng chọn hủy
+    }
+
+    if (idVaoVien && idChiNhanh && idChiDinhChiTiet) {
+        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${idChiDinhChiTiet}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     bindDataToForm(data.data);
+                    markFormAsClean(); // Đánh dấu form sạch sau khi load data
                 } else {
                     console.error("Lỗi khi tải dữ liệu:", data.message);
                 }
@@ -419,10 +534,11 @@ function loadData(idVaoVien, idChiNhanh, soPhieu) {
             .catch(error => console.error("Lỗi:", error));
     }
 }
-
 async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
-    if (!(IDPhieuTTPT_HienTai == window.IDPhieuTTPT))
-           resetThongTinState();
+
+    resetThongTinState();
+    const shouldLoadData = (idVaoVien !== null && idChiNhanh !== null && idChiDinhChiTiet !== null &&
+        isNewPatientSelection()); // Sử dụng hàm kiểm tra từ file chính
     const dataPromises = {
         phongBuong: fetchDataAndNormalize("dist/data/json/DM_PhongBuong.json", 'ten', 'viettat', _idcn),
         phanLoai: fetchDataAndNormalize("dist/data/json/DM_LoaiThuThuatPhauThuat.json", 'ten', 'viettat', _idcn),
@@ -437,6 +553,9 @@ async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
     };
 
     const results = await Promise.all(Object.values(dataPromises));
+    if (shouldLoadData) {
+        loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet);
+    }
     if (idVaoVien !== null && idChiNhanh !== null && idChiDinhChiTiet !== null) {
         loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet)
     }

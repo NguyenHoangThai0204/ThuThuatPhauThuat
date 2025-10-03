@@ -5,7 +5,7 @@
         public long ID { get; set; } // Khóa chính
         public long IDPhieuTTPT { get; set; }
         public long IDNhanVien { get; set; }
-        public string TenVaiTro { get; set; }
+        public long IDVaiTro { get; set; }
         public string GhiChu { get; set; }
 
     }

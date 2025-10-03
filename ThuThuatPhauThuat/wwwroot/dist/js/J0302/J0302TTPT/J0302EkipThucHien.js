@@ -34,7 +34,7 @@
     function fetchDataAndNormalize(url, tenField = 'ten', viettatField = 'viettat') {
         if (url.endsWith('.json')) {
             return new Promise((resolve, reject) => {
-                // Giả định $.getJSON có sẵn
+                
                 $.getJSON(url, data => {
                     resolve(normalizeData(data, tenField, viettatField));
                 }).fail((jqXHR, textStatus, errorThrown) => {
@@ -85,7 +85,7 @@ if (typeof ekipList === "undefined") {
                 className: "#cb_VaiTro",
                 placeholder: "-- Vai trò --",
                 data: allData.vaiTro || [],
-                valueField: "ma",
+                valueField: "id",
                 labelField: "ten",
             }
         ];
@@ -224,16 +224,16 @@ function configCbEkip(configs) {
 
         // Tạo đối tượng thành viên mới
         const newMember = {
-            nhanVienMa: nhanVienMa, // Giữ ID nhân viên (dạng string)
+            nhanVienMa: nhanVienMa, 
             nhanVienTen: nhanVienData ? nhanVienData.ten : 'Không rõ',
-            vaiTroMa: vaiTroMa,
+            vaiTroMa: vaiTroData ? vaiTroData.id : 'Không rõ',
             vaiTroTen: vaiTroData ? vaiTroData.ten : 'Không có vai trò', // Gửi Tên Vai trò lên server
             ghiChu: ghiChu
         };
-
+        
         ekipList.push(newMember);
         renderEkipTable();
-
+        console.log("Ekip on add table == ", ekipList);
         nhanVienTomSelect.clear(true);
         vaiTroTomSelect.clear(true);
         ghiChuInput.value = '';
@@ -284,16 +284,16 @@ function configCbEkip(configs) {
 
             if (response.success && Array.isArray(response.data)) {
                 const serverEkipList = response.data;
-
+                console.log("serverEkipList =", serverEkipList);
                 ekipList = serverEkipList.map(item => {
                     const nhanVienData = findItem(allData.nhanVien, item.idNhanVien, 'id');
-                    const vaiTroData = findItem(allData.vaiTro, item.tenVaiTro, 'ten');
-
+                    const vaiTroData = findItem(allData.vaiTro, item.idVaiTro, 'id');
+                    console.log("vaiTroData =", vaiTroData);
                     return {
                         nhanVienMa: item.idNhanVien.toString(), 
                         nhanVienTen: nhanVienData ? nhanVienData.ten : `ID ${item.idNhanVien} (Lỗi map)`,
-                        vaiTroMa: vaiTroData ? vaiTroData.ma : item.tenVaiTro,
-                        vaiTroTen: item.tenVaiTro,
+                        vaiTroMa: vaiTroData ? vaiTroData.id : item.id,
+                        vaiTroTen: vaiTroData ? vaiTroData.ten : item.ten,
                         ghiChu: item.ghiChu
                     };
                 });
@@ -327,7 +327,7 @@ function configCbEkip(configs) {
 
         const dataPromises = {
             nhanVien: fetchDataAndNormalize("dist/data/json/DM_NhanVien.json", 'ten', 'viettat'),
-            vaiTro: fetchDataAndNormalize("dist/data/json/DM_ViTriThuThuat.json", 'ten', 'viettat'),
+            vaiTro: fetchDataAndNormalize("/thu_thuat_phau_thuat/trinh-tu/vai-tro-ttpt", 'ten', 'viettat'),
         };
 
         const results = await Promise.all(Object.values(dataPromises));
@@ -357,7 +357,8 @@ function configCbEkip(configs) {
 
     }
 
-    function handleSaveEkip() {
+function handleSaveEkip() {
+    console.log("ekipList ===", ekipList);
         if (ekipList.length === 0) {
             if (typeof toastr !== 'undefined') toastr.warning("Danh sách ekip rỗng, không có dữ liệu để lưu.");
             return;
@@ -366,7 +367,7 @@ function configCbEkip(configs) {
         const dataToSend = ekipList.map(item => ({
             IDPhieuTTPT: window.IDPhieuTTPT,
             IDNhanVien: item.nhanVienMa,
-            TenVaiTro: item.vaiTroTen,
+            IDVaiTro: item.vaiTroMa,
             GhiChu: item.ghiChu
         }));
 

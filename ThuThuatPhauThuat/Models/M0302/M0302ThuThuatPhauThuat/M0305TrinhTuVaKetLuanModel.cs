@@ -5,5 +5,6 @@
         public long? IDPhieuTTPT { get; set; }
         public string? TrinhTu { get; set; }
         public string? KetLuan { get; set; }
+        public string? ThongTinLuocDo { get; set; }
     }
 }

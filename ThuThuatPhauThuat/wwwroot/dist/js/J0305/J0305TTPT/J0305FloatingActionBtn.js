@@ -14,7 +14,7 @@
         var summary = $('.editor-summary').val();
 
         var formData = {
-            IDPhieuTTPT: 1,
+            IDPhieuTTPT: window.IDPhieuTTPT,
             TrinhTu: content || '',
             KetLuan: summary || '', 
         };
