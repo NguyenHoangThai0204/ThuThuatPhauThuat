@@ -19,5 +19,7 @@ namespace ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat
         public long? IDPhieuTTPT { get; set; }
         public long? IdChiDinhChiTiet { get; set; }
         public DateTime? NgayGioChiDinh { get; set; }
+        public DateTime? BatDauThuThuat { get; set; }
+        public DateTime? KetThucThuThuat { get; set; }
     }
 }

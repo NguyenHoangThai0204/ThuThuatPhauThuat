@@ -120,16 +120,16 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                     width: 200px;
                 }
                 .signature-date {
-                    font-size: 10px;
+                    font-size: 13px;
                     font-style: italic;
                 }
                 .signature-title {
-                    font-size: 11px;
+                    font-size: 14px;
                     font-weight: bold;
                     margin-top: 5px;
                 }
                 .signature-note {
-                    font-size: 9px;
+                    font-size: 13px;
                     font-style: italic;
                 }
                 table {

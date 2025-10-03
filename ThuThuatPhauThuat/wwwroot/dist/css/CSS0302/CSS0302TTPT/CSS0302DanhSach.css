@@ -156,3 +156,9 @@
         height: 5rem;
         border-width: 0.5em; /* Độ dày viền */
     }
+td.text-ellipsis {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

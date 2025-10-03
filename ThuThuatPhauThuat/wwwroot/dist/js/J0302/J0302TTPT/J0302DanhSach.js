@@ -111,6 +111,19 @@ $(function () {
     $('#txtDateTime').datepicker('setDate', new Date());
     $('#txtDateTime').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
 });
+function tinhSoPhut(batDau, ketThuc) {
+    if (!batDau || !ketThuc) return "";
+
+    const start = new Date(batDau);
+    const end = new Date(ketThuc);
+
+    if (isNaN(start) || isNaN(end)) return "";
+
+    const diffMs = end - start;
+    const diffMinutes = Math.floor(diffMs / 60000);
+
+    return diffMinutes >= 0 ? diffMinutes + " phút" : "";
+}
 
 // ==================== PHÂN TRANG ====================
 function renderTable(data, page = 1, size = 10) {
@@ -136,8 +149,11 @@ function renderTable(data, page = 1, size = 10) {
                 <td class="text-center">${item.gioiTinh || ""}</td>
                 <td class="text-center">${item.khan ? 'Có' : 'Không'}</td>
                 <td>${item.nhomDichVuKyThuat || ""}</td>
-                <td>${item.dichVuKyThuat || ""}</td>
-                <td class="text-center">${item.thoiGian || ""}</td>
+                
+                <td class="text-ellipsis" title="${item.dichVuKyThuat || ""}">
+                    ${item.dichVuKyThuat || ""}
+                </td>
+                <td class="text-center">  ${tinhSoPhut(item.batDauThuThuat, item.ketThucThuThuat)}</td>
                 <td>${item.noiThucHien || ""}</td>
                 <td>${item.bacSiChiDinh || ""}</td>
                 <td>${item.noiChiDinh || ""}</td>
@@ -149,43 +165,7 @@ function renderTable(data, page = 1, size = 10) {
     updatePaginationInfo(data.length, page, size);
     renderPagination(data.length, page, size);
 }
-
-//function renderTable(data, page = 1, size = 10) {
-//    const tbody = $("#tbodyData");
-//    tbody.empty();
-
-//    if (!data || data.length === 0) {
-//        tbody.append('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
-//        return;
-//    }
-
-//    const start = (page - 1) * size;
-//    const pageData = data.slice(start, start + size);
-
-//    pageData.forEach((item, index) => {
-//        tbody.append(`
-//             <tr data-idvaovien="${item.idVaoVien || ''}">
-//                <td class="text-center">${start + index + 1}</td>
-//                <td class="text-center">${item.maBenhNhan || ""}</td>
-//                <td>${item.tenBenhNhan || ""}</td>
-//                <td class="text-center">${item.namSinh || ""}</td>
-//                <td class="text-center">${item.gioiTinh || ""}</td>
-//                <td class="text-center">${item.khan ? 'Có' : 'Không'}</td>
-//                <td>${item.nhomDichVuKyThuat || ""}</td>
-//                <td>${item.dichVuKyThuat || ""}</td>
-//                <td class="text-center">${item.thoiGian || ""}</td>
-//                <td>${item.noiThucHien || ""}</td>
-//                <td>${item.bacSiChiDinh || ""}</td>
-//                <td>${item.noiChiDinh || ""}</td>
-//                <td>${item.ngayGioChiDinh || ""}</td>
-//            </tr>
-//        `);
-//    });
-
-//    updatePaginationInfo(data.length, page, size);
-//    renderPagination(data.length, page, size);
-//}
-
+//<td>${item.dichVuKyThuat || ""}</td>
 function updatePaginationInfo(totalRecords, currentPage, pageSize) {
     const startRecord = (currentPage - 1) * pageSize + 1;
     const endRecord = Math.min(currentPage * pageSize, totalRecords);

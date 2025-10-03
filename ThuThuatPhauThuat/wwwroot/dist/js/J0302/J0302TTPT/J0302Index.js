@@ -70,63 +70,7 @@ function isNewPatientSelection() {
 $(document).ready( async function () {
     $("#tabs-danhsach-7").load("/thu_thuat_phau_thuat/danh_sach");
 
-    //$('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-    //    var target = $(e.target).attr("href");
-    //    var tabNumber = 0;
-
-    //    if (target === "#tabs-thongtin-7") tabNumber = 2;
-    //    else if (target === "#tabs-trinhtu-7") tabNumber = 3;
-    //    else if (target === "#tabs-ekip-7") tabNumber = 4;
-    //    else if (target === "#tabs-thuoc-7") tabNumber = 5;
-    //    khoiTaoJSChoTab(tabNumber);
-    //    if (target === "#tabs-danhsach-7" && $(target).is(':empty')) {
-    //        $(target).load("/thu_thuat_phau_thuat/danh_sach");
-    //    }
-    //    else if (tabNumber > 0) {
-    //        var urlMap = {
-    //            2: "/thu_thuat_phau_thuat/thong_tin",
-    //            3: "/thu_thuat_phau_thuat/trinh_tu",
-    //            4: "/thu_thuat_phau_thuat/ekip",
-    //            5: "/thu_thuat_phau_thuat/ghi_nhan_thuoc_vat_tu"
-    //        };
-
-    //        var tabKey = tabNumber + '_' + selectedIdVaoVien + '_' + selectedIdChiDinhChiTiet;
-
-    //        if (!tabLoaded[tabKey] || tabNumber === 2 || tabNumber === 4 || tabNumber === 3) {
-    //            // Luôn load lại tab 2 khi có ID mới
-    //             $(target).load(urlMap[tabNumber], function () {
-    //                 $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu", {
-    //                    tabIndex: tabNumber,
-    //                    idVaoVien: selectedIdVaoVien,
-    //                    idcn: window._idcn,
-    //                    idChiDinhChiTiet: selectedIdChiDinhChiTiet
-    //                }, function (html) {
-    //                    $(target).prepend(html);
-    //                    khoiTaoJSChoTab(tabNumber);
-
-    //                    tabLoaded[tabKey] = true;
-
-    //                    if (tabNumber === 2) {
-    //                        initThongTinTab(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
-    //                    }
-    //                    else if (tabNumber === 4) {
-    //                        initEkipTab();
-    //                    } else if (tabNumber === 3) {
-    //                        loadTrinhTuVaKetLuanWithFocus(window.IDPhieuTTPT);
-    //                    }
-    //                });
-    //            });
-    //        } else {
-    //            khoiTaoJSChoTab(tabNumber);
-
-    //            if (tabNumber === 2 && selectedIdVaoVien && selectedIdChiDinhChiTiet && window._idcn) {
-    //                khoiTaoJSChoTab(tabNumber);
-    //                loadData(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
-    //            }
-              
-    //        }
-    //    }
-    //});
+  
     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         var target = $(e.target).attr("href");
         var tabNumber = 0;
