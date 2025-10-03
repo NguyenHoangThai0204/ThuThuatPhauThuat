@@ -67,6 +67,18 @@ function isNewPatientSelection() {
 
     return isNew;
 }
+
+function setLoading($btn, isLoading, loadingText) {
+    if (isLoading) {
+        $btn.data("original-html", $btn.html()); // lưu lại
+        $btn.prop("disabled", true).html(`
+            <span class="spinner-border"></span> ${loadingText}
+        `);
+    } else {
+        $btn.prop("disabled", false).html($btn.data("original-html"));
+    }
+}
+
 $(document).ready( async function () {
     $("#tabs-danhsach-7").load("/thu_thuat_phau_thuat/danh_sach");
 
@@ -173,7 +185,48 @@ $(document).ready( async function () {
 
     });
 
+    //$('#btn_pdfIndex').on('click', function () {
+    //    var data = {
+    //        IDVaoVien: selectedIdVaoVien,
+    //        IDChiDinhChiTiet: selectedIdChiDinhChiTiet,
+    //        IDChiNhanh: _idcn
+    //    };
+
+    //    if (selectedIdChiDinhChiTiet && selectedIdVaoVien && IDPhieuTTPT) {
+
+    //        fetch("/thu_thuat_phau_thuat/xuat-pdf-bang-html", {
+    //            method: "POST",
+    //            headers: {
+    //                "Content-Type": "application/json",
+    //                "Accept": "application/pdf"
+    //            },
+    //            body: JSON.stringify(data)
+    //        })
+    //            .then(res => {
+    //                if (!res.ok) throw new Error("Export PDF thất bại");
+    //                return res.blob();
+    //            })
+    //            .then(blob => {
+    //                const url = window.URL.createObjectURL(blob);
+    //                const a = document.createElement("a");
+    //                a.href = url;
+    //                a.download = "ThuThuatPhauThuat.pdf";
+    //                a.click();
+    //                window.URL.revokeObjectURL(url);
+    //                toastr.success("Xuất PDF thành công");
+    //            })
+    //            .catch(err => {
+    //                console.error("Lỗi export PDF:", err);
+    //                toastr.error("Xuất PDF thất bại");
+    //            });
+
+    //    } else {
+    //        toastr.error("Vui lòng tạo số phiếu trước khi xuất PDF");
+    //    }
+    //});
     $('#btn_pdfIndex').on('click', function () {
+        var $btn = $(this);
+
         var data = {
             IDVaoVien: selectedIdVaoVien,
             IDChiDinhChiTiet: selectedIdChiDinhChiTiet,
@@ -181,6 +234,7 @@ $(document).ready( async function () {
         };
 
         if (selectedIdChiDinhChiTiet && selectedIdVaoVien && IDPhieuTTPT) {
+            setLoading($btn, true, "Đang tạo...");
 
             fetch("/thu_thuat_phau_thuat/xuat-pdf-bang-html", {
                 method: "POST",
@@ -206,6 +260,9 @@ $(document).ready( async function () {
                 .catch(err => {
                     console.error("Lỗi export PDF:", err);
                     toastr.error("Xuất PDF thất bại");
+                })
+                .finally(() => {
+                    setLoading($btn, false);
                 });
 
         } else {

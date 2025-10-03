@@ -12,7 +12,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using ThuThuatPhauThuat.Models.M0302;
+using ThuThuatPhauThuat.Models.M0302.M0302DTO;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
+using ThuThuatPhauThuat.Services.S0305.IS0305;
 
 namespace ThuThuatPhauThuat.PDFDocuments.P0302
 {
@@ -21,9 +23,15 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
         private readonly M0302ThongTinXuatPDFTTPTModel2 _data;
         private readonly M0302ThongTinDoanhNghiep _thongTinDoanhNghiep;
         private readonly string _logoPath;
-        //private readonly Context0302 _context;
+        private readonly Context0302 _context;
+        private readonly IS0305FtpService _ftpService;
 
-        public P0305ThuThuatPhauThuatPDF(M0302ThongTinXuatPDFTTPTModel2 data, M0302ThongTinDoanhNghiep doanhNghiep)
+        public P0305ThuThuatPhauThuatPDF(
+            M0302ThongTinXuatPDFTTPTModel2 data, 
+            M0302ThongTinDoanhNghiep doanhNghiep, 
+            Context0302 context, 
+            IS0305FtpService ftpService
+        )
         {
             _data = data ?? new M0302ThongTinXuatPDFTTPTModel2();
             _thongTinDoanhNghiep = doanhNghiep ?? new M0302ThongTinDoanhNghiep
@@ -33,28 +41,28 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                 DienThoai = ""
             };
             _logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "dist", "img", "Logo-BVUB.jpg");
+            _context = context;
+            _ftpService = ftpService;
         }
 
-        public byte[] GeneratePdf()
+        public async Task<byte[]> GeneratePdf()
         {
             using var memoryStream = new MemoryStream();
             var writer = new PdfWriter(memoryStream);
             var pdfDocument = new PdfDocument(writer);
 
-            // === Gắn Event để đánh số trang ===
             pdfDocument.AddEventHandler(PdfDocumentEvent.END_PAGE, new PageNumberHandler());
 
-            // HTML content
-            var htmlContent = GenerateHtmlContent();
+            // Await the async HTML generation
+            var htmlContent = await GenerateHtmlContent();
 
-            // === Load custom fonts ===
             string fontFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "dist", "js", "J0302", "J0302Fonts");
 
             var fontSet = new FontSet();
-            fontSet.AddFont(Path.Combine(fontFolder, "times.ttf"));      // Regular
-            fontSet.AddFont(Path.Combine(fontFolder, "timesbd.ttf"));    // Bold
-            fontSet.AddFont(Path.Combine(fontFolder, "timesi.ttf"));     // Italic
-            fontSet.AddFont(Path.Combine(fontFolder, "timesbi.ttf"));    // Bold Italic
+            fontSet.AddFont(Path.Combine(fontFolder, "times.ttf"));
+            fontSet.AddFont(Path.Combine(fontFolder, "timesbd.ttf"));
+            fontSet.AddFont(Path.Combine(fontFolder, "timesi.ttf"));
+            fontSet.AddFont(Path.Combine(fontFolder, "timesbi.ttf"));
 
             var fontProvider = new FontProvider(fontSet);
 
@@ -70,23 +78,25 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             return memoryStream.ToArray();
         }
 
-        public void SavePdf(string outputPath)
+        public async Task SavePdf(string outputPath)
         {
-            var pdfBytes = GeneratePdf();
+            var pdfBytes = await GeneratePdf();
             File.WriteAllBytes(outputPath, pdfBytes);
         }
 
-        private string GenerateHtmlContent()
+        private async Task<string> GenerateHtmlContent()
         {
             var sb = new StringBuilder();
 
-            // Logo base64
             string logoBase64 = "";
             if (File.Exists(_logoPath))
             {
                 byte[] imageBytes = File.ReadAllBytes(_logoPath);
                 logoBase64 = Convert.ToBase64String(imageBytes);
             }
+
+            // Lấy danh sách ảnh từ database
+            List<AnhTruongTrinhDTO> listAnhTruongTrinh = await GetListAnhTuIDPhieuTTPT(_data.IDPhieuTTPT);
 
             sb.Append(@"
                 <!DOCTYPE html>
@@ -114,9 +124,10 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                         .border-box {
                             border: 1px solid black;
                             padding: 5px;
-                            height: max-content ;
+                            height: max-content;
                             font-size: 14px;
                             margin-top: 10px;
+                            margin-bottom: 30px;
                         }
                         .page-break { page-break-after: always; }
                         .signature-section {
@@ -153,12 +164,22 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                             margin-top: 5px;
                             margin-bottom: 5px;
                         }
-    
+
                         .box-text {
                             font-size: 14px !important; 
                             text-align: left;
                             margin-top: 2px;
                             margin-bottom: 2px;;
+                        }
+                        .image-container {
+                            text-align: center;
+                            margin: 10px 0;
+                        }
+                        .luoc-do-image {
+                            max-width: 300px;
+                            max-height: 150px;
+                            margin: 5px;
+                            border: 1px solid #ddd;
                         }
                     </style>
                 </head>
@@ -179,7 +200,7 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             sb.Append("</div>");
             sb.Append("</td>");
 
-            sb.Append("<td style='width:30%; font-size:10px; font-style:italic;'>");
+            sb.Append("<td style='width:30%; font-size:13px; font-style:italic;'>");
             sb.Append("<div>Mã số: 14/BV-01</div>");
             sb.Append($"<div>Mã số đợt/MYT: <span class='bold'>{_data.MaVaoVien ?? ""}</span></div>");
             sb.Append("</td>");
@@ -251,6 +272,7 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             sb.Append($"<div>- Phụ mổ: <span class='bold'>{_data.PhuTTPT ?? ""}</span></div>");
             sb.Append($"<div>- Bác sĩ gây mê: <span class='bold'>{_data.BacSiGayMe ?? ""}</span></div>");
             sb.Append($"<div>- KTV gây mê: <span class='bold'>{_data.KyThuatVienGayMe ?? ""}</span></div>");
+
             string ngayRutChiText = "";
             if (_data.NgayRut.HasValue)
             {
@@ -263,31 +285,54 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                 var dt = _data.NgayCatChi.Value;
                 ngayCatChiText = $"{dt:HH} giờ {dt:mm} phút, ngày {dt:dd}-{dt:MM}-{dt:yyyy}";
             }
+
             // ===== LƯỢC ĐỒ =====
-            // ===== LƯỢC ĐỒ =====
-            sb.Append(@$"<div class='border-box' >
-                        <h2 style='text-align:center'> LƯỢC ĐỒ PHẪU THUẬT / THỦ THUẬT (vẽ hoặc mô tả)</h2>
-                        <img src='https://vn1.vdrive.vn/alohamedia.vn/2025/02/632fbd20f18a2a1bc6df569b31eda210.jpg' alt='' width ='300' height ='150'>
-                        <img src='https://vn1.vdrive.vn/alohamedia.vn/2025/02/632fbd20f18a2a1bc6df569b31eda210.jpg' alt='' width ='300' height ='150'>
-                        <img src='https://vn1.vdrive.vn/alohamedia.vn/2025/02/632fbd20f18a2a1bc6df569b31eda210.jpg' alt='' width ='300' height ='150'>
-                        </br>
-                        {_data.ThongTinLuocDo ?? ""}</br>
-                        <p class='box-text'>- Dẫn lưu: <span class='bold'> {_data.DanLuu ?? ""}</span></p>
-                        <p class='box-text'>- Bấc: <span class='bold'></span>{_data.Bac ?? ""}</p>
-                        <p class='box-text'>- Ngày rút chỉ: <span class='bold'>{ngayRutChiText}</span></p>
-                        <p class='box-text'>- Ngày cắt chỉ: <span class='bold'> {ngayCatChiText}</span></p>
-                        <p class='box-text'>- Khác: <span class='bold'>{_data.Khac ?? ""}</span></p>
-                    </div>");
+            sb.Append(@$"<div class='border-box'>
+                            <h2 style='text-align:center'> LƯỢC ĐỒ PHẪU THUẬT / THỦ THUẬT (vẽ hoặc mô tả)</h2>
+                        <div class='image-container'>");
+
+            if (listAnhTruongTrinh != null && listAnhTruongTrinh.Any())
+            {
+                foreach (var anh in listAnhTruongTrinh)
+                {
+                    if (!string.IsNullOrEmpty(anh.URL))
+                    {
+                        // Tải ảnh từ FTP và convert sang Base64
+                        string base64Image = await DownloadImageFromFtpAsBase64(anh.URL);
+
+                        if (!string.IsNullOrEmpty(base64Image))
+                        {
+                            // Xác định MIME type dựa vào extension
+                            string mimeType = GetMimeType(anh.URL);
+                            sb.Append($"<img src='data:{mimeType};base64,{base64Image}' class='luoc-do-image' alt='{anh.TenAnh ?? "Lược đồ"}' />");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                sb.Append("<p>Không có ảnh lược đồ</p>");
+            }
+
+            sb.Append($@"</div>
+                </br>
+                {_data.ThongTinLuocDo ?? ""}</br>
+                <p class='box-text'>- Dẫn lưu: <span class='bold'> {_data.DanLuu ?? ""}</span></p>
+                <p class='box-text'>- Bấc: <span class='bold'></span>{_data.Bac ?? ""}</p>
+                <p class='box-text'>- Ngày rút chỉ: <span class='bold'>{ngayRutChiText}</span></p>
+                <p class='box-text'>- Ngày cắt chỉ: <span class='bold'> {ngayCatChiText}</span></p>
+                <p class='box-text'>- Khác: <span class='bold'>{_data.Khac ?? ""}</span></p>
+            </div>");
+
             // Page break
             sb.Append("<div class='page-break'></div>");
 
-
             // ===== TƯỜNG TRÌNH =====
             sb.Append(@$"<div class='border-box'>
-                        <h2 style='text-align:center'> TƯỜNG TRÌNH PHẪU THUẬT / THỦ THUẬT </h2>
-                         {_data.TrinhTu}
-                           <p class='box-text bold'>KẾT LUẬN: {_data.KetLuan ?? ""}</p>
-                    </div>");
+                <h2 style='text-align:center'> TƯỜNG TRÌNH PHẪU THUẬT / THỦ THUẬT </h2>
+                 {_data.TrinhTu}
+                   <p class='box-text bold'>KẾT LUẬN: {_data.KetLuan ?? ""}</p>
+            </div>");
 
             // ===== CHỮ KÝ =====
             sb.Append("<div class='signature-section'>");
@@ -301,6 +346,46 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             sb.Append("</body></html>");
 
             return sb.ToString();
+        }
+
+        private async Task<string> DownloadImageFromFtpAsBase64(string ftpPath)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(ftpPath))
+                    return null;
+
+                using (var stream = await _ftpService.DownloadAsync(ftpPath))
+                {
+                    if (stream == null || stream.Length == 0)
+                        return null;
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await stream.CopyToAsync(memoryStream);
+                        byte[] imageBytes = memoryStream.ToArray();
+                        return Convert.ToBase64String(imageBytes);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi tải ảnh: {ex.Message}");
+            }
+        }
+
+        private string GetMimeType(string filePath)
+        {
+            var extension = Path.GetExtension(filePath)?.ToLowerInvariant();
+            return extension switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                ".bmp" => "image/bmp",
+                ".webp" => "image/webp",
+                _ => "image/jpeg" // default
+            };
         }
 
         // === Handler đánh số trang ===
@@ -333,25 +418,23 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             }
         }
 
-        //private async Task<List<object>> GetListAnhTuIDPhieuTTPT(long idPhieuTTPT)
-        //{
-        //    var sql = "EXEC dbo.S0305_TTPT_GetAnhTruongTrinhTheoIDPhieuTTPT @IDPhieuTTPT";
-        //    var idParam = new SqlParameter("@IDPhieuTTPT", idPhieuTTPT);
+        private async Task<List<AnhTruongTrinhDTO>> GetListAnhTuIDPhieuTTPT(long idPhieuTTPT)
+        {
+            var sql = "EXEC dbo.S0305_TTPT_GetAnhTruongTrinhTheoIDPhieuTTPT @IDPhieuTTPT";
+            var idParam = new SqlParameter("@IDPhieuTTPT", idPhieuTTPT);
 
-        //    var images = await _context.AnhTruongTrinh
-        //                             .FromSqlRaw(sql, idParam)
-        //                             .ToListAsync();
+            var images = await _context.AnhTruongTrinh
+                                       .FromSqlRaw(sql, idParam)
+                                       .ToListAsync();
 
-        //    var imagesWithHttpUrl = images.Select(img => new
-        //    {
-        //        img.ID,
-        //        img.TenAnh,
-        //        img.ThoiGianTao,
-        //        URL = img.URL, // FTP URL gốc (để xóa)
-        //        HttpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(img.URL)}" // HTTP URL để hiển thị
-        //    }).ToList();
-
-        //    return imagesWithHttpUrl;
-        //}
+            return images.Select(img => new AnhTruongTrinhDTO
+            {
+                ID = img.ID,
+                TenAnh = img.TenAnh,
+                ThoiGianTao = img.ThoiGianTao,
+                URL = img.URL,
+                HttpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(img.URL)}"
+            }).ToList();
+        }
     }
 }
