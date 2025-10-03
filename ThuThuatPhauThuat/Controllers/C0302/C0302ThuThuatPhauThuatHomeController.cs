@@ -469,12 +469,13 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             try
             {
                 string sqlQuery = @"EXEC S0305_TTPT_TaoTrinhTuVaKetLuan 
-                          @IDPhieuTTPT, @TrinhTu, @KetLuan";
+                          @IDPhieuTTPT, @TrinhTu, @KetLuan, @ThongTinLuocDo";
 
                 await _context.Database.ExecuteSqlRawAsync(sqlQuery,
                     new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT),
                     new SqlParameter("@TrinhTu", model.TrinhTu ?? (object)DBNull.Value),
-                    new SqlParameter("@KetLuan", model.KetLuan ?? (object)DBNull.Value)
+                    new SqlParameter("@KetLuan", model.KetLuan ?? (object)DBNull.Value),
+                    new SqlParameter("@ThongTinLuocDo", model.ThongTinLuocDo ?? (object)DBNull.Value)
                 );
 
                 return Ok(new { success = true, message = "Lưu trình tự thành công." });

@@ -92,30 +92,21 @@
             </label>
         </div>
         <!-- Phần trình tự chia 2 cột -->
-        <div class="sequence-container">
+        <div class="sequence-container" style="display: block">
             <!-- Cột trái: Thông tin lược đồ (read-only) -->
-            <div class="sequence-info-panel">
-                <div class="info-panel-header">
-                    <span>Thông tin lược đồ</span>
+            <div style="display: flex;">
+                <div class="sequence-infor-panel" style="width: 50%; height: 250px; overflow-y: scroll; border-right: 1px solid #ccc">
+                    <div id="editorDiagram" class="editor-content" contenteditable="true"></div>
                 </div>
-                <div class="info-panel-body">
-                    <ul class="info-list">
-                        <li>- Dẫn lưu:</li>
-                        <li>- Bấc:</li>
-                        <li>- Ngày rút chỉ:</li>
-                        <li>- Ngày cắt chỉ:</li>
-                        <li>- Khác:</li>
-                    </ul>
-                </div>
-            </div>
 
-            <!-- Cột phải: Editor nội dung -->
-            <div class="sequence-editor-panel">
-                <div id="editorContent" class="editor-content" contenteditable="true"></div>
-                <div class="editor-footer">
-                    <textarea class="editor-summary" placeholder="Kết luận / Tóm tắt"></textarea>
+                <!-- Cột phải: Editor nội dung -->
+                <div class="sequence-editor-panel" style="width: 50%; height: 250px; overflow-y: scroll">
+                    <div id="editorContent" class="editor-content" contenteditable="true"></div>
                 </div>
             </div>
+        </div>
+        <div class="editor-footer">
+            <textarea class="editor-summary" placeholder="Kết luận / Tóm tắt"></textarea>
         </div>
     </div>
 </div>
@@ -534,8 +525,10 @@
             if (!response.ok) throw new Error('Network response was not ok');
             var data = await response.json();
             console.log(data)
+            const editorDiagram = document.getElementById('editorDiagram');
             const editorContent = document.getElementById('editorContent');
             if (data.data.length === 0) return;
+            editorDiagram.innerHTML = data.data[0].thongTinLuocDo || '';
             editorContent.innerHTML = data.data[0].trinhTu || '';
             document.querySelector('.editor-summary').innerText = data.data[0].ketLuan || '';
             setTimeout(() => {

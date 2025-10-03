@@ -27,7 +27,7 @@
 function saveTrinhTu() {
     //console.log('=== BẮT ĐẦU SAVE TRÌNH TỰ ===');
     console.log("Tới rồi nè");
-
+    var diagramInfo = $('#editorDiagram').html();
     var content = $('#editorContent').html();
     var summary = $('.editor-summary').val();
 
@@ -38,6 +38,7 @@ function saveTrinhTu() {
         IDPhieuTTPT: window.IDPhieuTTPT,
         TrinhTu: content,
         KetLuan: summary,
+        ThongTinLuocDo: diagramInfo,
         //DanhSachHinhAnh: getUploadedImages()
     };
 
