@@ -245,12 +245,27 @@ public class P0302ThuThuatPhauThuatPDF : IDocument
                         });
                     });
          
+                    //table.Cell().ColumnSpan(4).Element(cell =>
+                    //{
+                    //    cell.PaddingBottom(5).Row(row =>
+                    //    {
+                    //        row.ConstantColumn(120).Text("- Phương pháp vô cảm: ");
+                    //        row.RelativeColumn().Text(_data.PhuongPhapVoCam ?? "").Bold();
+                    //    });
+                    //});
                     table.Cell().ColumnSpan(4).Element(cell =>
                     {
                         cell.PaddingBottom(5).Row(row =>
                         {
-                            row.ConstantColumn(120).Text("- Phương pháp vô cảm: ");
-                            row.RelativeColumn().Text(_data.PhuongPhapVoCam ?? "").Bold();
+
+                            row.RelativeColumn(0.2f).Text("- Phương pháp vô cảm: ");
+                            row.RelativeColumn(0.59f).Text(_data.PhuongPhapVoCam ?? "").Bold();
+
+
+                            row.RelativeColumn(0.06f).Text("Loại: ");
+                            row.RelativeColumn(0.1f).Text(_data.LoaiTTPT).Bold();
+
+
                         });
                     });
                     // Can thiệp phẫu thuật

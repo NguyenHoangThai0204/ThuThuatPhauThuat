@@ -135,6 +135,7 @@ $(document).ready( async function () {
                 contentType: 'application/json',
                 data: JSON.stringify(data)
             });
+            console.log("Update phiếu");
         }
 
 

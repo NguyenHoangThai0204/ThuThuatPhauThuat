@@ -1,5 +1,5 @@
 ﻿let selectKhoa;
-let isEdit = false; // false = Thêm mới, true = Cập nhật
+let isEdit = false;
 
 const searchInput = document.querySelector(".search-container input");
 const searchBtn = document.querySelector(".search-container a");
@@ -15,7 +15,6 @@ function updateSaveButtonText() {
     if (!btnSave) return;
     btnSave.textContent = isEdit ? "Cập nhật" : "Thêm mới";
 
-    // ✅ Nút Hủy chỉ hiện khi ở trạng thái Cập nhật
     if (btnCancel) {
         if (isEdit) {
             btnCancel.classList.remove("d-none");
