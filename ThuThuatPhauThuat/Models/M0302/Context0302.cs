@@ -25,6 +25,7 @@ namespace ThuThuatPhauThuat.Models.M0302
         public DbSet<M0302ThongTinThuThuatPhauThuatModel> M0302ThongTinThuThuatPhauThuatModels { get; set; }
         public DbSet<M0301TuVong> TuVong { get; set; }
         public DbSet<M0301CheDoThuThuat> CheDoThuThuat { get; set; }
+        public DbSet<M0302NguonBenhTTPT> NguonBenhTTPT { get; set; }
         public DbSet<M0301TaiBienBienChung> TaiBienBienChung { get; set; }
         public DbSet<M0301ThietBiTTPT> ThietBi { get; set; }
         public DbSet<M0305TrinhTuVaKetLuanModel> TrinhTuVaKetLuan { get; set; }
@@ -50,6 +51,8 @@ namespace ThuThuatPhauThuat.Models.M0302
             modelBuilder.Entity<M0301TuVong>().HasIndex(v => v.ID)
                .IsUnique();
             modelBuilder.Entity<M0301CheDoThuThuat>().HasIndex(v => v.ID)
+                .IsUnique();
+            modelBuilder.Entity<M0302NguonBenhTTPT>().HasIndex(v => v.ID)
                 .IsUnique();
             modelBuilder.Entity<M0301TaiBienBienChung>().HasIndex(v => v.ID)
                 .IsUnique();

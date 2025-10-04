@@ -37,8 +37,8 @@
                     <input type="text"
                            class="form-control form-control-md txtDateTimeBatDauThuThuat-@tabIndex text-dark"
                            value="@(isEmptyModel
-                                                               ? DateTime.Now.ToString("dd-MM-yyyy HH:mm")
-                                                               : Model?.BatDauThuThuat?.ToString("dd-MM-yyyy HH:mm") ?? "")"
+                                                                                          ? DateTime.Now.ToString("dd-MM-yyyy HH:mm")
+                                                                                          : Model?.BatDauThuThuat?.ToString("dd-MM-yyyy HH:mm") ?? "")"
                            autocomplete="off"
                            @(isEmptyModel ? "" : "")>
                     <span class="input-icon-addon">
@@ -56,8 +56,8 @@
                     <input type="text"
                            class="form-control form-control-md txtDateTimeThoiGianKhoa-@tabIndex text-dark"
                            value="@(isEmptyModel
-                                                                                          ? DateTime.Now.ToString("dd-MM-yyyy HH:mm")
-                                                                                          : Model?.ThoiGianKhoa?.ToString("dd-MM-yyyy HH:mm") ?? "")"
+                                                                                                                     ? DateTime.Now.ToString("dd-MM-yyyy HH:mm")
+                                                                                                                     : Model?.ThoiGianKhoa?.ToString("dd-MM-yyyy HH:mm") ?? "")"
                            autocomplete="off"
                            @(isEmptyModel ? "" : "")>
                     <span class="input-icon-addon">
@@ -73,17 +73,12 @@
         <div class="col-12 col-md-3">
             <div class="d-flex align-items-center mb-2 mb-md-0">
                 <label class="form-label fw-bold me-2" style="min-width: 100px;">Nguồn bệnh:</label>
-                @if (isEmptyModel)
-                {
-                    <select class="form-select form-select-md thuThuat__nguonBenh-tom-select-@tabIndex"></select>
-                }
-                else
-                {
-                    <input type="text" class="form-control" value="@Model.IDNguonBenh"  />
-                }
-                @* <input autocomplete="off" class="tom-select cbCheDoThuThuat form-select " type="text" name="name" /> *@
+                <select autocomplete="off"
+                        class="tom-select thuThuat__nguonBenh-tom-select thuThuat__nguonBenh-tom-select-@tabIndex form-select"
+                        id="cbNguonBenh_@tabIndex"></select>
             </div>
         </div>
+      
 
         <!-- Yếu tố Rh -->
         <div class="col-4 col-md-1">
@@ -101,8 +96,8 @@
                     <input type="text"
                            class="form-control form-control-md txtDateTimeKetThucThuThuat-@tabIndex text-dark"
                            value="@(isEmptyModel
-                                                               ? DateTime.Now.ToString("dd-MM-yyyy HH:mm")
-                                                               : Model?.KetThucThuThuat?.ToString("dd-MM-yyyy HH:mm") ?? "")"
+                                                                                          ? DateTime.Now.ToString("dd-MM-yyyy HH:mm")
+                                                                                          : Model?.KetThucThuThuat?.ToString("dd-MM-yyyy HH:mm") ?? "")"
                            autocomplete="off"
                            @(isEmptyModel ? "" : "")>
                     <span class="input-icon-addon">
@@ -112,7 +107,6 @@
             </div>
         </div>
 
-        <!-- Người khóa -->
         <div class="col-12 col-md-4">
             <div class="d-flex align-items-center mb-2 mb-md-0">
                 <label class="form-label fw-bold me-2" style="min-width: 140px;">Người khóa:</label>
@@ -123,207 +117,155 @@
 </div>
 
 <script>
-    var nguonBenhData = [
-        { ma: "1", ten: "Trong Bệnh viện", vietTat: "tbv" },
-        { ma: "2", ten: "Ngoài Bệnh viện", vietTat: "nbv" },
-        { ma: "3", ten: "Chuyển khoa", vietTat: "ck" },
-        { ma: "4", ten: "Tự chuyển", vietTat: "tc" }
-    ];
+    // Biến toàn cục để lưu dữ liệu nguồn bệnh
+    var nguonBenhData = [];
 
-    function khoiTaoThongTinSoPhieu(tabIndex, isEmpty) {
-        if ($('.thuThuat__nguonBenh-tom-select-' + tabIndex).length && $('.thuThuat__nguonBenh-tom-select-' + tabIndex).tomselect) {
-            new TomSelect('.thuThuat__nguonBenh-tom-select-' + tabIndex, {
-                options: nguonBenhData,
-                valueField: "ma",
-                labelField: "ten",
-                searchField: ["ma", "ten"],
-                placeholder: "-- Chọn nguồn bệnh --",
-                maxItems: 1
-            });
+    // Hàm chuẩn hóa dữ liệu cho nguồn bệnh
+    function normalizeNguonBenhData(data, tenField = 'ten', viettatField = 'viettat') {
+        if (!Array.isArray(data)) {
+            console.warn("normalizeNguonBenhData nhận dữ liệu không phải mảng:", data);
+            return [];
         }
 
-        $('.txtDateTimeBatDauThuThuat-' + tabIndex + ', .txtDateTimeKetThucThuThuat-' + tabIndex + ',.txtDateTimeThoiGianKhoa-' + tabIndex).attachDateTimeGroups();
+        return data
+            .filter(n => n.active === true || n.active === 1)
+            .map(n => {
+                const ten = n[tenField]?.trim() || "";
+                const viettat = n[viettatField]?.trim() || "";
+                let generatedAlias = "";
 
-        // Nếu phiếu rỗng → set mặc định là thời gian hiện tại
-           if (isEmpty) {
-        var now = new Date();
-        var formatted = ("0" + now.getDate()).slice(-2) + "-" +
-                        ("0" + (now.getMonth() + 1)).slice(-2) + "-" +
-                        now.getFullYear() + " " +
-                        ("0" + now.getHours()).slice(-2) + ":" +
-                        ("0" + now.getMinutes()).slice(-2);
+                if (viettat !== "") {
+                    generatedAlias = viettat.toUpperCase();
+                } else {
+                    const words = ten.split(/\s+|-|\/|\(|\)|[^\w\s]/g).filter(w => w.length > 0);
+                    generatedAlias = words
+                        .map(w => w.charAt(0)?.toUpperCase())
+                        .join("");
+                    generatedAlias = generatedAlias.replace(/[^A-Z0-9]/g, '');
+                }
 
-        $('.txtDateTimeBatDauThuThuat-' + tabIndex).val(formatted);
-        $('.txtDateTimeKetThucThuThuat-' + tabIndex).val(formatted);
-        $('.txtDateTimeThoiGianKhoa-' + tabIndex).val(formatted);
-    }
-
-    }
-
-    khoiTaoThongTinSoPhieu(@tabIndex, @(isEmptyModel.ToString().ToLower()));
-</script>
-@* 
-
-@{
-    var tabIndex = ViewBag.TabIndex ?? 0;
-}
-<div class="p-2 bg-azure-lt rounded-2">
-    <div class="row mt-1">
-
-        <div class="col-12 col-md-3">
-            <div class="d-flex align-items-center mb-2 mb-md-0">
-                <label class="form-label fw-bold me-2" style="min-width: 100px;">Số phiếu:</label>
-                <select type="text" class="form-select form-select-md tomselected thuThuat__soPhieu-tom-select-@tabIndex" value="25761707"></select>
-            </div>
-        </div>
-
-        <div class="col-4 col-md-1">
-            <div class="d-flex align-items-center mb-2 mb-md-0">
-                <label class="form-label fw-bold me-2" style="min-width: 60px;">Nhóm máu:</label>
-                <label type="text" class="form-label thuThuat__nhomMau-@tabIndex text-dark" name="nhomMau">B</label>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4">
-            <div class="d-flex align-items-center mb-2 mb-md-0">
-                <label class="form-label fw-bold me-2" style="min-width: 140px;">Bắt đầu thủ thuật:</label>
-                <div class="input-icon w-100">
-                    <input type="text" class="form-control form-control-md txtDateTimeBatDauThuThuat-@tabIndex text-dark"
-                           value="19/08/2025 09:39" autocomplete="off">
-                    <span class="input-icon-addon">
-                        <i class="ti ti-calendar-event"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4">
-            <div class="d-flex align-items-center mb-2 mb-md-0">
-                <label class="form-label fw-bold me-2" style="min-width: 140px;">Thời gian khóa:</label>
-                <input type="text" class="form-control form-control-md text-dark" readonly>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-1">
-
-        <div class="col-12 col-md-3">
-            <div class="d-flex align-items-center mb-2 mb-md-0">
-                <label class="form-label fw-bold me-2" style="min-width: 100px;">Nguồn bệnh:</label>
-                <select type="text" class="form-select form-select-md tomselected thuThuat__nguonBenh-tom-select-@tabIndex text-dark" name="nguonBenh" value="Trong Bệnh viện"></select>
-            </div>
-        </div>
-
-        <div class="col-4 col-md-1">
-            <div class="d-flex align-items-center mb-2 mb-md-0">
-                <label class="form-label fw-bold me-2" style="min-width: 72px;">Yếu tố Rh:</label>
-                <span type="text" class="form-label thuThuat__yeuToRh-@tabIndex text-dark" name="yeuToRh" value="Dương tính">A</span>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4">
-            <div class="d-flex align-items-center mb-2 mb-md-0">
-                <label class="form-label fw-bold me-2" style="min-width: 140px;">Kết thúc thủ thuật:</label>
-                <div class="input-icon w-100">
-                    <input type="text" class="form-control form-control-md txtDateTimeKetThucThuThuat-@tabIndex text-dark"
-                           value="19/08/2025 10:39" autocomplete="off">
-                    <span class="input-icon-addon">
-                        <i class="ti ti-calendar-event"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4">
-            <div class="d-flex align-items-center mb-2 mb-md-0">
-                <label class="form-label fw-bold me-2" style="min-width: 140px;">Người khóa:</label>
-                <input type="text" class="form-control form-control-md text-dark" readonly>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Dữ liệu mẫu cho các dropdown
-    var soPhieuData = [
-        { ma: "25761707", ten: "25761707" },
-        { ma: "25761708", ten: "25761708" },
-        { ma: "25761709", ten: "25761709" }
-    ];
-
-    var nguonBenhData = [
-        { ma: "TB", ten: "Trong Bệnh viện", vietTat: "tbv" },
-        { ma: "NB", ten: "Ngoài Bệnh viện", vietTat: "nbv" },
-        { ma: "CK", ten: "Chuyển khoa", vietTat: "ck" },
-        { ma: "TC", ten: "Tự chuyển", vietTat: "tc" }
-    ];
-
-    // Hàm cấu hình Tom Select cho đúng tabIndex
-    function configTomSelect(tabIndex) {
-        var tomSelectConfigs = [
-            {
-                className: ".thuThuat__soPhieu-tom-select-" + tabIndex,
-                placeholder: "-- Chọn số phiếu --",
-                data: soPhieuData
-            },
-            {
-                className: ".thuThuat__nguonBenh-tom-select-" + tabIndex,
-                placeholder: "-- Chọn nguồn bệnh --",
-                data: nguonBenhData,
-                showVietTat: true
-            }
-        ];
-
-        tomSelectConfigs.forEach(cfg => {
-            var element = document.querySelector(cfg.className);
-
-            if (!element) {
-                // console.warn('Không tìm thấy element:', cfg.className);
-                return;
-            }
-            if (element.tomselect) {
-                // console.warn('TomSelect đã được khởi tạo cho:', cfg.className);
-                return;
-            }
-            let tomSelectConfig = {
-                options: cfg.data,
-                valueField: "ma",
-                labelField: "ten",
-                searchField: ["ma", "ten", "vietTat"],
-                placeholder: cfg.placeholder,
-                maxItems: 1,
-                create: cfg.allowCreate || false,
-                disabled: cfg.disabled || false
-            };
-            if (cfg.showVietTat) {
-                tomSelectConfig.render = {
-                    option: function(data, escape) {
-                        return '<div style="display: flex; justify-content: space-between;">' +
-                            '<span>' + escape(data.ten) + '</span>' +
-                            '<span style="color: #6c757d;">' + escape(data.vietTat || '') + '</span>' +
-                            '</div>';
-                    },
-                    item: function(data, escape) {
-                        return '<div>' + escape(data.ten) + '</div>';
-                    }
+                return {
+                    ...n,
+                    alias: generatedAlias
                 };
-            }
+            });
+    }
 
-            try {
-                new TomSelect(element, tomSelectConfig);
-            } catch (error) {
-                console.error('Lỗi khởi tạo TomSelect cho', cfg.className, ':', error);
+    // Hàm fetch dữ liệu nguồn bệnh
+    async function fetchNguonBenhData() {
+        try {
+            console.log("Tới lúc truyền nè ");
+            const url = "/NguonBenhTTPT/List"; // hoặc "dist/data/json/DM_NguonBenh.json"
+            
+            if (url.endsWith('.json')) {
+                const response = await $.getJSON(url);
+                nguonBenhData = normalizeNguonBenhData(response);
+            } else {
+                const response = await $.ajax({
+                    url: url,
+                    method: 'GET',
+                    dataType: 'json'
+                });
+                nguonBenhData = normalizeNguonBenhData(response);
+            }
+        } catch (error) {
+            console.error("Lỗi khi tải dữ liệu nguồn bệnh:", error);
+            // Dữ liệu mẫu fallback
+            nguonBenhData = [
+                { id: "1", ma: "NB01", ten: "Nguồn bệnh nội trú", alias: "NBNT" },
+                { id: "2", ma: "NB02", ten: "Nguồn bệnh ngoại trú", alias: "NBNGT" },
+                { id: "3", ma: "NB03", ten: "Cấp cứu", alias: "CC" },
+                { id: "4", ma: "NB04", ten: "Chuyển viện", alias: "CV" }
+            ];
+        }
+    }
+
+    // Hàm khởi tạo TomSelect cho nguồn bệnh
+    function initNguonBenhTomSelect(tabIndex) {
+        const selector = `.thuThuat__nguonBenh-tom-select-${tabIndex}`;
+        const elements = document.querySelectorAll(selector);
+
+        elements.forEach(el => {
+            if (el && !el.tomselect) {
+                const tomSelectInstance = new TomSelect(el, {
+                    options: nguonBenhData,
+                    valueField: "id",
+                    labelField: "ten",
+                    searchField: ["ten", "ma", "alias"],
+                    placeholder: "-- Chọn nguồn bệnh --",
+                    maxItems: 1,
+                    render: {
+                        option: (data, escape) => `
+                            <div style="display:flex; justify-content:space-between; width:100%;">
+                                <span>${escape(data.ten)}</span>
+                                <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.ma || "")}</span>
+                            </div>`,
+                        item: (data, escape) => `
+                            <div style="display:flex; justify-content:space-between; width:100%;">
+                                <span>${escape(data.ten)}</span>
+                                <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.ma || "")}</span>
+                            </div>`
+                    },
+                    no_results: function (data, escape) {
+                        return `<div class="no-results" style="padding:6px 10px;color:#999;">
+                                    Không tìm thấy "${escape(data.input)}"
+                                </div>`;
+                    }
+                });
+
+                // Nếu tab có Model sẵn thì set value
+                @if (!isEmptyModel && Model?.IDNguonBenh != null)
+                {
+                        <text>
+                        tomSelectInstance.setValue('@Model.IDNguonBenh');
+                        </text>
+                }
             }
         });
     }
 
-    function configDateTimePicker(tabIndex) {
-        $('.txtDateTimeBatDauThuThuat-' + tabIndex + ', .txtDateTimeKetThucThuThuat-' + tabIndex).attachDateTimeGroups();
+    // Hàm chính khởi tạo thông tin số phiếu
+    async function khoiTaoThongTinSoPhieu(tabIndex, isEmpty) {
+        // Load dữ liệu nguồn bệnh
+        await fetchNguonBenhData();
+
+        // Khởi tạo TomSelect cho nguồn bệnh
+        initNguonBenhTomSelect(tabIndex);
+
+        // Khởi tạo datetime picker
+        $('.txtDateTimeBatDauThuThuat-' + tabIndex + ', .txtDateTimeKetThucThuThuat-' + tabIndex + ',.txtDateTimeThoiGianKhoa-' + tabIndex).attachDateTimeGroups();
+
+        // Nếu phiếu rỗng → set mặc định là thời gian hiện tại
+        if (isEmpty) {
+            var now = new Date();
+            var formatted = ("0" + now.getDate()).slice(-2) + "-" +
+                            ("0" + (now.getMonth() + 1)).slice(-2) + "-" +
+                            now.getFullYear() + " " +
+                            ("0" + now.getHours()).slice(-2) + ":" +
+                            ("0" + now.getMinutes()).slice(-2);
+
+            $('.txtDateTimeBatDauThuThuat-' + tabIndex).val(formatted);
+            $('.txtDateTimeKetThucThuThuat-' + tabIndex).val(formatted);
+            $('.txtDateTimeThoiGianKhoa-' + tabIndex).val(formatted);
+        }
     }
 
-    function khoiTaoThongTinSoPhieu(tabIndex) {
-        configTomSelect(tabIndex);
-        configDateTimePicker(tabIndex);
+    // Gọi hàm khởi tạo
+    khoiTaoThongTinSoPhieu(@tabIndex, @(isEmptyModel.ToString().ToLower()));
+
+    // Hàm để lấy giá trị nguồn bệnh đã chọn (có thể sử dụng khi save form)
+    function getSelectedNguonBenh() {
+        const selector = `#cbNguonBenh_${@tabIndex}`;
+        const tomSelectInstance = document.querySelector(selector)?.tomselect;
+        return tomSelectInstance ? tomSelectInstance.getValue() : '';
     }
-    khoiTaoThongTinSoPhieu(@tabIndex);
-</script>  *@
+
+    // Hàm để set giá trị nguồn bệnh (có thể sử dụng khi edit)
+    function setNguonBenhValue(value) {
+        const selector = `#cbNguonBenh_${@tabIndex}`;
+        const tomSelectInstance = document.querySelector(selector)?.tomselect;
+        if (tomSelectInstance) {
+            tomSelectInstance.setValue(value);
+        }
+    }
+</script>
