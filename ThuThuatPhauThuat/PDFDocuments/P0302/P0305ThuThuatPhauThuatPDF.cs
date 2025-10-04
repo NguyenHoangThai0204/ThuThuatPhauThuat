@@ -192,7 +192,7 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
 
             if (!string.IsNullOrEmpty(logoBase64))
             {
-                sb.Append($"<img src='data:image/jpeg;base64,{logoBase64}' style='width:32px; height:33px; margin-right:5px; vertical-align:top;' />");
+                sb.Append($"<img src='data:image/jpeg;base64,{logoBase64}' style='width:35px; height:35px; margin-right:5px; vertical-align:top;' />");
             }
             sb.Append("<div style='display:inline-block;'>");
             sb.Append($"<div class='bold'>{_thongTinDoanhNghiep.TenCoQuanChuyenMon ?? ""}</div>");

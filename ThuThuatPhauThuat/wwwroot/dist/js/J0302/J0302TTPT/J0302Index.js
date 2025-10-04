@@ -135,7 +135,6 @@ $(document).ready(async function () {
                                 initThongTinTab(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
                             } else if (tabNumber === 4) {
                                 initEkipTab();
-                                console.log("Ekip for id:", IDPhieuTTPT);
                             }
 
                             tabLoaded[tabKey] = true;
@@ -149,16 +148,19 @@ $(document).ready(async function () {
     });
 
     // 👉 Save
+    // 👉 Save - SỬA LẠI
     $(document).on('click', '#btn_saveIndex', async function () {
-        console.log("👉 Nút Lưu click, tab:", currentTabIndex);
+        console.log("👉 Nút Lưu click, currentTabIndex:", currentTabIndex);
 
-        var selectedNguonBenh = getSelectedNguonBenh();
+        // 👇 SỬA: Dùng tabIndex = 0 thay vì currentTabIndex (vì form số phiếu luôn ở tab 0)
+        var selectedNguonBenh = $('.thuThuat__nguonBenh-tom-select-0').val();
+
         var data = {
             SoPhieu: $('#soPhieu').val(),
             IDNguonBenh: selectedNguonBenh,
-            BatDauThuThuat: formatLocalDateTime($('.txtDateTimeBatDauThuThuat-' + currentTabIndex).val()),
-            KetThucThuThuat: formatLocalDateTime($('.txtDateTimeKetThucThuThuat-' + currentTabIndex).val()),
-            ThoiGianKhoa: formatLocalDateTime($('.txtDateTimeThoiGianKhoa-' + currentTabIndex).val()),
+            BatDauThuThuat: formatLocalDateTime($('.txtDateTimeBatDauThuThuat-0').val()), // 👈 SỬA thành 0
+            KetThucThuThuat: formatLocalDateTime($('.txtDateTimeKetThucThuThuat-0').val()), // 👈 SỬA thành 0
+            ThoiGianKhoa: formatLocalDateTime($('.txtDateTimeThoiGianKhoa-0').val()), // 👈 SỬA thành 0
             NhomMau: $('#nhomMau').val(),
             YeuToRh: $('#yeuToRh').val(),
             IDVaoVien: selectedIdVaoVien,
@@ -166,29 +168,42 @@ $(document).ready(async function () {
             NguoiKhoa: $('#nguoiKhoa').val()
         };
 
-        if (!IDPhieuTTPT || IDPhieuTTPT === 0) {
-            let res = await $.ajax({
-                url: '/thu_thuat_phau_thuat/create-phieu',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data)
-            });
-            if (res.success) {
-                window.IDPhieuTTPT = res.idPhieuTTPT;
-            }
-        } else {
-            data.IDPhieuTTPT = IDPhieuTTPT;
-            await $.ajax({
-                url: '/thu_thuat_phau_thuat/update-phieu',
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(data)
-            });
-        }
+        console.log("📦 Data gửi đi:", data);
 
-        if (typeof handleSaveThongTin === 'function') handleSaveThongTin();
-        if (typeof saveTrinhTu === 'function') saveTrinhTu();
-        if (typeof handleSaveEkip === 'function') handleSaveEkip();
+        try {
+            if (!IDPhieuTTPT || IDPhieuTTPT === 0) {
+                let res = await $.ajax({
+                    url: '/thu_thuat_phau_thuat/create-phieu',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data)
+                });
+                console.log("✅ Create result:", res);
+                if (res.success) {
+                    window.IDPhieuTTPT = res.idPhieuTTPT;
+                    toastr.success("Tạo phiếu thành công");
+                }
+            } else {
+                data.IDPhieuTTPT = IDPhieuTTPT;
+                await $.ajax({
+                    url: '/thu_thuat_phau_thuat/update-phieu',
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data)
+                });
+                console.log("✅ Update phiếu thành công");
+                toastr.success("Cập nhật phiếu thành công");
+            }
+
+            // Gọi các hàm save khác
+            if (typeof handleSaveThongTin === 'function') handleSaveThongTin();
+            if (typeof saveTrinhTu === 'function') saveTrinhTu();
+            if (typeof handleSaveEkip === 'function') handleSaveEkip();
+
+        } catch (error) {
+            console.error("❌ Lỗi khi lưu:", error);
+            toastr.error("Lỗi khi lưu dữ liệu");
+        }
     });
 
     // 👉 Export PDF
@@ -245,7 +260,6 @@ toastr.options = {
 
 
 
-
 //function khoiTaoJSChoTab(tabIndex) {
 //    // Khởi tạo datetimepicker
 //    $('.datetimepicker-' + tabIndex).each(function () {
@@ -254,8 +268,9 @@ toastr.options = {
 //        }
 //    });
 
-//    // Khởi tạo TomSelect chung
+//    // Khởi tạo TomSelect
 //    $('.tom-select-' + tabIndex).each(function () {
+
 //        if (this && !this.tomselect) {
 //            try {
 //                new TomSelect(this, {});
@@ -264,14 +279,8 @@ toastr.options = {
 //            }
 //        }
 //    });
-
-//    // 👉 Nếu tab có chứa nguồn bệnh thì gọi initNguonBenh
-//    if ($(`.thuThuat__nguonBenh-tom-select-${tabIndex}`).length) {
-//        fetchNguonBenhData().then(() => {
-//            initNguonBenhTomSelect(tabIndex);
-//        });
-//    }
 //}
+
 
 //var selectedIdVaoVien = null;
 //var selectedIdChiDinhChiTiet = null;
@@ -329,10 +338,10 @@ toastr.options = {
 //    }
 //}
 
-//$(document).ready( async function () {
+//$(document).ready(async function () {
 //    $("#tabs-danhsach-7").load("/thu_thuat_phau_thuat/danh_sach");
 
-  
+
 //    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', async function (e) {
 //        var target = $(e.target).attr("href");
 //        var tabNumber = 0;
@@ -358,10 +367,10 @@ toastr.options = {
 
 //            // CHỈ load lại khi chưa từng load hoặc khi ID thay đổi
 //            var shouldLoad = !tabLoaded[tabKey] ||
-//                (tabNumber === 2 && tabNumber === 3 && tabNumber === 4 && isNewPatientSelection()); // Thêm điều kiện kiểm tra ID mới
+//                (tabNumber === 2 && isNewPatientSelection()); // Thêm điều kiện kiểm tra ID mới
 
 //            if (shouldLoad) {
-//                $(target).load(urlMap[tabNumber],  function () {
+//                $(target).load(urlMap[tabNumber], function () {
 //                    $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu", {
 //                        tabIndex: tabNumber,
 //                        idVaoVien: selectedIdVaoVien,
@@ -389,18 +398,12 @@ toastr.options = {
 //        }
 //    });
 //    $('#btn_saveIndex').on('click', async function () {
-//        var selectedNguonBenh = getSelectedNguonBenh();
-
 //        var data = {
 //            SoPhieu: $('#soPhieu').val(),
-//            IDNguonBenh: selectedNguonBenh,
-//            BatDauThuThuat: formatLocalDateTime($('.txtDateTimeBatDauThuThuat-' + tabIndex).val()),
-//            KetThucThuThuat: formatLocalDateTime($('.txtDateTimeKetThucThuThuat-' + tabIndex).val()),
-//            ThoiGianKhoa: formatLocalDateTime($('.txtDateTimeThoiGianKhoa-' + tabIndex).val()),
-//            //IDNguonBenh: $('.thuThuat__nguonBenh-tom-select-0').val(),
-//            //BatDauThuThuat: formatLocalDateTime($('.txtDateTimeBatDauThuThuat-0').val()),
-//            //KetThucThuThuat: formatLocalDateTime($('.txtDateTimeKetThucThuThuat-0').val()),
-//            //ThoiGianKhoa: formatLocalDateTime($('.txtDateTimeThoiGianKhoa-0').val()),
+//            IDNguonBenh: $('.thuThuat__nguonBenh-tom-select-0').val(),
+//            BatDauThuThuat: formatLocalDateTime($('.txtDateTimeBatDauThuThuat-0').val()),
+//            KetThucThuThuat: formatLocalDateTime($('.txtDateTimeKetThucThuThuat-0').val()),
+//            ThoiGianKhoa: formatLocalDateTime($('.txtDateTimeThoiGianKhoa-0').val()),
 //            NhomMau: $('#nhomMau').val(),
 //            YeuToRh: $('#yeuToRh').val(),
 //            IDVaoVien: selectedIdVaoVien,
@@ -444,6 +447,45 @@ toastr.options = {
 
 //    });
 
+//    //$('#btn_pdfIndex').on('click', function () {
+//    //    var data = {
+//    //        IDVaoVien: selectedIdVaoVien,
+//    //        IDChiDinhChiTiet: selectedIdChiDinhChiTiet,
+//    //        IDChiNhanh: _idcn
+//    //    };
+
+//    //    if (selectedIdChiDinhChiTiet && selectedIdVaoVien && IDPhieuTTPT) {
+
+//    //        fetch("/thu_thuat_phau_thuat/xuat-pdf-bang-html", {
+//    //            method: "POST",
+//    //            headers: {
+//    //                "Content-Type": "application/json",
+//    //                "Accept": "application/pdf"
+//    //            },
+//    //            body: JSON.stringify(data)
+//    //        })
+//    //            .then(res => {
+//    //                if (!res.ok) throw new Error("Export PDF thất bại");
+//    //                return res.blob();
+//    //            })
+//    //            .then(blob => {
+//    //                const url = window.URL.createObjectURL(blob);
+//    //                const a = document.createElement("a");
+//    //                a.href = url;
+//    //                a.download = "ThuThuatPhauThuat.pdf";
+//    //                a.click();
+//    //                window.URL.revokeObjectURL(url);
+//    //                toastr.success("Xuất PDF thành công");
+//    //            })
+//    //            .catch(err => {
+//    //                console.error("Lỗi export PDF:", err);
+//    //                toastr.error("Xuất PDF thất bại");
+//    //            });
+
+//    //    } else {
+//    //        toastr.error("Vui lòng tạo số phiếu trước khi xuất PDF");
+//    //    }
+//    //});
 //    $('#btn_pdfIndex').on('click', function () {
 //        var $btn = $(this);
 
@@ -490,7 +532,7 @@ toastr.options = {
 //        }
 //    });
 
-  
+
 //});
 //toastr.options = {
 //    "closeButton": true,

@@ -4,6 +4,9 @@
     {
         // Thông tin phiếu
         public long? IDPhieuTTPT { get; set; }
+        public string? IDChanDoanVao { get; set; }
+        public string? IDChanDoanTruoc { get; set; }
+        public string? IDChanDoanSau { get; set; }
         public string? MaChanDoanVao { get; set; }
         public string? TenChanDoanVao { get; set; }
         public string? MaChanDoanTruoc { get; set; }
@@ -34,8 +37,5 @@
         public string? YeuCauXetNghiem { get; set; }
         public long? IDTuVong { get; set; }
         public long? IDPhuongPhapVoCam { get; set; }
-        public string? IDChanDoanVao { get; set; }
-        public string? IDChanDoanTruoc { get; set; }
-        public string? IDChanDoanSau { get; set; }
     }
 }

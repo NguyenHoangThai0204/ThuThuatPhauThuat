@@ -6,6 +6,7 @@ using System.Data;
 using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
 using ThuThuatPhauThuat.PDFDocuments.P0302;
+using ThuThuatPhauThuat.Services.S0302;
 using ThuThuatPhauThuat.Services.S0302.IS0302;
 using ThuThuatPhauThuat.Services.S0305.IS0305;
 
@@ -19,6 +20,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
         private readonly IS0302ThuThuatPhauThuatInterface _service;
         private readonly IS0305FtpService _ftpService;
+        private readonly S0301ICDService _icdService;
         private readonly Context0302 _context;
         private readonly ILogger<C0302ThuThuatPhauThuatHomeController> _logger;
 
@@ -26,14 +28,16 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             IS0302ThuThuatPhauThuatInterface service, 
             Context0302 context, 
             ILogger<C0302ThuThuatPhauThuatHomeController> logger,
-            IS0305FtpService ftpService
-            /*, IMemoryCachingServices memoryCache*/
+            IS0305FtpService ftpService,
+            S0301ICDService icdService
+        /*, IMemoryCachingServices memoryCache*/
         )
         {
             _service = service;
             _context = context;
             _logger = logger;
             _ftpService = ftpService;
+            _icdService = icdService;
             //_memoryCache = memoryCache;
         }
         public class ExportPdfRequest
@@ -69,6 +73,21 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 if (data == null)
                     return NotFound(new { success = false, message = "Không có dữ liệu để xuất PDF" });
 
+                _logger.LogInformation(@"✅ DEBUG FULL DATA:
+            • MaVaoVien: {MaVaoVien}
+            • TenBN: {TenBN}
+            • BatDauThuThuat: {BatDauThuThuat}
+            • BatDauThuThuat Type: {BatDauType}
+            • KetThucThuThuat: {KetThucThuThuat}
+            • VaoVienLuc: {VaoVienLuc}
+            • IDPhieuTTPT: {IDPhieuTTPT}",
+             data.MaVaoVien,
+             data.TenBN,
+             data.BatDauThuThuat,
+             data.BatDauThuThuat?.GetType()?.Name ?? "NULL",
+             data.KetThucThuThuat,
+             data.VaoVienLuc,
+             data.IDPhieuTTPT);
                 // Lấy thông tin doanh nghiệp
                 var parameters1 = new[] { new SqlParameter("@IdChiNhanh", request.IDChiNhanh) };
                 var sql1 = @"EXEC S0302_GetThongTinDoanhNghiep @IdChiNhanh";
@@ -317,7 +336,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 await conn.OpenAsync();
 
                 using var cmd = conn.CreateCommand();
-                cmd.CommandText = "S0302_CapNhatPhieuTTPT"; // Stored procedure update
+                cmd.CommandText = "S0302_CapNhatPhieuTTPT";
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 cmd.Parameters.Add(new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT));
@@ -341,6 +360,78 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 return StatusCode(500, new { success = false, message = $"Lỗi Server: {ex.Message}" });
             }
         }
+        [HttpGet("thong-tin/search-icd")]
+        public IActionResult SearchIcd(
+                    [FromQuery] string query,
+                    [FromQuery] int limit = 50,
+                    [FromQuery] bool yhct = false
+                    ){
+            if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
+            {
+                var defaultList = _icdService.GetAllIcdData(yhct)
+                                             .Where(i => i.active)
+                                             .Take(limit)
+                                             .ToList();
+                var defaultResults = defaultList
+             .Select(i => new {
+                 id = i.id,
+                 ma = i.ma,
+                 ten = i.ten,
+                 text = $"{i.ma} - {i.ten}"
+             })
+             .ToList();
+
+                return Ok(defaultResults);
+            }
+
+            string lowerQuery = query.Trim().ToLower();
+
+
+            var allIcd = _icdService.GetAllIcdData(yhct);
+
+            var results = allIcd
+                .Where(i => i.active &&
+                            (i.ma.ToLower().Contains(lowerQuery) ||
+                             i.ten.ToLower().Contains(lowerQuery) ||
+                             i.viettat?.ToLower().Contains(lowerQuery)  == true))
+                .Take(limit)
+                .Select(i => new {
+                    id = i.id,
+                    ma = i.ma,
+                    ten = i.ten,
+                    viettat = i.viettat,
+                    text = $"{i.ma} - {i.ten}"
+                })
+                .ToList();
+
+
+            return Ok(results);
+        }
+        [HttpGet("thong-tin/details")]
+        public IActionResult GetIcdDetails([FromQuery] string codes, [FromQuery] bool yhct = false)
+        {
+            if (string.IsNullOrWhiteSpace(codes))
+                return BadRequest(new { message = "Vui lòng cung cấp danh sách mã ICD." });
+
+            var codeList = codes.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(c => c.Trim().ToLower())
+                                .ToHashSet();
+
+            var allIcd = _icdService.GetAllIcdData(yhct);
+
+            var results = allIcd
+                .Where(i => codeList.Contains(i.ma.ToLower()))
+                .Select(i => new {
+                    id = i.id,
+                    ma = i.ma,
+                    ten = i.ten,
+                    viettat = i.viettat,
+                    text = $"{i.ma} - {i.ten}"
+                })
+                .ToList();
+
+            return Ok(results);
+        }
 
 
         [HttpPost("thong-tin/save-thong-tin")]
@@ -358,13 +449,16 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             {
 
                 string sqlQuery = @"EXEC S0301_ThemThongTinTTPT 
-            @IDPhieuTTPT, @MaChanDoanVao, @TenChanDoanVao, @MaChanDoanTruoc, @TenChanDoanTruoc, @MaChanDoanSau, @TenChanDoanSau,
+            @IDPhieuTTPT, @IDChanDoanVao, @IDChanDoanTruoc, @IDChanDoanSau, @MaChanDoanVao, @TenChanDoanVao, @MaChanDoanTruoc, @TenChanDoanTruoc, @MaChanDoanSau, @TenChanDoanSau,
             @IDPhongThucHien, @IDLoaiTTPT, @IDThietBi, @IDTaiBienBienChung, @IDCheDoThuThuat, @CanThiepThuThuat, @SoLanMoLai, 
             @LyDoMoLai, @IDViTriThucHien, @IDTuVong, @DanLuu, @NgayRutOngDanLuu, @NgayCatChi, @Khac,
             @MaFNA, @TienCan, @KetQuaXNFNAGBP, @ChiDinhViTriTonThuongFNA, @YeuCauXetNghiem, @IDPhuongPhapVoCam";
 
                 await _context.Database.ExecuteSqlRawAsync(sqlQuery,
                     new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT ?? (object)DBNull.Value),
+                    new SqlParameter("@IDChanDoanVao", model.IDChanDoanVao ?? (object)DBNull.Value),
+                    new SqlParameter("@IDChanDoanTruoc", model.IDChanDoanTruoc ?? (object)DBNull.Value),
+                    new SqlParameter("@IDChanDoanSau", model.IDChanDoanSau ?? (object)DBNull.Value),
                     new SqlParameter("@MaChanDoanVao", model.MaChanDoanVao ?? (object)DBNull.Value),
                     new SqlParameter("@TenChanDoanVao", model.TenChanDoanVao ?? (object)DBNull.Value),
                     new SqlParameter("@MaChanDoanTruoc", model.MaChanDoanTruoc ?? (object)DBNull.Value),
@@ -710,6 +804,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302EkipThucHienTTPT.cshtml");
         }
+
         [HttpPost]
         [Route("ekip/create")]
         public IActionResult CreateEkip([FromBody] List<EkipRequest> ekipList)
@@ -720,9 +815,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 return BadRequest(new { success = false, message = "Danh sách ekip rỗng, không có dữ liệu để lưu." });
             }
 
-            // --- BƯỚC 1: CHUYỂN ĐỔI LIST SANG DATATABLE CHO TVP ---
             var dt = new DataTable();
-            // Tên cột phải khớp chính xác với Type Table 'udt_EkipThucHien' trong SQL Server
             dt.Columns.Add("IDPhieuTTPT", typeof(long));
             dt.Columns.Add("IDNhanVien", typeof(long));
             dt.Columns.Add("IDVaiTro", typeof(long));

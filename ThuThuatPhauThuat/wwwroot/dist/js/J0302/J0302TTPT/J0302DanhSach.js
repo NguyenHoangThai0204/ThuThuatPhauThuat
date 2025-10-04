@@ -30,7 +30,8 @@ $(document).on("click", "#example tbody tr", function () {
     selectedIdVaoVien = $(this).data("idvaovien");
     selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
     window.IDPhieuTTPT = $(this).data("idphieu");
-    console.log("số phiếu = ", window.IDPhieuTTPT);
+    console.log("số phiếu = ", selectedIdVaoVien);
+    console.log("số phiếu = ", selectedIdChiDinhChiTiet);
 
 
     var dateStr = decodeURIComponent($(this).attr("data-ngaygiochidinh"));
