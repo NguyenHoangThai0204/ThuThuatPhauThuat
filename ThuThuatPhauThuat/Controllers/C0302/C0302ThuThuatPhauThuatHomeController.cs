@@ -1,9 +1,7 @@
-﻿using DemoCauTruc.Models.M0302;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
 using System.Data;
 using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
@@ -513,6 +511,44 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 return StatusCode(500, new { success = false, message = $"Lỗi Server: Không thể đọc dữ liệu trình tự. Chi tiết: {ex.Message}" });
             }
         }
+        [HttpGet]
+        [Route("trinh-tu/vai-tro-ttpt")]
+        public async Task<IActionResult> GetVaiTroTTPT()
+        {
+            try
+            {
+                var result = new List<object>();
+
+                using (var connection = _context.Database.GetDbConnection())
+                {
+                    await connection.OpenAsync();
+
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT ID, Ma, Ten, Active FROM DM_VaiTroTTPT";
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                result.Add(new
+                                {
+                                    ID = reader.GetInt64(0),
+                                    Ma = reader.GetString(1),
+                                    Ten = reader.GetString(2),
+                                    Active = reader.GetBoolean(3)
+                                });
+                            }
+                        }
+                    }
+                }
+
+                return Ok(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Lỗi Server: {ex.Message}" });
+            }
+        }
 
         [HttpPost("trinh-tu/upload-image")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -689,12 +725,12 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             // Tên cột phải khớp chính xác với Type Table 'udt_EkipThucHien' trong SQL Server
             dt.Columns.Add("IDPhieuTTPT", typeof(long));
             dt.Columns.Add("IDNhanVien", typeof(long));
-            dt.Columns.Add("TenVaiTro", typeof(string));
+            dt.Columns.Add("IDVaiTro", typeof(long));
             dt.Columns.Add("GhiChu", typeof(string));
 
             foreach (var item in ekipList)
             {
-                dt.Rows.Add(item.IDPhieuTTPT, item.IDNhanVien, item.TenVaiTro, item.GhiChu);
+                dt.Rows.Add(item.IDPhieuTTPT, item.IDNhanVien, item.IDVaiTro, item.GhiChu);
                 _logger.LogWarning($"item : {item.IDPhieuTTPT}");
             }
 
@@ -702,7 +738,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             var tvpParam = new SqlParameter("@EkipData", dt)
             {
                 SqlDbType = SqlDbType.Structured,
-                TypeName = "dbo.T0301_EkipThucHien" // Phải khớp với tên Type Table SQL
+                TypeName = "dbo.T0301_EkipThucHienUpdate"
             };
 
             try
@@ -779,7 +815,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         {
             public long IDPhieuTTPT { get; set; }
             public long IDNhanVien { get; set; }
-            public string TenVaiTro { get; set; }
+            public long IDVaiTro { get; set; }
             public string GhiChu { get; set; }
         }
         public class EkipResult

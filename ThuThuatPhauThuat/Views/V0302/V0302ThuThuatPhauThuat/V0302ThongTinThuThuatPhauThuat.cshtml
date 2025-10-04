@@ -158,10 +158,10 @@
                 <label class="border-label fw-bold">Chẩn đoán vào khoa</label>
                 <div class="row">
                     <div class="col-md-5 col-12">
-                        <select type="text" class="form-select  me-2 tom-select cbCDVaoKhoa" id="ma_icd_vao_khoa" placeholder="Mã ICD"></select>
+                        <select type="text" class="form-select me-2 tom-select cbCDVaoKhoa" id="ma_icd_vao_khoa" placeholder="Mã ICD"></select>
                     </div>
                     <div class="col-md-7 col-12">
-                        <div class="form-control " id="hien_thi_icd_vao_khoa" style="min-height: 35px; display: flex; flex-wrap: wrap; gap: 2px; align-items: center; padding: 1px;"></div>
+                        <div class="form-control" id="hien_thi_icd_vao_khoa" style="min-height: 35px; display: flex; flex-wrap: wrap; gap: 2px; align-items: center; padding: 1px; background-color: #F0F2F4;"></div>
                     </div>
                 </div>
                 <div class="row">
@@ -170,7 +170,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 10px;">
+            <div class="row" style="margin-bottom: 15px;">
                 <div class="col-md-4">
                     <label class="col-form-label form-label text-truncate" style="max-width: 180px">Phòng thực hiện: </label>
                 </div>
@@ -178,18 +178,19 @@
                     <input autocomplete="off" class="tom-select cbPhongThucHien form-select " type="text" name="name" />
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 10px;">
+            <div class="row" style="margin-bottom: 15px;">
                 <div class="col-md-4">
                     <label class="col-form-label form-label text-truncate" style="max-width: 180px">Phân loại: </label>
                 </div>
                 <div class="col-md-8 flex-fill">
                     <input autocomplete="off" class="tom-select cbPhanLoai form-select " type="text" name="name" />
                 </div>
+               
             </div>
             <!-- Added ellipsis button for Thiết bị -->
-            <div class="row" style="margin-bottom: 10px;">
+            <div class="row" style="margin-bottom: 15px;">
                 <div class="col-md-4">
-                    <label class="col-form-label form-label text-truncate" style="max-width: 180px" onclick="openModal('thietBiModal')">Thiết bị: </label>
+                    <label class="col-form-label text-truncate" style="max-width: 180px" onclick="openModal('thietBiModal')">Thiết bị: </label>
                 </div>
                 <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input autocomplete="off" class="tom-select cbThietBi form-select " type="text" name="name" />
@@ -202,12 +203,22 @@
                     </button> *@
                 </div>
             </div>
+            <div class="row" style="margin-bottom: 12px;">
+                <div class="col-md-4">
+                    <label for="voCamSelect" class="fw-bold">Phương thức vô cảm :</label>
+                </div>
+                <div class="col-8">
+                    <select class="tom-select cbPTVoCam form-select " type="text" name="name" id="voCamSelect"></select>
+
+                </div>
+            </div>
             <div class="row mb-3">
-                <label for="can_thiep_thu_thuat" class="col-4 col-form-label">Can thiệp thủ thuật</label>
+                <label for="can_thiep_thu_thuat" class="col-4 col-form-label">Can thiệp thủ thuật :</label>
                 <div class="col-8">
                     <textarea class="form-control" rows="3" id="can_thiep_thu_thuat"></textarea>
                 </div>
             </div>
+
         </div>
 
         <!-- Cột 2: Chẩn đoán trước thủ thuật -->
@@ -219,7 +230,7 @@
                         <select type="text" class="form-select   me-2 tom-select cbTruocThuThuat" id="ma_icd_truoc_thuat" placeholder="Mã ICD"></select>
                     </div>
                     <div class="col-md-7 col-12">
-                        <div class="form-control " id="hien_thi_icd_truoc_thuat" style="min-height: 35px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 1px;"></div>
+                        <div class="form-control " id="hien_thi_icd_truoc_thuat" style="min-height: 35px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 1px; background-color: #F0F2F4;"></div>
                     </div>
                 </div>
                 <div class="row">
@@ -229,9 +240,9 @@
                 </div>
             </div>
             <!-- Added ellipsis button for Tai biến/biến chứng -->
-            <div class="row" style="margin-bottom: 10px;">
+            <div class="row" style="margin-bottom: 12px;">
                 <div class="col-md-4">
-                    <label class="col-form-label form-label text-truncate" title="Tai biến/biến chứng" style="max-width: 180px" onclick="openModal('bienChungModal')">Tai biến/biến chứng: </label>
+                    <label class="fw-bold" title="Tai biến/biến chứng" style="max-width: 180px" onclick="openModal('bienChungModal')">Tai biến/biến chứng: </label>
                 </div>
                 <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input autocomplete="off" class="tom-select cbBienChung form-select " type="text" name="name" />
@@ -247,7 +258,7 @@
             <!-- Added ellipsis button for Chế độ thủ thuật -->
             <div class="row" style="margin-bottom: 10px;">
                 <div class="col-md-4">
-                    <label class="col-form-label form-label text-truncate" style="max-width: 180px" onclick="openModal('cheDoThuThuatModal')">Chế độ thủ thuật: </label>
+                    <label class="fw-bold" style="max-width: 180px" onclick="openModal('cheDoThuThuatModal')">Chế độ thủ thuật: </label>
                 </div>
                 <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input autocomplete="off" class="tom-select cbCheDoThuThuat form-select " type="text" name="name" />
@@ -260,20 +271,8 @@
                     </button> *@
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <label for="so_lan_mo_lai" class="col-4 col-form-label">Số lần mổ lại :</label>
-                <div class="col-8">
-                    <input autocomplete="off" type="number" class="form-control " id="so_lan_mo_lai">
-                </div>
-            </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <label for="ly_do_mo_lai" class="col-4 col-form-label">Lý do mổ lại :</label>
-                <div class="col-8">
-                    <input autocomplete="off" type="text" class="form-control " id="ly_do_mo_lai">
-                </div>
-            </div>
             <!-- Added ellipsis button for Vị trí thực hiện -->
-            <div class="row" style="margin-bottom: 10px;">
+            <div class="row" style="margin-bottom: 15px;">
                 <div class="col-md-4">
                     <label class="col-form-label form-label text-truncate" style="max-width: 180px" onclick="openModal('viTriThucHienModal')">Vị trí thực hiện: </label>
                 </div>
@@ -288,6 +287,19 @@
                     </button> *@
                 </div>
             </div>
+            <div class="row" style="margin-bottom: 15px;">
+                <label for="so_lan_mo_lai" class="col-4 col-form-label">Số lần mổ lại :</label>
+                <div class="col-8">
+                    <input autocomplete="off" type="number" class="form-control " id="so_lan_mo_lai">
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <label for="ly_do_mo_lai" class="col-4 col-form-label">Lý do mổ lại :</label>
+                <div class="col-8">
+                    <textarea autocomplete="off" rows="3" class="form-control " id="ly_do_mo_lai"></textarea>
+                </div>
+            </div>
+           
         </div>
 
         <!-- Cột 3: Chẩn đoán sau thủ thuật -->
@@ -299,7 +311,7 @@
                         <select type="text" class="form-select  me-2 tom-select cbSauThuThuat" id="ma_icd_sau_thuat" placeholder="Mã ICD"></select>
                     </div>
                     <div class="col-md-7 col-12">
-                        <div class="form-control " id="hien_thi_icd_sau_thuat" style="min-height: 35px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 1px;"></div>
+                        <div class="form-control " id="hien_thi_icd_sau_thuat" style="min-height: 35px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 1px; background-color: #F0F2F4;"></div>
                     </div>
                 </div>
                 <div class="row">
@@ -308,7 +320,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 10px;">
+            <div class="row" style="margin-bottom: 15px;">
                 <div class="col-md-4">
                     <label class="col-form-label form-label text-truncate" style="max-width: 180px" onclick="openModal('tuVongModal')">Tử vong: </label>
                 </div>
@@ -316,14 +328,14 @@
                     <input autocomplete="off" class="tom-select  cbTuVong form-select" type="text" name="name" />
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 10px;">
+            <div class="row" style="margin-bottom: 13px;">
                 <label for="dan_luu" class="col-4 col-form-label">Dẫn lưu :</label>
                 <div class="col-8">
                     <input autocomplete="off" type="text" class="form-control " id="dan_luu">
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <label for="ngay_rut_ong_dan_luu" class="col-4 col-form-label text-truncate">Ngày rút ống dẫn lưu</label>
+            <div class="row" style="margin-bottom: 12px;">
+                <label for="ngay_rut_ong_dan_luu" class="col-4 fw-bold">Ngày rút ống dẫn lưu</label>
 
                 <div class="col-8 datepicker-wrapper">
                     <input autocomplete="off" class="form-control " lang="vi" id="ngay_rut_ong_dan_luu" placeholder="dd-mm-yyyy">
@@ -350,7 +362,7 @@
 
                 </div> 
             </div>
-            <div class="row" style="margin-bottom: 10px; ">
+            <div class="row" style="margin-bottom: 15px; ">
                 <label for="ngay_cat_chi" class="col-4 col-form-label">Ngày cắt chỉ :</label>
 
                 <div class="col-8 datepicker-wrapper">
@@ -380,42 +392,39 @@
             <div class="row" style="margin-bottom: 10px;">
                 <label for="khac" class="col-4 col-form-label">Khác :</label>
                 <div class="col-8">
-                    <input autocomplete="off" type="text" class="form-control " id="khac">
+                        <textarea class="form-control" rows="3" id="khac"></textarea>
                 </div>
             </div>
         </div>
 
         <!-- Cột 4: FNA -->
         <div class="col-md-3">
-            <div class="form-border-container p-2">
+            <div class="form-border-container">
                 <label class="border-label fw-bold">FNA</label>
-                <div style="margin-bottom: 10px;" class="d-flex align-content-center">
+                <div class="d-flex align-content-center" style="margin-top: 10px;">
                     <label for="ma_fna" class="col-form-label" style="min-width:70px;">Mã FNA :</label>
                     <input autocomplete="off" type="text" class="form-control " id="ma_fna">
 
                 </div>
-                <div class="d-flex align-content-center" style="margin-bottom: 2px;">
+                <div class="d-flex align-content-center" style="margin-top: 10px;">
                     <label for="tien_can" class="col-form-label" style="min-width:70px;">Tiền căn :</label>
-                    <input autocomplete="off" type="text" class="form-control " id="tien_can">
+                    <textarea autocomplete="off" class="form-control " rows="3" id="tien_can"></textarea>
 
                 </div>
             </div>
-            <div>
-                <label for="ket_qua_xet_nghiem" class=" p-1 fw-bold">Kết quả xét nghiệm FNA, GBP lần trước : </label>
-                <input autocomplete="off" type="text" class="form-control " id="ket_qua_xet_nghiem">
+            <div style="margin-bottom: 5px;">
+                <label for="ket_qua_xet_nghiem" class="fw-bold">Kết quả xét nghiệm FNA, GBP lần trước : </label>
+                <textarea autocomplete="off" class="form-control " id="ket_qua_xet_nghiem"></textarea>
+            </div style="margin-bottom: 5px;">
+            <div style="margin-bottom: 5px;">
+                <label for="chi_dinh_vi_tri_ton_thuong_fna" class="fw-bold">Chỉ định vị trí tổn thương FNA :</label>
+                <textarea autocomplete="off" rows="3" class="form-control " id="chi_dinh_vi_tri_ton_thuong_fna"></textarea>
             </div>
-            <div>
-                <label for="chi_dinh_vi_tri_ton_thuong_fna" class="p-1  fw-bold">Chỉ định vị trí tổn thương FNA :</label>
-                <input autocomplete="off" type="text" class="form-control " id="chi_dinh_vi_tri_ton_thuong_fna">
+            <div style="margin-bottom: 5px;">
+                <label for="yeu_cau_xet_nghiem" class="fw-bold">Yêu cầu xét nghiệm :</label>
+                <textarea autocomplete="off" rows="3" class="form-control " id="yeu_cau_xet_nghiem"></textarea>
             </div>
-            <div>
-                <label for="yeu_cau_xet_nghiem" class="p-1 fw-bold">Yêu cầu xét nghiệm :</label>
-                <input autocomplete="off" type="text" class="form-control " id="yeu_cau_xet_nghiem">
-            </div>
-            <div>
-                <label for="voCamSelect" class="p-1  fw-bold">Phương thức vô cảm :</label>
-                <select class="tom-select cbPTVoCam form-select " type="text" name="name" id="voCamSelect"></select>
-            </div>
+           
         </div>
     </div>
 </div>

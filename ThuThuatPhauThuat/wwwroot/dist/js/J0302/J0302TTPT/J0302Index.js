@@ -83,7 +83,7 @@ $(document).ready( async function () {
     $("#tabs-danhsach-7").load("/thu_thuat_phau_thuat/danh_sach");
 
   
-    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', async function (e) {
         var target = $(e.target).attr("href");
         var tabNumber = 0;
 
@@ -93,6 +93,7 @@ $(document).ready( async function () {
         else if (target === "#tabs-thuoc-7") tabNumber = 5;
 
         if (target === "#tabs-danhsach-7" && $(target).is(':empty')) {
+            window.IDPhieuTTPT = 0;
             $(target).load("/thu_thuat_phau_thuat/danh_sach");
         }
         else if (tabNumber > 0) {
@@ -110,7 +111,7 @@ $(document).ready( async function () {
                 (tabNumber === 2 && isNewPatientSelection()); // Thêm điều kiện kiểm tra ID mới
 
             if (shouldLoad) {
-                $(target).load(urlMap[tabNumber], function () {
+                $(target).load(urlMap[tabNumber],  function () {
                     $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu", {
                         tabIndex: tabNumber,
                         idVaoVien: selectedIdVaoVien,
@@ -127,6 +128,7 @@ $(document).ready( async function () {
                         }
                         else if (tabNumber === 4) {
                             initEkipTab();
+                            console.log("Ekip for id :", IDPhieuTTPT);
                         }
                     });
                 });
@@ -167,6 +169,7 @@ $(document).ready( async function () {
                 contentType: 'application/json',
                 data: JSON.stringify(data)
             });
+            console.log("Update phiếu");
         }
 
 
