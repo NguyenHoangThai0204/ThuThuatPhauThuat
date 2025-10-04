@@ -55,7 +55,8 @@ builder.Services.AddScoped<IS0302ThuThuatPhauThuatInterface, S0302ThuThuatPhauTh
 builder.Services.AddScoped<S0305PdfExtractionService>();
 
 
-
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<S0301ICDService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
