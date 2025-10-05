@@ -2,7 +2,7 @@
 {
     public class M0302PhieuThuThuatPhauThuatModel
     {
-        public string SoPhieu { get; set; }
+        public string? SoPhieu { get; set; }
         public long? IDNguonBenh { get; set; }
         public DateTime? BatDauThuThuat { get; set; }
         public DateTime? KetThucThuThuat { get; set; }
@@ -18,7 +18,7 @@
     }
     public class TaoPhieuResult
     {
-        public long IDPhieuTTPT { get; set; }
-        public string SoPhieu { get; set; }
+        public long? IDPhieuTTPT { get; set; }
+        public string? SoPhieu { get; set; }
     }
 }

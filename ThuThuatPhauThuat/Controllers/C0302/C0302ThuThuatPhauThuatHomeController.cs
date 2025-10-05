@@ -281,6 +281,106 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302ThongTinThuThuatPhauThuat.cshtml");
         }
+        //[HttpPost("create-phieu")]
+        //public async Task<IActionResult> CreatePhieu([FromBody] M0302PhieuThuThuatPhauThuatModel model)
+        //{
+        //    if (model == null)
+        //        return BadRequest(new { success = false, message = "Dữ liệu không hợp lệ" });
+
+        //    try
+        //    {
+        //        // 🔍 LOG TẤT CẢ DỮ LIỆU NHẬN ĐƯỢC
+        //        Console.WriteLine("🔍 ==== LOG CREATE PHIEU ====");
+        //        Console.WriteLine($"SoPhieu: {model.SoPhieu} (Type: {model.SoPhieu?.GetType()})");
+        //        Console.WriteLine($"IDNguonBenh: {model.IDNguonBenh} (Type: {model.IDNguonBenh?.GetType()})");
+        //        Console.WriteLine($"BatDauThuThuat: {model.BatDauThuThuat} (Type: {model.BatDauThuThuat?.GetType()})");
+        //        Console.WriteLine($"KetThucThuThuat: {model.KetThucThuThuat} (Type: {model.KetThucThuThuat?.GetType()})");
+        //        Console.WriteLine($"ThoiGianKhoa: {model.ThoiGianKhoa} (Type: {model.ThoiGianKhoa?.GetType()})");
+        //        Console.WriteLine($"NhomMau: {model.NhomMau} (Type: {model.NhomMau?.GetType()})");
+        //        Console.WriteLine($"YeuToRh: {model.YeuToRh} (Type: {model.YeuToRh?.GetType()})");
+        //        Console.WriteLine($"IDChiDinhChiTiet: {model.IDChiDinhChiTiet} (Type: {model.IDChiDinhChiTiet?.GetType()})");
+        //        Console.WriteLine($"IDVaoVien: {model.IDVaoVien} (Type: {model.IDVaoVien?.GetType()})");
+        //        Console.WriteLine($"NguoiKhoa: {model.NguoiKhoa} (Type: {model.NguoiKhoa?.GetType()})");
+        //        Console.WriteLine("🔍 ==== END LOG ====");
+
+        //        using var conn = _context.Database.GetDbConnection();
+        //        await conn.OpenAsync();
+
+        //        using var cmd = conn.CreateCommand();
+        //        cmd.CommandText = "S0302_TaoPhieuTTPT";
+        //        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+        //        // 🔍 LOG PARAMETERS TRƯỚC KHI THÊM
+        //        Console.WriteLine("🔍 ==== SQL PARAMETERS ====");
+
+        //        var soPhieuParam = new SqlParameter("@SoPhieu", model.SoPhieu ?? (object)DBNull.Value);
+        //        Console.WriteLine($"@SoPhieu: {soPhieuParam.Value} (Type: {soPhieuParam.Value?.GetType()})");
+        //        cmd.Parameters.Add(soPhieuParam);
+
+        //        var idNguonBenhParam = new SqlParameter("@IDNguonBenh", model.IDNguonBenh ?? (object)DBNull.Value);
+        //        Console.WriteLine($"@IDNguonBenh: {idNguonBenhParam.Value} (Type: {idNguonBenhParam.Value?.GetType()})");
+        //        cmd.Parameters.Add(idNguonBenhParam);
+
+        //        var batDauParam = new SqlParameter("@BatDauThuThuat", model.BatDauThuThuat ?? (object)DBNull.Value);
+        //        Console.WriteLine($"@BatDauThuThuat: {batDauParam.Value} (Type: {batDauParam.Value?.GetType()})");
+        //        cmd.Parameters.Add(batDauParam);
+
+        //        var ketThucParam = new SqlParameter("@KetThucThuThuat", model.KetThucThuThuat ?? (object)DBNull.Value);
+        //        Console.WriteLine($"@KetThucThuThuat: {ketThucParam.Value} (Type: {ketThucParam.Value?.GetType()})");
+        //        cmd.Parameters.Add(ketThucParam);
+
+        //        var thoiGianKhoaParam = new SqlParameter("@ThoiGianKhoa", model.ThoiGianKhoa ?? (object)DBNull.Value);
+        //        Console.WriteLine($"@ThoiGianKhoa: {thoiGianKhoaParam.Value} (Type: {thoiGianKhoaParam.Value?.GetType()})");
+        //        cmd.Parameters.Add(thoiGianKhoaParam);
+
+        //        var nhomMauParam = new SqlParameter("@NhomMau", model.NhomMau ?? (object)DBNull.Value);
+        //        Console.WriteLine($"@NhomMau: {nhomMauParam.Value} (Type: {nhomMauParam.Value?.GetType()})");
+        //        cmd.Parameters.Add(nhomMauParam);
+
+        //        var yeuToRhParam = new SqlParameter("@YeuToRh", model.YeuToRh ?? (object)DBNull.Value);
+        //        Console.WriteLine($"@YeuToRh: {yeuToRhParam.Value} (Type: {yeuToRhParam.Value?.GetType()})");
+        //        cmd.Parameters.Add(yeuToRhParam);
+
+        //        var idChiDinhParam = new SqlParameter("@IDChiDinhChiTiet", model.IDChiDinhChiTiet ?? (object)DBNull.Value);
+        //        Console.WriteLine($"@IDChiDinhChiTiet: {idChiDinhParam.Value} (Type: {idChiDinhParam.Value?.GetType()})");
+        //        cmd.Parameters.Add(idChiDinhParam);
+
+        //        var idVaoVienParam = new SqlParameter("@IDVaoVien", model.IDVaoVien ?? (object)DBNull.Value);
+        //        Console.WriteLine($"@IDVaoVien: {idVaoVienParam.Value} (Type: {idVaoVienParam.Value?.GetType()})");
+        //        cmd.Parameters.Add(idVaoVienParam);
+
+        //        var nguoiKhoaParam = new SqlParameter("@NguoiKhoa", model.NguoiKhoa ?? (object)DBNull.Value);
+        //        Console.WriteLine($"@NguoiKhoa: {nguoiKhoaParam.Value} (Type: {nguoiKhoaParam.Value?.GetType()})");
+        //        cmd.Parameters.Add(nguoiKhoaParam);
+
+        //        Console.WriteLine("🔍 ==== END PARAMETERS ====");
+
+        //        using var reader = await cmd.ExecuteReaderAsync();
+
+        //        if (await reader.ReadAsync())
+        //        {
+        //            var idPhieuTTPT = reader["IDPhieuTTPT"] != DBNull.Value ? Convert.ToInt64(reader["IDPhieuTTPT"]) : 0;
+        //            var soPhieu = reader["SoPhieu"]?.ToString();
+
+        //            Console.WriteLine($"✅ CREATE SUCCESS - IDPhieuTTPT: {idPhieuTTPT}, SoPhieu: {soPhieu}");
+        //            return Ok(new { success = true, idPhieuTTPT, soPhieu });
+        //        }
+
+        //        Console.WriteLine("❌ CREATE FAILED - No data returned from stored procedure");
+        //        return BadRequest(new { success = false, message = "Không thể tạo phiếu." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // 🔍 LOG EXCEPTION CHI TIẾT
+        //        Console.WriteLine($"❌ EXCEPTION: {ex.Message}");
+        //        Console.WriteLine($"❌ STACK TRACE: {ex.StackTrace}");
+        //        if (ex.InnerException != null)
+        //        {
+        //            Console.WriteLine($"❌ INNER EXCEPTION: {ex.InnerException.Message}");
+        //        }
+        //        return StatusCode(500, new { success = false, message = $"Lỗi Server: {ex.Message}" });
+        //    }
+        //}
         [HttpPost("create-phieu")]
         public async Task<IActionResult> CreatePhieu([FromBody] M0302PhieuThuThuatPhauThuatModel model)
         {
@@ -296,7 +396,12 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 cmd.CommandText = "S0302_TaoPhieuTTPT";
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                cmd.Parameters.Add(new SqlParameter("@SoPhieu", model.SoPhieu ?? (object)DBNull.Value));
+                //cmd.Parameters.Add(new SqlParameter("@SoPhieu", model.SoPhieu ?? (object)DBNull.Value));
+                cmd.Parameters.Add(new SqlParameter(
+    "@SoPhieu",
+    string.IsNullOrWhiteSpace(model.SoPhieu) ? (object)DBNull.Value : model.SoPhieu
+));
+
                 cmd.Parameters.Add(new SqlParameter("@IDNguonBenh", model.IDNguonBenh ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@BatDauThuThuat", model.BatDauThuThuat ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@KetThucThuThuat", model.KetThucThuThuat ?? (object)DBNull.Value));
