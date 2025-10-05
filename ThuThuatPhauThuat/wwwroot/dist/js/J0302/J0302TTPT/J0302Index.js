@@ -27,6 +27,7 @@ var selectedIdVaoVien = null;
 var selectedIdChiDinhChiTiet = null;
 var tabLoaded = {};
 window.IDPhieuTTPT = 0;
+window.MaKhoa = "";
 function formatLocalDateTime(str) {
     if (!str) return null;
     const parts = str.split(/[- :]/);

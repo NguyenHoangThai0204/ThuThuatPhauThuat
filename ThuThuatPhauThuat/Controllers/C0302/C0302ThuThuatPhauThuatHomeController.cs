@@ -23,11 +23,11 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         private readonly ILogger<C0302ThuThuatPhauThuatHomeController> _logger;
 
         public C0302ThuThuatPhauThuatHomeController(
-            IS0302ThuThuatPhauThuatInterface service, 
-            Context0302 context, 
+            IS0302ThuThuatPhauThuatInterface service,
+            Context0302 context,
             ILogger<C0302ThuThuatPhauThuatHomeController> logger,
             IS0305FtpService ftpService
-            /*, IMemoryCachingServices memoryCache*/
+        /*, IMemoryCachingServices memoryCache*/
         )
         {
             _service = service;
@@ -458,15 +458,31 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             try
             {
-                string sqlQuery = @"EXEC S0305_TTPT_TaoTrinhTuVaKetLuan 
+                string sqlQuery1 = @"EXEC S0305_TTPT_TaoTrinhTuVaKetLuan 
                           @IDPhieuTTPT, @TrinhTu, @KetLuan, @ThongTinLuocDo";
+                string sqlQuery2 = @"EXEC S0305_TTPT_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT";
 
-                await _context.Database.ExecuteSqlRawAsync(sqlQuery,
+                await _context.Database.ExecuteSqlRawAsync(sqlQuery1,
                     new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT),
                     new SqlParameter("@TrinhTu", model.TrinhTu ?? (object)DBNull.Value),
                     new SqlParameter("@KetLuan", model.KetLuan ?? (object)DBNull.Value),
                     new SqlParameter("@ThongTinLuocDo", model.ThongTinLuocDo ?? (object)DBNull.Value)
                 );
+                foreach (var anh in model.AnhTruongTrinhSaveToServer ?? [])
+                {
+                    var newImageIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    //_logger.LogInformation("  - URL: {url}, TenAnh: {ten}", anh.URL, anh.TenAnh);
+                    await _context.Database.ExecuteSqlRawAsync(sqlQuery2,
+                        new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT),
+                        new SqlParameter("@URL", anh.URL ?? (object)DBNull.Value),
+                        new SqlParameter("@TenAnh", anh.TenAnh ?? (object)DBNull.Value),
+                        newImageIdParam
+                    );
+                    _logger.LogInformation("  - NewImageId: {newImageId}", newImageIdParam.Value);
+                }
 
                 return Ok(new { success = true, message = "Lưu trình tự thành công." });
             }
@@ -628,6 +644,41 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             }
         }
 
+        [HttpGet("trinh-tu/list-anh-truong-trinh-by-makhoa")]
+        public async Task<IActionResult> GetAnhTruongTrinhByMaKhoa(string maKhoa)
+        {
+            try
+            {
+                var directoryPath = $"ttpt_images/khoa/{maKhoa}";
+                var images = await _ftpService.ListFilesInDirectoryAsync(directoryPath);
+
+                return Ok(new
+                {
+                    success = true,
+                    directory = directoryPath,
+                    count = images.Count,
+                    images = images.Select(img => new
+                    {
+                        tenAnh = img.FileName,
+                        fullPath = img.FullPath,
+                        size = img.Size,
+                        sizeFormatted = FormatFileSize(img.Size),
+                        modifiedDate = img.ModifiedDate,
+                        fileType = img.FileType,
+                        httpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(img.FullPath)}"
+                    })
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpDelete("trinh-tu/delete-image/{id}")]
         public async Task<IActionResult> DeleteImage(long id)
         {
@@ -685,6 +736,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 return NotFound();
             }
         }
+
 
         [HttpGet("ekip")]
         public async Task<IActionResult> EkipThucHien(long? idVaoVien, int tabIndex = 0)
@@ -891,6 +943,20 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             stream.Position = 0; // Reset stream trước khi trả về
 
             return File(stream.ToArray(), "application/pdf", fileName);
+        }
+
+        // Helper method format size
+        private string FormatFileSize(long bytes)
+        {
+            string[] sizes = { "B", "KB", "MB", "GB" };
+            double len = bytes;
+            int order = 0;
+            while (len >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                len = len / 1024;
+            }
+            return $"{len:0.##} {sizes[order]}";
         }
     }
 }

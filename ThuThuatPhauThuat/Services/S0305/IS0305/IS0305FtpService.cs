@@ -1,4 +1,6 @@
-﻿namespace ThuThuatPhauThuat.Services.S0305.IS0305
+﻿using ThuThuatPhauThuat.Models.M0302.M0302DTO;
+
+namespace ThuThuatPhauThuat.Services.S0305.IS0305
 {
     public interface IS0305FtpService
     {
@@ -6,5 +8,6 @@
         Task<bool> DeleteFileAsync(string remoteFilePath);
         Task<bool> TestConnectionAsync();
         Task<Stream> DownloadAsync(string remoteFilePath);
+        Task<List<FtpFileInfo>> ListFilesInDirectoryAsync(string remoteDirectory);
     }
 }
