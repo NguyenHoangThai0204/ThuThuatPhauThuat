@@ -12,6 +12,7 @@ namespace ThuThuatPhauThuat.Models.M0302
         public long IDKhoa { get; set; }
         public string Ten { get; set; }
         public string NoiDung { get; set; }
+        public string ThongTinLuocDo { get; set; }
         public bool Active { get; set; }
     }
 }

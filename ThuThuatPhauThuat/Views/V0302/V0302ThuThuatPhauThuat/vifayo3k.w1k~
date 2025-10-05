@@ -368,6 +368,7 @@
         function addImageToPanel(imageData, isChecked = false) {
             const existingImage = imagePanel.querySelector(`[data-image-id="${imageData.id}"]`);
             if (existingImage) {
+                // Nếu ảnh đã tồn tại và cần được check, cập nhật trạng thái
                 if (isChecked) {
                     const checkbox = existingImage.querySelector('.image-item-checkbox');
                     if (checkbox && !checkbox.checked) {
@@ -389,7 +390,7 @@
 
             imageItem.innerHTML = `
                 <input type="checkbox" class="image-item-checkbox mt-1"
-                       onchange="toggleImageSelection('${imageData.id}', this.checked)"
+                       onchange="toggleImageSelection(${imageData.id}, this.checked)"
                        style="cursor: pointer;" ${isChecked ? 'checked' : ''}>
                 <div class="image-item-header">
                     <div class="image-item-title">${imageData.name}</div>
@@ -414,6 +415,7 @@
                 });
             }
 
+            // Nếu ảnh được check từ đầu, thêm vào selectedImages
             if (isChecked) {
                 selectedImages.add(imageData.id);
                 totalSelectedCount++;
@@ -422,11 +424,11 @@
             }
         }
 
+        // Hàm so sánh và đánh dấu ảnh trùng nhau
         function compareAndMarkImages() {
             // console.log('So sánh ảnh từ khoa và phiếu:');
             // console.log('Ảnh từ khoa:', imagesFromKhoa);
             // console.log('Ảnh từ phiếu:', imagesFromPhieu);
-
             const phieuImagesMap = new Map();
             imagesFromPhieu.forEach(img => {
                 const key = img.name.toLowerCase().trim();
@@ -443,7 +445,6 @@
                 }
             });
 
-            // Thêm ảnh từ phiếu mà không có trong khoa
             imagesFromPhieu.forEach(phieuImage => {
                 const phieuImageName = phieuImage.name.toLowerCase().trim();
                 const existsInKhoa = imagesFromKhoa.some(khoaImg =>
@@ -451,17 +452,9 @@
                 );
 
                 if (!existsInKhoa) {
-                    console.log(`+ Ảnh chỉ có trong phiếu: ${phieuImage.name}`);
+                    // console.log(`+ Ảnh chỉ có trong phiếu: ${phieuImage.name}`);
                     addImageToPanel(phieuImage, false);
                 }
-            });
-        }
-
-        // Hàm load tất cả ảnh từ khoa khi không có ảnh từ phiếu
-        function loadAllKhoaImages() {
-            console.log('Load tất cả ảnh từ khoa:', imagesFromKhoa);
-            imagesFromKhoa.forEach(khoaImage => {
-                addImageToPanel(khoaImage, false);
             });
         }
 
@@ -482,8 +475,9 @@
                         source: 'khoa'
                     }));
 
-                    console.log('Đã load được', imagesFromKhoa.length, 'ảnh từ khoa');
-                    compareAndMarkImages();
+                    if (imagesFromPhieu.length > 0) {
+                        compareAndMarkImages();
+                    }
                 }
             } catch (error) {
                 console.error('Error loading images from khoa:', error);
@@ -507,14 +501,10 @@
                         source: 'phieu'
                     }));
 
-                    console.log('Đã load được', imagesFromPhieu.length, 'ảnh từ phiếu');
-
                     // Sau khi load xong ảnh từ phiếu, so sánh với ảnh từ khoa
                     if (imagesFromKhoa.length > 0) {
                         compareAndMarkImages();
                     }
-                } else {
-                    console.log('Không có ảnh từ phiếu');
                 }
             } catch (error) {
                 console.error('Error loading images from phieu:', error);
@@ -556,12 +546,6 @@
                 return [...imagesFromKhoa, ...imagesFromPhieu].find(img => img.id === id);
             }).filter(img => img !== undefined);
         }
-
-        // Gọi hàm load ảnh
-        // console.log('Bắt đầu load ảnh...');
-        // console.log('MaKhoa:', window.MaKhoa);
-        // console.log('IDPhieuTTPT:', window.IDPhieuTTPT);
-
         loadImagesFromServerByMaKhoa(window.MaKhoa);
         loadImagesFromServer(window.IDPhieuTTPT);
     })();
