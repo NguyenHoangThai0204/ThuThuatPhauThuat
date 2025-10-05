@@ -215,15 +215,15 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
 
             sb.Append("<table>");
             sb.Append("<tr>");
-            sb.Append($"<td>- Họ tên người bệnh: <span class='bold'>{_data.TenBN ?? ""}</span></td>");
+            sb.Append($"<td>- Họ tên người bệnh: <span class='bold'>{(_data.TenBN ?? "").ToUpper()}</span></td>");
             sb.Append($"<td style='text-align:right;'>Tuổi: <span class='bold' style='margin-right:8px;'>{tuoi}</span>&nbsp;&nbsp;&nbsp;Giới tính: <span class='bold' style='margin-right:5px;'>{_data.TenGioiTinh ?? ""}</span></td>");
             sb.Append("</tr>");
             sb.Append("</table>");
 
             sb.Append("<table>");
             sb.Append("<tr>");
-            sb.Append($"<td>- Khoa/Phòng: <span class='bold'>{_data.Khoa ?? ""}</span></td>");
-            sb.Append($"<td style='text-align:right;'>Buồng: <span class='bold' style='margin-right:20px;'>{_data.Buong}</span>&nbsp;&nbsp;&nbsp;Giường: <span class='bold' style='margin-right:10px;'>{_data.Giuong}</span></td>");
+            sb.Append($"<td>- Khoa/Phòng: <span class='bold'>{(_data.Khoa ?? "").ToUpper()}</span></td>");
+            sb.Append($"<td style='text-align:right;'>Buồng: <span class='bold' style='margin-right:60px;'>{_data.Buong}</span>&nbsp;&nbsp;&nbsp;Giường: <span class='bold' style='margin-right:40px;'>{_data.Giuong}</span></td>");
             sb.Append("</tr>");
             sb.Append("</table>");
 
@@ -245,7 +245,6 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             }
             sb.Append($"<div>- Phẫu thuật/ Thủ thuật lúc: <span class='bold'>{batDauText}</span></div>");
 
-            // Kết thúc thủ thuật
             string ketThucText = "";
             if (_data.KetThucThuThuat.HasValue)
             {
@@ -256,7 +255,7 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
 
             // Chẩn đoán
             sb.Append($"<div>- Chẩn đoán: Trước phẫu thuật/ thủ thuật: <span class='bold'>{_data.TenChanDoanTruoc ?? ""}</span></div>");
-            sb.Append($"<div style='margin-left:72px;'>Sau phẫu thuật/ thủ thuật: <span class='bold'>{_data.TenChanDoanSau ?? ""}</span></div>");
+            sb.Append($"<div style='margin-left:75px;'>Sau phẫu thuật/ thủ thuật: <span class='bold'>{_data.TenChanDoanSau ?? ""}</span></div>");
 
             // Phương pháp
             sb.Append($"<div>- Phương pháp phẫu thuật/ thủ thuật: <span class='bold'>{_data.PhuongPhapTTPT ?? ""}</span></div>");
@@ -331,7 +330,7 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             sb.Append(@$"<div class='border-box'>
                 <h2 style='text-align:center'> TƯỜNG TRÌNH PHẪU THUẬT / THỦ THUẬT </h2>
                  {_data.TrinhTu}
-                   <p class='box-text bold'>KẾT LUẬN: {_data.KetLuan ?? ""}</p>
+                <p class='box-text bold'>KẾT LUẬN: {(_data.KetLuan ?? "").ToUpper()}</p>
             </div>");
 
             // ===== CHỮ KÝ =====

@@ -194,13 +194,7 @@
                 </div>
                 <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input autocomplete="off" class="tom-select cbThietBi form-select " type="text" name="name" />
-                    @* <button type="button" class="ellipsis-btn" onclick="openModal('thietBiModal')">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="1" />
-                            <circle cx="12" cy="5" r="1" />
-                            <circle cx="12" cy="19" r="1" />
-                        </svg>
-                    </button> *@
+ 
                 </div>
             </div>
             <div class="row" style="margin-bottom: 12px;">
@@ -246,13 +240,7 @@
                 </div>
                 <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input autocomplete="off" class="tom-select cbBienChung form-select " type="text" name="name" />
-                    @* <button type="button" class="ellipsis-btn" onclick="openModal('bienChungModal')">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="1" />
-                            <circle cx="12" cy="5" r="1" />
-                            <circle cx="12" cy="19" r="1" />
-                        </svg>
-                    </button> *@
+
                 </div>
             </div>
             <!-- Added ellipsis button for Chế độ thủ thuật -->
@@ -262,13 +250,7 @@
                 </div>
                 <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input autocomplete="off" class="tom-select cbCheDoThuThuat form-select " type="text" name="name" />
-                    @* <button type="button" class="ellipsis-btn" onclick="openModal('cheDoThuThuatModal')">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="1" />
-                            <circle cx="12" cy="5" r="1" />
-                            <circle cx="12" cy="19" r="1" />
-                        </svg>
-                    </button> *@
+
                 </div>
             </div>
             <!-- Added ellipsis button for Vị trí thực hiện -->
@@ -278,13 +260,7 @@
                 </div>
                 <div class="col-md-8 flex-fill input-group-ellipsis">
                     <input autocomplete="off" class="tom-select cbViTriThucHien form-select " type="text" name="name" />
-                    @* <button type="button" class="ellipsis-btn" onclick="openModal('viTriThucHienModal')">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="1" />
-                            <circle cx="12" cy="5" r="1" />
-                            <circle cx="12" cy="19" r="1" />
-                        </svg>
-                    </button> *@
+
                 </div>
             </div>
             <div class="row" style="margin-bottom: 15px;">
@@ -338,27 +314,16 @@
                 <label for="ngay_rut_ong_dan_luu" class="col-4 fw-bold">Ngày rút ống dẫn lưu</label>
 
                 <div class="col-8 datepicker-wrapper">
-                    <input autocomplete="off" class="form-control " lang="vi" id="ngay_rut_ong_dan_luu" placeholder="dd-mm-yyyy">
-
-                @* <div class="col-8">
-                    <input type="date" class="form-control form-control-md" id="ngay_rut_ong_dan_luu">
-                    <div class="input-icon">
-                        <input id="ngay_rut_ong_dan_luu" type="text" class="form-control"
+                  @*  <input autocomplete="off" class="form-control " lang="vi" id="ngay_rut_ong_dan_luu" placeholder="dd-mm-yyyy">*@
+                    <div class="input-icon w-100">
+                        <input type="text"
+                            id="ngay_rut_ong_dan_luu"
+                               class="form-control form-control-md txtDateTimeNgayRutOng text-dark"
                                autocomplete="off" />
                         <span class="input-icon-addon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                 class="icon icon-tabler icon-tabler-calendar-event">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-                                <path d="M16 3l0 4"></path>
-                                <path d="M8 3l0 4"></path>
-                                <path d="M4 11l16 0"></path>
-                                <path d="M8 15h2v2h-2z"></path>
-                            </svg>
+                            <i class="ti ti-calendar-event"></i>
                         </span>
-                    </div>*@
+                    </div> 
 
                 </div> 
             </div>
@@ -366,27 +331,16 @@
                 <label for="ngay_cat_chi" class="col-4 col-form-label">Ngày cắt chỉ :</label>
 
                 <div class="col-8 datepicker-wrapper">
-                    <input autocomplete="off" class="form-control " lang="vi" id="ngay_cat_chi" placeholder="dd-mm-yyyy">
-
-                    @* <div class="col-8">
-                        <input type="date" class="form-control form-control-md" id="ngay_cat_chi"> 
-                        <div class="input-icon">
-                            <input id="ngay_cat_chi" type="text" class="form-control"
-                                   autocomplete="off" />
-                            <span class="input-icon-addon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                     class="icon icon-tabler icon-tabler-calendar-event">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-                                    <path d="M16 3l0 4"></path>
-                                    <path d="M8 3l0 4"></path>
-                                    <path d="M4 11l16 0"></path>
-                                    <path d="M8 15h2v2h-2z"></path>
-                                </svg>
-                            </span>
-                        </div> *@
+                 @*   <input autocomplete="off" class="form-control " lang="vi" id="ngay_cat_chi" placeholder="dd-mm-yyyy">*@
+                     <div class="input-icon w-100">
+                        <input type="text"
+                          id="ngay_cat_chi"
+                               class="form-control form-control-md txtDateTimeNgayCatChi text-dark"
+                               autocomplete="off" />
+                        <span class="input-icon-addon">
+                            <i class="ti ti-calendar-event"></i>
+                        </span>
+                    </div> 
                 </div>
             </div>
             <div class="row" style="margin-bottom: 10px;">
@@ -574,55 +528,122 @@
         </div>
     </div>
 </div>
-@* <div class="row mt-3">
-    <div class="col-12 text-center">
-        <button type="button" class="btn btn-success btn-lg" id="btn_saveThongTin">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path>
-                <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                <path d="M14 4l0 4h-6l0 -4"></path>
-            </svg>
-            Lưu Thông Tin Thủ Thuật
-        </button>
-    </div>
-</div> *@
-
 <script src="~/dist/js/J0302/J0302TTPT/J0302ThongTinThuThuat.js" asp-append-version="true" defer></script>
 <script src="~/dist/lib/litepicker/dist/litepicker.js" asp-append-version="true" defer></script>
 
-<script>
-    // Hàm khởi tạo datepicker
-       function initDatePicker(inputId) {
-      $('#' + inputId).datepicker({
-        format: "dd/mm/yyyy",
-        language: "vi",
-        autoclose: true,
-          todayHighlight: true, container: 'body',
-    orientation: "auto"
-      });
-     $('#' + inputId).inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
+ <script>
+$(function () {
+    const selector = '#ngay_cat_chi, #ngay_rut_ong_dan_luu';
 
-    }
-
-    // Gọi cho từng input
-  
-
-    // Khởi tạo khi tab được mở
-    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-        var target = $(e.target).attr("href"); // tab được mở
-
-        if (target === "#tabs-thongtin-7") {
-              initDatePicker('ngay_cat_chi');
-              initDatePicker('ngay_rut_ong_dan_luu');
+    $(selector).datetimepicker({
+        format: 'DD-MM-YYYY HH:mm:ss',
+        locale: 'vi',
+        useCurrent: false,
+        showTodayButton: true,
+        showClear: true,
+        showClose: true,
+            calendarWeeks: false, // Ẩn tuần trong lịch
+        stepping: 1,
+        tooltips: {
+            today: 'Chuyển đến hôm nay',
+            clear: 'Xóa lựa chọn',
+            close: 'Đóng',
+            selectMonth: 'Chọn tháng',
+            prevMonth: 'Tháng trước',
+            nextMonth: 'Tháng sau',
+            selectYear: 'Chọn năm',
+            prevYear: 'Năm trước',
+            nextYear: 'Năm sau',
+            selectTime: 'Chọn giờ'
+        },
+        icons: {
+            time: 'ti ti-clock',
+            date: 'ti ti-calendar',
+            up: 'ti ti-chevron-up',
+            down: 'ti ti-chevron-down',
+            previous: 'ti ti-chevron-left',
+            next: 'ti ti-chevron-right',
+            today: '',
+            clear: 'ti ti-trash',
+            close: 'ti ti-x'
         }
+    })
+    .on('dp.show', function () {
+        const $widget = $('.bootstrap-datetimepicker-widget:last');
+        const $input = $(this);
+        const offset = $input.offset();
+        const inputHeight = $input.outerHeight();
+        const widgetHeight = $widget.outerHeight();
+        const widgetWidth = $widget.outerWidth();
+        const winWidth = $(window).width();
+        const winHeight = $(window).height();
+        const scrollTop = $(window).scrollTop();
+
+        // THU NHỎ BẢNG LỊCH (CALENDAR) - KHÔNG ẢNH HƯỞNG ĐẾN INPUT
+        $widget.css({
+            'transform': 'scale(0.85)',
+            'transform-origin': 'top center'
+        });
+
+        // Tính toán lại kích thước sau khi scale
+        const scaledHeight = widgetHeight * 0.85;
+        const scaledWidth = widgetWidth * 0.85;
+
+        // VỊ TRÍ BẢNG LỊCH - CÁCH XA INPUT (ở giữa màn hình hoặc bên phải)
+        let left = (winWidth / 2) - (scaledWidth / 2); // Căn giữa màn hình
+        let top = (winHeight / 2) - (scaledHeight / 2); // Căn giữa màn hình
+        
+        // Hoặc nếu muốn hiển thị bên phải input:
+        // let left = offset.left + $input.outerWidth() + 10;
+        // let top = offset.top - 50;
+
+        // Đảm bảo không tràn màn hình
+        if (left < 10) left = 10;
+        if (left + scaledWidth > winWidth - 10) {
+            left = winWidth - scaledWidth - 10;
+        }
+        if (top < 10) top = 10;
+        if (top + scaledHeight > winHeight - 10) {
+            top = winHeight - scaledHeight - 10;
+        }
+
+        // Gán vị trí popup - TÁCH BIỆT với input
+        $widget.appendTo('body').css({
+            position: 'fixed', // Dùng fixed để luôn cố định
+            top: top,
+            left: left,
+            zIndex: 999999,
+            margin: 0
+        }).addClass('active-popup');
+    })
+    .on('dp.hide', function () {
+        $('.bootstrap-datetimepicker-widget')
+            .removeClass('active-popup')
+            .css('transform', '');
     });
 
-    // Nếu tab #tabs-thongtin-7 là mặc định mở thì khởi tạo luôn
-    if ($('#tabs-thongtin-7').hasClass('active show')) {
-        initDatePicker('ngay_cat_chi');
-        initDatePicker('ngay_rut_ong_dan_luu');
-    }
-</script>
+    // CSS cho ô input nhỏ
+    const style = document.createElement('style');
+    style.textContent = `
+        #ngay_cat_chi, #ngay_rut_ong_dan_luu {
+            width: 180px !important;
+            height: 35px !important;
+            font-size: 14px !important;
+            padding: 5px 10px !important;
+        }
+        .bootstrap-datetimepicker-widget {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Set mặc định ngày hiện tại
+    const now = moment().format('DD-MM-YYYY HH:mm:ss');
+    $('#ngay_cat_chi').val(now);
+    $('#ngay_rut_ong_dan_luu').val(now);
+});
+</script> 
 
 

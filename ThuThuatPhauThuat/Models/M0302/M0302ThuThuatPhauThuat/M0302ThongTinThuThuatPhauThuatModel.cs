@@ -30,7 +30,7 @@
         public DateTime? NgayRutOngDanLuu { get; set; }
         public DateTime? NgayCatChi { get; set; }
         public string? Khac { get; set; }
-        public long? MaFNA { get; set; }
+        public string? MaFNA { get; set; }
         public string? TienCan { get; set; }
         public string? KetQuaXNFNAGBP { get; set; }
         public string? ChiDinhViTriTonThuongFNA { get; set; }
