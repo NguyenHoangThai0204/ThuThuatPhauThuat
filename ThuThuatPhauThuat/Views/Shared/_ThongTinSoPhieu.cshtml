@@ -124,8 +124,10 @@
         return data
             .filter(n => n.active === true || n.active === 1)
             .map(n => {
-                const ten = n[tenField]?.trim() || "";
-                const viettat = n[viettatField]?.trim() || "";
+                // const ten = n[tenField]?.trim() || "";
+                // const viettat = n[viettatField]?.trim() || "";
+                    const ten = (typeof n[tenField] === 'string' ? n[tenField].trim() : "");
+    const viettat = (typeof n[viettatField] === 'string' ? n[viettatField].trim() : "");
                 let generatedAlias = "";
 
                 if (viettat !== "") {
@@ -177,46 +179,52 @@
     // Hàm khởi tạo TomSelect cho nguồn bệnh
     function initNguonBenhTomSelect(tabIndex) {
         const selector = `.thuThuat__nguonBenh-tom-select-${tabIndex}`;
-        const elements = document.querySelectorAll(selector);
 
-        elements.forEach(el => {
-            if (el && !el.tomselect) {
-                const tomSelectInstance = new TomSelect(el, {
-                    options: nguonBenhData,
-                    valueField: "id",
-                    labelField: "ten",
-                    searchField: ["ten", "ma", "alias"],
-                    placeholder: "-- Chọn nguồn bệnh --",
-                    maxItems: 1,
-                    render: {
-                        option: (data, escape) => `
-                            <div style="display:flex; justify-content:space-between; width:100%;">
-                                <span>${escape(data.ten)}</span>
-                                <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.ma || "")}</span>
-                            </div>`,
-                        item: (data, escape) => `
-                            <div style="display:flex; justify-content:space-between; width:100%;">
-                                <span>${escape(data.ten)}</span>
-                                <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.ma || "")}</span>
-                            </div>`
-                    },
-                    no_results: function (data, escape) {
-                        return `<div class="no-results" style="padding:6px 10px;color:#999;">
-                                    Không tìm thấy "${escape(data.input)}"
-                                </div>`;
+        // Đợi DOM sẵn sàng 1 chút (phòng trường hợp element chưa render kịp)
+        setTimeout(() => {
+            const elements = document.querySelectorAll(selector);
+
+            elements.forEach(el => {
+                // Chỉ khởi tạo nếu đúng là <select> và chưa có TomSelect
+                if (el && el.tagName === "SELECT" && !el.tomselect) {
+                    const tomSelectInstance = new TomSelect(el, {
+                        options: Array.isArray(nguonBenhData) ? nguonBenhData : [],
+                        valueField: "id",
+                        labelField: "ten",
+                        searchField: ["ten", "ma", "alias"],
+                        placeholder: "-- Chọn nguồn bệnh --",
+                        maxItems: 1,
+                        render: {
+                            option: (data, escape) => `
+                                <div style="display:flex; justify-content:space-between; width:100%;">
+                                    <span>${escape(data.ten || "")}</span>
+                                    <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.ma || "")}</span>
+                                </div>`,
+                            item: (data, escape) => `
+                                <div style="display:flex; justify-content:space-between; width:100%;">
+                                    <span>${escape(data.ten || "")}</span>
+                                    <span style="color:gray; font-size:12px; margin-left:10px;">${escape(data.ma || "")}</span>
+                                </div>`
+                        },
+                        no_results: function (data, escape) {
+                            return `<div class="no-results" style="padding:6px 10px;color:#999;">
+                                        Không tìm thấy "${escape(data.input)}"
+                                    </div>`;
+                        }
+                    });
+
+                    // Nếu tab có Model sẵn thì set value
+                    @if (!isEmptyModel && Model?.IDNguonBenh != null)
+                    {
+                            <text>
+                                tomSelectInstance.setValue('@Model.IDNguonBenh');
+                            </text>
                     }
-                });
-
-                // Nếu tab có Model sẵn thì set value
-                @if (!isEmptyModel && Model?.IDNguonBenh != null)
-                {
-                        <text>
-                        tomSelectInstance.setValue('@Model.IDNguonBenh');
-                        </text>
                 }
-            }
-        });
+            });
+        }, 50); // delay nhẹ 50ms để DOM chắc chắn có <select>
     }
+
     async function khoiTaoThongTinSoPhieu(tabIndex, isEmpty) {
         // Load dữ liệu nguồn bệnh
         await fetchNguonBenhData();

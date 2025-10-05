@@ -150,7 +150,6 @@ function reloadCurrentTab() {
             })
                 .done(function (html) {
                     $(currentTab).prepend(html);
-                    console.log("✅ Đã load lại toàn bộ tab thành công");
 
                     // Khởi tạo lại JS
                     khoiTaoJSChoTab(tabNumber);
@@ -158,7 +157,10 @@ function reloadCurrentTab() {
                     if (tabNumber === 2) {
                         initThongTinTab(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
                     } else if (tabNumber === 4) {
+                        khoiTaoJSChoTab(tabNumber);
                         initEkipTab();
+                    } else if (tabNumber === 3) {
+                        khoiTaoJSChoTab(tabNumber);
                     }
                 });
         });
@@ -167,7 +169,6 @@ function reloadCurrentTab() {
 
 // 🔄 HÀM CẬP NHẬT DANH SÁCH SAU KHI LƯU
 function updateDanhSachAfterSave() {
-    console.log("🔄 Cập nhật danh sách sau khi lưu...");
 
     // Lấy lại các tham số filter hiện tại
     const currentFilter = {
@@ -187,8 +188,6 @@ function updateDanhSachAfterSave() {
 
             // Highlight dòng vừa được cập nhật
             highlightUpdatedRow();
-
-            console.log("✅ Đã cập nhật danh sách thành công");
         }
     }).fail(function () {
         console.warn("⚠️ Không thể cập nhật danh sách");
@@ -278,7 +277,11 @@ $(document).ready(async function () {
                             if (tabNumber === 2) {
                                 initThongTinTab(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
                             } else if (tabNumber === 4) {
+                                khoiTaoJSChoTab(tabNumber);
+
                                 initEkipTab();
+                            } else if (tabNumber === 3) {
+                                khoiTaoJSChoTab(tabNumber);
                             }
 
                             tabLoaded[tabKey] = true;
@@ -286,7 +289,6 @@ $(document).ready(async function () {
                     });
             });
         } else {
-            console.log("✅ Tab đã có dữ liệu, chỉ khởi tạo lại:", tabNumber);
             khoiTaoJSChoTab(tabNumber);
         }
     });
@@ -296,7 +298,6 @@ $(document).ready(async function () {
         e.preventDefault();
         e.stopPropagation();
 
-        console.log("👉 Nút Lưu click, currentTabIndex:", currentTabIndex);
 
         var $btn = $(this);
         setLoading($btn, true, "Đang lưu...");
@@ -317,7 +318,6 @@ $(document).ready(async function () {
             NguoiKhoa: $('#nguoiKhoa').val()
         };
 
-        console.log("📦 Data gửi đi:", data);
 
         try {
             if (!IDPhieuTTPT || IDPhieuTTPT === 0) {
@@ -327,15 +327,12 @@ $(document).ready(async function () {
                     contentType: 'application/json',
                     data: JSON.stringify(data)
                 });
-                console.log("✅ Create result:", res);
                 if (res.success) {
                     window.IDPhieuTTPT = res.idPhieuTTPT;
                     toastr.success("Tạo phiếu thành công");
 
-                    // 🔄 LOAD LẠI PHẦN SỐ PHIẾU ĐỂ HIỂN THỊ THÔNG TIN MỚI
                     reloadSoPhieuSection();
 
-                    // 🔄 CẬP NHẬT DANH SÁCH SAU KHI TẠO MỚI
                     updateDanhSachAfterSave();
                 }
             } else {
@@ -346,7 +343,6 @@ $(document).ready(async function () {
                     contentType: 'application/json',
                     data: JSON.stringify(data)
                 });
-                console.log("✅ Update phiếu thành công");
                 toastr.success("Cập nhật phiếu thành công");
 
                 // 🔄 CẬP NHẬT DANH SÁCH SAU KHI CHỈNH SỬA
