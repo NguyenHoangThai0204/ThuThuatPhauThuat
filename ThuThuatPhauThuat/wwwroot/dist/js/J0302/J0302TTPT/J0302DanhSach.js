@@ -27,22 +27,19 @@ $(document).on("click", "#example tbody tr", function () {
     var namSinh = $(this).find("td:eq(3)").text().trim();
     var gioiTinh = $(this).find("td:eq(4)").text().trim();
     var bacSi = $(this).find("td:eq(10)").text().trim();
+    var tendichvu = $(this).find("td:eq(7)").text().trim();
+   
     selectedIdVaoVien = $(this).data("idvaovien");
     selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
     window.IDPhieuTTPT = $(this).data("idphieu");
-    console.log("vào viện = ", selectedIdVaoVien);
-    console.log("chỉ định = ", selectedIdChiDinhChiTiet);
-    console.log("phiếu = ", window.IDPhieuTTPT);
-
-
-
-    var dateStr = decodeURIComponent($(this).attr("data-ngaygiochidinh"));
-    var date = formatDateTime(new Date(dateStr));
+    window.MaKhoa = $(this).data("makhoa");
+    window.yhct = $(this).data("yhct");
+    window.IDKhoa = $(this).data("idkhoa");
 
     $("#info-tenbn", window.parent.document).text(tenBN);
     $("#info-namsinh", window.parent.document).text(namSinh + " - " + gioiTinh);
     $("#info-bacsi", window.parent.document).text(bacSi);
-    $("#info-datetime", window.parent.document).text(date);
+    $("#info-datetime", window.parent.document).text(tendichvu);
     
 
     $("#example tbody tr").removeClass("table-active");
@@ -144,7 +141,7 @@ function renderTable(data, page = 1, size = 10) {
     pageData.forEach((item, index) => {
         const ngayGioEncoded = encodeURIComponent(item.ngayGioChiDinh || "");
         tbody.append(`
-            <tr data-idvaovien="${item.idVaoVien || ''}" data-idchidinhct="${item.idChiDinhChiTiet || ''}" data-idphieu="${item.idPhieuTTPT || 0}" data-ngaygiochidinh="${ngayGioEncoded}">
+            <tr data-idvaovien="${item.idVaoVien || ''}" data-yhct="${item.yHocCoTruyen}" data-idkhoa="${item.idKhoa || 0}" data-idchidinhct="${item.idChiDinhChiTiet || ''}" data-idphieu="${item.idPhieuTTPT || 0}" data-makhoa="${item.maKhoa || ''}" data-ngaygiochidinh="${ngayGioEncoded}">
                 <td class="text-center">${start + index + 1}</td>
                 <td class="text-center">${item.maBenhNhan || ""}</td>
                 <td>${item.tenBenhNhan || ""}</td>
@@ -152,7 +149,6 @@ function renderTable(data, page = 1, size = 10) {
                 <td class="text-center">${item.gioiTinh || ""}</td>
                 <td class="text-center">${item.khan ? 'Có' : 'Không'}</td>
                 <td>${item.nhomDichVuKyThuat || ""}</td>
-                
                 <td class="text-ellipsis" title="${item.dichVuKyThuat || ""}">
                     ${item.dichVuKyThuat || ""}
                 </td>

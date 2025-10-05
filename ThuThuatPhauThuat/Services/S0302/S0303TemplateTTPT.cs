@@ -24,12 +24,12 @@ namespace ThuThuatPhauThuat.Services.S0302
         {
             var dsKhoa = await _localDb.Set<M0303Khoa>()
                 .FromSqlRaw(@"
-            SELECT 
-                ID AS id, 
-                TenKhoa AS ten, 
-                MaKhoa AS viettat
-            FROM [dbo].[DM_Khoa]
-        ")
+                    SELECT 
+                        ID AS id, 
+                        TenKhoa AS ten, 
+                        MaKhoa AS viettat
+                    FROM [dbo].[DM_Khoa]
+                ")
                 .ToListAsync();
 
             return dsKhoa;
@@ -40,15 +40,15 @@ namespace ThuThuatPhauThuat.Services.S0302
             try
             {
                 var data = await _localDb.M0303TemplateTTPT
-     .FromSqlRaw("EXEC S0303DM_TemplateTTPT @Action={0}, @IDKhoa={1}", "GET_BY_KHOA", idKhoa)
-     .ToListAsync();
+                    .FromSqlRaw("EXEC TTPT_S0303DM_TemplateTTPT @Action={0}, @IDKhoa={1}", "GET_BY_KHOA", idKhoa)
+                    .ToListAsync();
 
 
                 return data;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi khi chạy SP S0303DM_TemplateTTPT với IDKhoa={idKhoa}", idKhoa);
+                _logger.LogError(ex, "Lỗi khi chạy SP TTPT_S0303DM_TemplateTTPT với IDKhoa={idKhoa}", idKhoa);
                 return new List<M0303TemplateTTPT>();
             }
         }
@@ -58,8 +58,8 @@ namespace ThuThuatPhauThuat.Services.S0302
             try
             {
                 var data = await _localDb.M0303TemplateTTPT
-     .FromSqlRaw("EXEC S0303DM_TemplateTTPT @Action={0}", "GET")
-     .ToListAsync();
+                    .FromSqlRaw("EXEC TTPT_S0303DM_TemplateTTPT @Action={0}", "GET")
+                    .ToListAsync();
 
 
                 return data;
@@ -77,14 +77,14 @@ namespace ThuThuatPhauThuat.Services.S0302
             try
             {
                 var data = await _localDb.M0303TemplateTTPT
-                    .FromSqlRaw("EXEC S0303DM_TemplateTTPT @Action={0}, @ID={1}", "GET_BY_ID", id)
+                    .FromSqlRaw("EXEC TTPT_S0303DM_TemplateTTPT @Action={0}, @ID={1}", "GET_BY_ID", id)
                     .ToListAsync();
 
                 return data.FirstOrDefault();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi khi chạy SP S0303DM_TemplateTTPT GET_BY_ID với ID={id}", id);
+                _logger.LogError(ex, "Lỗi khi chạy SP TTPT_S0303DM_TemplateTTPT GET_BY_ID với ID={id}", id);
                 return null;
             }
         }
@@ -98,8 +98,8 @@ namespace ThuThuatPhauThuat.Services.S0302
             {
                 // Nếu Ten hoặc NoiDung khác null thì cập nhật, giữ nguyên cái còn lại
                 var result = await _localDb.M0303TemplateTTPT
-                    .FromSqlRaw("EXEC S0303DM_TemplateTTPT @Action={0}, @ID={1}, @Ten={2}, @NoiDung={3}",
-                        "UPDATE", model.ID, model.Ten, model.NoiDung)
+                    .FromSqlRaw("EXEC TTPT_S0303DM_TemplateTTPT @Action={0}, @ID={1}, @Ten={2}, @NoiDung={3}, @ThongTinLuocDo={4}",
+                        "UPDATE", model.ID, model.Ten, model.NoiDung, model.ThongTinLuocDo)
                     .ToListAsync();
 
                 return result.FirstOrDefault();

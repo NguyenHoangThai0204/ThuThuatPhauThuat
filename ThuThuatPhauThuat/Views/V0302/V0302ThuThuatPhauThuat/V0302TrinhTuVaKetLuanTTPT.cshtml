@@ -1,5 +1,5 @@
 ﻿<div class="report-template-editor">
-    <!-- Left column: Image panel (giữ nguyên) -->
+    <!-- Cột trái: Phần hình ảnh -->
     <div class="image-panel">
         <div class="image-panel-header" style="font-size: 1.05rem;">
             <span>Hình ảnh</span>
@@ -10,7 +10,7 @@
         <div class="image-panel-body"></div>
     </div>
 
-    <!-- Right column: Editor panel - chia thành 2 cột -->
+    <!-- Cột phải: Phần soạn thảo -->
     <div class="editor-panel">
         <div class="editor-header d-flex align-items-center justify-content-between" style="font-size: 1.05rem;">
             <span>Mẫu tường trình</span>
@@ -85,23 +85,27 @@
                     title="Xóa định dạng">
                 <i class="ti ti-clear-formatting"></i>
             </button>
-            <!-- PDF Upload -->
-            <label class="btn btn-sm btn-outline-primary" for="pdfUpload" data-bs-toggle="tooltip" title="Import từ PDF">
-                <i class="ti ti-file-type-pdf"></i> Import PDF
-                <input type="file" id="pdfUpload" accept=".pdf" style="display: none;">
-            </label>
         </div>
-        <!-- Phần trình tự chia 2 cột -->
         <div class="sequence-container" style="display: block">
-            <!-- Cột trái: Thông tin lược đồ (read-only) -->
             <div style="display: flex;">
-                <div class="sequence-infor-panel" style="width: 50%; height: 250px; overflow-y: scroll; border-right: 1px solid #ccc">
-                    <div id="editorDiagram" class="editor-content" contenteditable="true"></div>
+                <!-- Cột trái: Mô tả lược đồ (40%) -->
+                <div class="sequence-infor-panel" style="width: 40%; height: 250px; overflow-y: scroll; border-right: 2px solid #ccc">
+                    <div class="section-header fw-bold" style="background-color: rgba(87, 87, 93, 0.16);">
+                        <i class="ti ti-map section-header-icon"></i>
+                        <div class="d-inline">MÔ TẢ LƯỢC ĐỒ PHẪU THUẬT <span class="text-danger">(<span class="count-diagram"></span>)</span></div>
+                    </div>
+                    <div id="editorDiagram" class="editor-content" contenteditable="true"
+                         placeholder="Nhập mô tả giải phẫu, vị trí phẫu thuật, lược đồ..."></div>
                 </div>
 
-                <!-- Cột phải: Editor nội dung -->
-                <div class="sequence-editor-panel" style="width: 50%; height: 250px; overflow-y: scroll">
-                    <div id="editorContent" class="editor-content" contenteditable="true"></div>
+                <!-- Cột phải: Trình tự (60%) -->
+                <div class="sequence-editor-panel" style="width: 60%; height: 250px; overflow-y: scroll">
+                    <div class="section-header fw-bold" style="background-color: rgba(87, 87, 93, 0.16)">
+                        <i class="ti ti-list-numbers section-header-icon"></i>
+                        <div class="d-inline">TRÌNH TỰ THỰC HIỆN PHẪU THUẬT</div>
+                    </div>
+                    <div id="editorContent" class="editor-content" contenteditable="true"
+                         placeholder="Nhập trình tự các bước phẫu thuật theo thứ tự thời gian..."></div>
                 </div>
             </div>
         </div>
@@ -122,9 +126,13 @@
             <div class="modal-body custom-modal-body">
                 <div class="row mb-3 container">
                     <div class="col-4">
+
+
                         <div class="d-flex align-items-center mb-2">
                             <input class="tom-select cbTemplateKhoa khoa-width" type="text" name="khoa" style="width: 75%;" />
                         </div>
+
+
 
                         <div class="d-flex search-container" style="width: 75%;">
                             <input type="text" class="form-control form-control-sm me-2" placeholder="Tìm kiếm…" autocomplete="off">
@@ -205,38 +213,6 @@
     </div>
 </div>
 
-<!-- Modal preview PDF -->
-<div class="modal fade" id="pdfPreviewModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Xem trước và Import PDF</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-6">
-                        <h6>Nội dung trích xuất:</h6>
-                        <div id="pdfExtractedContent" class="border p-3" style="height: 400px; overflow-y: auto;"></div>
-                    </div>
-                    <div class="col-6">
-                        <h6>Áp dụng vào:</h6>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="applyToTuongTrinh" checked>
-                            <label class="form-check-label" for="applyToTuongTrinh">
-                                Tường trình phẫu thuật
-                            </label>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-primary" onclick="applyPdfContent()">Áp dụng nội dung</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Modal preview image -->
 <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -255,7 +231,7 @@
 <link href="~/dist/css/CSS0305/CSS0305TTPT/CSS0305TrinhTuVaKetLuan.css" rel="stylesheet" />
 
 <script>
-    var DEFAULT_KHOA_ID = 1;
+    var DEFAULT_KHOA_ID = parseInt(window.MaKhoa);
     window.templateTomSelectInstance = window.templateTomSelectInstance || null;
     window.allTemplatesData = window.allTemplatesData || [];
 
@@ -319,6 +295,7 @@
         if (!templateTomSelectInstance) return;
         const selectedTemplateId = templateTomSelectInstance.getValue();
         const editorContent = document.getElementById('editorContent');
+        const diagramContent = document.getElementById('editorDiagram');
         if (!selectedTemplateId) {
             editorContent.innerHTML = '';
             alert("Vui lòng chọn một mẫu tường trình trước khi áp dụng.");
@@ -330,166 +307,268 @@
         } else {
             alert("Lỗi: Không tìm thấy nội dung mẫu tường trình.");
         }
+        diagramContent.innerHTML = selectedTemplate?.thongTinLuocDo || '';
+
     }
 
-    // ==== IMAGE PANEL LOGIC: Chỉ cho phép quản lý ảnh ở panel trái ====
-    // Không còn hàm insertImageAtCursor vào editor, toàn bộ thao tác ảnh chỉ ở panel trái
+    function setupEditorFocus() {
+        const editors = [
+            { element: document.getElementById('editorDiagram'), panel: 'diagram' },
+            { element: document.getElementById('editorContent'), panel: 'content' }
+        ];
+
+        editors.forEach(({ element, panel }) => {
+            element.addEventListener('focus', function() {
+                // Remove active class từ tất cả
+                document.querySelectorAll('.sequence-infor-panel, .sequence-editor-panel')
+                    .forEach(panel => panel.classList.remove('active-panel'));
+
+                // Add active class cho panel hiện tại
+                const parentPanel = this.closest('.sequence-infor-panel, .sequence-editor-panel');
+                if (parentPanel) {
+                    parentPanel.classList.add('active-panel');
+                }
+            });
+
+            element.addEventListener('blur', function() {
+                // Giữ lại border nhưng bỏ highlight mạnh
+                const parentPanel = this.closest('.sequence-infor-panel, .sequence-editor-panel');
+                if (parentPanel) {
+                    parentPanel.classList.remove('active-panel');
+                }
+            });
+        });
+    }
+
+    window.activePanelCSS = `
+        .sequence-infor-panel.active-panel {
+            box-shadow: 0 0 0 2px #1976d2, inset 0 0 8px rgba(25, 118, 210, 0.1);
+        }
+
+        .sequence-editor-panel.active-panel {
+            box-shadow: 0 0 0 2px #388e3c, inset 0 0 8px rgba(56, 142, 60, 0.1);
+        }
+
+        .sequence-container .section-header {
+            transition: all 0.3s ease;
+        }`;
+    window.style = document.createElement('style');
+    style.textContent = activePanelCSS;
+    document.head.appendChild(style);
+
+    setupEditorFocus();
+
+
+    // ==== IMAGE PANEL LOGIC: Quản lý ảnh ở panel trái ====
     (function () {
         const imagePanel = document.querySelector('.image-panel-body');
         let uploadedImages = [];
+        let selectedImages = new Set();
+        let totalSelectedCount = 0;
 
-        // Upload ảnh lên FTP
-        async function uploadImageToFTP(file, idPhieuTTPT) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('idPhieuTTPT', idPhieuTTPT);
+        let imagesFromKhoa = [];
+        let imagesFromPhieu = [];
 
-            try {
-                const response = await fetch('/thu_thuat_phau_thuat/trinh-tu/upload-image', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                if (result.success) {
-                    return result.data; // { id, url, httpUrl }
-                } else {
-                    // console.error('Upload failed:', result.message);
-                    alert('Vui lòng chọn bệnh nhân từ danh sách');
-                    return null;
+        function addImageToPanel(imageData, isChecked = false) {
+            const existingImage = imagePanel.querySelector(`[data-image-id="${imageData.id}"]`);
+            if (existingImage) {
+                if (isChecked) {
+                    const checkbox = existingImage.querySelector('.image-item-checkbox');
+                    if (checkbox && !checkbox.checked) {
+                        checkbox.checked = true;
+                        toggleImageSelection(imageData.id, true);
+                    }
                 }
-            } catch (error) {
-                console.error('Upload error:', error);
-                return null;
+                return;
             }
-        }
 
-        // Panel trái: Danh sách ảnh
-        function addImageToPanel(imageData) {
-            // Không thêm nếu đã có
-            if (imagePanel.querySelector(`[data-image-id="${imageData.id}"]`)) return;
             const imageItem = document.createElement('div');
             imageItem.className = 'image-item';
             imageItem.dataset.imageId = imageData.id;
+
             const time = imageData.timestamp.toLocaleString('vi-VN', {
                 day: '2-digit', month: '2-digit', year: 'numeric',
                 hour: '2-digit', minute: '2-digit', second: '2-digit'
             });
+
             imageItem.innerHTML = `
-                <div class="fw-bold">${imageData.name}</div>
-                <small>${time}</small>
-                <img src="${imageData.src}" class="image-item-preview" alt="${imageData.name}">
-                <button class="delete-image-btn" onclick="deleteImage(${imageData.id})">
-                    <i class="ti ti-trash"></i>
+                <input type="checkbox" class="image-item-checkbox mt-1"
+                       onchange="toggleImageSelection('${imageData.id}', this.checked)"
+                       style="cursor: pointer;" ${isChecked ? 'checked' : ''}>
+                <div class="image-item-header">
+                    <div class="image-item-title">${imageData.name}</div>
+                </div>
+                <small class="image-item-time">${time}</small>
+                <div style="position: relative;">
+                    <img src="${imageData.src}" class="image-item-preview" alt="${imageData.name}">
+                </div>
+                <button class="preview-btn" data-bs-toggle="tooltip"
+                        onclick="previewImage('${imageData.src}')" title="Xem ảnh"
+                        style="position: absolute; top: 10px; right: 10px;">
+                    <i class="ti ti-eye"></i>
                 </button>
             `;
             imagePanel.appendChild(imageItem);
+
+            const newPreviewBtn = imageItem.querySelector('.preview-btn');
+            if (newPreviewBtn) {
+                new bootstrap.Tooltip(newPreviewBtn, {
+                    title: "Xem ảnh",
+                    trigger: 'hover focus'
+                });
+            }
+
+            if (isChecked) {
+                selectedImages.add(imageData.id);
+                totalSelectedCount++;
+                imageItem.classList.add('selected');
+                document.querySelector('.count-diagram').textContent = totalSelectedCount;
+            }
         }
 
-        // Xóa ảnh
-        window.deleteImage = async function (imageId) {
-            if (!confirm('Bạn có chắc muốn xóa ảnh này?')) return;
-            const image = uploadedImages.find(img => img.id === imageId);
-            if (image) {
-                try {
-                    const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/delete-image/${imageId}`, {
-                        method: 'DELETE'
-                    });
-                    const result = await response.json();
-                    if (!result.success) {
-                        alert('Lỗi xóa ảnh từ server: ' + result.message);
-                        return;
-                    }
-                    toastr.success("Xóa ảnh thành công");
-                } catch (error) {
-                    console.error('Delete error:', error);
-                    alert('Lỗi xóa ảnh từ server');
-                    return;
-                }
-            }
-            // Xóa local
-            uploadedImages = uploadedImages.filter(img => img.id !== imageId);
-            const panelItem = imagePanel.querySelector(`[data-image-id="${imageId}"]`);
-            if (panelItem) panelItem.remove();
-        };
+        function compareAndMarkImages() {
+            // console.log('So sánh ảnh từ khoa và phiếu:');
+            // console.log('Ảnh từ khoa:', imagesFromKhoa);
+            // console.log('Ảnh từ phiếu:', imagesFromPhieu);
 
-        // Nút upload ảnh trong panel trái
-        const addImageBtn = document.getElementById('btnAddImagePanel');
-        if (addImageBtn) {
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = 'image/*';
-            fileInput.multiple = true;
-            fileInput.style.display = 'none';
-            document.body.appendChild(fileInput);
-            addImageBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', async function () {
-                for (const file of this.files) {
-                    if (file.type.startsWith('image/')) {
-                        // Upload lên server và add vào panel
-                        const uploadResult = await uploadImageToFTP(file, window.IDPhieuTTPT);
-                        if (uploadResult && uploadResult.id) {
-                            const panelImage = {
-                                id: uploadResult.id,
-                                name: file.name,
-                                src: uploadResult.httpUrl,
-                                ftpUrl: uploadResult.url,
-                                timestamp: new Date(),
-                            };
-                            uploadedImages.push(panelImage);
-                            addImageToPanel(panelImage);
-                        }
-                    }
+            const phieuImagesMap = new Map();
+            imagesFromPhieu.forEach(img => {
+                const key = img.name.toLowerCase().trim();
+                phieuImagesMap.set(key, img);
+            });
+            imagesFromKhoa.forEach(khoaImage => {
+                const khoaImageName = khoaImage.name.toLowerCase().trim();
+                if (phieuImagesMap.has(khoaImageName)) {
+                    // console.log(`✓ Ảnh trùng nhau: ${khoaImage.name}`);
+                    addImageToPanel(khoaImage, true);
+                } else {
+                    // console.log(`- Ảnh chỉ có trong khoa: ${khoaImage.name}`);
+                    addImageToPanel(khoaImage, false);
                 }
-                this.value = '';
+            });
+
+            // Thêm ảnh từ phiếu mà không có trong khoa
+            imagesFromPhieu.forEach(phieuImage => {
+                const phieuImageName = phieuImage.name.toLowerCase().trim();
+                const existsInKhoa = imagesFromKhoa.some(khoaImg =>
+                    khoaImg.name.toLowerCase().trim() === phieuImageName
+                );
+
+                if (!existsInKhoa) {
+                    console.log(`+ Ảnh chỉ có trong phiếu: ${phieuImage.name}`);
+                    addImageToPanel(phieuImage, false);
+                }
             });
         }
 
-        // Hàm load ảnh từ server khi mở form
+        // Hàm load tất cả ảnh từ khoa khi không có ảnh từ phiếu
+        function loadAllKhoaImages() {
+            console.log('Load tất cả ảnh từ khoa:', imagesFromKhoa);
+            imagesFromKhoa.forEach(khoaImage => {
+                addImageToPanel(khoaImage, false);
+            });
+        }
+
+        // Hàm load ảnh từ khoa
+        async function loadImagesFromServerByMaKhoa(makhoa) {
+            try {
+                const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/list-anh-truong-trinh-by-makhoa?makhoa=${makhoa}`);
+                const result = await response.json();
+                // console.log('Ảnh từ khoa:', result);
+
+                if (result.success && result.images) {
+                    imagesFromKhoa = result.images.map((img, index) => ({
+                        id: `khoa_${index + 1}`,
+                        name: img.tenAnh,
+                        src: img.httpUrl,
+                        ftpUrl: img.fullPath,
+                        timestamp: new Date(img.modifiedDate),
+                        source: 'khoa'
+                    }));
+
+                    console.log('Đã load được', imagesFromKhoa.length, 'ảnh từ khoa');
+                    compareAndMarkImages();
+                }
+            } catch (error) {
+                console.error('Error loading images from khoa:', error);
+            }
+        }
+
+        // Hàm load ảnh từ phiếu
         async function loadImagesFromServer(idPhieuTTPT) {
             try {
                 const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/get-images/${idPhieuTTPT}`);
                 const result = await response.json();
+                // console.log("Load anh tu server theo idPhieuTTPT: ", result);
 
                 if (result.success && result.data) {
-                    result.data.forEach(image => {
-                        const panelImage = {
-                            id: image.id,
-                            name: image.tenAnh,
-                            src: image.httpUrl,
-                            ftpUrl: image.url,
-                            timestamp: new Date(image.thoiGianTao)
-                        };
-                        uploadedImages.push(panelImage);
-                        addImageToPanel(panelImage);
-                    });
+                    imagesFromPhieu = result.data.map((img, index) => ({
+                        id: `phieu_${img.id || index + 1}`,
+                        name: img.tenAnh,
+                        src: img.httpUrl,
+                        ftpUrl: img.url,
+                        timestamp: new Date(img.thoiGianTao),
+                        source: 'phieu'
+                    }));
+
+                    console.log('Đã load được', imagesFromPhieu.length, 'ảnh từ phiếu');
+
+                    // Sau khi load xong ảnh từ phiếu, so sánh với ảnh từ khoa
+                    if (imagesFromKhoa.length > 0) {
+                        compareAndMarkImages();
+                    }
+                } else {
+                    console.log('Không có ảnh từ phiếu');
                 }
             } catch (error) {
-                console.error('Error loading images:', error);
+                console.error('Error loading images from phieu:', error);
             }
         }
+
+        window.previewImage = function(imageSrc) {
+            const modalEl = document.getElementById('imagePreviewModal');
+            const modalImg = document.getElementById('imagePreviewModalImg');
+
+            if (modalEl && modalImg) {
+                modalImg.src = imageSrc;
+                if (window.bootstrap && window.bootstrap.Modal) {
+                    new window.bootstrap.Modal(modalEl).show();
+                } else if (typeof $ !== 'undefined' && $(modalEl).modal) {
+                    $(modalEl).modal('show');
+                }
+            }
+        };
+
+        window.toggleImageSelection = function(imageId, isChecked) {
+            const imageItem = document.querySelector(`[data-image-id="${imageId}"]`);
+
+            if (isChecked) {
+                selectedImages.add(imageId);
+                totalSelectedCount++;
+                imageItem.classList.add('selected');
+            } else {
+                selectedImages.delete(imageId);
+                totalSelectedCount--;
+                imageItem.classList.remove('selected');
+            }
+
+            document.querySelector('.count-diagram').textContent = totalSelectedCount;
+        };
+
+        window.getSelectedImages = function() {
+            return Array.from(selectedImages).map(id => {
+                return [...imagesFromKhoa, ...imagesFromPhieu].find(img => img.id === id);
+            }).filter(img => img !== undefined);
+        }
+
+        // Gọi hàm load ảnh
+
+        loadImagesFromServerByMaKhoa(window.MaKhoa);
         loadImagesFromServer(window.IDPhieuTTPT);
     })();
 
     (function () {
-        // Lắng nghe click ảnh trong panel trái
-        document.addEventListener('click', function (e) {
-            // Click trên ảnh trong panel trái
-            const img = e.target.closest('.image-item-preview');
-            if (img) {
-                const modalEl = document.getElementById('imagePreviewModal');
-                const modalImg = document.getElementById('imagePreviewModalImg');
-                if (modalEl && modalImg) {
-                    modalImg.src = img.src;
-                    // Hiện modal (xử lý cho cả Bootstrap 4/5)
-                    if (window.bootstrap && window.bootstrap.Modal) {
-                        new window.bootstrap.Modal(modalEl).show();
-                    } else if ($(modalEl).modal) {
-                        $(modalEl).modal('show');
-                    }
-                }
-            }
-        });
-
+        
         // Ảnh trong content editor nếu có: click cũng preview
         document.getElementById('editorContent').addEventListener('click', function (e) {
             const img = e.target.closest('img');
@@ -524,7 +603,7 @@
             var response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/list-by-idttpt/${idPhieuTTPT}`);
             if (!response.ok) throw new Error('Network response was not ok');
             var data = await response.json();
-            console.log(data)
+            // console.log(data)
             const editorDiagram = document.getElementById('editorDiagram');
             const editorContent = document.getElementById('editorContent');
             if (data.data.length === 0) return;
@@ -556,109 +635,6 @@
     loadTrinhTuVaKetLuanWithFocus(window.IDPhieuTTPT);
     window.loadTrinhTuVaKetLuanWithFocus = loadTrinhTuVaKetLuanWithFocus;
 </script>
-<script>
-    window.currentPdfContent = window.currentPdfContent || '';
-
-    // Xử lý upload PDF
-    document.getElementById('pdfUpload').addEventListener('change', async function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (file.type !== 'application/pdf') {
-            alert('Vui lòng chọn file PDF');
-            return;
-        }
-
-        if (file.size > 10 * 1024 * 1024) { // 10MB limit
-            alert('File PDF không được vượt quá 10MB');
-            return;
-        }
-
-        await processPdfFile(file);
-    });
-
-    async function processPdfFile(file) {
-        try {
-            const formData = new FormData();
-            formData.append('pdfFile', file);
-            formData.append('idPhieuTTPT', window.IDPhieuTTPT);
-
-            const response = await fetch('/api/pdf/extract-formatted', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                showPdfPreviewWithFormat(result.data);
-            } else {
-                alert('Lỗi trích xuất PDF: ' + result.message);
-            }
-        } catch (error) {
-            console.error('Error processing PDF:', error);
-            alert('Lỗi xử lý PDF: ' + error.message);
-        }
-    }
-
-    function showPdfPreviewWithFormat(data) {
-        const previewContent = document.getElementById('pdfExtractedContent');
-        previewContent.innerHTML = data.htmlContent;
-
-        // Gán trực tiếp vào editor luôn
-        const editorContent = document.getElementById('editorContent');
-        editorContent.innerHTML = `
-            <div class="pdf-import-section">
-                <h6>📋 NỘI DUNG IMPORT TỪ PDF:</h6>
-                ${data.htmlContent}
-            </div>
-            <hr>
-        `;
-
-        // Nếu bạn vẫn muốn hiển thị modal xem trước thì giữ lại:
-        const modal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
-        modal.show();
-    }
-
-    function applyPdfContent() {
-        if (!window.currentPdfData) return;
-
-        const editorContent = document.getElementById('editorContent');
-        const applyToTuongTrinh = document.getElementById('applyToTuongTrinh').checked;
-
-        if (applyToTuongTrinh) {
-            // Insert HTML content trực tiếp, giữ nguyên format
-            const importSection = `
-                <div class="pdf-import-section">
-                    <h6>📋 NỘI DUNG IMPORT TỪ PDF:</h6>
-                    ${window.currentPdfData.htmlContent}
-                </div>
-                <hr>
-            `;
-
-            editorContent.innerHTML = importSection + editorContent.innerHTML;
-        }
-
-        // Đóng modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('pdfPreviewModal'));
-        modal.hide();
-
-        toastr.success('Đã import nội dung PDF với định dạng');
-    }
-
-    function formatPdfContentForEditor(content) {
-        // Format nội dung PDF cho phù hợp với editor
-        return content
-            .split('\n')
-            .filter(line => line.trim().length > 0)
-            .map(line => {
-                if (line.includes('LƯỢC ĐỒ') || line.includes('TƯỜNG TRÌNH')) {
-                    return `<p><strong>${line.trim()}</strong></p>`;
-                }
-                return `<p>${line.trim()}</p>`;
-            })
-            .join('');
-    }
-</script>
 
 <script src="~/dist/js/J0302/J0302TTPT/J0303TemplateTuongTrinh.js" asp-append-version="true" defer></script>
+@* <script src="~/dist/js/J0302/J0302TTPT/J0305TrinhTuVaKetLuan.js" asp-append-version="true" defer></script> *@

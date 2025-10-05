@@ -165,6 +165,55 @@ function initTomSelect(elementId, initialValue, isYhct = false) {
 
     return tomSelectInstance;
 }
+//function initTomSelect(elementId, initialValue, isYhct = false) {
+//    // Tìm element bằng ID (vì className không ổn định cho TomSelect)
+//    const $select = $(`#${elementId}`);
+
+//    if ($select.length === 0) return null; // Thoát nếu không tìm thấy element
+
+//    // Nếu đã khởi tạo, hủy trước
+//    if ($select[0].tomselect) {
+//        $select[0].tomselect.destroy();
+//    }
+
+//    const tomSelectInstance = new window.TomSelect($select[0], {
+//        // QUAN TRỌNG: Sử dụng 'ma' (mã ICD) làm valueField để đồng bộ với API search
+//        valueField: 'id',
+//        labelField: 'ten',
+//        searchField: ['ma', 'ten', 'viettat'],
+
+//        // Cấu hình AJAX để tìm kiếm
+//        load: function (query, callback) {
+//            if (!query.length || query.length < 2) {
+//                callback();
+//                return;
+//            }
+
+//            const yhctParam = isYhct ? `&yhct=true` : '';
+
+//            $.ajax({
+//                url: `/thu_thuat_phau_thuat/thong-tin/search-icd?query=${encodeURIComponent(query)}&limit=50${yhctParam}`,
+//                type: 'GET',
+//                dataType: 'json',
+//                success: function (response) {
+//                    callback(response);
+//                },
+//                error: function () {
+//                    console.error("Lỗi khi tìm kiếm ICD từ API:", elementId);
+//                    callback();
+//                }
+//            });
+//        },
+
+//    });
+
+//    // Tải các ICD đã chọn ban đầu
+//    if (initialValue && Array.isArray(initialValue)) {
+//        loadInitialIcds(initialValue, tomSelectInstance, isYhct);
+//    }
+
+//    return tomSelectInstance;
+//}
 
 function addICDTag(type, icdId, icdCode, icdName) {
     const displayArea = document.getElementById(`hien_thi_icd_${type}`)
@@ -213,27 +262,24 @@ function updateICDTextArea(type) {
 
     $targetTextarea.val(content);
 }
-
-
-function configureICDTomSelect() {
-    console.log("Lần 1");
+function configureICDTomSelect(yhct = false) {
     const icdConfigs = [
         {
             className: ".cbCDVaoKhoa",
             type: "vao_khoa",
-            isYhct: false,
+            isYhct: yhct,
             maxItems: 1
         },
         {
             className: ".cbTruocThuThuat",
             type: "truoc_thuat",
-            isYhct: false,
+            isYhct: yhct,
             maxItems: 1
         },
         {
             className: ".cbSauThuThuat",
             type: "sau_thuat",
-            isYhct: false,
+            isYhct: yhct,
             maxItems: 1
         },
     ]
@@ -258,7 +304,6 @@ function configureICDTomSelect() {
             initialValue,
             config.isYhct
         );
-        console.log(`TomSelect cho ${config.type} đã được khởi tạo.`);
         if (tomSelectInstance) {
             // 2. GHI ĐÈ CẤU HÌNH TÙY CHỈNH CỦA BẠN
             tomSelectInstance.settings.maxItems = config.maxItems;
@@ -277,37 +322,25 @@ function configureICDTomSelect() {
                         <span style="color:gray; font-size:12px; margin-left:10px;"><strong>${escape(data.ma || data.viettat)}</strong></span>
                     </div>`,
             };
-            console.log("Tại sao lại không oncahgne?");
             tomSelectInstance.on('change', function (value) {
-                // Tom-Select (maxItems: 1) trả về ID khi chọn, và null khi reset
 
-                // Log dòng đầu tiên để kiểm tra
-                console.log(`[${config.type}] onChange BẮT ĐẦU. Giá trị (ID) = `, value);
 
-                // Thoát nếu giá trị là null (do lệnh reset bên dưới)
                 if (!value) return;
 
                 const selectedId = value;
                 const selectedItem = this.options[selectedId];
 
                 if (!selectedItem) {
-                    console.warn(`[${config.type}] Không tìm thấy chi tiết ICD.`);
                     return;
                 }
-
-                // Log chi tiết
-                console.log(`[${config.type}] Selected Item Details:`, selectedItem);
-
-                // BƯỚC 1: Tạo tag ngoài
                 addICDTag(config.type, selectedItem.id, selectedItem.ma, selectedItem.ten);
 
-                // BƯỚC 2: RESET Tom-Select (Tagger mode)
-                // Đặt giá trị về null và dùng tham số thứ hai là TRUE (silent: không kích hoạt lại onChange)
                 this.clear();
             });
         }
     })
 }
+
 function clearICDDisplay(type) {
     $(`.hien_thi_icd_${type}`).empty();
 
@@ -435,33 +468,6 @@ function getTomSelectConfigs(allData) {
         },
     ]
 }
-//$(function () {
-//    $('#ngay_rut_ong_dan_luu').datepicker({
-//        format: "dd-mm-yyyy",
-//        language: "vi",
-//        autoclose: true,
-//        todayHighlight: true,
-//        weekStart: 1,
-//        defaultViewDate: 'today'
-
-
-//    });
-//    $('#ngay_rut_ong_dan_luu').datepicker('setDate', new Date());
-//    $('#ngay_rut_ong_dan_luu').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
-//    $('#ngay_cat_chi').datepicker({
-//        format: "dd-mm-yyyy",
-//        language: "vi",
-//        autoclose: true,
-//        todayHighlight: true,
-//        weekStart: 1,
-//        defaultViewDate: 'today'
-
-
-//    });
-//    $('#ngay_cat_chi').datepicker('setDate', new Date());
-//    $('#ngay_cat_chi').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
-//});
-
 
 function processICDLoading(type, idChanDoanStr, maChanDoanStr, tenChanDoanStr) {
     // 1. Kiểm tra dữ liệu đầu vào
@@ -502,7 +508,7 @@ function processICDLoading(type, idChanDoanStr, maChanDoanStr, tenChanDoanStr) {
         addICDTag(type, id, ma, finalName);
 
         // Log để kiểm tra:
-        console.log(`[ICD Load] Đã thêm: ${type} - ID: ${id}, Mã: ${ma}, Tên: ${finalName}`);
+        //console.log(`[ICD Load] Đã thêm: ${type} - ID: ${id}, Mã: ${ma}, Tên: ${finalName}`);
     });
 }
 function bindDataToForm(data) {
@@ -653,10 +659,8 @@ async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
         allData[key] = results[index];
     });
 
-
-    //await loadICDData()
-
-    configureICDTomSelect();
+    let yhct = window.yhct;
+    configureICDTomSelect(yhct);
 
 
     const configs = getTomSelectConfigs(allData);
@@ -695,7 +699,7 @@ function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log("data = ", data.data);
+                    //console.log("data = ", data.data);
                     bindDataToForm(data.data);
                 } else {
                     console.error("Lỗi khi tải dữ liệu:", data.message);
@@ -1198,7 +1202,7 @@ async function handleSaveThongTin() {
         IDPhuongPhapVoCam: idPhuongPhapVoCam
     };
 
-    console.log("-> Dữ liệu Thông Tin Thủ Thuật gửi đi:", dataToSend);
+    //console.log("-> Dữ liệu Thông Tin Thủ Thuật gửi đi:", dataToSend);
 
     $.ajax({
         url: "/thu_thuat_phau_thuat/thong-tin/save-thong-tin",

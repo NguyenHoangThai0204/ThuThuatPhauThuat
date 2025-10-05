@@ -2,12 +2,12 @@
 (function () {
     'use strict';
     if (window.__templateTuongTrinhInitialized) {
-        console.log('Template Tuong Trinh already initialized');
+        //console.log('Template Tuong Trinh already initialized');
         return;
     }
     window.__templateTuongTrinhInitialized = true;
 
-    let selectKhoa;
+    let selectKhoa = null;
     let isEdit = false;
 
     const searchInput = document.querySelector(".search-container input");
@@ -262,7 +262,7 @@
         const noiDung = textarea?.value.trim() ?? "";
 
         const idKhoa = Number(selectKhoa?.getValue());
-        console.log(idKhoa);
+        //console.log(idKhoa);
         const newData = {
             ten: newTitle,
             noiDung: noiDung,
@@ -433,7 +433,7 @@
     // --- save all ---
     async function saveAllEdits() {
         const currentKhoaId = Number(selectKhoa?.getValue());
-        console.log("currentKhoaId = ", currentKhoaId);
+        //console.log("currentKhoaId = ", currentKhoaId);
 
         if (!isValidation(isEdit)) return;
 
@@ -491,9 +491,8 @@
 
     // --- initTomSelectKhoa ---
     function initTomSelectKhoa(data) {
-        if (selectKhoa) {
-            selectKhoa.destroy();
-            selectKhoa = null;
+        if (selectKhoa?.tomselect) {
+            return;
         }
 
         const options = data.map((k) => ({
@@ -501,7 +500,7 @@
             ten: k.ten,
             vietTat: generateAbbreviation(k.ten),
         }));
-
+      
         selectKhoa = new window.TomSelect(".cbTemplateKhoa", {
             valueField: "ma",
             labelField: "ten",
@@ -557,6 +556,7 @@
 
     // --- initializeApp ---
     async function initializeApp() {
+    
         try {
             const response = await fetch("/template_tuong_trinh/khoa/all");
             if (!response.ok) throw new Error(`HTTP ${response.status}`);

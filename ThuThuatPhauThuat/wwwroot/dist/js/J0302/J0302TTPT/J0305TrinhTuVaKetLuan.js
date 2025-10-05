@@ -7,21 +7,35 @@
     }
 }
 
+function getSelectedImagesForSave() {
+    //return window.getSelectedImages ? window.getSelectedImages() : [];
+    var anhTruongTrinhSaveToServer = [];
+    window.getSelectedImages().forEach(item => {
+        anhTruongTrinhSaveToServer.push({
+            URL: item.ftpUrl,
+            TenAnh: item.name
+        });
+    });
+    return anhTruongTrinhSaveToServer;
+}
+
 function saveTrinhTu() {
     //console.log('=== BẮT ĐẦU SAVE TRÌNH TỰ ===');
-    console.log("Tới rồi nè");
+    //console.log("Tới rồi nè");
     var diagramInfo = $('#editorDiagram').html();
     var content = $('#editorContent').html();
     var summary = $('.editor-summary').val();
+    //console.log("DanhSachHinhAnh", getSelectedImagesForSave());
 
     var formData = {
         IDPhieuTTPT: window.IDPhieuTTPT,
         TrinhTu: content,
         KetLuan: summary,
         ThongTinLuocDo: diagramInfo,
+        AnhTruongTrinhSaveToServer: getSelectedImagesForSave()
     };
 
-    console.log('Form data:', formData);
+    //console.log('Form data:', formData);
 
     $.ajax({
         url: '/thu_thuat_phau_thuat/trinh-tu/save',
@@ -32,7 +46,7 @@ function saveTrinhTu() {
             console.log('AJAX beforeSend - Đang gửi request...');
         },
         success: function (response) {
-            console.log('AJAX Success - Response:', response);
+            //console.log('AJAX Success - Response:', response);
             if (response.success) {
                 toastr.success(response.message);
             } else {

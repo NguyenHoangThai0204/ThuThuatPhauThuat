@@ -77,7 +77,7 @@ if (typeof ekipList === "undefined") {
             {
                 className: "#cb_NhanVien",
                 placeholder: "-- Tên nhân viên --",
-                data: allData.nhanVien || [],
+                data: allData.nhanVien.filter(nv => nv.idKhoa === window.IDKhoa) || [],
                 valueField: "id",
                 labelField: "ten",
             },
@@ -233,7 +233,7 @@ function configCbEkip(configs) {
         
         ekipList.push(newMember);
         renderEkipTable();
-        console.log("Ekip on add table == ", ekipList);
+        //console.log("Ekip on add table == ", ekipList);
         nhanVienTomSelect.clear(true);
         vaiTroTomSelect.clear(true);
         ghiChuInput.value = '';
@@ -284,11 +284,11 @@ function configCbEkip(configs) {
 
             if (response.success && Array.isArray(response.data)) {
                 const serverEkipList = response.data;
-                console.log("serverEkipList =", serverEkipList);
+                //console.log("serverEkipList =", serverEkipList);
                 ekipList = serverEkipList.map(item => {
                     const nhanVienData = findItem(allData.nhanVien, item.idNhanVien, 'id');
                     const vaiTroData = findItem(allData.vaiTro, item.idVaiTro, 'id');
-                    console.log("vaiTroData =", vaiTroData);
+                    //console.log("vaiTroData =", vaiTroData);
                     return {
                         nhanVienMa: item.idNhanVien.toString(), 
                         nhanVienTen: nhanVienData ? nhanVienData.ten : `ID ${item.idNhanVien} (Lỗi map)`,
@@ -358,7 +358,7 @@ function configCbEkip(configs) {
     }
 
 function handleSaveEkip() {
-    console.log("ekipList ===", ekipList);
+    //console.log("ekipList ===", ekipList);
         if (ekipList.length === 0) {
             if (typeof toastr !== 'undefined') toastr.warning("Danh sách ekip rỗng, không có dữ liệu để lưu.");
             return;

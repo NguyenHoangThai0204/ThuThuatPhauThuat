@@ -85,7 +85,7 @@ namespace ThuThuatPhauThuat.Services.S0302
         };
 
                 // Câu lệnh SQL với đầy đủ parameters
-                var sql = @"EXEC S0302_XuatDanhSachThuThuatPhauThuat 
+                var sql = @"EXEC TTPT_S0302_XuatDanhSachThuThuatPhauThuat 
                     @IdChiNhanh, @Ngay, @IDPhongBuong, @TrangThai,
                     @MaVaoVien, @MaBenhNhan, @TenBenhNhan, @CCCD, @MaThe, @SoDienThoai";
 

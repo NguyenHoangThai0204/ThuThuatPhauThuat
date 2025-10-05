@@ -3,9 +3,9 @@
 }
 
 .card-infor {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
+    /*    display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;*/
     padding: 6px;
     background: #f8f9fa; /* nền nhạt */
     border: 1px solid #dee2e6;
@@ -20,7 +20,7 @@
         background: #fff;
         border: 1px solid #ddd;
         border-radius: 6px;
-        padding: 8px 10px;
+        padding: 4px 6px;
         text-align: center;
         font-weight: 600;
         color: #212529;
