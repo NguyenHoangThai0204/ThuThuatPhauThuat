@@ -3,7 +3,7 @@
     bool isEmptyModel = Model == null || string.IsNullOrEmpty(Model.SoPhieu);
 }
 
-<div class="p-2 bg-azure-lt rounded-2">
+<div class="p-1 bg-azure-lt rounded-2">
     <div class="row mt-1">
 
         <!-- Số phiếu -->
@@ -12,7 +12,7 @@
                 <label class="form-label fw-bold me-2" style="min-width: 100px;">Số phiếu:</label>
                 @if (isEmptyModel)
                 {
-                    <input type="text" class="form-control form-control-md" id="soPhieu" />
+                    <input type="text" class="form-control form-control-md" id="soPhieu" readonly />
                 }
                 else
                 {
@@ -150,7 +150,6 @@
     // Hàm fetch dữ liệu nguồn bệnh
     async function fetchNguonBenhData() {
         try {
-            console.log("Tới lúc truyền nè ");
             const url = "/NguonBenhTTPT/List"; // hoặc "dist/data/json/DM_NguonBenh.json"
 
             if (url.endsWith('.json')) {
@@ -222,17 +221,14 @@
                     }
                 }
             });
-        }, 50); // delay nhẹ 50ms để DOM chắc chắn có <select>
+        }, 50); 
     }
 
     async function khoiTaoThongTinSoPhieu(tabIndex, isEmpty) {
-        // Load dữ liệu nguồn bệnh
         await fetchNguonBenhData();
 
-        // Khởi tạo TomSelect cho nguồn bệnh
         initNguonBenhTomSelect(tabIndex);
 
-        // Khởi tạo datetime picker cho các trường Bắt đầu và Kết thúc thủ thuật
         const selectorBatDauKetThuc = '.txtDateTimeBatDauThuThuat-' + tabIndex +
                                      ', .txtDateTimeKetThucThuThuat-' + tabIndex;
 

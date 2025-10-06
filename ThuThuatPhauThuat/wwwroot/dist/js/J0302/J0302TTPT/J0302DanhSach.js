@@ -36,6 +36,9 @@ $(document).on("click", "#example tbody tr", function () {
     window.yhct = $(this).data("yhct");
     window.IDKhoa = $(this).data("idkhoa");
 
+    console.log("idvaovien: ", selectedIdVaoVien);
+    console.log("idchidinhchitiet: ", selectedIdChiDinhChiTiet);
+
     $("#info-tenbn", window.parent.document).text(tenBN);
     $("#info-namsinh", window.parent.document).text(namSinh + " - " + gioiTinh);
     $("#info-bacsi", window.parent.document).text(bacSi);

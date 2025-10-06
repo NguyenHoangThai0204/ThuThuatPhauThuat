@@ -104,7 +104,6 @@ function loadInitialOptions(tomSelectInstance, isYhct = false) {
         dataType: 'json',
         success: function (response) {
             if (Array.isArray(response)) {
-                console.log("loadInitialOptions =  ", response);
                 response.forEach(icd => {
                     tomSelectInstance.addOption(icd);
                 });
