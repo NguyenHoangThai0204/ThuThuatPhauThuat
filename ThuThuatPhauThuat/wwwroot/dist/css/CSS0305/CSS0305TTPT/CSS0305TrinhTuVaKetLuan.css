@@ -590,3 +590,44 @@ sequence-editor-panel .editor-content {
     #imagePreviewModalImg:hover {
         box-shadow: 0 8px 36px rgba(0,109,119,0.25);
     }
+
+/* Upload loading styles */
+.upload-loading {
+    opacity: 0.7;
+    border: 2px dashed #007bff;
+}
+
+.upload-progress {
+    margin-top: 8px;
+    height: 4px;
+    background-color: #e9ecef;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #007bff;
+    width: 0%;
+    animation: progressAnimation 2s infinite;
+}
+
+@keyframes progressAnimation {
+    0% {
+        width: 0%;
+    }
+
+    50% {
+        width: 70%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+/* Drag and drop styles */
+.image-panel-body.drag-over {
+    background-color: rgba(0, 123, 255, 0.1);
+    border: 2px dashed #007bff;
+}
