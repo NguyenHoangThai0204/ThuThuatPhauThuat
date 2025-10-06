@@ -578,13 +578,17 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             {
                 string sqlQuery1 = @"EXEC TTPT_S0305_TaoTrinhTuVaKetLuan 
                           @IDPhieuTTPT, @TrinhTu, @KetLuan, @ThongTinLuocDo";
-                string sqlQuery2 = @"EXEC TTPT_S0305_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT";
+                string sqlQuery2 = @"DELETE FROM QL_TTPT_AnhTruongTrinh WHERE IDPhieuTTPT = @IDPhieuTTPT;";
+                string sqlQuery3 = @"EXEC TTPT_S0305_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT";
 
                 await _context.Database.ExecuteSqlRawAsync(sqlQuery1,
                     new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT),
                     new SqlParameter("@TrinhTu", model.TrinhTu ?? (object)DBNull.Value),
                     new SqlParameter("@KetLuan", model.KetLuan ?? (object)DBNull.Value),
                     new SqlParameter("@ThongTinLuocDo", model.ThongTinLuocDo ?? (object)DBNull.Value)
+                );
+                await _context.Database.ExecuteSqlRawAsync(sqlQuery2,
+                    new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT)
                 );
                 foreach (var anh in model.AnhTruongTrinhSaveToServer ?? [])
                 {
@@ -593,7 +597,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                         Direction = ParameterDirection.Output
                     };
                     //_logger.LogInformation("  - URL: {url}, TenAnh: {ten}", anh.URL, anh.TenAnh);
-                    await _context.Database.ExecuteSqlRawAsync(sqlQuery2,
+                    await _context.Database.ExecuteSqlRawAsync(sqlQuery3,
                         new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT),
                         new SqlParameter("@URL", anh.URL ?? (object)DBNull.Value),
                         new SqlParameter("@TenAnh", anh.TenAnh ?? (object)DBNull.Value),
