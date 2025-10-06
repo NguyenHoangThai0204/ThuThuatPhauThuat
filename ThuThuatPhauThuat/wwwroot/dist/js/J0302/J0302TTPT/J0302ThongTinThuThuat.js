@@ -6,10 +6,6 @@ if (typeof selectedICDs === "undefined") {
         vao_khoa: [],
         truoc_thuat: [],
         sau_thuat: [],
-
-
-
-
     }
 }
 if (typeof allDataThongTin === "undefined") {

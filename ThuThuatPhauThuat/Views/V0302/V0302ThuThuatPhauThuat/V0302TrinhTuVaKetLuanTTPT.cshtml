@@ -21,14 +21,9 @@
                 </select>
                 <div class="input-group-ellipsis">
                     <button class="btn btn-primary" onclick="applyTemplate()">Áp dụng</button>
-                    <button type="button" class="ellipsis-btn goi-remove" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#myModal">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="1" />
-                            <circle cx="12" cy="5" r="1" />
-                            <circle cx="12" cy="19" r="1" />
-                        </svg>
+                        Thêm mẫu mới
                     </button>
                 </div>
             </div>
@@ -235,7 +230,7 @@
 <script src="~/dist/js/J0302/J0302TTPT/J0303TemplateTuongTrinh.js" asp-append-version="true" defer></script>
 
 <script>
-    var DEFAULT_KHOA_ID = parseInt(window.MaKhoa);
+    var DEFAULT_KHOA_ID = parseInt(window.MaKhoa || 0);
     window.templateTomSelectInstance = window.templateTomSelectInstance || null;
     window.allTemplatesData = window.allTemplatesData || [];
 

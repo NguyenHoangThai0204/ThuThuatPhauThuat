@@ -716,6 +716,7 @@
                 } else if (selectKhoa) {
                     // Nếu IdKhoa không hợp lệ hoặc không có, reset về 0
                     selectKhoa.setValue(0);
+                    loadTemplatesByKhoa(0);
                 }
                 // ========================
             });
