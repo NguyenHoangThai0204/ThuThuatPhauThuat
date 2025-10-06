@@ -39,7 +39,7 @@ $(document).on("click", "#example tbody tr", function () {
     $("#info-tenbn", window.parent.document).text(tenBN);
     $("#info-namsinh", window.parent.document).text(namSinh + " - " + gioiTinh);
     $("#info-bacsi", window.parent.document).text(bacSi);
-    $("#info-datetime", window.parent.document).text(tendichvu);
+    $("#info-tendichvu", window.parent.document).text(tendichvu);
     
 
     $("#example tbody tr").removeClass("table-active");

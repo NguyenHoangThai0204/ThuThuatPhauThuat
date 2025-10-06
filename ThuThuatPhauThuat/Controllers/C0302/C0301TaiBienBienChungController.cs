@@ -42,9 +42,15 @@ public class C0301TaiBienBienChungController : Controller // <-- Kế thừa Con
         {
             _context.TaiBienBienChung.Add(model);
             await _context.SaveChangesAsync();
-
+            var result = new
+            {
+                Id = model.ID, // Lấy ID đã được gán
+                Ten = model.Ten,
+                Ma = model.Ma,
+                Active = model.Active,
+            };
             // Trả về HTTP 200 OK với đối tượng đã tạo
-            return Ok(new { success = true, data = model });
+            return Ok(new { success = true, data = result });
         }
 
         // Trả về lỗi 400 Bad Request

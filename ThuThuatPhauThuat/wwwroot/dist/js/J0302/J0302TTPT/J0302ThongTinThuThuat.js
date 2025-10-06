@@ -1,5 +1,42 @@
+if (typeof icdData === "undefined") {
+    var icdData = [];
+}
+if (typeof selectedICDs === "undefined") {
+    var selectedICDs = {
+        vao_khoa: [],
+        truoc_thuat: [],
+        sau_thuat: [],
+
+
+
+
+    }
+}
+if (typeof allDataThongTin === "undefined") {
+    var allDataThongTin = {
+        taiBienBienChung: [],
+        viTriThucHien: [],
+        cheDoThuThuat: [],
+        tuVong: [],
+        phongBuong: [],
+        phanLoai: [],
+        thietBi: [],
+        voCam: [],
+
+
+    };
+}
 function resetThongTinState() {
-    sampleDataThongTin = [];
+    allDataThongTin = {
+        taiBienBienChung: [],
+        viTriThucHien: [],
+        cheDoThuThuat: [],
+        tuVong: [],
+        phongBuong: [],
+        phanLoai: [],
+        thietBi: [],
+        voCam: [],
+    };
     icdData = [];
     selectedICDs = {
         vao_khoa: [],
@@ -26,16 +63,7 @@ function toIsoDate(dateString) {
     return null; // Trả về null nếu không phải định dạng hợp lệ
 }
 
-if (typeof icdData === "undefined") {
-    var icdData = [];
-}
-if (typeof selectedICDs === "undefined") {
-    var selectedICDs = {
-        vao_khoa: [],
-        truoc_thuat: [],
-        sau_thuat: [],
-    }
-}
+
 function normalizeICDData(data) {
     if (!Array.isArray(data)) {
         console.error("ICD data is not an array:", data);
@@ -67,51 +95,27 @@ async function loadICDData() {
         ]
     }
 }
-//Search ICD mới
-// Định nghĩa hàm này ở file J0302ThongTinThuThuat.js
-function loadInitialIcds(initialValue, tomSelectInstance, isYhct = false, type) {
 
-    const icdCodes = initialValue
-        .map(i => i.ma)
-        .filter(code => code && typeof code === 'string' && code.trim().length > 0);
+function loadInitialOptions(tomSelectInstance, isYhct = false) {
+    if (!tomSelectInstance) return;
 
-    if (icdCodes.length === 0) {
-        clearICDDisplay(type);
-        return;
-    }
+    const yhctParam = isYhct ? `?yhct=true` : '';
 
-    clearICDDisplay(type);
-
-    const yhctParam = isYhct ? `&yhct=true` : '';
-    const codesString = icdCodes.join(',');
-
+    // Gọi API đã được viết ở C#
     $.ajax({
-        url: `/thong-tin-phau-thuat/thong-tin/details?codes=${encodeURIComponent(codesString)}${yhctParam}`,
+        url: `/thu_thuat_phau_thuat/thong-tin/init-icd${yhctParam}`,
         type: 'GET',
         dataType: 'json',
         success: function (response) {
-
-            // === SỬA ĐỔI QUAN TRỌNG: Mảng giá trị ban đầu phải là ID ===
-            const initialValues = [];
-
-            response.forEach(icd => {
-                tomSelectInstance.addOption(icd);
-
-                // Thu thập ID để set value
-                initialValues.push(icd.id);
-
-                // TẠO TAG
-                addICDTag(type, icd.id, icd.ma, icd.ten);
-            });
-
-            // Set giá trị đã chọn vào Tom-Select (bằng ID)
-            tomSelectInstance.setValue(initialValues);
-
-            // Cập nhật ghi chú
-            //processICDLoading();
+            if (Array.isArray(response)) {
+                console.log("loadInitialOptions =  ", response);
+                response.forEach(icd => {
+                    tomSelectInstance.addOption(icd);
+                });
+            }
         },
         error: function (err) {
-            console.error(`Lỗi khi tải ICD ban đầu cho ${type}:`, err);
+            console.error("Lỗi khi tải 50 ICD ban đầu:", err);
         }
     });
 }
@@ -135,12 +139,25 @@ function initTomSelect(elementId, initialValue, isYhct = false) {
 
         // Cấu hình AJAX để tìm kiếm
         load: function (query, callback) {
+            const yhctParam = isYhct ? `&yhct=true` : '';
+
             if (!query.length || query.length < 2) {
+
+                $.ajax({
+                    url: `/thu_thuat_phau_thuat/thong-tin/search-icd?query=${encodeURIComponent('a0')}&limit=50${yhctParam}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (response) {
+                        callback(response);
+                    },
+                    error: function () {
+                        console.error("Lỗi khi tìm kiếm ICD từ API:", elementId);
+                        callback();
+                    }
+                });
                 callback();
-                return;
             }
 
-            const yhctParam = isYhct ? `&yhct=true` : '';
 
             $.ajax({
                 url: `/thu_thuat_phau_thuat/thong-tin/search-icd?query=${encodeURIComponent(query)}&limit=50${yhctParam}`,
@@ -158,62 +175,11 @@ function initTomSelect(elementId, initialValue, isYhct = false) {
 
     });
 
-    // Tải các ICD đã chọn ban đầu
-    if (initialValue && Array.isArray(initialValue)) {
-        loadInitialIcds(initialValue, tomSelectInstance, isYhct);
-    }
+   
 
     return tomSelectInstance;
 }
-//function initTomSelect(elementId, initialValue, isYhct = false) {
-//    // Tìm element bằng ID (vì className không ổn định cho TomSelect)
-//    const $select = $(`#${elementId}`);
 
-//    if ($select.length === 0) return null; // Thoát nếu không tìm thấy element
-
-//    // Nếu đã khởi tạo, hủy trước
-//    if ($select[0].tomselect) {
-//        $select[0].tomselect.destroy();
-//    }
-
-//    const tomSelectInstance = new window.TomSelect($select[0], {
-//        // QUAN TRỌNG: Sử dụng 'ma' (mã ICD) làm valueField để đồng bộ với API search
-//        valueField: 'id',
-//        labelField: 'ten',
-//        searchField: ['ma', 'ten', 'viettat'],
-
-//        // Cấu hình AJAX để tìm kiếm
-//        load: function (query, callback) {
-//            if (!query.length || query.length < 2) {
-//                callback();
-//                return;
-//            }
-
-//            const yhctParam = isYhct ? `&yhct=true` : '';
-
-//            $.ajax({
-//                url: `/thu_thuat_phau_thuat/thong-tin/search-icd?query=${encodeURIComponent(query)}&limit=50${yhctParam}`,
-//                type: 'GET',
-//                dataType: 'json',
-//                success: function (response) {
-//                    callback(response);
-//                },
-//                error: function () {
-//                    console.error("Lỗi khi tìm kiếm ICD từ API:", elementId);
-//                    callback();
-//                }
-//            });
-//        },
-
-//    });
-
-//    // Tải các ICD đã chọn ban đầu
-//    if (initialValue && Array.isArray(initialValue)) {
-//        loadInitialIcds(initialValue, tomSelectInstance, isYhct);
-//    }
-
-//    return tomSelectInstance;
-//}
 
 function addICDTag(type, icdId, icdCode, icdName) {
     const displayArea = document.getElementById(`hien_thi_icd_${type}`)
@@ -322,7 +288,9 @@ function configureICDTomSelect(yhct = false) {
                         <span style="color:gray; font-size:12px; margin-left:10px;"><strong>${escape(data.ma || data.viettat)}</strong></span>
                     </div>`,
             };
+            loadInitialOptions(tomSelectInstance, config.isYhct);
             tomSelectInstance.on('change', function (value) {
+
 
 
                 if (!value) return;
@@ -424,47 +392,47 @@ function fetchDataAndNormalize(url, tenField = 'ten', viettatField = 'viettat', 
     });
 }
 
-function getTomSelectConfigs(allData) {
+function getTomSelectConfigs(allDataThongTin) {
     return [
         {
             className: ".cbPhongThucHien",
             placeholder: "-- Phòng thực hiện --",
-            data: allData.phongBuong || [],
+            data: allDataThongTin.phongBuong || [],
         },
         {
             className: ".cbPhanLoai",
             placeholder: "-- Phân loại --",
-            data: allData.phanLoai || [],
+            data: allDataThongTin.phanLoai || [],
         },
         {
             className: ".cbThietBi",
             placeholder: "-- Thiết bị --",
-            data: allData.thietBi || [],
+            data: allDataThongTin.thietBi || [],
         },
         {
             className: ".cbBienChung",
             placeholder: "-- Tai biến/biến chứng --",
-            data: allData.taiBienBienChung || [],
+            data: allDataThongTin.taiBienBienChung || [],
         },
         {
             className: ".cbCheDoThuThuat",
             placeholder: "-- Chế độ thủ thuật --",
-            data: allData.cheDoThuThuat || [],
+            data: allDataThongTin.cheDoThuThuat || [],
         },
         {
             className: ".cbViTriThucHien",
             placeholder: "-- Vị trí thực hiện --",
-            data: allData.viTriThucHien || [],
+            data: allDataThongTin.viTriThucHien || [],
         },
         {
             className: ".cbTuVong",
             placeholder: "-- Tử vong --",
-            data: allData.tuVong || [],
+            data: allDataThongTin.tuVong || [],
         },
         {
             className: ".cbPTVoCam",
             placeholder: "-- Phương thức vô cảm --",
-            data: allData.voCam,
+            data: allDataThongTin.voCam,
         },
     ]
 }
@@ -652,18 +620,16 @@ async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
         loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet)
     }
 
-
-    const allData = {};
     const keys = Object.keys(dataPromises);
     keys.forEach((key, index) => {
-        allData[key] = results[index];
+        allDataThongTin[key] = results[index];
     });
 
     let yhct = window.yhct;
     configureICDTomSelect(yhct);
 
 
-    const configs = getTomSelectConfigs(allData);
+    const configs = getTomSelectConfigs(allDataThongTin);
     configCbThongTin(configs);
     $('#btn_saveThongTin').on('click', handleSaveThongTin);
 
@@ -834,8 +800,8 @@ async function saveThietBi() {
         });
         if (response.ok) {
             const newItem = { ma: ma, ten: ten, alias: ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
-            sampleDataThongTin.thietBi.push(newItem);
-            refreshTomSelect('.cbThietBi', sampleDataThongTin.thietBi);
+            allDataThongTin.thietBi.push(newItem);
+            refreshTomSelect('.cbThietBi', allDataThongTin.thietBi);
             document.getElementById('thietBiForm').reset();
             closeModal('thietBiModal');
             toastr.success("Thêm mới thiết bị thủ thuật thành công", "Thông báo");
@@ -875,10 +841,10 @@ async function saveBienChung() {
         });
 
         if (response.ok) {
-            const newItem = { ma: ma, ten: ten, alias: ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
-            sampleDataThongTin.taiBienBienChung.push(newItem);
-            refreshTomSelect('.cbBienChung', sampleDataThongTin.taiBienBienChung);
-
+            const result = await response.json();
+            const newItem = { id: result.data.id, ma: result.data.ma, ten: result.data.ten, alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
+            allDataThongTin.taiBienBienChung.push(newItem);
+            refreshTomSelect('.cbBienChung', allDataThongTin.taiBienBienChung);
             document.getElementById('bienChungForm').reset();
             closeModal('bienChungModal');
             toastr.success("Thêm mới tai biến biến chứng thành công", "Thông báo");
@@ -917,9 +883,10 @@ async function saveCheDoThuThuat() {
         });
 
         if (response.ok) {
-            const newItem = { ma: ma, ten: ten, alias: ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
-            sampleDataThongTin.cheDoThuThuat.push(newItem);
-            refreshTomSelect('.cbCheDoThuThuat', sampleDataThongTin.cheDoThuThuat);
+            const result = await response.json();
+            const newItem = { id: result.data.id, ma: result.data.ma, ten: result.data.ten, alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
+            allDataThongTin.cheDoThuThuat.push(newItem);
+            refreshTomSelect('.cbCheDoThuThuat', allDataThongTin.cheDoThuThuat);
 
             document.getElementById('cheDoThuThuatForm').reset();
             closeModal('cheDoThuThuatModal');
@@ -960,9 +927,10 @@ async function saveViTriThucHien() {
         });
 
         if (response.ok) {
-            const newItem = { ma: ma, ten: ten, alias: ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
-            sampleDataThongTin.viTriThucHien.push(newItem);
-            refreshTomSelect('.cbViTriThucHien', sampleDataThongTin.viTriThucHien);
+            const result = await response.json();
+            const newItem = { id: result.data.id, ma: result.data.ma, ten: result.data.ten, alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
+            allDataThongTin.viTriThucHien.push(newItem);
+            refreshTomSelect('.cbViTriThucHien', allDataThongTin.viTriThucHien);
 
             document.getElementById('viTriThucHienForm').reset();
             closeModal('viTriThucHienModal');
@@ -1001,9 +969,10 @@ async function saveTuVong() {
         });
 
         if (response.ok) {
-            const newItem = { ma: ma, ten: ten, alias: ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
-            sampleDataThongTin.tuVong.push(newItem);
-            refreshTomSelect('.cbTuVong', sampleDataThongTin.tuVong);
+            const result = await response.json();
+            const newItem = { id: result.data.id, ma: result.data.ma, ten: result.data.ten, alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
+            allDataThongTin.tuVong.push(newItem);
+            refreshTomSelect('.cbTuVong', allDataThongTin.tuVong);
 
             document.getElementById('tuVongForm').reset();
             closeModal('tuVongModal');
@@ -1110,9 +1079,9 @@ function validateForm() {
     return isValid;
 }
 async function handleSaveThongTin() {
-    if (!validateForm()) {
-        return;
-    }
+    //if (!validateForm()) {
+    //    return;
+    //}
 
     const idPhieuTTPT = window.IDPhieuTTPT;
 

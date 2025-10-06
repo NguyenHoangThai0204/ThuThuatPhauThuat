@@ -366,6 +366,36 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 return StatusCode(500, new { success = false, message = $"Lỗi Server: {ex.Message}" });
             }
         }
+        // C0302ThuThuatPhauThuatHomeController.cs
+
+        [HttpGet]
+        [Route("icd/init")]
+        public IActionResult SearchICD([FromQuery] string query, [FromQuery] int offset = 0, [FromQuery] int limit = 50, [FromQuery] bool yhct = false)
+        {
+            var allIcdData = _icdService.GetAllIcdData(yhct);
+
+            IEnumerable<M0302IcdModel> filteredData = allIcdData;
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                query = query.ToLower();
+                filteredData = allIcdData.Where(i =>
+                    i.ma.ToLower().Contains(query) ||
+                    i.ten.ToLower().Contains(query)
+                );
+            }
+
+            // 2. Áp dụng Phân trang (Lấy 50 item)
+            var pagedData = filteredData
+                .Skip(offset) // Bỏ qua số lượng item đã tải (offset = 0 cho lần load đầu tiên)
+                .Take(limit)  // Lấy tối đa 50 item
+                .ToList();
+
+            // 3. Trả về định dạng mà TomSelect hiểu
+            // TomSelect cần một mảng các item
+            return Ok(pagedData);
+        }
+
         [HttpGet("thong-tin/search-icd")]
         public IActionResult SearchIcd(
                     [FromQuery] string query,
@@ -414,23 +444,20 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             return Ok(results);
         }
-        [HttpGet("thong-tin/details")]
-        public IActionResult GetIcdDetails([FromQuery] string codes, [FromQuery] bool yhct = false)
+        [HttpGet("thong-tin/init-icd")]
+        public IActionResult GetIcdDetails([FromQuery] bool yhct = false, [FromQuery] int limit = 50)
         {
-            if (string.IsNullOrWhiteSpace(codes))
-                return BadRequest(new { message = "Vui lòng cung cấp danh sách mã ICD." });
-
-            var codeList = codes.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                .Select(c => c.Trim().ToLower())
-                                .ToHashSet();
-
             var allIcd = _icdService.GetAllIcdData(yhct);
 
-            var results = allIcd
-                .Where(i => codeList.Contains(i.ma.ToLower()))
-                .Select(i => new {
-                    id = i.id,
-                    ma = i.ma,
+            var pagedData = allIcd
+                .Take(limit) 
+                .ToList();
+
+            var results = pagedData
+                .Select(i => new
+                {
+                    id = i.id, 
+                    ma = i.ma, 
                     ten = i.ten,
                     viettat = i.viettat,
                     text = $"{i.ma} - {i.ten}"

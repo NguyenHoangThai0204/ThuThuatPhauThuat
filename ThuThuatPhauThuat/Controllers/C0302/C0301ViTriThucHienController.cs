@@ -6,10 +6,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 
-// Sử dụng tên rút gọn của Controller cho Base Route
-// Base Route: /ViTriThucHien
 [Route("ViTriThucHien")]
-public class C0301ViTriThucHienController : Controller // <-- Kế thừa Controller (MVC)
+public class C0301ViTriThucHienController : Controller 
 {
     private readonly Context0302 _context;
 
@@ -18,12 +16,10 @@ public class C0301ViTriThucHienController : Controller // <-- Kế thừa Contro
         _context = context;
     }
 
-    // -----------------------------------------------------
-    // --- 1. LẤY DANH SÁCH (READ) ---
     // Route: GET /ViTriThucHien/List
     [HttpGet]
-    [Route("List")] // Đã đồng bộ tên Action thành List
-    public async Task<IActionResult> List() // Trả về IActionResult
+    [Route("List")] 
+    public async Task<IActionResult> List() 
     {
         var data = await _context.ViTriThucHien
                                  .ToListAsync();
@@ -33,7 +29,6 @@ public class C0301ViTriThucHienController : Controller // <-- Kế thừa Contro
     }
 
     // -----------------------------------------------------
-    // --- 2. TẠO MỚI (CREATE) ---
     // Route: POST /ViTriThucHien/Create
     [HttpPost]
     [Route("Create")]
@@ -41,6 +36,7 @@ public class C0301ViTriThucHienController : Controller // <-- Kế thừa Contro
     {
         if (ModelState.IsValid)
         {
+            model.Active = true;
             _context.ViTriThucHien.Add(model);
             await _context.SaveChangesAsync();
 
@@ -53,11 +49,9 @@ public class C0301ViTriThucHienController : Controller // <-- Kế thừa Contro
     }
 
     // -----------------------------------------------------
-    // --- 3. CẬP NHẬT (UPDATE) ---
     // Route: PUT /ViTriThucHien/Update/{id}
     [HttpPut]
     [Route("Update/{id}")]
-    // SỬA LỖI: Dùng M0301ViTriThucHienTTPT và kiểu dữ liệu ID (int/long) phải khớp
     public async Task<IActionResult> Update(int id, [FromBody] M0301ViTriThucHienTTPT model)
     {
         if (id != model.ID)
@@ -76,7 +70,6 @@ public class C0301ViTriThucHienController : Controller // <-- Kế thừa Contro
             }
             catch (DbUpdateConcurrencyException)
             {
-                // SỬA LỖI: Dùng DbSet ViTriThucHien
                 if (_context.ViTriThucHien.Find(id) == null)
                 {
                     return NotFound(new { success = false, message = $"Không tìm thấy đối tượng có ID={id}." });
@@ -88,15 +81,11 @@ public class C0301ViTriThucHienController : Controller // <-- Kế thừa Contro
         return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors) });
     }
 
-    // -----------------------------------------------------
-    // --- 4. CHI TIẾT (DETAILS) ---
     // Route: GET /ViTriThucHien/{id}
     [HttpGet]
     [Route("{id}")]
-    // SỬA LỖI: Dùng M0301ViTriThucHienTTPT và kiểu dữ liệu ID
     public async Task<IActionResult> Details(int id)
     {
-        // SỬA LỖI: Dùng DbSet ViTriThucHien
         var item = await _context.ViTriThucHien.FindAsync(id);
         if (item == null) return NotFound();
         return Json(item);

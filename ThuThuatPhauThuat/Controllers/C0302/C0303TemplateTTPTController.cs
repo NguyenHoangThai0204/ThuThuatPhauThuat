@@ -69,6 +69,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         [HttpGet("LayDanhSachTheoIDKhoa/{idKhoa}")]
         public async Task<IActionResult> LayDanhSachTheoIDKhoa(long idKhoa)
         {
+            _logger.LogWarning($"ID khoa đang chọn là = {idKhoa}");
             try
             {
                 var templates = await _service.LayDanhSachTheoIDKhoa(idKhoa);
@@ -124,7 +125,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             if (model == null || model.ID <= 0)
                 return BadRequest(new { message = "Dữ liệu không hợp lệ" });
 
-            _logger.LogInformation("📥 CapNhat input: ID={id}, Ten={ten}, NoiDung={nd}",
+            _logger.LogInformation("CapNhat input: ID={id}, Ten={ten}, NoiDung={nd}",
                 model.ID, model.Ten, model.NoiDung);
 
             var updated = await _service.CapNhatTemplateTTPT(model);

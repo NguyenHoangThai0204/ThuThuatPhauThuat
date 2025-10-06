@@ -41,6 +41,7 @@ public class C0301ThietBiThuThuatController : Controller // <-- Kế thừa Cont
     {
         if (ModelState.IsValid)
         {
+            model.Active = true;
             _context.ThietBi.Add(model);
             await _context.SaveChangesAsync();
 

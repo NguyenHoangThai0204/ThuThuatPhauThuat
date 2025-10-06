@@ -135,24 +135,25 @@
 
 
                         <div class="d-flex search-container" style="width: 75%;">
-                            <input type="text" class="form-control form-control-sm me-2" placeholder="Tìm kiếm…" autocomplete="off">
-                            <a href="#" class="btn btn-2 btn-icon p-1 flex-shrink-0" aria-label="Button" style="width: 40px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-2 mb-0">
+                            <input type="text" class="form-control me-2" placeholder="Tìm kiếm…" autocomplete="off">
+                            <button class="btn btn-icon btn-primary p-1" aria-label="Button" style="width: 40px;">
+                                <svg  xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-2">
                                     <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
                                     <path d="M21 21l-6 -6"></path>
                                 </svg>
-                            </a>
+                            </button>
                         </div>
                     </div>
 
                     <div class="col-8 d-flex justify-content-center align-items-center">
-                        <div id="chiTietTitleContainer" style="width: 100%;">
+                        <div id="chiTietTitleContainer" style="width: 100%; padding: 5px;" class="d-flex align-content-center">
+                            <label class="form-label" style="min-width: 200px; font-size: 18px;"> Tên mẫu tường trình:</label>
                             <input type="text"
                                    id="chiTietTitleInput"
-                                   class="form-control form-control-sm text-center fw-bold"
+                                   class="form-control text-center fw-bold"
                                    placeholder="Chọn hoặc nhập tên mẫu tường trình..."
                                    autocomplete="off"
-                                   value="Thông tin phẫu thuật" />
+                                  />
                         </div>
                     </div>
                 </div>
@@ -166,30 +167,31 @@
                         </div>
 
                         <div class="table-scroll-container custom-table-scroll">
-                            <table class="table table-sm table-bordered align-middle table-fixed-layout full-width-table table-gói">
+                            <table class="table table-sm table-bordered align-middle table-fixed-layout full-width-table">
                                 <colgroup>
                                     <col class="table-col-50">
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th>Danh sách phẫu thuật</th>
+                                        <th class="text-center">Danh sách phẫu thuật</th>
                                     </tr>
                                 </thead>
-                                <tbody id="goiVuTable">
+                                <tbody id="dataTemplateTable" style="height: 100%;">
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
                     <div class="col-8 d-flex flex-column">
-                        <div class="table-scroll-container custom-table-scroll flex-grow-1">
+                        <div class="table-scroll-container2 custom-table-scroll2 table-mota flex-grow-1 ">
                             <table class="table table-striped table-bordered table-hover table-fixed-layout full-width-table">
                                 <colgroup>
                                     <col class="table-col-70">
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th>Nội dung</th>
+                                        <th class="text-center">Thông tin lược đồ</th>
+                                        <th class="text-center">Nội dung trình tự</th>
                                     </tr>
                                 </thead>
                                 <tbody id="dichVuTable">
@@ -229,6 +231,7 @@
 </div>
 
 <link href="~/dist/css/CSS0305/CSS0305TTPT/CSS0305TrinhTuVaKetLuan.css" rel="stylesheet" />
+<script src="~/dist/js/J0302/J0302TTPT/J0303TemplateTuongTrinh.js" asp-append-version="true" defer></script>
 
 <script>
     var DEFAULT_KHOA_ID = parseInt(window.MaKhoa);
@@ -634,7 +637,7 @@
     }
     loadTrinhTuVaKetLuanWithFocus(window.IDPhieuTTPT);
     window.loadTrinhTuVaKetLuanWithFocus = loadTrinhTuVaKetLuanWithFocus;
+    initializeApp(DEFAULT_KHOA_ID);
 </script>
 
-<script src="~/dist/js/J0302/J0302TTPT/J0303TemplateTuongTrinh.js" asp-append-version="true" defer></script>
 @* <script src="~/dist/js/J0302/J0302TTPT/J0305TrinhTuVaKetLuan.js" asp-append-version="true" defer></script> *@

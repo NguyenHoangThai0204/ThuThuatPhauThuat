@@ -43,6 +43,7 @@ public class C0301TuVongController : Controller
         _logger.LogWarning($"Save tu vong: {ModelState.IsValid}");
         if (ModelState.IsValid)
         {
+            model.Active = true;
             _context.TuVong.Add(model);
             await _context.SaveChangesAsync();
 
