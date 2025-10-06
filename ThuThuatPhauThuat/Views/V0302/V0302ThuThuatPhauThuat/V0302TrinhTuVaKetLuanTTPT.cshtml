@@ -431,7 +431,7 @@
                     if (result.success) {
                         loadingItem.remove();
                         addUploadedImageToPanel(result.data);
-                        console.log(`Upload thành công: ${file.name}`);
+                        // console.log(`Upload thành công: ${file.name}`);
 
                         // Thêm ảnh mới upload vào danh sách imagesFromPhieu
                         const newImage = {
@@ -574,9 +574,9 @@
         }
 
         function compareAndMarkImages() {
-            console.log('Bắt đầu so sánh ảnh:');
-            console.log('Ảnh từ khoa:', imagesFromKhoa);
-            console.log('Ảnh từ phiếu:', imagesFromPhieu);
+            // console.log('Bắt đầu so sánh ảnh:');
+            // console.log('Ảnh từ khoa:', imagesFromKhoa);
+            // console.log('Ảnh từ phiếu:', imagesFromPhieu);
 
             // Xóa tất cả ảnh hiện có trong panel
             const existingImages = imagePanel.querySelectorAll('.image-item');
@@ -602,7 +602,7 @@
                 const khoaImageName = khoaImage.name.toLowerCase().trim();
                 const isInPhieu = phieuImagesMap.has(khoaImageName);
 
-                console.log(`Ảnh khoa "${khoaImage.name}" - Có trong phiếu: ${isInPhieu}`);
+                // console.log(`Ảnh khoa "${khoaImage.name}" - Có trong phiếu: ${isInPhieu}`);
                 addImageToPanel(khoaImage, isInPhieu);
             });
 
@@ -612,20 +612,20 @@
                 const isInKhoa = khoaImagesMap.has(phieuImageName);
 
                 if (!isInKhoa) {
-                    console.log(`Thêm ảnh từ phiếu (không có trong khoa): ${phieuImage.name}`);
+                    // console.log(`Thêm ảnh từ phiếu (không có trong khoa): ${phieuImage.name}`);
                     addImageToPanel(phieuImage, false);
                 } else {
-                    console.log(`Ảnh phiếu "${phieuImage.name}" đã có trong khoa, bỏ qua`);
+                    // console.log(`Ảnh phiếu "${phieuImage.name}" đã có trong khoa, bỏ qua`);
                 }
             });
 
             document.querySelector('.count-diagram').textContent = totalSelectedCount;
-            console.log('Kết thúc so sánh. Tổng ảnh được chọn:', totalSelectedCount);
+            // console.log('Kết thúc so sánh. Tổng ảnh được chọn:', totalSelectedCount);
         }
 
         function checkAndCompareImages() {
             if (hasLoadedKhoa && hasLoadedPhieu) {
-                console.log('Cả hai nguồn ảnh đã load xong, bắt đầu so sánh...');
+                // console.log('Cả hai nguồn ảnh đã load xong, bắt đầu so sánh...');
                 compareAndMarkImages();
             }
         }
@@ -633,10 +633,10 @@
         // Hàm load ảnh từ khoa
         async function loadImagesFromServerByMaKhoa(makhoa) {
             try {
-                console.log('Đang load ảnh từ khoa...');
+                // console.log('Đang load ảnh từ khoa...');
                 const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/list-anh-truong-trinh-by-makhoa?makhoa=${makhoa}`);
                 const result = await response.json();
-                console.log('Kết quả ảnh từ khoa:', result);
+                // console.log('Kết quả ảnh từ khoa:', result);
 
                 if (result.success && result.images) {
                     imagesFromKhoa = result.images.map((img, index) => ({
@@ -648,11 +648,11 @@
                         source: 'khoa'
                     }));
 
-                    console.log('Đã load được', imagesFromKhoa.length, 'ảnh từ khoa');
+                    // console.log('Đã load được', imagesFromKhoa.length, 'ảnh từ khoa');
                     hasLoadedKhoa = true;
                     checkAndCompareImages();
                 } else {
-                    console.log('Không có ảnh từ khoa hoặc kết quả không thành công');
+                    // console.log('Không có ảnh từ khoa hoặc kết quả không thành công');
                     hasLoadedKhoa = true;
                     checkAndCompareImages();
                 }
@@ -666,10 +666,10 @@
         // Hàm load ảnh từ phiếu
         async function loadImagesFromServer(idPhieuTTPT) {
             try {
-                console.log('Đang load ảnh từ phiếu...');
+                // console.log('Đang load ảnh từ phiếu...');
                 const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/get-images/${idPhieuTTPT}`);
                 const result = await response.json();
-                console.log("Kết quả ảnh từ phiếu: ", result);
+                // console.log("Kết quả ảnh từ phiếu: ", result);
 
                 if (result.success && result.data) {
                     imagesFromPhieu = result.data.map((img, index) => ({
@@ -681,11 +681,11 @@
                         source: 'phieu'
                     }));
 
-                    console.log('Đã load được', imagesFromPhieu.length, 'ảnh từ phiếu');
+                    // console.log('Đã load được', imagesFromPhieu.length, 'ảnh từ phiếu');
                     hasLoadedPhieu = true;
                     checkAndCompareImages();
                 } else {
-                    console.log('Không có ảnh từ phiếu hoặc kết quả không thành công');
+                    // console.log('Không có ảnh từ phiếu hoặc kết quả không thành công');
                     hasLoadedPhieu = true;
                     checkAndCompareImages();
                 }
@@ -733,9 +733,9 @@
         }
 
         // Gọi hàm load ảnh
-        console.log('Bắt đầu load ảnh...');
-        console.log('MaKhoa:', window.MaKhoa);
-        console.log('IDPhieuTTPT:', window.IDPhieuTTPT);
+        // console.log('Bắt đầu load ảnh...');
+        // console.log('MaKhoa:', window.MaKhoa);
+        // console.log('IDPhieuTTPT:', window.IDPhieuTTPT);
 
         loadImagesFromServerByMaKhoa(window.MaKhoa);
         loadImagesFromServer(window.IDPhieuTTPT);
