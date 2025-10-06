@@ -1145,16 +1145,16 @@ async function handleSaveThongTin() {
         TenChanDoanTruoc: tenICDTruoc,
         TenChanDoanSau: tenICDSau,
 
-        IDPhongThucHien: maPhongThucHien,
-        IDLoaiTTPT: maPhanLoai,
-        IDThietBi: maThietBi,
+        IDPhongThucHien: getValueOrNull(maPhongThucHien),
+        IDLoaiTTPT: getValueOrNull(maPhanLoai),
+        IDThietBi: getValueOrNull(maThietBi),
         CanThiepThuThuat: canThiepThuThuat,
-        IDTaiBienBienChung: maBienChung,
-        IDCheDoThuThuat: maCheDoThuThuat,
-        SoLanMoLai: soLanMoLai,
+        IDTaiBienBienChung: getValueOrNull(maBienChung),
+        IDCheDoThuThuat: getValueOrNull(maCheDoThuThuat),
+        SoLanMoLai: getValueOrNull(soLanMoLai),
         LyDoMoLai: lyDoMoLai,
-        IDViTriThucHien: maViTriThucHien,
-        IDTuVong: maTuVong,
+        IDViTriThucHien: getValueOrNull(maViTriThucHien),
+        IDTuVong: getValueOrNull(maTuVong),
         DanLuu: danLuu,
         //NgayRutOngDanLuu: toIsoDate(ngayRutOngDanLuu),
         //NgayCatChi: toIsoDate(ngayCatChi),
@@ -1168,7 +1168,7 @@ async function handleSaveThongTin() {
         ChiDinhViTriTonThuongFNA: chiDinhViTriTonThuongFNA,
         YeuCauXetNghiem: yeuCauXetNghiem,
 
-        IDPhuongPhapVoCam: idPhuongPhapVoCam
+        IDPhuongPhapVoCam: getValueOrNull(idPhuongPhapVoCam)
     };
 
     //console.log("-> Dữ liệu Thông Tin Thủ Thuật gửi đi:", dataToSend);
@@ -1198,6 +1198,14 @@ async function handleSaveThongTin() {
         }
     });
 }
-
+function getValueOrNull(value) {
+    if (value === "" || value === undefined || value === null) {
+        return null;
+    }
+    if (typeof value === 'string' && value.trim() === '') {
+        return null;
+    }
+    return value;
+}
 
 

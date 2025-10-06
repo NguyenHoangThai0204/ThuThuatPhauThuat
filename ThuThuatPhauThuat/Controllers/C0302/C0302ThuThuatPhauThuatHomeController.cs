@@ -504,16 +504,19 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                     new SqlParameter("@IDLoaiTTPT", model.IDLoaiTTPT ?? (object)DBNull.Value),
                     new SqlParameter("@IDThietBi", model.IDThietBi ?? (object)DBNull.Value),
 
-                    new SqlParameter("@IDTaiBienBienChung", model.IDTaiBienBienChung),
+                    // ĐÃ SỬA: Thêm ?? (object)DBNull.Value cho các trường long?
+                    new SqlParameter("@IDTaiBienBienChung", model.IDTaiBienBienChung ?? (object)DBNull.Value),
                     new SqlParameter("@IDCheDoThuThuat", model.IDCheDoThuThuat ?? (object)DBNull.Value),
                     new SqlParameter("@CanThiepThuThuat", model.CanThiepThuThuat ?? (object)DBNull.Value),
 
                     new SqlParameter("@SoLanMoLai", model.SoLanMoLai ?? (object)DBNull.Value),
                     new SqlParameter("@LyDoMoLai", model.LyDoMoLai ?? (object)DBNull.Value),
 
-                    new SqlParameter("@IDViTriThucHien", model.IDViTriThucHien),
+                    // ĐÃ SỬA: Thêm ?? (object)DBNull.Value
+                    new SqlParameter("@IDViTriThucHien", model.IDViTriThucHien ?? (object)DBNull.Value),
 
-                    new SqlParameter("@IDTuVong", model.IDTuVong),
+                    // ĐÃ SỬA: Thêm ?? (object)DBNull.Value
+                    new SqlParameter("@IDTuVong", model.IDTuVong ?? (object)DBNull.Value),
 
                     new SqlParameter("@DanLuu", model.DanLuu ?? (object)DBNull.Value),
                     new SqlParameter("@NgayRutOngDanLuu", model.NgayRutOngDanLuu ?? (object)DBNull.Value),
