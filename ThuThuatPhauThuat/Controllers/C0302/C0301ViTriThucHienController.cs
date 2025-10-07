@@ -90,4 +90,29 @@ public class C0301ViTriThucHienController : Controller
         if (item == null) return NotFound();
         return Json(item);
     }
+    [HttpPut]
+    [Route("UpdateTrangThai/{id}")]
+    public async Task<IActionResult> UpdateTrangThai(int id)
+    {
+        var modelToUpdate = await _context.ViTriThucHien.FindAsync((long)id);
+
+        if (modelToUpdate == null)
+        {
+            return NotFound(new { success = false, message = $"Không tìm thấy đối tượng có ID={id}." });
+        }
+
+        try
+        {
+            modelToUpdate.Active = false;
+
+            _context.Update(modelToUpdate);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, data = modelToUpdate });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { success = false, message = "Lỗi server khi cập nhật trạng thái.", error = ex.Message });
+        }
+    }
 }

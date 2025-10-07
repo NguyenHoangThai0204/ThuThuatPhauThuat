@@ -92,9 +92,7 @@ public class C0301TaiBienBienChungController : Controller // <-- Kế thừa Con
         return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors) });
     }
 
-    // --- 4. CHI TIẾT (DETAILS) ---
     // Route: /TaiBienBienChung/{id}
-    // Chuyển từ Details API sang Details MVC (trả về JSON)
     [HttpGet]
     [Route("{id}")]
     public async Task<IActionResult> Details(int id)
@@ -102,5 +100,32 @@ public class C0301TaiBienBienChungController : Controller // <-- Kế thừa Con
         var item = await _context.TaiBienBienChung.FindAsync(id);
         if (item == null) return NotFound();
         return Json(item);
+    }
+
+    // Route: /TaiBienBienChung/UpdateTrangThai/{id}
+    [HttpPut]
+    [Route("UpdateTrangThai/{id}")]
+    public async Task<IActionResult> UpdateTrangThai(int id)
+    {
+        var modelToUpdate = await _context.TaiBienBienChung.FindAsync((long)id);
+
+        if (modelToUpdate == null)
+        {
+            return NotFound(new { success = false, message = $"Không tìm thấy Tai biến/Biến chứng có ID={id}." });
+        }
+
+        try
+        {
+            modelToUpdate.Active = false;
+
+            _context.Update(modelToUpdate);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, data = modelToUpdate });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { success = false, message = "Lỗi server khi cập nhật trạng thái.", error = ex.Message });
+        }
     }
 }
