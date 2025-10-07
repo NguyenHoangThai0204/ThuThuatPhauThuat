@@ -19,12 +19,12 @@ function getSelectedImagesForSave() {
     return anhTruongTrinhSaveToServer;
 }
 
-function saveTrinhTu() {
-    // Nếu chưa có phiếu, tạo phiếu trước
+function saveTrinhTu(suppressToastr = false) {
     if (!window.IDPhieuTTPT || window.IDPhieuTTPT === 0) {
-        toastr.warning('Vui lòng tạo phiếu trước khi lưu trình tự');
+        if (!suppressToastr) toastr.warning('Vui lòng tạo phiếu trước khi lưu trình tự');
         return;
     }
+
     confirmTempImages().then(() => {
         var formData = {
             IDPhieuTTPT: window.IDPhieuTTPT,
@@ -41,7 +41,9 @@ function saveTrinhTu() {
             data: JSON.stringify(formData),
             success: function (response) {
                 if (response.success) {
-                    toastr.success(response.message);
+                    if (!suppressToastr) {
+                        toastr.success(response.message);
+                    }
                 } else {
                     toastr.error(response.message);
                 }

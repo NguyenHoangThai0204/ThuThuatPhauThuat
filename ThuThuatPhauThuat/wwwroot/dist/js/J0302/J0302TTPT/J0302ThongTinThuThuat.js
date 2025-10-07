@@ -1074,7 +1074,7 @@ function validateForm() {
 
     return isValid;
 }
-async function handleSaveThongTin() {
+async function handleSaveThongTin(suppressToastr = false) {
     //if (!validateForm()) {
     //    return;
     //}
@@ -1175,9 +1175,8 @@ async function handleSaveThongTin() {
         contentType: 'application/json',
         data: JSON.stringify(dataToSend),
         success: function (response) {
-            //console.log("Lưu dữ liệu Thông Tin Thủ Thuật thành công:", response);
             if (response.success) {
-                if (typeof toastr !== 'undefined') {
+                if (!suppressToastr && typeof toastr !== 'undefined') {
                     toastr.success("Đã lưu thông tin thủ thuật thành công!");
                 }
             } else {
