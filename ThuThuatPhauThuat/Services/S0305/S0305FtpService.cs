@@ -116,20 +116,21 @@ namespace ThuThuatPhauThuat.Services.S0305
                     request.Credentials = new NetworkCredential(_ftpSettings.FtpUsername, _ftpSettings.FtpPassword);
                     request.UsePassive = true;
 
-                    //using (var response = (FtpWebResponse)await request.GetResponseAsync())
-                    //{
-                    //    _logger.LogInformation($"Created directory: {currentPath}");
-                    //}
+                    using (var response = (FtpWebResponse)await request.GetResponseAsync())
+                    {
+                        _logger.LogInformation($"Created directory: {currentPath}");
+                    }
                 }
-                catch (WebException ex)
+                catch (WebException ex) when (ex.Response is FtpWebResponse response)
                 {
                     // Thư mục đã tồn tại - bỏ qua lỗi
-                    if (ex.Response is FtpWebResponse response)
+                    if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
                     {
-                        if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
-                        {
-                            _logger.LogInformation($"Directory already exists: {currentPath}");
-                        }
+                        _logger.LogInformation($"Directory already exists: {currentPath}");
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"Unexpected error creating directory {currentPath}: {response.StatusDescription}");
                     }
                 }
             }
@@ -392,6 +393,116 @@ namespace ThuThuatPhauThuat.Services.S0305
             catch
             {
                 return null;
+            }
+        }
+
+        public async Task<bool> MoveFileAsync(string sourceFilePath, string destinationFilePath)
+        {
+            try
+            {
+                // Đảm bảo đường dẫn bắt đầu bằng /
+                if (!sourceFilePath.StartsWith("/"))
+                    sourceFilePath = "/" + sourceFilePath;
+                if (!destinationFilePath.StartsWith("/"))
+                    destinationFilePath = "/" + destinationFilePath;
+
+                var sourceFtpUrl = $"ftp://{_ftpSettings.FtpHost}{sourceFilePath}";
+                var destFtpUrl = $"ftp://{_ftpSettings.FtpHost}{destinationFilePath}";
+
+                _logger.LogInformation($"Attempting to move file: {sourceFtpUrl} -> {destFtpUrl}");
+
+                // KIỂM TRA FILE NGUỒN CÓ TỒN TẠI KHÔNG
+                if (!await FileExistsAsync(sourceFilePath))
+                {
+                    _logger.LogError($"Source file does not exist: {sourceFilePath}");
+                    return false;
+                }
+
+                // Tạo thư mục đích nếu chưa tồn tại
+                var destDirectory = Path.GetDirectoryName(destinationFilePath)?.Replace("\\", "/");
+                if (!string.IsNullOrEmpty(destDirectory))
+                {
+                    await CreateDirectoryIfNotExistsAsync(destDirectory.TrimStart('/'));
+                }
+
+                // KIỂM TRA THƯ MỤC ĐÍCH CÓ TỒN TẠI KHÔNG
+                if (!await DirectoryExistsAsync(destDirectory.TrimStart('/')))
+                {
+                    _logger.LogError($"Destination directory does not exist: {destDirectory}");
+                    return false;
+                }
+
+                // Rename file (FTP Rename method)
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(sourceFtpUrl);
+                request.Method = WebRequestMethods.Ftp.Rename;
+                request.Credentials = new NetworkCredential(_ftpSettings.FtpUsername, _ftpSettings.FtpPassword);
+                request.RenameTo = destinationFilePath.TrimStart('/');
+                request.UsePassive = true;
+                request.KeepAlive = false;
+
+                using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
+                {
+                    _logger.LogInformation($"Move Complete: {sourceFilePath} -> {destinationFilePath}, Status: {response.StatusDescription}");
+                    return true;
+                }
+            }
+            catch (WebException ex) when (ex.Response is FtpWebResponse ftpResponse)
+            {
+                _logger.LogError($"FTP Move Error ({ftpResponse.StatusCode}): {ftpResponse.StatusDescription}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"FTP Move Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Thêm method kiểm tra file tồn tại
+        private async Task<bool> FileExistsAsync(string filePath)
+        {
+            try
+            {
+                var ftpUrl = $"ftp://{_ftpSettings.FtpHost}{filePath}";
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
+                request.Method = WebRequestMethods.Ftp.GetFileSize;
+                request.Credentials = new NetworkCredential(_ftpSettings.FtpUsername, _ftpSettings.FtpPassword);
+                request.UsePassive = true;
+
+                using (var response = (FtpWebResponse)await request.GetResponseAsync())
+                {
+                    return true;
+                }
+            }
+            catch (WebException ex) when (ex.Response is FtpWebResponse ftpResponse)
+            {
+                if (ftpResponse.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                    return false;
+                throw;
+            }
+        }
+
+        // Thêm method kiểm tra thư mục tồn tại
+        private async Task<bool> DirectoryExistsAsync(string directoryPath)
+        {
+            try
+            {
+                var ftpUrl = $"ftp://{_ftpSettings.FtpHost}/{directoryPath}";
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
+                request.Method = WebRequestMethods.Ftp.ListDirectory;
+                request.Credentials = new NetworkCredential(_ftpSettings.FtpUsername, _ftpSettings.FtpPassword);
+                request.UsePassive = true;
+
+                using (var response = (FtpWebResponse)await request.GetResponseAsync())
+                {
+                    return true;
+                }
+            }
+            catch (WebException ex) when (ex.Response is FtpWebResponse ftpResponse)
+            {
+                if (ftpResponse.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                    return false;
+                throw;
             }
         }
     }

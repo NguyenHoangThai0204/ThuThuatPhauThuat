@@ -1,6 +1,6 @@
-﻿.report-template-editor {
+﻿/* CSS hiện tại - giữ nguyên tất cả các style cũ */
+.report-template-editor {
     height: 30vh;
-    /*    height: calc(100vh - 200px);*/
     margin: 10px;
     min-height: 400px;
     display: flex;
@@ -53,7 +53,6 @@
 
 .image-item {
     padding: 8px 10px;
-/*    cursor: pointer;*/
     border-bottom: 1px solid #e1e1e1;
     position: relative;
     transition: all 0.2s ease;
@@ -249,106 +248,6 @@ sequence-editor-panel .editor-content {
 .editor-content.drag-over {
     border: 2px dashed #006d77;
     background-color: #e0f2f1;
-}
-
-/* Responsive */
-@media (max-width: 1200px) {
-    .sequence-container {
-        flex-direction: column;
-    }
-
-    .sequence-info-panel {
-        width: 100%;
-        max-width: none;
-        border-right: none;
-        border-bottom: 1px solid #ccc;
-        min-height: 120px;
-    }
-
-        .sequence-info-panel .info-panel-body {
-            padding: 10px;
-        }
-
-    .info-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-        .info-list li {
-            border-bottom: none;
-            padding: 4px 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-        }
-}
-
-/* Image trong editor có thể resize */
-.editor-content img {
-    max-width: 100%;
-    cursor: move;
-    border: 2px solid transparent;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-    .editor-content img:hover {
-        border-color: #006d77;
-    }
-
-    .editor-content img.selected {
-        border-color: #006d77;
-        box-shadow: 0 0 0 2px rgba(0, 109, 119, 0.3);
-    }
-
-    .editor-content img.resizing {
-        border-color: #0056b3;
-    }
-
-/* Resize handles */
-.img-wrapper {
-    display: inline-block;
-    position: relative;
-    margin: 10px 0;
-    transition: all 0.2s ease;
-}
-
-    .img-wrapper.selected {
-        outline: 2px solid #006d77;
-        outline-offset: 2px;
-    }
-
-        .img-wrapper.selected .resize-handle {
-            display: block;
-        }
-
-.resize-handle {
-    display: none;
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: #006d77;
-    border: 1px solid #fff;
-    cursor: nwse-resize;
-    z-index: 10;
-}
-
-    .resize-handle.se {
-        bottom: -5px;
-        right: -5px;
-    }
-
-/* Image preview trong panel trái */
-.image-item-preview {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-    margin-top: 5px;
-    border-radius: 4px;
-    transition: transform 0.2s ease;
-}
-
-.image-item:hover .image-item-preview {
-    transform: scale(1.02);
 }
 
 /* Cột phải */
@@ -631,6 +530,7 @@ sequence-editor-panel .editor-content {
     background-color: rgba(0, 123, 255, 0.1);
     border: 2px dashed #007bff;
 }
+
 /* === CHỈ ÁP DỤNG CHO BẢNG NỘI DUNG & MÔ TẢ LƯỢC ĐỒ === */
 #dichVuTable {
     width: 100%;
@@ -688,3 +588,247 @@ sequence-editor-panel .editor-content {
         flex: 1;
         overflow-y: auto;
     }
+
+/* === RESPONSIVE STYLES CHO MOBILE === */
+@media (max-width: 768px) {
+    .report-template-editor {
+        flex-direction: column;
+        height: auto;
+        min-height: auto;
+        margin: 5px;
+    }
+
+    .image-panel {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+        max-height: 300px;
+    }
+
+    .editor-panel {
+        width: 100%;
+    }
+
+    .editor-header {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+        .editor-header .d-flex {
+            width: 100%;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .editor-header .cbTemplateTTPT {
+            min-width: 100% !important;
+            width: 100% !important;
+        }
+
+        .editor-header .input-group-ellipsis {
+            width: 100%;
+            display: flex;
+            gap: 5px;
+        }
+
+            .editor-header .input-group-ellipsis button {
+                flex: 1;
+            }
+
+    .editor-toolbar {
+        padding: 8px;
+        gap: 4px;
+        justify-content: center;
+    }
+
+        .editor-toolbar button,
+        .editor-toolbar select,
+        .color-picker {
+            width: 36px;
+            height: 36px;
+            font-size: 0.9rem;
+        }
+
+    .toolbar-separator {
+        height: 20px;
+    }
+
+    .sequence-container > div {
+        flex-direction: column !important;
+    }
+
+    .sequence-infor-panel,
+    .sequence-editor-panel {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 300px;
+        border-right: none !important;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .sequence-infor-panel {
+        border-bottom: 2px solid #ccc;
+    }
+
+    .editor-content {
+        min-height: 200px;
+        padding: 15px;
+    }
+
+    .editor-footer {
+        padding: 10px;
+    }
+
+    .editor-summary {
+        height: 60px;
+        font-size: 14px;
+    }
+
+    /* Modal responsive */
+    .custom-modal .modal-dialog {
+        margin: 10px;
+        max-width: calc(100% - 20px);
+    }
+
+    .custom-modal-body .row {
+        flex-direction: column;
+    }
+
+    .custom-modal-body .col-4,
+    .custom-modal-body .col-8 {
+        width: 100% !important;
+    }
+
+    .custom-modal-body .border-end {
+        border-right: none !important;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .custom-content-area {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .table-scroll-container,
+    .table-scroll-container2 {
+        max-height: 300px;
+    }
+
+    /* Chi tiết title container */
+    #chiTietTitleContainer {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+        #chiTietTitleContainer label {
+            min-width: 100% !important;
+            text-align: center;
+        }
+
+    /* Search container */
+    .search-container {
+        width: 100% !important;
+    }
+
+    /* Image items trên mobile */
+    .image-item {
+        padding: 10px;
+    }
+
+    .image-item-preview {
+        height: 120px;
+    }
+
+    .preview-btn {
+        display: flex !important;
+        opacity: 0.9;
+        top: 15px;
+        right: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .editor-toolbar {
+        gap: 2px;
+    }
+
+        .editor-toolbar button,
+        .editor-toolbar select {
+            width: 32px;
+            height: 32px;
+            font-size: 0.8rem;
+        }
+
+    .section-header {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .section-header-icon {
+        font-size: 1rem;
+    }
+
+    .image-panel-header,
+    .editor-header {
+        font-size: 0.95rem;
+        padding: 8px;
+    }
+
+    .modal-footer .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    /* Ẩn một số toolbar items không quan trọng trên mobile rất nhỏ */
+    .editor-toolbar select:nth-child(n+3),
+    .toolbar-separator:nth-child(n+4) {
+        display: none;
+    }
+}
+
+/* Đảm bảo scroll mượt trên mobile */
+.image-panel-body,
+.editor-content,
+.table-scroll-container,
+.table-scroll-container2 {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Tối ưu cho tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .report-template-editor {
+        height: 40vh;
+    }
+
+    .image-panel {
+        width: 240px;
+    }
+
+    .editor-header .cbTemplateTTPT {
+        min-width: 250px !important;
+    }
+
+    .sequence-infor-panel {
+        width: 35% !important;
+    }
+
+    .sequence-editor-panel {
+        width: 65% !important;
+    }
+}
+
+/* Tối ưu font-size cho dễ đọc trên mobile */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    .editor-content {
+        font-size: 16px; /* Ngăn chặn zoom trên iOS */
+    }
+
+    .editor-summary {
+        font-size: 16px;
+    }
+}

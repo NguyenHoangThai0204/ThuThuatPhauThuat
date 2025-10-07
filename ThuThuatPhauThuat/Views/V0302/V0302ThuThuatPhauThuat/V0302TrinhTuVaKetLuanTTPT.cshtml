@@ -364,6 +364,7 @@
         const fileInput = document.getElementById('fileInput');
         const imagePanel = document.querySelector('.image-panel-body');
         let uploadedImages = [];
+        let tempUploadedImages = [];
         let selectedImages = new Set();
         let totalSelectedCount = 0;
 
@@ -400,7 +401,6 @@
                     continue;
                 }
 
-                // Tạo loading item
                 const loadingItem = document.createElement('div');
                 loadingItem.className = 'image-item upload-loading';
                 loadingItem.innerHTML = `
@@ -417,9 +417,16 @@
                 try {
                     const formData = new FormData();
                     formData.append('file', file);
-                    formData.append('idPhieuTTPT', window.IDPhieuTTPT || 0);
 
-                    const response = await fetch('/thu_thuat_phau_thuat/trinh-tu/upload-image', {
+                    const uploadUrl = window.IDPhieuTTPT && window.IDPhieuTTPT !== 0
+                        ? '/thu_thuat_phau_thuat/trinh-tu/upload-image'
+                        : '/thu_thuat_phau_thuat/trinh-tu/upload-image-temp';
+
+                    if (window.IDPhieuTTPT && window.IDPhieuTTPT !== 0) {
+                        formData.append('idPhieuTTPT', window.IDPhieuTTPT);
+                    }
+
+                    const response = await fetch(uploadUrl, {
                         method: 'POST',
                         body: formData
                     });
@@ -428,24 +435,30 @@
 
                     if (result.success) {
                         loadingItem.remove();
-                        addUploadedImageToPanel(result.data);
-                        // console.log(`Upload thành công: ${file.name}`);
 
-                        // Thêm ảnh mới upload vào danh sách imagesFromPhieu
                         const newImage = {
-                            id: `phieu_${result.data.id}`,
+                            id: result.data.isTemp ? `temp_${Date.now()}` : `phieu_${result.data.id}`,
                             name: result.data.fileName,
                             src: result.data.httpUrl,
                             ftpUrl: result.data.url,
                             timestamp: new Date(),
-                            source: 'phieu'
+                            source: result.data.isTemp ? 'temp' : 'phieu',
+                            isTemp: result.data.isTemp || false
                         };
+
+                        // THÊM: Đồng bộ ngay sau khi upload
                         imagesFromPhieu.push(newImage);
+
+                        // Nếu là ảnh tạm, đồng bộ với danh sách
+                        if (result.data.isTemp) {
+                            syncTempImagesToPhieuList();
+                        } else {
+                            compareAndMarkImages(); // Refresh display
+                        }
 
                     } else {
                         throw new Error(result.message || 'Upload thất bại');
                     }
-
                 } catch (error) {
                     console.error(`Lỗi upload ảnh ${file.name}:`, error);
                     loadingItem.remove();
@@ -453,6 +466,55 @@
                 }
             }
         }
+
+        async function confirmTempImages() {
+            if (!tempUploadedImages.length) return;
+
+            if (!window.IDPhieuTTPT || window.IDPhieuTTPT === 0) {
+                console.warn('Chưa có IDPhieuTTPT, không thể xác nhận ảnh');
+                return;
+            }
+
+            try {
+                const response = await fetch('/thu_thuat_phau_thuat/trinh-tu/confirm-temp-images', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        IDPhieuTTPT: window.IDPhieuTTPT,
+                        TempImages: tempUploadedImages
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    console.log('Xác nhận ảnh tạm thành công:', result.data);
+                    tempUploadedImages = []; // Xóa danh sách tạm
+
+                    // Cập nhật lại imagesFromPhieu với ID thật từ DB
+                    result.data.forEach(confirmedImg => {
+                        const tempIndex = imagesFromPhieu.findIndex(img =>
+                            img.ftpUrl === confirmedImg.url.replace("/temp/", "/") && img.isTemp
+                        );
+                        if (tempIndex !== -1) {
+                            imagesFromPhieu[tempIndex] = {
+                                id: `phieu_${confirmedImg.id}`,
+                                name: confirmedImg.fileName,
+                                src: confirmedImg.httpUrl,
+                                ftpUrl: confirmedImg.url,
+                                timestamp: new Date(),
+                                source: 'phieu',
+                                isTemp: false
+                            };
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Lỗi xác nhận ảnh tạm:', error);
+            }
+        }
+
+        window.confirmTempImages = confirmTempImages;
 
         // Thêm ảnh đã upload vào panel
         function addUploadedImageToPanel(imageData) {
@@ -572,53 +634,57 @@
         }
 
         function compareAndMarkImages() {
-            // console.log('Bắt đầu so sánh ảnh:');
-            // console.log('Ảnh từ khoa:', imagesFromKhoa);
-            // console.log('Ảnh từ phiếu:', imagesFromPhieu);
-
-            // Xóa tất cả ảnh hiện có trong panel
             const existingImages = imagePanel.querySelectorAll('.image-item');
             existingImages.forEach(img => img.remove());
             selectedImages.clear();
             totalSelectedCount = 0;
 
-            // Tạo map để so sánh nhanh hơn
-            const khoaImagesMap = new Map();
-            imagesFromKhoa.forEach(img => {
-                const key = img.name.toLowerCase().trim();
-                khoaImagesMap.set(key, img);
-            });
+            const addedImages = new Set();
 
-            const phieuImagesMap = new Map();
-            imagesFromPhieu.forEach(img => {
-                const key = img.name.toLowerCase().trim();
-                phieuImagesMap.set(key, img);
-            });
-
-            // Xử lý ảnh từ khoa: check nếu có trong phiếu
             imagesFromKhoa.forEach(khoaImage => {
-                const khoaImageName = khoaImage.name.toLowerCase().trim();
-                const isInPhieu = phieuImagesMap.has(khoaImageName);
-
-                // console.log(`Ảnh khoa "${khoaImage.name}" - Có trong phiếu: ${isInPhieu}`);
-                addImageToPanel(khoaImage, isInPhieu);
-            });
-
-            // Xử lý ảnh từ phiếu: chỉ thêm những ảnh KHÔNG có trong khoa
-            imagesFromPhieu.forEach(phieuImage => {
-                const phieuImageName = phieuImage.name.toLowerCase().trim();
-                const isInKhoa = khoaImagesMap.has(phieuImageName);
-
-                if (!isInKhoa) {
-                    // console.log(`Thêm ảnh từ phiếu (không có trong khoa): ${phieuImage.name}`);
-                    addImageToPanel(phieuImage, false);
-                } else {
-                    // console.log(`Ảnh phiếu "${phieuImage.name}" đã có trong khoa, bỏ qua`);
+                const imageKey = `${khoaImage.source}_${khoaImage.name}`.toLowerCase();
+                if (!addedImages.has(imageKey)) {
+                    const isSelected = imagesFromPhieu.some(phieuImg =>
+                        phieuImg.name.toLowerCase() === khoaImage.name.toLowerCase()
+                    );
+                    addImageToPanel(khoaImage, isSelected);
+                    addedImages.add(imageKey);
                 }
             });
 
-            document.querySelector('.count-diagram').textContent = totalSelectedCount;
-            // console.log('Kết thúc so sánh. Tổng ảnh được chọn:', totalSelectedCount);
+            imagesFromPhieu.forEach(phieuImage => {
+                const imageKey = `${phieuImage.source}_${phieuImage.name}`.toLowerCase();
+                const isInKhoa = imagesFromKhoa.some(khoaImg =>
+                    khoaImg.name.toLowerCase() === phieuImage.name.toLowerCase()
+                );
+
+                if (!isInKhoa && !addedImages.has(imageKey)) {
+                    addImageToPanel(phieuImage, false); // Ảnh mới từ máy, chưa được chọn
+                    addedImages.add(imageKey);
+                }
+            });
+
+            console.log('So sánh hoàn tất. Tổng ảnh được chọn:', totalSelectedCount);
+        }
+
+        function syncTempImagesToPhieuList() {
+            const tempImages = imagesFromPhieu.filter(img => img.isTemp);
+
+            tempImages.forEach(tempImg => {
+                const alreadyExists = imagesFromPhieu.some(phieuImg =>
+                    !phieuImg.isTemp && phieuImg.name === tempImg.name
+                );
+
+                if (!alreadyExists) {
+                    imagesFromPhieu.push({
+                        ...tempImg,
+                        isTemp: false,
+                        source: 'phieu'
+                    });
+                }
+            });
+
+            compareAndMarkImages();
         }
 
         function checkAndCompareImages() {

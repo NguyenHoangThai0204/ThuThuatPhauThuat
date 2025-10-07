@@ -9,5 +9,6 @@ namespace ThuThuatPhauThuat.Services.S0305.IS0305
         Task<bool> TestConnectionAsync();
         Task<Stream> DownloadAsync(string remoteFilePath);
         Task<List<FtpFileInfo>> ListFilesInDirectoryAsync(string remoteDirectory);
+        Task<bool> MoveFileAsync(string sourceFilePath, string destinationFilePath);
     }
 }
