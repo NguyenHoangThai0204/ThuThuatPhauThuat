@@ -179,7 +179,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <textarea class="form-control " id="ten_icd_vao_khoa" rows="3" readonly placeholder=""></textarea>
+                        <div style="padding: 5px; height: 75px; max-height: 150px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px;" id="ten_icd_vao_khoa"></div>
                     </div>
                 </div>
             </div>
@@ -242,7 +242,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <textarea class="form-control  " id="ten_icd_truoc_thuat" rows="3" readonly placeholder=""></textarea>
+                        <div id="ten_icd_truoc_thuat" style="padding: 5px; height: 75px; max-height: 150px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px;" ></div>
                     </div>
                 </div>
             </div>
@@ -305,7 +305,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <textarea class="form-control " id="ten_icd_sau_thuat" rows="3" readonly placeholder=""></textarea>
+                        <div id="ten_icd_sau_thuat" style="padding: 5px; height: 75px; max-height: 150px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px;"></div>
                     </div>
                 </div>
             </div>
@@ -813,10 +813,23 @@ $(function () {
     `;
     document.head.appendChild(style);
 
-    // Set mặc định ngày hiện tại
-    const now = moment().format('DD-MM-YYYY HH:mm:ss');
-    $('#ngay_cat_chi').val(now);
-    $('#ngay_rut_ong_dan_luu').val(now);
+     $('#dan_luu').on('input', function() {
+            const danLuuValue = $(this).val();
+            const ngayCatChiPicker = $('#ngay_cat_chi').data('DateTimePicker');
+            const ngayRutOngPicker = $('#ngay_rut_ong_dan_luu').data('DateTimePicker');
+
+            if (danLuuValue.trim() !== '') {
+                if (!ngayCatChiPicker.date()) {
+                    ngayCatChiPicker.date(moment());
+                }
+                if (!ngayRutOngPicker.date()) {
+                    ngayRutOngPicker.date(moment());
+                }
+            } else {
+                ngayCatChiPicker.clear();
+                ngayRutOngPicker.clear();
+            }
+        });
 });
 </script> 
 

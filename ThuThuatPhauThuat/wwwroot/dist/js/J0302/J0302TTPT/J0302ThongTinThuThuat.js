@@ -177,52 +177,114 @@ function initTomSelect(elementId, initialValue, isYhct = false) {
 }
 
 
+//function addICDTag(type, icdId, icdCode, icdName) {
+//    const displayArea = document.getElementById(`hien_thi_icd_${type}`)
+
+//    if (selectedICDs[type]?.find((item) => String(item.id) === String(icdId))) {
+//        return
+//    }
+//    selectedICDs[type].push({ id: icdId, ma: icdCode, ten: icdName })
+
+//    const tag = document.createElement("span")
+//    tag.className = "icd-tag"
+//    const escapedIcdId = String(icdId).replace(/'/g, "\\'")
+
+//    // Gán ID vào dataset để xóa chính xác
+//    tag.dataset.icdId = escapedIcdId;
+
+//    tag.innerHTML = `
+//    ${icdCode}
+//    <button type="button" class="remove-btn" onclick="removeICDTag('${type}', '${escapedIcdId}')">×</button>
+//  `
+//    displayArea.appendChild(tag)
+//    renderICDNameInputs(type);
+//}
 function addICDTag(type, icdId, icdCode, icdName) {
-    const displayArea = document.getElementById(`hien_thi_icd_${type}`)
-
-    if (selectedICDs[type]?.find((item) => String(item.id) === String(icdId))) {
-        return
+    if (selectedICDs[type]?.find(item => String(item.id) === String(icdId))) {
+        return;
     }
-    selectedICDs[type].push({ id: icdId, ma: icdCode, ten: icdName })
+    selectedICDs[type].push({ id: icdId, ma: icdCode, ten: icdName });
 
-    const tag = document.createElement("span")
-    tag.className = "icd-tag"
-    const escapedIcdId = String(icdId).replace(/'/g, "\\'")
+    const escapedIcdId = String(icdId).replace(/'/g, "\\'");
 
-    // Gán ID vào dataset để xóa chính xác
+    const tagDisplayArea = document.getElementById(`hien_thi_icd_${type}`);
+    const tag = document.createElement("span");
+    tag.className = "icd-tag";
     tag.dataset.icdId = escapedIcdId;
-
     tag.innerHTML = `
-    ${icdCode}
-    <button type="button" class="remove-btn" onclick="removeICDTag('${type}', '${escapedIcdId}')">×</button>
-  `
-    displayArea.appendChild(tag)
-    updateICDTextArea(type)
+        ${icdCode}
+        <button type="button" class="remove-btn" onclick="removeICDTag('${type}', '${escapedIcdId}')">×</button>
+    `;
+    tagDisplayArea.appendChild(tag);
+
+    const nameContainer = document.getElementById(`ten_icd_${type}`);
+    const inputRow = document.createElement('div');
+    inputRow.className = 'd-flex align-items-center mb-1 icd-editable-row';
+    inputRow.dataset.icdId = escapedIcdId;
+    inputRow.innerHTML = `
+        <span class="badge bg-light text-dark me-2" style="width: 40px;">${icdCode}</span>
+        <input type="text" class="form-control form-control-sm icd-name-input" value="${icdName}">
+    `;
+    nameContainer.appendChild(inputRow);
 }
+//function removeICDTag(type, icdId) {
+//    const displayArea = document.getElementById(`hien_thi_icd_${type}`)
+
+//    selectedICDs[type] = selectedICDs[type].filter((item) => String(item.id) !== icdId)
+
+//    const tags = displayArea.querySelectorAll(".icd-tag")
+//    tags.forEach((tag) => {
+//        if (tag.dataset.icdId === icdId) {
+//            tag.remove()
+//        }
+//    })
+
+//    renderICDNameInputs(type);
+//    updateICDTextArea(type);
+
+//}
 function removeICDTag(type, icdId) {
-    const displayArea = document.getElementById(`hien_thi_icd_${type}`)
+    selectedICDs[type] = selectedICDs[type].filter(item => String(item.id) !== icdId);
 
-    selectedICDs[type] = selectedICDs[type].filter((item) => String(item.id) !== icdId)
+    const tagDisplayArea = document.getElementById(`hien_thi_icd_${type}`);
+    const tagToRemove = tagDisplayArea.querySelector(`.icd-tag[data-icd-id='${icdId}']`);
+    if (tagToRemove) {
+        tagToRemove.remove();
+    }
 
-    const tags = displayArea.querySelectorAll(".icd-tag")
-    tags.forEach((tag) => {
-        // Xóa tag dựa trên data-icd-id
-        if (tag.dataset.icdId === icdId) {
-            tag.remove()
-        }
-    })
-
-    updateICDTextArea(type)
-
+    const nameContainer = document.getElementById(`ten_icd_${type}`);
+    const inputRowToRemove = nameContainer.querySelector(`.icd-editable-row[data-icd-id='${icdId}']`);
+    if (inputRowToRemove) {
+        inputRowToRemove.remove();
+    }
 }
-function updateICDTextArea(type) {
-    const $targetTextarea = $(`#ten_icd_${type}`);
+//function updateICDTextArea(type) {
+//    const $targetTextarea = $(`#ten_icd_${type}`);
 
-    const content = selectedICDs[type]
-        .map(item => `${item.ma}: ${item.ten}`)
-        .join('; \n');
+//    const content = selectedICDs[type]
+//        .map(item => `${item.ten}`)
+//        .join('; \n');
 
-    $targetTextarea.val(content);
+//    $targetTextarea.val(content);
+//}
+function renderICDNameInputs(type) {
+    const nameContainer = document.getElementById(`ten_icd_${type}`);
+    if (!nameContainer) return;
+
+    nameContainer.innerHTML = '';
+
+    selectedICDs[type].forEach(item => {
+        const inputRow = document.createElement('div');
+        inputRow.className = 'd-flex align-items-center mb-1';
+        inputRow.dataset.icdId = item.id;
+
+        inputRow.innerHTML = `
+            <span class="badge bg-light text-dark me-2" style="width: 40px;">${item.ma}</span>
+            <input type="text" class="form-control form-control-sm icd-name-input" value="${item.ten}">
+        `;
+
+        nameContainer.appendChild(inputRow);
+    });
 }
 function configureICDTomSelect(yhct = false) {
     const icdConfigs = [
@@ -433,46 +495,75 @@ function getTomSelectConfigs(allDataThongTin) {
     ]
 }
 
+//function processICDLoading(type, idChanDoanStr, maChanDoanStr, tenChanDoanStr) {
+//    // 1. Kiểm tra dữ liệu đầu vào
+//    if (!idChanDoanStr || !maChanDoanStr || !tenChanDoanStr) {
+//        console.warn(`[ICD Load] Thiếu dữ liệu load cho loại: ${type}`);
+//        return;
+//    }
+
+//    // 2. Chuẩn bị (Reset State)
+//    selectedICDs[type] = [];
+//    const displayArea = document.getElementById(`hien_thi_icd_${type}`);
+//    if (displayArea) {
+//        displayArea.innerHTML = '';
+//    }
+
+//    // 3. Phân tách chuỗi thành mảng
+//    const ids = idChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
+//    const codes = maChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
+//    const names = tenChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
+
+//    // Kiểm tra số lượng phần tử phải bằng nhau
+//    if (ids.length !== codes.length || ids.length !== names.length) {
+//        console.error(`[ICD Load] Lỗi đồng bộ: Số lượng ID (${ids.length}), Mã (${codes.length}), và Tên (${names.length}) không khớp cho loại: ${type}. Bỏ qua load.`, { ids, codes, names });
+//        return;
+//    }
+
+//    // 4. Lặp và gọi addICDTag
+//    ids.forEach((id, index) => {
+//        const ma = codes[index];
+//        const ten = names[index];
+
+//        let finalName = ten;
+//        if (finalName.startsWith(ma + ':')) {
+//            finalName = finalName.substring(ma.length + 1).trim();
+//        }
+
+//        // Gọi hàm addICDTag để tạo tag và cập nhật selectedICDs
+//        addICDTag(type, id, ma, finalName);
+
+//        // Log để kiểm tra:
+//        //console.log(`[ICD Load] Đã thêm: ${type} - ID: ${id}, Mã: ${ma}, Tên: ${finalName}`);
+//    });
+//}
 function processICDLoading(type, idChanDoanStr, maChanDoanStr, tenChanDoanStr) {
-    // 1. Kiểm tra dữ liệu đầu vào
     if (!idChanDoanStr || !maChanDoanStr || !tenChanDoanStr) {
-        console.warn(`[ICD Load] Thiếu dữ liệu load cho loại: ${type}`);
         return;
     }
 
-    // 2. Chuẩn bị (Reset State)
+    // Reset state
     selectedICDs[type] = [];
     const displayArea = document.getElementById(`hien_thi_icd_${type}`);
-    if (displayArea) {
-        displayArea.innerHTML = '';
-    }
+    if (displayArea) displayArea.innerHTML = '';
 
-    // 3. Phân tách chuỗi thành mảng
+    // Phân tách chuỗi
     const ids = idChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
     const codes = maChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
     const names = tenChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
 
-    // Kiểm tra số lượng phần tử phải bằng nhau
     if (ids.length !== codes.length || ids.length !== names.length) {
-        console.error(`[ICD Load] Lỗi đồng bộ: Số lượng ID (${ids.length}), Mã (${codes.length}), và Tên (${names.length}) không khớp cho loại: ${type}. Bỏ qua load.`, { ids, codes, names });
+        console.error(`Lỗi đồng bộ dữ liệu ICD cho loại: ${type}.`);
         return;
     }
 
-    // 4. Lặp và gọi addICDTag
+    // Lặp qua và tạo lại giao diện
     ids.forEach((id, index) => {
-        const ma = codes[index];
-        const ten = names[index];
-
-        let finalName = ten;
-        if (finalName.startsWith(ma + ':')) {
-            finalName = finalName.substring(ma.length + 1).trim();
-        }
-
+        // Tên đã được custom, nên ta lấy thẳng từ chuỗi tên
+        const customName = names[index];
+        const code = codes[index];
         // Gọi hàm addICDTag để tạo tag và cập nhật selectedICDs
-        addICDTag(type, id, ma, finalName);
-
-        // Log để kiểm tra:
-        //console.log(`[ICD Load] Đã thêm: ${type} - ID: ${id}, Mã: ${ma}, Tên: ${finalName}`);
+        addICDTag(type, id, code, customName);
     });
 }
 function bindDataToForm(data) {
@@ -1521,9 +1612,21 @@ async function handleSaveThongTin(suppressToastr = false) {
     const maIcdVaoKhoa = maIcdVaoKhoaArray.join(';');
     const maIcdTruocThuat = maIcdTruocThuatArray.join(';');
     const maIcdSauThuat = maIcdSauThuatArray.join(';');
-    const tenICDVaoKhoa = $('#ten_icd_vao_khoa').val();
-    const tenICDTruoc = $('#ten_icd_truoc_thuat').val();
-    const tenICDSau = $('#ten_icd_sau_thuat').val();
+
+    function getCustomICDNames(type) {
+        const nameContainer = document.getElementById(`ten_icd_${type}`);
+        if (!nameContainer) return "";
+
+        const inputs = nameContainer.querySelectorAll('.icd-name-input');
+        return Array.from(inputs).map(input => input.value.trim()).join('; ');
+    }
+
+    const tenICDVaoKhoa = getCustomICDNames('vao_khoa');
+    const tenICDTruoc = getCustomICDNames('truoc_thuat');
+    const tenICDSau = getCustomICDNames('sau_thuat');
+    //const tenICDVaoKhoa = $('#ten_icd_vao_khoa').val();
+    //const tenICDTruoc = $('#ten_icd_truoc_thuat').val();
+    //const tenICDSau = $('#ten_icd_sau_thuat').val();
 
     const maPhongThucHien = $('.cbPhongThucHien').val();
     const maPhanLoai = $('.cbPhanLoai').val();
