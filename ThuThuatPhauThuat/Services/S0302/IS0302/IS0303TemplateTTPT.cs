@@ -11,5 +11,6 @@ namespace ThuThuatPhauThuat.Services.S0302.IS0302
 
         Task<M0303TemplateTTPT> LayChiTietTheoID(long id);
         Task<M0303TemplateTTPT> CapNhatTemplateTTPT(M0303TemplateTTPT model);
+        Task<bool> CapNhatTrangThaiActive(long id, bool activeStatus = false);
     }
 }

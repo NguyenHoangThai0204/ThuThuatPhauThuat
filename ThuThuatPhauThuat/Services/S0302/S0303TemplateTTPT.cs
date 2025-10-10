@@ -110,7 +110,37 @@ namespace ThuThuatPhauThuat.Services.S0302
                 return null;
             }
         }
+        public async Task<bool> CapNhatTrangThaiActive(long id, bool activeStatus = false)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Không thể cập nhật trạng thái: ID không hợp lệ.");
+                return false;
+            }
 
-     
+            try
+            {
+                var entityToUpdate = new M0303TemplateTTPT
+                {
+                    ID = id,
+                    Active = activeStatus
+                };
+
+                _localDb.M0303TemplateTTPT.Attach(entityToUpdate);
+
+                _localDb.Entry(entityToUpdate).Property(e => e.Active).IsModified = true;
+
+                var changes = await _localDb.SaveChangesAsync();
+
+                return changes > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Lỗi khi cập nhật trạng thái Active (Sử dụng DbContext) TemplateTTPT ID={id} thành {status}", id, activeStatus);
+                return false;
+            }
+        }
+
+
     }
 }

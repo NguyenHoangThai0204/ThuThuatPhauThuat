@@ -136,7 +136,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             return Ok(updated);
         }
         [HttpPost]
-        [Route("Create")]
+        [Route("ThemTemplate")]
         public async Task<IActionResult> Create([FromBody] M0303TemplateTTPT model)
         {
             if (ModelState.IsValid)
@@ -144,10 +144,9 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 _localDb.M0303TemplateTTPT.Add(model);
                 await _localDb.SaveChangesAsync();
 
-                return Ok(model); // Trả về model không cần success: true nếu status là 200 OK
+                return Ok(model); 
             }
 
-            // ✅ THÊM LOG ĐỂ IN RA LỖI CHI TIẾT
             var errors = ModelState.Values.SelectMany(v => v.Errors)
                                          .Select(e => e.ErrorMessage);
 
@@ -155,9 +154,25 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             {
                 _logger.LogError("Validation Error: {Error}", error);
             }
-            // ✅ END LOG
 
             return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+        }
+        [HttpPost("UpdateTrangThai/{id}")]
+        public async Task<IActionResult> UpdateTrangThai(long id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "ID không hợp lệ" });
+            }
+
+            var result = await _service.CapNhatTrangThaiActive(id, false);
+
+            if (!result)
+            {
+                return NotFound(new { message = "Không tìm thấy template hoặc cập nhật thất bại" });
+            }
+
+            return Ok(new { message = "Cập nhật trạng thái thành công" });
         }
 
     }
