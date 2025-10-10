@@ -110,7 +110,26 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             }
         }
 
+        [HttpPost("XoaPhieuTTPT")]
+        public async Task<IActionResult> XoaPhieuTTPT(long idPhieuTTPT)
+        {
+            try
+            {
 
+                if (idPhieuTTPT <= 0)
+                    return BadRequest(new { success = false, message = "ID phiếu không hợp lệ!" });
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC [dbo].[TTPT_S0302_XoaPhieuTTPT] @p0", idPhieuTTPT
+                );
+
+                return Ok(new { success = true, message = "Đã xóa phiếu và toàn bộ dữ liệu liên quan thành công." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Lỗi khi xóa phiếu: " + ex.Message });
+            }
+        }
         public IActionResult Index()
         {
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
@@ -159,7 +178,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             var data = _context.M0302PhieuThuThuatPhauThuatModels
                 .FromSqlRaw(sql, parameters)
                 .AsNoTracking()
-                .AsEnumerable() // ← đưa query về client
+                .AsEnumerable() 
                 .FirstOrDefault();
 
             if (data == null)
@@ -299,9 +318,9 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
                 //cmd.Parameters.Add(new SqlParameter("@SoPhieu", model.SoPhieu ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter(
-    "@SoPhieu",
-    string.IsNullOrWhiteSpace(model.SoPhieu) ? (object)DBNull.Value : model.SoPhieu
-));
+                    "@SoPhieu",
+                    string.IsNullOrWhiteSpace(model.SoPhieu) ? (object)DBNull.Value : model.SoPhieu
+                ));
 
                 cmd.Parameters.Add(new SqlParameter("@IDNguonBenh", model.IDNguonBenh ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@BatDauThuThuat", model.BatDauThuThuat ?? (object)DBNull.Value));
@@ -330,7 +349,45 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 return StatusCode(500, new { success = false, message = $"Lỗi Server: {ex.Message}" });
             }
         }
-        [HttpPut("update-phieu")]
+        //[HttpPut("update-phieu")]
+        //public async Task<IActionResult> UpdatePhieu([FromBody] M0302PhieuThuThuatPhauThuatModel model)
+        //{
+        //    if (model == null || model.IDPhieuTTPT == null || model.IDPhieuTTPT == 0)
+        //        return BadRequest(new { success = false, message = "Dữ liệu không hợp lệ" });
+
+        //    try
+        //    {
+        //        using var conn = _context.Database.GetDbConnection();
+        //        await conn.OpenAsync();
+
+        //        using var cmd = conn.CreateCommand();
+        //        cmd.CommandText = "TTPT_S0302_CapNhatPhieuTTPT";
+        //        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+        //        cmd.Parameters.Add(new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT));
+        //        cmd.Parameters.Add(new SqlParameter("@SoPhieu", model.SoPhieu ?? (object)DBNull.Value));
+        //        cmd.Parameters.Add(new SqlParameter("@IDNguonBenh", model.IDNguonBenh ?? (object)DBNull.Value));
+        //        cmd.Parameters.Add(new SqlParameter("@BatDauThuThuat", model.BatDauThuThuat ?? (object)DBNull.Value));
+        //        cmd.Parameters.Add(new SqlParameter("@KetThucThuThuat", model.KetThucThuThuat ?? (object)DBNull.Value));
+        //        cmd.Parameters.Add(new SqlParameter("@ThoiGianKhoa", model.ThoiGianKhoa ?? (object)DBNull.Value));
+        //        cmd.Parameters.Add(new SqlParameter("@NhomMau", model.NhomMau ?? (object)DBNull.Value));
+        //        cmd.Parameters.Add(new SqlParameter("@YeuToRh", model.YeuToRh ?? (object)DBNull.Value));
+        //        cmd.Parameters.Add(new SqlParameter("@IDChiDinhChiTiet", model.IDChiDinhChiTiet ?? (object)DBNull.Value));
+        //        cmd.Parameters.Add(new SqlParameter("@IDVaoVien", model.IDVaoVien ?? (object)DBNull.Value));
+        //        cmd.Parameters.Add(new SqlParameter("@NguoiKhoa", model.NguoiKhoa ?? (object)DBNull.Value));
+
+        //        await cmd.ExecuteNonQueryAsync();
+
+        //        return Ok(new { success = true, message = "Cập nhật phiếu thành công" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { success = false, message = $"Lỗi Server: {ex.Message}" });
+        //    }
+        //}
+        //// C0302ThuThuatPhauThuatHomeController.cs
+        ///
+        [HttpPost("update-phieu")]
         public async Task<IActionResult> UpdatePhieu([FromBody] M0302PhieuThuThuatPhauThuatModel model)
         {
             if (model == null || model.IDPhieuTTPT == null || model.IDPhieuTTPT == 0)
@@ -366,8 +423,6 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 return StatusCode(500, new { success = false, message = $"Lỗi Server: {ex.Message}" });
             }
         }
-        // C0302ThuThuatPhauThuatHomeController.cs
-
         [HttpGet]
         [Route("icd/init")]
         public IActionResult SearchICD([FromQuery] string query, [FromQuery] int offset = 0, [FromQuery] int limit = 50, [FromQuery] bool yhct = false)
@@ -861,6 +916,18 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(maKhoa))
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        directory = "",
+                        count = 0,
+                        images = new List<object>(),
+                        message = "Mã khoa không hợp lệ"
+                    });
+                }
+
                 var directoryPath = $"ttpt_images/khoa/{maKhoa}";
                 var images = await _ftpService.ListFilesInDirectoryAsync(directoryPath);
 
@@ -878,15 +945,21 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                         modifiedDate = img.ModifiedDate,
                         fileType = img.FileType,
                         httpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(img.FullPath)}"
-                    })
+                    }),
+                    message = images.Count == 0 ? "Thư mục rỗng hoặc không tồn tại" : null
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                _logger.LogError($"Error in GetAnhTruongTrinhByMaKhoa: {ex.Message}");
+
+                return Ok(new
                 {
-                    success = false,
-                    message = ex.Message
+                    success = true,
+                    directory = $"ttpt_images/khoa/{maKhoa}",
+                    count = 0,
+                    images = new List<object>(),
+                    message = "Không thể tải danh sách ảnh"
                 });
             }
         }

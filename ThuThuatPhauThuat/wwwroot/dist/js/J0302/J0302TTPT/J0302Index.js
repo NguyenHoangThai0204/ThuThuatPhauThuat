@@ -7,6 +7,100 @@ window.yhct = false;
 window.IDKhoa = 0;
 window.MaKhoa = "";
 
+function resetPatientSelection() {
+    selectedIdVaoVien = null;
+    selectedIdChiDinhChiTiet = null;
+    window.IDPhieuTTPT = 0;
+    currentPatientContext.idVaoVien = null;
+    currentPatientContext.idChiDinhChiTiet = null;
+    tabLoaded = {};
+
+    // Reset UI info
+    $("#info-tenbn", window.parent.document).text("");
+    $("#info-namsinh", window.parent.document).text("");
+    $("#info-bacsi", window.parent.document).text("");
+    $("#info-tendichvu", window.parent.document).text("");
+
+    console.log("🔄 Đã reset toàn bộ state chọn bệnh nhân");
+}
+
+function loadGlobalSoPhieu(forceReload = false) {
+    if ($('#global-so-phieu-container').length === 0) {
+        $('.tab-content').before('<div id="global-so-phieu-container"></div>');
+    } else {
+        $('#global-so-phieu-container').show();
+    }
+
+    // ✅ LUÔN LOAD KHI CÓ BỆNH NHÂN MỚI HOẶC FORCE RELOAD
+    const hasNewPatient = selectedIdVaoVien &&
+        (selectedIdVaoVien !== currentPatientContext.idVaoVien ||
+            selectedIdChiDinhChiTiet !== currentPatientContext.idChiDinhChiTiet);
+
+    if (forceReload || hasNewPatient || !window.soPhieuGlobalData.soPhieu || $('#global-so-phieu-container').html().trim() === '') {
+
+        console.log("🔄 Loading global số phiếu:", {
+            forceReload,
+            hasNewPatient,
+            currentPatient: currentPatientContext,
+            newPatient: { selectedIdVaoVien, selectedIdChiDinhChiTiet }
+        });
+
+        $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu", {
+            tabIndex: 0,
+            idVaoVien: selectedIdVaoVien,
+            idcn: window._idcn,
+            idChiDinhChiTiet: selectedIdChiDinhChiTiet
+        })
+            .done(function (html) {
+                $('#global-so-phieu-container').html(html);
+                khoiTaoJSChoTab(0);
+                attachSoPhieuChangeEvents();
+
+                // Load dữ liệu phiếu từ DB
+                if (selectedIdVaoVien && selectedIdChiDinhChiTiet) {
+                    $.getJSON('/thu_thuat_phau_thuat/get-phieu-by-vaovien', {
+                        idVaoVien: selectedIdVaoVien,
+                        idChiDinhChiTiet: selectedIdChiDinhChiTiet
+                    })
+                        .done(function (res) {
+                            if (res && res.success && res.data) {
+                                window.soPhieuGlobalData = {
+                                    soPhieu: res.data.SoPhieu || '',
+                                    idNguonBenh: res.data.IDNguonBenh || null,
+                                    batDauThuThuat: res.data.BatDauThuThuat || '',
+                                    ketThucThuThuat: res.data.KetThucThuThuat || '',
+                                    thoiGianKhoa: res.data.ThoiGianKhoa || '',
+                                    nguoiKhoa: res.data.NguoiKhoa || ''
+                                };
+                                applySoPhieuGlobalData();
+                            } else {
+                                // Nếu không có phiếu, reset data
+                                window.soPhieuGlobalData = {
+                                    soPhieu: '',
+                                    idNguonBenh: null,
+                                    batDauThuThuat: '',
+                                    ketThucThuThuat: '',
+                                    thoiGianKhoa: '',
+                                    nguoiKhoa: ''
+                                };
+                                applySoPhieuGlobalData();
+                            }
+                        })
+                        .fail(() => {
+                            console.warn("⚠️ Không thể load số phiếu");
+                            applySoPhieuGlobalData();
+                        });
+                }
+            })
+            .fail(function () {
+                console.warn("⚠️ Không thể load số phiếu");
+            });
+    } else {
+        khoiTaoJSChoTab(0);
+        attachSoPhieuChangeEvents();
+    }
+}
+
 // BIẾN TOÀN CỤC LƯU TRẠNG THÁI SỐ PHIẾU
 window.soPhieuGlobalData = {
     soPhieu: '',
@@ -88,40 +182,40 @@ function setLoading($btn, isLoading, loadingText) {
         $btn.prop("disabled", false).html($btn.data("original-html"));
     }
 }
-function loadGlobalSoPhieu(forceReload = false) {
-    if ($('#global-so-phieu-container').length === 0) {
-        $('.tab-content').before('<div id="global-so-phieu-container"></div>');
-    } else {
-        $('#global-so-phieu-container').show();
-    }
+//function loadGlobalSoPhieu(forceReload = false) {
+//    if ($('#global-so-phieu-container').length === 0) {
+//        $('.tab-content').before('<div id="global-so-phieu-container"></div>');
+//    } else {
+//        $('#global-so-phieu-container').show();
+//    }
 
-    // Nếu không cần reload, chỉ gắn lại event và init
-    if (!forceReload && window.soPhieuGlobalData.soPhieu && $('#global-so-phieu-container').html().trim() !== '') {
-        khoiTaoJSChoTab(0);
-        attachSoPhieuChangeEvents(); // luôn gọi lại
-        return;
-    }
+//    // Nếu không cần reload, chỉ gắn lại event và init
+//    if (!forceReload && window.soPhieuGlobalData.soPhieu && $('#global-so-phieu-container').html().trim() !== '') {
+//        khoiTaoJSChoTab(0);
+//        attachSoPhieuChangeEvents(); // luôn gọi lại
+//        return;
+//    }
 
-    // Load nội dung từ server
-    $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu", {
-        tabIndex: 0,
-        idVaoVien: selectedIdVaoVien,
-        idcn: window._idcn,
-        idChiDinhChiTiet: selectedIdChiDinhChiTiet
-    })
-        .done(function (html) {
-            $('#global-so-phieu-container').html(html);
-            khoiTaoJSChoTab(0);
-            attachSoPhieuChangeEvents(); // gắn lại event sau khi render xong
-            setTimeout(() => {
-                applySoPhieuGlobalData();
-                attachSoPhieuChangeEvents(); // gắn thêm lần nữa để chắc chắn
-            }, 100);
-        })
-        .fail(function () {
-            console.warn("⚠️ Không thể load số phiếu");
-        });
-}
+//    // Load nội dung từ server
+//    $.get("/thu_thuat_phau_thuat/thong_tin_so_phieu", {
+//        tabIndex: 0,
+//        idVaoVien: selectedIdVaoVien,
+//        idcn: window._idcn,
+//        idChiDinhChiTiet: selectedIdChiDinhChiTiet
+//    })
+//        .done(function (html) {
+//            $('#global-so-phieu-container').html(html);
+//            khoiTaoJSChoTab(0);
+//            attachSoPhieuChangeEvents(); // gắn lại event sau khi render xong
+//            setTimeout(() => {
+//                applySoPhieuGlobalData();
+//                attachSoPhieuChangeEvents(); // gắn thêm lần nữa để chắc chắn
+//            }, 100);
+//        })
+//        .fail(function () {
+//            console.warn("⚠️ Không thể load số phiếu");
+//        });
+//}
 
 
 function applySoPhieuGlobalData() {
@@ -359,25 +453,41 @@ $(document).ready(async function () {
                 data.IDPhieuTTPT = IDPhieuTTPT;
                 let res = await $.ajax({
                     url: '/thu_thuat_phau_thuat/update-phieu',
-                    type: 'PUT',
+                    type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data)
                 });
                 saveMessage = "Cập nhật phiếu thành công";
             }
 
+            //if (saveSuccess) {
+            //    if (typeof handleSaveThongTin === 'function') await handleSaveThongTin(true); 
+            //    if (typeof saveTrinhTu === 'function') await saveTrinhTu(true);
+            //    if (typeof handleSaveEkip === 'function') await handleSaveEkip(true);
+
+            //    toastr.success(saveMessage);
+            //    reloadSoPhieuSection();
+            //    updateDanhSachAfterSave();
+            //} else {
+            //    toastr.error(saveMessage);
+            //}
             if (saveSuccess) {
-                if (typeof handleSaveThongTin === 'function') await handleSaveThongTin(true); 
+                if (typeof handleSaveThongTin === 'function') await handleSaveThongTin(true);
                 if (typeof saveTrinhTu === 'function') await saveTrinhTu(true);
                 if (typeof handleSaveEkip === 'function') await handleSaveEkip(true);
 
                 toastr.success(saveMessage);
-                reloadSoPhieuSection();
                 updateDanhSachAfterSave();
-            } else {
+
+                // Chỉ reload lại thông tin phiếu nếu KHÔNG ở tab danh sách
+                const activeTab = $('a[data-bs-toggle="tab"].active').attr("href");
+                if (activeTab !== "#tabs-danhsach-7") {
+                    reloadSoPhieuSection();
+                }
+            }
+            else {
                 toastr.error(saveMessage);
             }
-
         } catch (error) {
             console.error(error);
             toastr.error("Lỗi khi lưu dữ liệu");

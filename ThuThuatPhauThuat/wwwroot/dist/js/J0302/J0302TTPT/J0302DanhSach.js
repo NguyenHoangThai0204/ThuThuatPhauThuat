@@ -22,13 +22,17 @@ function updateDateTime() {
 }
 
 $(document).on("click", "#example tbody tr", function () {
-   
+    // Xóa class active trước đó
+    $("#example tbody tr").removeClass("table-active");
+    $(this).addClass("table-active");
+
+    // Cập nhật thông tin
     var tenBN = $(this).find("td:eq(2)").text().trim();
     var namSinh = $(this).find("td:eq(3)").text().trim();
     var gioiTinh = $(this).find("td:eq(4)").text().trim();
     var bacSi = $(this).find("td:eq(10)").text().trim();
     var tendichvu = $(this).find("td:eq(7)").text().trim();
-   
+
     selectedIdVaoVien = $(this).data("idvaovien");
     selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
     window.IDPhieuTTPT = $(this).data("idphieu");
@@ -36,15 +40,26 @@ $(document).on("click", "#example tbody tr", function () {
     window.yhct = $(this).data("yhct");
     window.IDKhoa = $(this).data("idkhoa");
 
+    console.log("🔄 Đã chọn bệnh nhân mới:", {
+        idVaoVien: selectedIdVaoVien,
+        idChiDinhChiTiet: selectedIdChiDinhChiTiet,
+        idPhieu: window.IDPhieuTTPT
+    });
+
     $("#info-tenbn", window.parent.document).text(tenBN);
     $("#info-namsinh", window.parent.document).text(namSinh + " - " + gioiTinh);
     $("#info-bacsi", window.parent.document).text(bacSi);
     $("#info-tendichvu", window.parent.document).text(tendichvu);
-    
 
-    $("#example tbody tr").removeClass("table-active");
-    $(this).addClass("table-active");
+    // ✅ KIỂM TRA TAB HIỆN TẠI - CHỈ LOAD THÔNG TIN SỐ PHIẾU NẾU KHÔNG Ở TAB DANH SÁCH
+    const activeTab = $('a[data-bs-toggle="tab"].active').attr("href");
+    console.log("📑 Tab hiện tại khi chọn bệnh nhân:", activeTab);
+
+    if (activeTab !== "#tabs-danhsach-7" && typeof loadGlobalSoPhieu === 'function') {
+        loadGlobalSoPhieu(true);
+    }
 });
+
 
 $(document).ready(function () {
     updateDateTime();

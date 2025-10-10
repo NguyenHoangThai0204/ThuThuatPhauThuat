@@ -697,12 +697,19 @@
         // Hàm load ảnh từ khoa
         async function loadImagesFromServerByMaKhoa(makhoa) {
             try {
-                // console.log('Đang load ảnh từ khoa...');
                 const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/list-anh-truong-trinh-by-makhoa?makhoa=${makhoa}`);
-                const result = await response.json();
-                // console.log('Kết quả ảnh từ khoa:', result);
 
-                if (result.success && result.images) {
+                if (!response.ok) {
+                    console.warn(`HTTP ${response.status}: Không thể tải ảnh từ khoa`);
+                    imagesFromKhoa = [];
+                    hasLoadedKhoa = true;
+                    checkAndCompareImages();
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (result.success && result.images && result.images.length > 0) {
                     imagesFromKhoa = result.images.map((img, index) => ({
                         id: `khoa_${img.id || index + 1}`,
                         name: img.tenAnh,
@@ -711,17 +718,17 @@
                         timestamp: new Date(img.modifiedDate || Date.now()),
                         source: 'khoa'
                     }));
-
-                    // console.log('Đã load được', imagesFromKhoa.length, 'ảnh từ khoa');
-                    hasLoadedKhoa = true;
-                    checkAndCompareImages();
+                    console.log('Đã load được', imagesFromKhoa.length, 'ảnh từ khoa');
                 } else {
-                    // console.log('Không có ảnh từ khoa hoặc kết quả không thành công');
-                    hasLoadedKhoa = true;
-                    checkAndCompareImages();
+                    console.info(result.message || 'Không có ảnh trong thư mục khoa');
+                    imagesFromKhoa = [];
                 }
+
+                hasLoadedKhoa = true;
+                checkAndCompareImages();
             } catch (error) {
-                console.error('Error loading images from khoa:', error);
+                console.error('Lỗi khi load ảnh từ khoa:', error);
+                imagesFromKhoa = [];
                 hasLoadedKhoa = true;
                 checkAndCompareImages();
             }

@@ -208,31 +208,14 @@ namespace ThuThuatPhauThuat.Services.S0305
                 ? $"ftp://{_ftpSettings.FtpHost}/"
                 : $"ftp://{_ftpSettings.FtpHost}/{remoteDirectory}";
 
-            _logger.LogInformation($"Listing files in directory: {ftpUrl}");
-
             try
             {
-                // ĐẦU TIÊN: Thử list đơn giản để xem format
-                _logger.LogInformation("=== RAW FTP LISTING ===");
-
-                FtpWebRequest simpleRequest = (FtpWebRequest)WebRequest.Create(ftpUrl);
-                simpleRequest.Method = WebRequestMethods.Ftp.ListDirectory;
-                simpleRequest.Credentials = new NetworkCredential(_ftpSettings.FtpUsername, _ftpSettings.FtpPassword);
-                simpleRequest.UsePassive = true;
-
-                using (var simpleResponse = (FtpWebResponse)await simpleRequest.GetResponseAsync())
-                using (var simpleReader = new StreamReader(simpleResponse.GetResponseStream()))
+                if (!await DirectoryExistsAsync(remoteDirectory))
                 {
-                    string simpleLine;
-                    //while ((simpleLine = await simpleReader.ReadLineAsync()) != null)
-                    //{
-                    //    _logger.LogInformation($"SIMPLE: {simpleLine}");
-                    //}
+                    _logger.LogWarning($"Directory does not exist: {ftpUrl}");
+                    return fileList;
                 }
 
-                //_logger.LogInformation("=== DETAILED FTP LISTING ===");
-
-                // Sau đó lấy detailed listing
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
                 request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
                 request.Credentials = new NetworkCredential(_ftpSettings.FtpUsername, _ftpSettings.FtpPassword);
@@ -245,16 +228,11 @@ namespace ThuThuatPhauThuat.Services.S0305
                     string line;
                     while ((line = await reader.ReadLineAsync()) != null)
                     {
-                        //_logger.LogInformation($"DETAIL: {line}");
-
                         if (string.IsNullOrWhiteSpace(line)) continue;
 
                         var fileInfo = ParseFtpListLine(line, remoteDirectory);
                         if (fileInfo != null)
                         {
-                            //_logger.LogInformation($"Parsed: {fileInfo.FileName} (Dir: {fileInfo.IsDirectory})");
-
-                            // Chỉ lấy file ảnh
                             var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
                             var extension = Path.GetExtension(fileInfo.FileName).ToLowerInvariant();
 
@@ -269,10 +247,21 @@ namespace ThuThuatPhauThuat.Services.S0305
                 _logger.LogInformation($"Found {fileList.Count} image(s) in directory");
                 return fileList;
             }
+            catch (WebException ex) when (ex.Response is FtpWebResponse ftpResponse)
+            {
+                if (ftpResponse.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                {
+                    _logger.LogWarning($"Directory not found or empty: {ftpUrl}");
+                    return fileList;
+                }
+
+                _logger.LogError($"FTP Error ({ftpResponse.StatusCode}): {ftpResponse.StatusDescription}");
+                return fileList; 
+            }
             catch (Exception ex)
             {
                 _logger.LogError($"Error listing directory: {ex.Message}");
-                throw;
+                return fileList; 
             }
         }
 
