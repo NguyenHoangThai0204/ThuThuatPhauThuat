@@ -746,31 +746,43 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         [HttpPost("trinh-tu/upload-image")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] long idPhieuTTPT, [FromForm] string maKhoa)
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] long? idPhieuTTPT, [FromForm] string maKhoa)
         {
             if (file == null || file.Length == 0)
             {
                 return BadRequest(new { success = false, message = "File không hợp lệ." });
             }
 
+            if (string.IsNullOrWhiteSpace(maKhoa))
+            {
+                return BadRequest(new { success = false, message = "Vui lòng chọn khoa trước khi upload ảnh." });
+            }
+
             try
             {
+                // Upload vào thư mục khoa
                 var remoteFilePath = await _ftpService.UploadFileAsync(file, $"ttpt_images/khoa/{maKhoa}");
 
-                var newImageIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
+                long? newImageId = null;
+
+                // Nếu có IDPhieuTTPT thì lưu vào DB, không thì chỉ trả về thông tin file
+                if (idPhieuTTPT.HasValue && idPhieuTTPT.Value > 0)
                 {
-                    Direction = ParameterDirection.Output
-                };
+                    var newImageIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
 
-                await _context.Database.ExecuteSqlRawAsync(
-                    "EXEC TTPT_S0305_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT",
-                    new SqlParameter("@IDPhieuTTPT", idPhieuTTPT),
-                    new SqlParameter("@URL", remoteFilePath),
-                    new SqlParameter("@TenAnh", file.FileName),
-                    newImageIdParam
-                );
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC TTPT_S0305_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT",
+                        new SqlParameter("@IDPhieuTTPT", idPhieuTTPT.Value),
+                        new SqlParameter("@URL", remoteFilePath),
+                        new SqlParameter("@TenAnh", file.FileName),
+                        newImageIdParam
+                    );
 
-                var newImageId = (long)newImageIdParam.Value;
+                    newImageId = (long)newImageIdParam.Value;
+                }
 
                 return Ok(new
                 {
@@ -778,10 +790,11 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                     message = "Upload ảnh thành công.",
                     data = new
                     {
-                        id = newImageId,
+                        id = newImageId ?? 0,
                         url = remoteFilePath,
                         fileName = file.FileName,
-                        httpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(remoteFilePath)}"
+                        httpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(remoteFilePath)}",
+                        isTemp = !newImageId.HasValue
                     }
                 });
             }

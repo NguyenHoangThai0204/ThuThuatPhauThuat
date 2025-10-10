@@ -128,28 +128,30 @@
 </div>
 
 <script>
-        $(document).off('click', '.btn-xoa-phieu').on('click', '.btn-xoa-phieu', async function (e) {
-        e.preventDefault();
-        e.stopPropagation();
+    $(document).off('click', '.btn-xoa-phieu').on('click', '.btn-xoa-phieu', async function (e) {
+        e.preventDefault(); // chặn submit form
+        e.stopPropagation(); // chặn lan truyền sự kiện
 
         const idPhieuTTPT = window.IDPhieuTTPT;
         const tabIndex = $(this).data('tabindex') || 0;
 
-        console.log('🗑 Click xóa phiếu:', { idPhieuTTPT, tabIndex });
+        console.log('🗑 Click xóa phiếu:', { idPhieuTTPT, tabIndex, globalID: window.IDPhieuTTPT });
 
+        // Kiểm tra có phiếu hay không
         if (!idPhieuTTPT || idPhieuTTPT === 0) {
             toastr.warning("Không có phiếu nào để xóa!");
             return;
         }
 
+        // Xác nhận chỉ hỏi 1 lần
         if (!window.confirm("Bạn có chắc chắn muốn xóa phiếu này? Hành động này không thể hoàn tác!")) {
             return;
         }
 
+        // Gọi API xóa
         await deletePhieuTTPT(idPhieuTTPT, tabIndex);
     });
-
-      async function deletePhieuTTPT(idPhieuTTPT, tabIndex) {
+        async function deletePhieuTTPT(idPhieuTTPT, tabIndex) {
         try {
             console.log("🔄 Bắt đầu xóa phiếu:", idPhieuTTPT);
 
@@ -161,9 +163,7 @@
             });
 
             if (response && response.success) {
-                console.log("✅ Xóa phiếu thành công, bắt đầu reset dữ liệu...");
-
-                // 🔄 Reset toàn bộ state chính
+                // ✅ RESET TOÀN BỘ STATE QUAN TRỌNG
                 window.IDPhieuTTPT = 0;
                 window.soPhieuGlobalData = {
                     soPhieu: '',
@@ -174,28 +174,30 @@
                     nguoiKhoa: ''
                 };
 
-                // 🔄 Reset trạng thái tab loaded để tránh dữ liệu cũ
+                // ✅ RESET TAB LOADED
                 if (window.parent && window.parent.tabLoaded) {
                     window.parent.tabLoaded = {};
                 }
 
                 toastr.success(response.message || "Đã xóa phiếu thành công ✅");
 
-                // 🧹 Reset dữ liệu trong form hiện tại
+                // ✅ Reset UI global
                 resetAllDataAfterDelete();
 
-                // 🔁 Reload lại tab hiện tại (Promise-based)
-                await reloadCurrentTabCompletely();
-
-                // ✅ Load lại thông tin số phiếu toàn cục
+                // ✅ Load lại global số phiếu
                 await loadGlobalSoPhieu(true);
 
-                // 🔄 Làm mới danh sách phiếu (nếu có)
+                // ✅ Reload lại tab hiện tại
+                reloadCurrentTabCompletely();
+
+                // ✅ Làm mới danh sách phiếu / danh sách bệnh nhân
+                reloadDanhSachPhieuSauKhiXoa();
+
+                // ✅ Làm mới danh sách trong parent nếu có
                 if (window.parent && typeof window.parent.updateDanhSachAfterSave === 'function') {
                     window.parent.updateDanhSachAfterSave();
                 }
 
-                console.log("🟢 Hoàn tất toàn bộ quy trình xóa phiếu và reload.");
             } else {
                 toastr.error(response?.message || "Xóa phiếu thất bại!");
             }
@@ -204,97 +206,77 @@
             toastr.error("Đã xảy ra lỗi khi xóa phiếu!");
         }
     }
+    function reloadDanhSachPhieuSauKhiXoa() {
+        // console.log("🔁 Reload lại danh sách phiếu sau khi xóa...");
 
+        let currentPage = 1;
 
-    // 🧩 Hàm reload tab hiện tại sau khi xóa
-       function reloadCurrentTabCompletely() {
-        return new Promise(resolve => {
-            const currentTab = $('a[data-bs-toggle="tab"].active').attr('href');
-            if (!currentTab) {
-                console.warn("⚠️ Không tìm thấy tab đang active.");
-                resolve();
-                return;
-            }
+        const pageAttr = $('#table-danhsach-phieu').data('current-page');
+        if (pageAttr) currentPage = pageAttr;
 
-            const urlMap = {
-                '#tabs-thongtin-7': "/thu_thuat_phau_thuat/thong_tin",
-                '#tabs-trinhtu-7': "/thu_thuat_phau_thuat/trinh_tu",
-                '#tabs-ekip-7': "/thu_thuat_phau_thuat/ekip",
-                '#tabs-thuoc-7': "/thu_thuat_phau_thuat/ghi_nhan_thuoc_vat_tu"
-            };
+        const activePage = $('.pagination .page-item.active a').text();
+        if (activePage) currentPage = parseInt(activePage, 10);
 
-            const url = urlMap[currentTab];
-            if (!url) {
-                console.warn("⚠️ Không tìm thấy URL tương ứng với tab:", currentTab);
-                resolve();
-                return;
-            }
+        // console.log("📄 Giữ nguyên phân trang hiện tại:", currentPage);
 
-            console.log("🔁 Reload toàn bộ tab:", currentTab, "→ URL:", url);
+        if (window.parent && typeof window.parent.loadDanhSachPhieu === 'function') {
+            window.parent.loadDanhSachPhieu(currentPage);
+            // console.log("✅ Gọi loadDanhSachPhieu(page) trong parent thành công.");
+            return;
+        }
 
-            $(currentTab).load(url, function () {
-                console.log("✅ Tab HTML đã load lại từ server.");
-
-                // Khởi tạo lại toàn bộ JS trong tab
-                const tabIndex = currentTab.replace(/\D/g, '') || 0;
-                khoiTaoJSChoTab(tabIndex);
-
-                // ✅ Tái khởi tạo các phần riêng của từng tab
-                if (currentTab === '#tabs-thongtin-7') {
-                    initThongTinTab(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
-                }
-                if (currentTab === '#tabs-ekip-7') {
-                    initEkipTab();
-                }
-
-                // ✅ Re-init lại tất cả TomSelect bị destroy
-                if (typeof initAllTomSelect === 'function') {
-                    initAllTomSelect();
-                    console.log("🎯 TomSelect đã được khởi tạo lại hoàn tất.");
-                } else {
-                    console.warn("⚠️ initAllTomSelect() chưa được định nghĩa.");
-                }
-
-                resolve();
+        if ($('#table-danhsach-phieu').length) {
+            $('#table-danhsach-phieu').load(`/thu_thuat_phau_thuat/DanhSachPhieu?page=${currentPage}`, function () {
+                console.log(`✅ Danh sách phiếu trang ${currentPage} đã được load lại hoàn toàn.`);
             });
-        });
+            return;
+        }
+
+        console.warn("⚠️ Không tìm thấy danh sách phiếu để reload!");
     }
 
+       function reloadCurrentTabCompletely() {
+           const currentTab = $('a[data-bs-toggle="tab"].active').attr('href');
+           if (!currentTab) return;
+
+           const urlMap = {
+               '#tabs-thongtin-7': "/thu_thuat_phau_thuat/thong_tin",
+               '#tabs-trinhtu-7': "/thu_thuat_phau_thuat/trinh_tu",
+               '#tabs-ekip-7': "/thu_thuat_phau_thuat/ekip",
+               '#tabs-thuoc-7': "/thu_thuat_phau_thuat/ghi_nhan_thuoc_vat_tu"
+           };
+
+           const url = urlMap[currentTab];
+           if (!url) return;
+
+           // console.log("🔁 Reload toàn bộ tab:", currentTab, "từ URL:", url);
+
+           $(currentTab).load(url, function () {
+               // ⏳ Sau khi load xong, khởi tạo lại script JS
+               setTimeout(() => {
+                   const tabIndex = currentTab.replace(/\D/g, '') || 0;
+                   khoiTaoJSChoTab(tabIndex);
+
+                   if (currentTab === '#tabs-thongtin-7') {
+                       initThongTinTab(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
+                   }
+                   if (currentTab === '#tabs-ekip-7') {
+                       initEkipTab();
+                   }
+
+                   console.log("✅ Tab đã được load lại hoàn toàn như mới.");
+               }, 200);
+           });
+       }
 
     function resetAllDataAfterDelete() {
-        console.log("🧹 Reset toàn bộ dữ liệu sau khi xóa phiếu...");
 
-        const $container = $('#global-so-phieu-container');
-        $container.show();
 
-        // 🧹 Reset input & textarea
-        $container.find('input[type="text"], input[type="number"], input[type="datetime"], textarea').val('');
+        $('#global-so-phieu-container').show().find('input, textarea').val('');
+        $('#global-so-phieu-container').find('select').val(null).trigger('change');
 
-        // 🧹 Reset select (bao gồm TomSelect)
-        $container.find('select').each(function () {
-            const ts = this.tomselect;
-            if (ts) {
-                ts.clear(true);  // ✅ Xóa cả label hiển thị
-                ts.sync();       // đồng bộ UI lại
-            } else {
-                $(this).val(null).trigger('change');
-            }
-        });
-
-        // 🧹 Reset datetimepicker
-        $container.find('.datetimepicker-input').each(function () {
-            try {
-                const picker = $(this).data('datetimepicker') || $(this).data('DateTimePicker');
-                if (picker) picker.clear();
-                else $(this).val('');
-            } catch (e) {
-                console.warn("⚠️ Lỗi khi reset datetimepicker:", e);
-            }
-        });
-
-        console.log("✅ Hoàn tất reset toàn bộ form (input, select, datetimepicker, ...)");
+        console.log("🧹 Đã reset dữ liệu sau khi xóa phiếu (giữ nguyên DOM).");
     }
-
 
 
     function reloadCurrentTabAfterDelete() {
@@ -638,6 +620,23 @@
 
         // Thêm CSS RIÊNG cho các ô input datetime
         const style = document.createElement('style');
+
+            Inputmask({
+        alias: "datetime",
+        inputFormat: "dd-mm-yyyy HH:MM:ss",
+        placeholder: "dd-mm-yyyy hh:mm:ss",
+        clearIncomplete: true,
+        showMaskOnHover: false,
+        showMaskOnFocus: true
+    }).mask(selectorBatDauKetThuc);
+    Inputmask({
+        alias: "datetime",
+        inputFormat: "dd-mm-yyyy HH:MM:ss",
+        placeholder: "dd-mm-yyyy hh:mm:ss",
+        clearIncomplete: true,
+        showMaskOnHover: false,
+        showMaskOnFocus: true
+    }).mask(selectorThoiGianKhoa);
         style.textContent = `
             /* CSS CHO BẮT ĐẦU VÀ KẾT THÚC THỦ THUẬT */
             .txtDateTimeBatDauThuThuat-${tabIndex},

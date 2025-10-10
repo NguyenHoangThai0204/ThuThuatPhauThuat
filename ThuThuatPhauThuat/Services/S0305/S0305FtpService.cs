@@ -22,18 +22,27 @@ namespace ThuThuatPhauThuat.Services.S0305
             if (file == null || file.Length == 0)
                 throw new ArgumentException("File is empty");
 
-            // Tạo tên file unique
-            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+            string originalFileName = Path.GetFileName(file.FileName);
+            string fileNameWithoutExt = Path.GetFileNameWithoutExtension(originalFileName);
+            string fileExt = Path.GetExtension(originalFileName);
 
-            // Xử lý đường dẫn - bỏ "/" đầu nếu có
             remoteDirectory = remoteDirectory.TrimStart('/');
-            var remoteFilePath = string.IsNullOrEmpty(remoteDirectory)
-                ? fileName
-                : $"{remoteDirectory}/{fileName}";
+            string remoteFilePath = string.IsNullOrEmpty(remoteDirectory)
+                ? originalFileName
+                : $"{remoteDirectory}/{originalFileName}";
 
-            var ftpUrl = $"ftp://{_ftpSettings.FtpHost}/{remoteFilePath}";
+            // Kiểm tra trùng tên và thêm (1), (2), ...
+            int counter = 1;
+            while (await FileExistsAsync("/" + remoteFilePath))
+            {
+                string newFileName = $"{fileNameWithoutExt}({counter}){fileExt}";
+                remoteFilePath = string.IsNullOrEmpty(remoteDirectory)
+                    ? newFileName
+                    : $"{remoteDirectory}/{newFileName}";
+                counter++;
+            }
 
-            //_logger.LogInformation($"Attempting to upload to: {ftpUrl}");
+            string ftpUrl = $"ftp://{_ftpSettings.FtpHost}/{remoteFilePath}";
 
             try
             {
@@ -43,28 +52,21 @@ namespace ThuThuatPhauThuat.Services.S0305
                     await CreateDirectoryIfNotExistsAsync(remoteDirectory);
                 }
 
-                // Tạo FTP request
+                // Upload file
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
                 request.Method = WebRequestMethods.Ftp.UploadFile;
                 request.Credentials = new NetworkCredential(_ftpSettings.FtpUsername, _ftpSettings.FtpPassword);
                 request.UseBinary = true;
-                request.UsePassive = false; // Thử đổi sang Active mode
+                request.UsePassive = true;
                 request.KeepAlive = false;
 
-                // Upload file
                 using (var fileStream = file.OpenReadStream())
                 using (var ftpStream = await request.GetRequestStreamAsync())
                 {
                     await fileStream.CopyToAsync(ftpStream);
                 }
 
-                // Verify upload
-                //using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
-                //{
-                //    _logger.LogInformation($"Upload Complete, status: {response.StatusDescription}");
-                //}
-
-                return remoteFilePath; // Trả về đường dẫn file trên FTP
+                return remoteFilePath;
             }
             catch (Exception ex)
             {

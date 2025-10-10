@@ -57,40 +57,40 @@ function loadGlobalSoPhieu(forceReload = false) {
                 attachSoPhieuChangeEvents();
 
                 // Load dữ liệu phiếu từ DB
-                if (selectedIdVaoVien && selectedIdChiDinhChiTiet) {
-                    $.getJSON('/thu_thuat_phau_thuat/get-phieu-by-vaovien', {
-                        idVaoVien: selectedIdVaoVien,
-                        idChiDinhChiTiet: selectedIdChiDinhChiTiet
-                    })
-                        .done(function (res) {
-                            if (res && res.success && res.data) {
-                                window.soPhieuGlobalData = {
-                                    soPhieu: res.data.SoPhieu || '',
-                                    idNguonBenh: res.data.IDNguonBenh || null,
-                                    batDauThuThuat: res.data.BatDauThuThuat || '',
-                                    ketThucThuThuat: res.data.KetThucThuThuat || '',
-                                    thoiGianKhoa: res.data.ThoiGianKhoa || '',
-                                    nguoiKhoa: res.data.NguoiKhoa || ''
-                                };
-                                applySoPhieuGlobalData();
-                            } else {
-                                // Nếu không có phiếu, reset data
-                                window.soPhieuGlobalData = {
-                                    soPhieu: '',
-                                    idNguonBenh: null,
-                                    batDauThuThuat: '',
-                                    ketThucThuThuat: '',
-                                    thoiGianKhoa: '',
-                                    nguoiKhoa: ''
-                                };
-                                applySoPhieuGlobalData();
-                            }
-                        })
-                        .fail(() => {
-                            console.warn("⚠️ Không thể load số phiếu");
-                            applySoPhieuGlobalData();
-                        });
-                }
+                //if (selectedIdVaoVien && selectedIdChiDinhChiTiet) {
+                //    $.getJSON('/thu_thuat_phau_thuat/get-phieu-by-vaovien', {
+                //        idVaoVien: selectedIdVaoVien,
+                //        idChiDinhChiTiet: selectedIdChiDinhChiTiet
+                //    })
+                //        .done(function (res) {
+                //            if (res && res.success && res.data) {
+                //                window.soPhieuGlobalData = {
+                //                    soPhieu: res.data.SoPhieu || '',
+                //                    idNguonBenh: res.data.IDNguonBenh || null,
+                //                    batDauThuThuat: res.data.BatDauThuThuat || '',
+                //                    ketThucThuThuat: res.data.KetThucThuThuat || '',
+                //                    thoiGianKhoa: res.data.ThoiGianKhoa || '',
+                //                    nguoiKhoa: res.data.NguoiKhoa || ''
+                //                };
+                //                applySoPhieuGlobalData();
+                //            } else {
+                //                // Nếu không có phiếu, reset data
+                //                window.soPhieuGlobalData = {
+                //                    soPhieu: '',
+                //                    idNguonBenh: null,
+                //                    batDauThuThuat: '',
+                //                    ketThucThuThuat: '',
+                //                    thoiGianKhoa: '',
+                //                    nguoiKhoa: ''
+                //                };
+                //                applySoPhieuGlobalData();
+                //            }
+                //        })
+                //        .fail(() => {
+                //            console.warn("⚠️ Không thể load số phiếu");
+                //            applySoPhieuGlobalData();
+                //        });
+                //}
             })
             .fail(function () {
                 console.warn("⚠️ Không thể load số phiếu");
@@ -100,7 +100,6 @@ function loadGlobalSoPhieu(forceReload = false) {
         attachSoPhieuChangeEvents();
     }
 }
-
 
 // BIẾN TOÀN CỤC LƯU TRẠNG THÁI SỐ PHIẾU
 window.soPhieuGlobalData = {

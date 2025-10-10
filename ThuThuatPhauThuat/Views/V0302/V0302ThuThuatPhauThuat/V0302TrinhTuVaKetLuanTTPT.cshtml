@@ -340,6 +340,7 @@
         const btnAddImagePanel = document.getElementById('btnAddImagePanel');
         const fileInput = document.getElementById('fileInput');
         const imagePanel = document.querySelector('.image-panel-body');
+        let tempUploadedImages = []; // Lưu ảnh tạm chưa có IDPhieuTTPT
         let uploadedImages = [];
         let selectedImages = new Set();
         let totalSelectedCount = 0;
@@ -362,7 +363,7 @@
             fileInput.value = '';
         });
 
-        // Xử lý upload ảnh - TRỰC TIẾP LÊN THƯ MỤC KHOA
+        // Xử lý upload ảnh lên thư mục khoa
         async function handleImageUpload(files) {
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
@@ -407,19 +408,23 @@
                         loadingItem.remove();
 
                         const newImage = {
-                            id: `phieu_${result.data.id}`,
+                            id: result.data.isTemp ? `temp_${Date.now()}` : `phieu_${result.data.id}`,
                             name: result.data.fileName,
                             src: result.data.httpUrl,
                             ftpUrl: result.data.url,
                             timestamp: new Date(),
-                            source: 'phieu'
+                            source: result.data.isTemp ? 'temp' : 'phieu',
+                            isTemp: result.data.isTemp
                         };
 
-                        // Thêm vào danh sách và hiển thị
-                        imagesFromPhieu.push(newImage);
-                        addImageToPanel(newImage, false);
+                        // Nếu là ảnh tạm, lưu vào mảng tạm
+                        if (result.data.isTemp) {
+                            tempUploadedImages.push(newImage);
+                        } else {
+                            imagesFromPhieu.push(newImage);
+                        }
 
-                        // Reload danh sách ảnh từ khoa để cập nhật
+                        addImageToPanel(newImage, false);
                         await loadImagesFromServerByMaKhoa(window.MaKhoa);
 
                     } else {
@@ -428,10 +433,42 @@
                 } catch (error) {
                     console.error(`Lỗi upload ảnh ${file.name}:`, error);
                     loadingItem.remove();
-                    alert(`Lỗi upload ảnh ${file.name}: ${error.message}`);
+                    alert(`Lỗi upload ảnh [${file.name}]: ${error.message}`);
                 }
             }
         }
+
+        // Hàm xác nhận ảnh tạm khi đã có IDPhieuTTPT
+        window.confirmTempImages = async function() {
+            if (tempUploadedImages.length === 0) {
+                return Promise.resolve();
+            }
+
+            if (!window.IDPhieuTTPT || window.IDPhieuTTPT === 0) {
+                console.warn('Chưa có IDPhieuTTPT, ảnh sẽ được lưu sau');
+                return Promise.resolve();
+            }
+
+            console.log('Đang xác nhận ảnh tạm...', tempUploadedImages);
+
+            // Ảnh tạm sẽ được lưu trong hàm saveTrinhTu thông qua AnhTruongTrinhSaveToServer
+            // Sau khi lưu thành công, chuyển từ temp sang phieu
+            tempUploadedImages = [];
+            return Promise.resolve();
+        };
+
+        // Export hàm để sử dụng trong saveTrinhTu
+        window.getSelectedImages = function() {
+            const selectedImages = [];
+            document.querySelectorAll('.image-item.selected').forEach(item => {
+                const id = item.dataset.imageId;
+                const img = [...imagesFromKhoa, ...imagesFromPhieu, ...tempUploadedImages].find(i => i.id === id);
+                if (img) {
+                    selectedImages.push(img);
+                }
+            });
+            return selectedImages;
+        };
 
         function addImageToPanel(imageData, isChecked = false) {
             const existingImage = imagePanel.querySelector(`[data-image-id="${imageData.id}"]`);
@@ -622,6 +659,40 @@
         // Gọi hàm load ảnh
         loadImagesFromServerByMaKhoa(window.MaKhoa);
         loadImagesFromServer(window.IDPhieuTTPT);
+
+        window.toggleImageSelection = function(imageId, isChecked) {
+            const imageItem = imagePanel.querySelector(`[data-image-id="${imageId}"]`);
+            if (!imageItem) return;
+
+            if (isChecked) {
+                if (!selectedImages.has(imageId)) {
+                    selectedImages.add(imageId);
+                    totalSelectedCount++;
+                    imageItem.classList.add('selected');
+                }
+            } else {
+                if (selectedImages.has(imageId)) {
+                    selectedImages.delete(imageId);
+                    totalSelectedCount--;
+                    imageItem.classList.remove('selected');
+                }
+            }
+
+            document.querySelector('.count-diagram').textContent = totalSelectedCount;
+        };
+
+        window.previewImage = function(imageSrc) {
+            const modalEl = document.getElementById('imagePreviewModal');
+            const modalImg = document.getElementById('imagePreviewModalImg');
+            if (modalEl && modalImg) {
+                modalImg.src = imageSrc;
+                if (window.bootstrap && window.bootstrap.Modal) {
+                    new window.bootstrap.Modal(modalEl).show();
+                } else if ($(modalEl).modal) {
+                    $(modalEl).modal('show');
+                }
+            }
+        };
     })();
 
 

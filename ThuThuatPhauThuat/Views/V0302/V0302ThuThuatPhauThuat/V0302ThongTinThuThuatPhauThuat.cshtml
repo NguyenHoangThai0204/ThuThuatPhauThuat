@@ -799,6 +799,14 @@ $(function () {
 
     // CSS cho ô input nhỏ
     const style = document.createElement('style');
+    Inputmask({
+        alias: "datetime",
+        inputFormat: "dd-mm-yyyy HH:MM:ss",
+        placeholder: "dd-mm-yyyy hh:mm:ss",
+        clearIncomplete: true,
+        showMaskOnHover: false,
+        showMaskOnFocus: true
+    }).mask(selector);
     style.textContent = `
         #ngay_cat_chi, #ngay_rut_ong_dan_luu {
             height: 35px !important;

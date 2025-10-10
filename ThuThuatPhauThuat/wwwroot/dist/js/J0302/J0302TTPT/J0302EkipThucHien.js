@@ -77,7 +77,8 @@ function getEkipTomSelectConfigs(allData) {
         {
             className: "#cb_NhanVien",
             placeholder: "-- Tên nhân viên --",
-            data: allData.nhanVien.filter(nv => nv.idKhoa === window.IDKhoa) || [],
+            data: allData.nhanVien,
+            //data: allData.nhanVien.filter(nv => nv.idKhoa === window.IDKhoa) || [],
             valueField: "id",
             labelField: "ten",
         },

@@ -59,12 +59,28 @@ function updateDateTime() {
 //        loadGlobalSoPhieu(true);
 //    }
 //});
-$(document).on("click", "#example tbody tr", function () {
+$(document).on("click", "#example tbody tr", function (e) {
     // Xóa class active trước đó
     $("#example tbody tr").removeClass("table-active");
     $(this).addClass("table-active");
 
-    // Cập nhật thông tin
+    var noiThucHien = $(this).find("td:eq(9)").text().trim();
+
+    const phongBuongSelect = document.querySelector(".tom-select-test")?.tomselect;
+    if (phongBuongSelect) {
+        const found = listDanToc.find(x =>
+            x.ten.trim().toLowerCase() === noiThucHien.toLowerCase()
+        );
+
+        if (found) {
+            phongBuongSelect.setValue(found.id, true);
+            console.log("🏥 Đã cập nhật TomSelect theo phòng:", found.ten);
+        } else {
+            phongBuongSelect.clear(); // nếu không tìm thấy thì xóa chọn
+            console.warn("⚠️ Không tìm thấy phòng:", noiThucHien);
+        }
+    }
+
     var tenBN = $(this).find("td:eq(2)").text().trim();
     var namSinh = $(this).find("td:eq(3)").text().trim();
     var gioiTinh = $(this).find("td:eq(4)").text().trim();
@@ -78,18 +94,26 @@ $(document).on("click", "#example tbody tr", function () {
     window.yhct = $(this).data("yhct");
     window.IDKhoa = $(this).data("idkhoa");
 
-
     $("#info-tenbn", window.parent.document).text(tenBN);
     $("#info-namsinh", window.parent.document).text(namSinh + " - " + gioiTinh);
     $("#info-bacsi", window.parent.document).text(bacSi);
     $("#info-tendichvu", window.parent.document).text(tendichvu);
 
-    // ✅ KIỂM TRA TAB HIỆN TẠI - CHỈ LOAD THÔNG TIN SỐ PHIẾU NẾU KHÔNG Ở TAB DANH SÁCH
     const activeTab = $('a[data-bs-toggle="tab"].active').attr("href");
     console.log("📑 Tab hiện tại khi chọn bệnh nhân:", activeTab);
 
     if (activeTab !== "#tabs-danhsach-7" && typeof loadGlobalSoPhieu === 'function') {
         loadGlobalSoPhieu(true);
+    }
+
+    if (e.detail === 2) {
+        const thongTinTab = $('a[href="#tabs-thongtin-7"]');
+        if (thongTinTab.length) {
+            console.log("🩺 Đúp chuột - chuyển sang tab Thông tin...");
+            setTimeout(() => thongTinTab.tab('show'), 100);
+        } else {
+            console.warn("⚠️ Không tìm thấy tab Thông tin (#tabs-thongtin-7)");
+        }
     }
 });
 
@@ -274,22 +298,44 @@ $(document).on("change", "#pageSizeSelect", function () {
 
 
 // ==================== LỌC DANH SÁCH (CẢ THƯỜNG VÀ NÂNG CAO) có real time ====================
-$(document).on("click", "#btnLocDanhSachTTPT, #btnSearchNangCao", function (e) {
-    e.preventDefault();
+function filterDanhSach(isAdvanced = false) {
     $('#loadingSpinner').show();
     $('.table-wrapper').css('opacity', '0.5');
-    const isAdvancedSearch = $(this).attr('id') === 'btnSearchNangCao';
 
-    // Tham số lọc cơ bản
+    // 🏥 Lấy giá trị từ TomSelect
+    const phongBuongSelect = document.querySelector(".tom-select-test")?.tomselect;
+    let idPhongBuong = 0;
+
+    if (phongBuongSelect) {
+        idPhongBuong = phongBuongSelect.getValue();
+
+        // Nếu TomSelect chưa có value (id), ta dựa theo tên hiển thị để tìm lại id
+        if (!idPhongBuong || idPhongBuong === "0" || idPhongBuong === "") {
+            const tenHienThi = phongBuongSelect.getItem()?.textContent?.trim()?.toLowerCase() || "";
+
+            if (tenHienThi) {
+                const found = listDanToc.find(x =>
+                    x.ten.trim().toLowerCase() === tenHienThi &&
+                    x.idcn === _idcn
+                );
+                if (found) {
+                    idPhongBuong = found.id;
+                    console.log("🔁 Đã tìm lại ID phòng từ tên:", tenHienThi, "→", idPhongBuong);
+                } else {
+                    console.warn("⚠️ Không tìm thấy phòng tương ứng:", tenHienThi);
+                }
+            }
+        }
+    }
+
     const filterParams = {
         IdChiNhanh: _idcn,
         Ngay: $("#txtDateTime").val().trim(),
-        IdPhongBuong: $(".tom-select-test").val() || 0,
+        IdPhongBuong: idPhongBuong || 0,
         TrangThai: $("input[name='statusGroup']:checked").val() || 0
     };
 
-    // Nếu là tìm kiếm nâng cao, thêm các tham số bổ sung
-    if (isAdvancedSearch) {
+    if (isAdvanced) {
         Object.assign(filterParams, {
             MaVaoVien: $("#txtMaVaoVienDS").val().trim(),
             MaBenhNhan: $("#txtMaBenhNhanDS").val().trim(),
@@ -311,11 +357,80 @@ $(document).on("click", "#btnLocDanhSachTTPT, #btnSearchNangCao", function (e) {
     }).fail(function () {
         allData = [];
         renderTable(allData, currentPage, pageSize);
-    }).always(function () {   // <- luôn chạy dù thành công hay thất bại
+    }).always(function () {
         $('#loadingSpinner').hide();
         $('.table-wrapper').css('opacity', '1');
     });
+}
+
+// ==================== GỌI KHI NHẤN NÚT ====================
+$(document).on("click", "#btnLocDanhSachTTPT", function (e) {
+    e.preventDefault();
+    filterDanhSach(false);
 });
+$(document).on("click", "#btnSearchNangCao", function (e) {
+    e.preventDefault();
+    filterDanhSach(true);
+});
+
+// ==================== GỌI TỰ ĐỘNG KHI NGƯỜI DÙNG THAY ĐỔI ====================
+// Khi chọn ngày
+$(document).on("change", "#txtDateTime", function () {
+    filterDanhSach(false);
+});
+
+// Khi chọn phòng (TomSelect)
+$(document).on("change", ".tom-select-test", function () {
+    filterDanhSach(false);
+});
+
+// Khi đổi radio trạng thái
+$(document).on("change", "input[name='statusGroup']", function () {
+    filterDanhSach(false);
+});
+
+//$(document).on("click", "#btnLocDanhSachTTPT, #btnSearchNangCao", function (e) {
+//    e.preventDefault();
+//    $('#loadingSpinner').show();
+//    $('.table-wrapper').css('opacity', '0.5');
+//    const isAdvancedSearch = $(this).attr('id') === 'btnSearchNangCao';
+
+//    // Tham số lọc cơ bản
+//    const filterParams = {
+//        IdChiNhanh: _idcn,
+//        Ngay: $("#txtDateTime").val().trim(),
+//        IdPhongBuong: $(".tom-select-test").val() || 0,
+//        TrangThai: $("input[name='statusGroup']:checked").val() || 0
+//    };
+
+//    // Nếu là tìm kiếm nâng cao, thêm các tham số bổ sung
+//    if (isAdvancedSearch) {
+//        Object.assign(filterParams, {
+//            MaVaoVien: $("#txtMaVaoVienDS").val().trim(),
+//            MaBenhNhan: $("#txtMaBenhNhanDS").val().trim(),
+//            TenBenhNhan: $("#txtTenBnDS").val().trim(),
+//            CCCD: $("#txtCCCDDS").val().trim(),
+//            MaThe: $("#txtMaTheDS").val().trim(),
+//            SoDienThoai: $("#txtSDTDS").val().trim()
+//        });
+//    }
+
+//    $.post("/thu_thuat_phau_thuat/loc_danh_sach", filterParams, function (response) {
+//        if (response && response.success && Array.isArray(response.data?.data)) {
+//            allData = response.data.data;
+//        } else {
+//            allData = [];
+//        }
+//        currentPage = 1;
+//        renderTable(allData, currentPage, pageSize);
+//    }).fail(function () {
+//        allData = [];
+//        renderTable(allData, currentPage, pageSize);
+//    }).always(function () {   // <- luôn chạy dù thành công hay thất bại
+//        $('#loadingSpinner').hide();
+//        $('.table-wrapper').css('opacity', '1');
+//    });
+//});
 
 
 

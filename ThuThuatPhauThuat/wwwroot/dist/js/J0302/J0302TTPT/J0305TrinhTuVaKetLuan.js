@@ -8,7 +8,6 @@
 }
 
 function getSelectedImagesForSave() {
-    // Kiểm tra xem window.getSelectedImages có tồn tại không
     if (typeof window.getSelectedImages !== 'function') {
         console.warn('window.getSelectedImages chưa được khởi tạo');
         return [];
