@@ -178,7 +178,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             var data = _context.M0302PhieuThuThuatPhauThuatModels
                 .FromSqlRaw(sql, parameters)
                 .AsNoTracking()
-                .AsEnumerable() 
+                .AsEnumerable() // ← đưa query về client
                 .FirstOrDefault();
 
             if (data == null)
@@ -318,9 +318,9 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
                 //cmd.Parameters.Add(new SqlParameter("@SoPhieu", model.SoPhieu ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter(
-                    "@SoPhieu",
-                    string.IsNullOrWhiteSpace(model.SoPhieu) ? (object)DBNull.Value : model.SoPhieu
-                ));
+    "@SoPhieu",
+    string.IsNullOrWhiteSpace(model.SoPhieu) ? (object)DBNull.Value : model.SoPhieu
+));
 
                 cmd.Parameters.Add(new SqlParameter("@IDNguonBenh", model.IDNguonBenh ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@BatDauThuThuat", model.BatDauThuThuat ?? (object)DBNull.Value));
