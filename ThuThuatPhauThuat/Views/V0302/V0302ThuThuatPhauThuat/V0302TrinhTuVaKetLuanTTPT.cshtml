@@ -341,7 +341,6 @@
         const fileInput = document.getElementById('fileInput');
         const imagePanel = document.querySelector('.image-panel-body');
         let uploadedImages = [];
-        let tempUploadedImages = [];
         let selectedImages = new Set();
         let totalSelectedCount = 0;
 
@@ -363,7 +362,7 @@
             fileInput.value = '';
         });
 
-        // Xử lý upload ảnh
+        // Xử lý upload ảnh - TRỰC TIẾP LÊN THƯ MỤC KHOA
         async function handleImageUpload(files) {
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
@@ -394,16 +393,10 @@
                 try {
                     const formData = new FormData();
                     formData.append('file', file);
+                    formData.append('idPhieuTTPT', window.IDPhieuTTPT || 0);
+                    formData.append('maKhoa', window.MaKhoa || '');
 
-                    const uploadUrl = window.IDPhieuTTPT && window.IDPhieuTTPT !== 0
-                        ? '/thu_thuat_phau_thuat/trinh-tu/upload-image'
-                        : '/thu_thuat_phau_thuat/trinh-tu/upload-image-temp';
-
-                    if (window.IDPhieuTTPT && window.IDPhieuTTPT !== 0) {
-                        formData.append('idPhieuTTPT', window.IDPhieuTTPT);
-                    }
-
-                    const response = await fetch(uploadUrl, {
+                    const response = await fetch('/thu_thuat_phau_thuat/trinh-tu/upload-image', {
                         method: 'POST',
                         body: formData
                     });
@@ -414,24 +407,20 @@
                         loadingItem.remove();
 
                         const newImage = {
-                            id: result.data.isTemp ? `temp_${Date.now()}` : `phieu_${result.data.id}`,
+                            id: `phieu_${result.data.id}`,
                             name: result.data.fileName,
                             src: result.data.httpUrl,
                             ftpUrl: result.data.url,
                             timestamp: new Date(),
-                            source: result.data.isTemp ? 'temp' : 'phieu',
-                            isTemp: result.data.isTemp || false
+                            source: 'phieu'
                         };
 
-                        // THÊM: Đồng bộ ngay sau khi upload
+                        // Thêm vào danh sách và hiển thị
                         imagesFromPhieu.push(newImage);
+                        addImageToPanel(newImage, false);
 
-                        // Nếu là ảnh tạm, đồng bộ với danh sách
-                        if (result.data.isTemp) {
-                            syncTempImagesToPhieuList();
-                        } else {
-                            compareAndMarkImages(); // Refresh display
-                        }
+                        // Reload danh sách ảnh từ khoa để cập nhật
+                        await loadImagesFromServerByMaKhoa(window.MaKhoa);
 
                     } else {
                         throw new Error(result.message || 'Upload thất bại');
@@ -443,115 +432,6 @@
                 }
             }
         }
-
-        async function confirmTempImages() {
-            if (!tempUploadedImages.length) return;
-
-            if (!window.IDPhieuTTPT || window.IDPhieuTTPT === 0) {
-                console.warn('Chưa có IDPhieuTTPT, không thể xác nhận ảnh');
-                return;
-            }
-
-            try {
-                const response = await fetch('/thu_thuat_phau_thuat/trinh-tu/confirm-temp-images', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        IDPhieuTTPT: window.IDPhieuTTPT,
-                        TempImages: tempUploadedImages
-                    })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    console.log('Xác nhận ảnh tạm thành công:', result.data);
-                    tempUploadedImages = []; // Xóa danh sách tạm
-
-                    // Cập nhật lại imagesFromPhieu với ID thật từ DB
-                    result.data.forEach(confirmedImg => {
-                        const tempIndex = imagesFromPhieu.findIndex(img =>
-                            img.ftpUrl === confirmedImg.url.replace("/temp/", "/") && img.isTemp
-                        );
-                        if (tempIndex !== -1) {
-                            imagesFromPhieu[tempIndex] = {
-                                id: `phieu_${confirmedImg.id}`,
-                                name: confirmedImg.fileName,
-                                src: confirmedImg.httpUrl,
-                                ftpUrl: confirmedImg.url,
-                                timestamp: new Date(),
-                                source: 'phieu',
-                                isTemp: false
-                            };
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Lỗi xác nhận ảnh tạm:', error);
-            }
-        }
-
-        window.confirmTempImages = confirmTempImages;
-
-        // Thêm ảnh đã upload vào panel
-        function addUploadedImageToPanel(imageData) {
-            const imageItem = document.createElement('div');
-            imageItem.className = 'image-item';
-            imageItem.dataset.imageId = `phieu_${imageData.id}`;
-
-            const time = new Date().toLocaleString('vi-VN', {
-                day: '2-digit', month: '2-digit', year: 'numeric',
-                hour: '2-digit', minute: '2-digit', second: '2-digit'
-            });
-
-            imageItem.innerHTML = `
-                <input type="checkbox" class="image-item-checkbox mt-1"
-                       onchange="toggleImageSelection('phieu_${imageData.id}', this.checked)"
-                       style="cursor: pointer;">
-                <div class="image-item-header">
-                    <div class="image-item-title">${imageData.fileName}</div>
-                </div>
-                <small class="image-item-time">${time}</small>
-                <div style="position: relative;">
-                    <img src="${imageData.httpUrl}" class="image-item-preview" alt="${imageData.fileName}">
-                </div>
-                <button class="preview-btn" data-bs-toggle="tooltip"
-                        onclick="previewImage('${imageData.httpUrl}')" title="Xem ảnh"
-                        style="position: absolute; top: 10px; right: 10px;">
-                    <i class="ti ti-eye"></i>
-                </button>
-            `;
-
-            imagePanel.insertBefore(imageItem, imagePanel.firstChild);
-
-            const newPreviewBtn = imageItem.querySelector('.preview-btn');
-            if (newPreviewBtn && window.bootstrap) {
-                new bootstrap.Tooltip(newPreviewBtn, {
-                    title: "Xem ảnh",
-                    trigger: 'hover focus'
-                });
-            }
-        }
-
-        // Kéo thả ảnh vào panel
-        imagePanel.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            imagePanel.classList.add('drag-over');
-        });
-
-        imagePanel.addEventListener('dragleave', function() {
-            imagePanel.classList.remove('drag-over');
-        });
-
-        imagePanel.addEventListener('drop', function(e) {
-            e.preventDefault();
-            imagePanel.classList.remove('drag-over');
-
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleImageUpload(files);
-            }
-        });
 
         function addImageToPanel(imageData, isChecked = false) {
             const existingImage = imagePanel.querySelector(`[data-image-id="${imageData.id}"]`);
@@ -618,6 +498,7 @@
 
             const addedImages = new Set();
 
+            // Hiển thị ảnh từ khoa
             imagesFromKhoa.forEach(khoaImage => {
                 const imageKey = `${khoaImage.source}_${khoaImage.name}`.toLowerCase();
                 if (!addedImages.has(imageKey)) {
@@ -629,14 +510,11 @@
                 }
             });
 
+            // Hiển thị ảnh từ phiếu (đã upload)
             imagesFromPhieu.forEach(phieuImage => {
                 const imageKey = `${phieuImage.source}_${phieuImage.name}`.toLowerCase();
-                const isInKhoa = imagesFromKhoa.some(khoaImg =>
-                    khoaImg.name.toLowerCase() === phieuImage.name.toLowerCase()
-                );
-
-                if (!isInKhoa && !addedImages.has(imageKey)) {
-                    addImageToPanel(phieuImage, false); // Ảnh mới từ máy, chưa được chọn
+                if (!addedImages.has(imageKey)) {
+                    addImageToPanel(phieuImage, false);
                     addedImages.add(imageKey);
                 }
             });
@@ -644,29 +522,8 @@
             console.log('So sánh hoàn tất. Tổng ảnh được chọn:', totalSelectedCount);
         }
 
-        function syncTempImagesToPhieuList() {
-            const tempImages = imagesFromPhieu.filter(img => img.isTemp);
-
-            tempImages.forEach(tempImg => {
-                const alreadyExists = imagesFromPhieu.some(phieuImg =>
-                    !phieuImg.isTemp && phieuImg.name === tempImg.name
-                );
-
-                if (!alreadyExists) {
-                    imagesFromPhieu.push({
-                        ...tempImg,
-                        isTemp: false,
-                        source: 'phieu'
-                    });
-                }
-            });
-
-            compareAndMarkImages();
-        }
-
         function checkAndCompareImages() {
             if (hasLoadedKhoa && hasLoadedPhieu) {
-                // console.log('Cả hai nguồn ảnh đã load xong, bắt đầu so sánh...');
                 compareAndMarkImages();
             }
         }
@@ -714,10 +571,8 @@
         // Hàm load ảnh từ phiếu
         async function loadImagesFromServer(idPhieuTTPT) {
             try {
-                // console.log('Đang load ảnh từ phiếu...');
                 const response = await fetch(`/thu_thuat_phau_thuat/trinh-tu/get-images/${idPhieuTTPT}`);
                 const result = await response.json();
-                // console.log("Kết quả ảnh từ phiếu: ", result);
 
                 if (result.success && result.data) {
                     imagesFromPhieu = result.data.map((img, index) => ({
@@ -729,11 +584,11 @@
                         source: 'phieu'
                     }));
 
-                    // console.log('Đã load được', imagesFromPhieu.length, 'ảnh từ phiếu');
+                    console.log('Đã load được', imagesFromPhieu.length, 'ảnh từ phiếu');
                     hasLoadedPhieu = true;
                     checkAndCompareImages();
                 } else {
-                    // console.log('Không có ảnh từ phiếu hoặc kết quả không thành công');
+                    console.log('Không có ảnh từ phiếu hoặc kết quả không thành công');
                     hasLoadedPhieu = true;
                     checkAndCompareImages();
                 }
@@ -744,50 +599,31 @@
             }
         }
 
-        window.previewImage = function(imageSrc) {
-            const modalEl = document.getElementById('imagePreviewModal');
-            const modalImg = document.getElementById('imagePreviewModalImg');
+        // Kéo thả ảnh vào panel
+        imagePanel.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            imagePanel.classList.add('drag-over');
+        });
 
-            if (modalEl && modalImg) {
-                modalImg.src = imageSrc;
-                if (window.bootstrap && window.bootstrap.Modal) {
-                    new window.bootstrap.Modal(modalEl).show();
-                } else if (typeof $ !== 'undefined' && $(modalEl).modal) {
-                    $(modalEl).modal('show');
-                }
+        imagePanel.addEventListener('dragleave', function() {
+            imagePanel.classList.remove('drag-over');
+        });
+
+        imagePanel.addEventListener('drop', function(e) {
+            e.preventDefault();
+            imagePanel.classList.remove('drag-over');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleImageUpload(files);
             }
-        };
-
-        window.toggleImageSelection = function(imageId, isChecked) {
-            const imageItem = document.querySelector(`[data-image-id="${imageId}"]`);
-
-            if (isChecked) {
-                selectedImages.add(imageId);
-                totalSelectedCount++;
-                imageItem.classList.add('selected');
-            } else {
-                selectedImages.delete(imageId);
-                totalSelectedCount--;
-                imageItem.classList.remove('selected');
-            }
-
-            document.querySelector('.count-diagram').textContent = totalSelectedCount;
-        };
-
-        window.getSelectedImages = function() {
-            return Array.from(selectedImages).map(id => {
-                return [...imagesFromKhoa, ...imagesFromPhieu].find(img => img.id === id);
-            }).filter(img => img !== undefined);
-        }
+        });
 
         // Gọi hàm load ảnh
-        // console.log('Bắt đầu load ảnh...');
-        // console.log('MaKhoa:', window.MaKhoa);
-        // console.log('IDPhieuTTPT:', window.IDPhieuTTPT);
-
         loadImagesFromServerByMaKhoa(window.MaKhoa);
         loadImagesFromServer(window.IDPhieuTTPT);
     })();
+
 
     (function () {
         

@@ -101,6 +101,7 @@ function loadGlobalSoPhieu(forceReload = false) {
     }
 }
 
+
 // BIẾN TOÀN CỤC LƯU TRẠNG THÁI SỐ PHIẾU
 window.soPhieuGlobalData = {
     soPhieu: '',

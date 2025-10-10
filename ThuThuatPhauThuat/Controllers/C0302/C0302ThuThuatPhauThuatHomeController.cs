@@ -746,7 +746,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         [HttpPost("trinh-tu/upload-image")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] long idPhieuTTPT)
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] long idPhieuTTPT, [FromForm] string maKhoa)
         {
             if (file == null || file.Length == 0)
             {
@@ -755,7 +755,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
             try
             {
-                var remoteFilePath = await _ftpService.UploadFileAsync(file, "ttpt_images");
+                var remoteFilePath = await _ftpService.UploadFileAsync(file, $"ttpt_images/khoa/{maKhoa}");
 
                 var newImageIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
                 {
@@ -790,97 +790,6 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                 return StatusCode(500, new { success = false, message = $"Lỗi upload ảnh: {ex.Message}" });
             }
         }
-
-        [HttpPost("trinh-tu/upload-image-temp")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UploadImageTemp([FromForm] IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest(new { success = false, message = "File không hợp lệ." });
-            }
-
-            try
-            {
-                // Upload file lên FTP vào thư mục tạm
-                var remoteFilePath = await _ftpService.UploadFileAsync(file, "ttpt_images/temp");
-
-                return Ok(new
-                {
-                    success = true,
-                    message = "Upload ảnh tạm thời thành công.",
-                    data = new
-                    {
-                        // Không có ID từ DB
-                        url = remoteFilePath,
-                        fileName = file.FileName,
-                        httpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(remoteFilePath)}",
-                        isTemp = true // Đánh dấu đây là ảnh tạm
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = $"Lỗi upload ảnh: {ex.Message}" });
-            }
-        }
-
-        [HttpPost("trinh-tu/confirm-temp-images")]
-        public async Task<IActionResult> ConfirmTempImages([FromBody] ConfirmImagesRequest request)
-        {
-            if (request.IDPhieuTTPT <= 0 || request.TempImages == null || !request.TempImages.Any())
-            {
-                return BadRequest(new { success = false, message = "Dữ liệu không hợp lệ." });
-            }
-
-            try
-            {
-                var confirmedImages = new List<object>();
-
-                foreach (var tempImage in request.TempImages)
-                {
-                    var finalPath = tempImage.Url.Replace("/temp/", "/");
-                    await _ftpService.MoveFileAsync(tempImage.Url, finalPath);
-
-                    // Lưu vào DB
-                    var newImageIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-
-                    await _context.Database.ExecuteSqlRawAsync(
-                        "EXEC TTPT_S0305_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT",
-                        new SqlParameter("@IDPhieuTTPT", request.IDPhieuTTPT),
-                        new SqlParameter("@URL", finalPath),
-                        new SqlParameter("@TenAnh", tempImage.FileName),
-                        newImageIdParam
-                    );
-
-                    var newImageId = (long)newImageIdParam.Value;
-
-                    confirmedImages.Add(new
-                    {
-                        id = newImageId,
-                        url = finalPath,
-                        fileName = tempImage.FileName,
-                        httpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(finalPath)}"
-                    });
-                }
-
-                return Ok(new
-                {
-                    success = true,
-                    message = "Xác nhận ảnh thành công.",
-                    data = confirmedImages
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = $"Lỗi xác nhận ảnh: {ex.Message}" });
-            }
-        }
-
 
         [HttpGet("trinh-tu/get-images/{idPhieuTTPT}")]
         public async Task<IActionResult> GetImagesByPhieuId(long idPhieuTTPT)
