@@ -143,6 +143,19 @@
         transform: scale(1.3) translateY(-40px) !important;
         position: absolute !important;
     }
+.modal-body .table-responsive {
+    max-height: 400px;
+    
+    overflow-y: auto; 
+    
+}
+
+.modal-body .table-responsive table thead th {
+    position: sticky;
+    top: 0; 
+    z-index: 10; 
+    color: white;
+}
 
 </style>
 <link href="/dist/lib/litepicker/dist/css/litepicker.css" rel="stylesheet" />
@@ -384,60 +397,74 @@
 </div>
 
 
-<!-- Updated modals to remove alias field and center positioning -->
-<!-- Modal for Thiết bị -->
-<div class="modal fade" id="thietBiModal" tabindex="-1" aria-labelledby="thietBiModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="thietBiModalLabel">Thêm thiết bị mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="thietBiForm">
-                    <div class="form-group mb-3">
-                        <label for="thietBiMa" class="form-label">Mã thiết bị:</label>
-                        <input autocomplete="off" type="text" class="form-control" id="thietBiMa" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="thietBiTen" class="form-label">Tên thiết bị:</label>
-                        <input autocomplete="off" type="text" class="form-control" id="thietBiTen" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="saveThietBi()">Lưu</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal for Tai biến/biến chứng -->
 <div class="modal fade" id="bienChungModal" tabindex="-1" aria-labelledby="bienChungModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="bienChungModalLabel">Thêm tai biến/biến chứng mới</h5>
+                <h5 class="modal-title" id="bienChungModalLabel">Quản lý Danh mục Tai biến/Biến chứng</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="bienChungForm">
-                    <div class="form-group mb-3">
-                        <label for="bienChungMa" class="form-label">Mã tai biến/biến chứng:</label>
-                        <input autocomplete="off" type="text" class="form-control" id="bienChungMa" required>
+                <div class="row">
+                    <div class="col-md-7 border-end pe-4">
+                        <h4 class="mb-3">Danh sách Tai biến/Biến chứng hiện có</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle table-sm">
+                                <thead>
+                                    <tr class="table-primary">
+                                        <th scope="col" style="width: 5%;">STT</th>
+                                        <th scope="col" style="width: 20%;">Mã Danh mục</th>
+                                        <th scope="col" style="width: 45%;">Tên Danh mục</th>
+                                        <th scope="col" style="width: 30%;" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bienChungTableBody">
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>BC001</td>
+                                        <td>Nhiễm trùng vết mổ</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning me-2" onclick="editBienChung('BC001')">Sửa</button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteBienChung('BC001')">Xóa</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="bienChungTen" class="form-label">Tên tai biến/biến chứng:</label>
-                        <input autocomplete="off" type="text" class="form-control" id="bienChungTen" required>
+
+                    <div class="col-md-5 ps-4">
+                        <h4 class="mb-3">Thêm/Chỉnh sửa Tai biến/Biến chứng</h4>
+                        <form id="bienChungForm">
+                            <input type="hidden" id="bienChungId" value="">
+                            
+                            <div class="form-group mb-3">
+                                <label for="bienChungMa" class="form-label">Mã tai biến/biến chứng:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="bienChungMa" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="bienChungTen" class="form-label">Tên tai biến/biến chứng:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="bienChungTen" required>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="saveBienChung()">Lưu Danh mục</button>
+                                <button type="button" 
+                                        class="btn btn-secondary btn-lg" 
+                                        id="bienChungCancelBtn" 
+                                        style="display: none;" 
+                                        onclick="resetBienChungForm()">
+                                    Hủy Sửa
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="saveBienChung()">Lưu</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>
@@ -445,28 +472,71 @@
 
 <!-- Modal for Chế độ thủ thuật -->
 <div class="modal fade" id="cheDoThuThuatModal" tabindex="-1" aria-labelledby="cheDoThuThuatModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="cheDoThuThuatModalLabel">Thêm chế độ thủ thuật mới</h5>
+                <h5 class="modal-title" id="cheDoThuThuatModalLabel">Quản lý Danh mục Chế độ thủ thuật</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="cheDoThuThuatForm">
-                    <div class="form-group mb-3">
-                        <label for="cheDoThuThuatMa" class="form-label">Mã chế độ thủ thuật:</label>
-                        <input autocomplete="off" type="text" class="form-control" id="cheDoThuThuatMa" required>
+                <div class="row">
+                    <div class="col-md-7 border-end pe-4">
+                        <h4 class="mb-3">Danh sách Chế độ thủ thuật hiện có</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle table-sm">
+                                <thead>
+                                    <tr class="table-primary">
+                                        <th scope="col" style="width: 5%;">STT</th>
+                                        <th scope="col" style="width: 20%;">Mã Danh mục</th>
+                                        <th scope="col" style="width: 45%;">Tên Danh mục</th>
+                                        <th scope="col" style="width: 30%;" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cheDoThuThuatTableBody">
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>CDTT01</td>
+                                        <td>Thông thường</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning me-2" onclick="editCheDoThuThuat('CDTT01')">Sửa</button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteCheDoThuThuat('CDTT01')">Xóa</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="cheDoThuThuatTen" class="form-label">Tên chế độ thủ thuật:</label>
-                        <input autocomplete="off" type="text" class="form-control" id="cheDoThuThuatTen" required>
+
+                    <div class="col-md-5 ps-4">
+                        <h4 class="mb-3">Thêm/Chỉnh sửa Chế độ thủ thuật</h4>
+                        <form id="cheDoThuThuatForm">
+                            <input type="hidden" id="cheDoThuThuatId" value="">
+
+                            <div class="form-group mb-3">
+                                <label for="cheDoThuThuatMa" class="form-label">Mã chế độ thủ thuật:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="cheDoThuThuatMa" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="cheDoThuThuatTen" class="form-label">Tên chế độ thủ thuật:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="cheDoThuThuatTen" required>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="saveCheDoThuThuat()">Lưu Danh mục</button>
+                             <button type="button" 
+                                    class="btn btn-secondary btn-lg" 
+                                    id="cheDoThuThuatCancelBtn" 
+                                    style="display: none;" 
+                                    onclick="resetCheDoThuThuatForm()">
+                                Hủy Sửa
+                            </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="saveCheDoThuThuat()">Lưu</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>
@@ -474,56 +544,161 @@
 
 <!-- Modal for Vị trí thực hiện -->
 <div class="modal fade" id="viTriThucHienModal" tabindex="-1" aria-labelledby="viTriThucHienModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="viTriThucHienModalLabel">Thêm vị trí thực hiện mới</h5>
+                <h5 class="modal-title" id="viTriThucHienModalLabel">Quản lý Danh mục Vị trí thực hiện</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="viTriThucHienForm">
-                    <div class="form-group mb-3">
-                        <label for="viTriThucHienMa" class="form-label">Mã vị trí thực hiện:</label>
-                        <input autocomplete="off" type="text" class="form-control" id="viTriThucHienMa" required>
+                <div class="row">
+                    <div class="col-md-7 border-end pe-4">
+                        <h4 class="mb-3">Danh sách Vị trí thực hiện hiện có</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle table-sm">
+                                <thead>
+                                    <tr class="table-primary">
+                                        <th scope="col" style="width: 5%;">STT</th>
+                                        <th scope="col" style="width: 20%;">Mã Danh mục</th>
+                                        <th scope="col" style="width: 45%;">Tên Danh mục</th>
+                                        <th scope="col" style="width: 30%;" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="viTriThucHienTableBody">
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>VTTT01</td>
+                                        <td>Khoa Ngoại</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning me-2" onclick="editViTriThucHien('VTTT01')">Sửa</button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteViTriThucHien('VTTT01')">Xóa</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="viTriThucHienTen" class="form-label">Tên vị trí thực hiện:</label>
-                        <input autocomplete="off" type="text" class="form-control" id="viTriThucHienTen" required>
+
+                    <div class="col-md-5 ps-4">
+                        <h4 class="mb-3">Thêm/Chỉnh sửa Vị trí thực hiện</h4>
+                        <form id="viTriThucHienForm">
+                            <input type="hidden" id="viTriThucHienId" value="">
+
+                            <div class="form-group mb-3">
+                                <label for="viTriThucHienMa" class="form-label">Mã vị trí thực hiện:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="viTriThucHienMa" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="viTriThucHienTen" class="form-label">Tên vị trí thực hiện:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="viTriThucHienTen" required>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="saveViTriThucHien()">Lưu Danh mục</button>
+                                 <button type="button" 
+                                        class="btn btn-secondary btn-lg" 
+                                        id="viTriThucHienCancelBtn" 
+                                        style="display: none;" 
+                                        onclick="resetViTriThucHienForm()">
+                                    Hủy Sửa
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="saveViTriThucHien()">Lưu</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>
 </div>
 <!-- Modal for tử vong -->
 <div class="modal fade" id="tuVongModal" tabindex="-1" aria-labelledby="tuVongModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tuVongModalLabel">Thêm danh mục tử vong mới</h5>
+                <h5 class="modal-title" id="tuVongModalLabel">Quản lý Danh mục Tử vong</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="tuVongForm">
-                    <div class="form-group mb-3">
-                        <label for="tuVongMa" class="form-label">Mã danh mục:</label>
-                        <input autocomplete="off" type="text" class="form-control" id="tuVongMa" required>
+                <div class="row">
+                    <div class="col-md-7 border-end pe-4">
+                        <h4 class="mb-3">Danh sách Danh mục hiện có</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle table-sm">
+                                <thead>
+                                    <tr class="table-primary">
+                                        <th scope="col" style="width: 5%;">STT</th>
+                                        <th scope="col" style="width: 20%;">Mã Danh mục</th>
+                                        <th scope="col" style="width: 45%;">Tên Danh mục</th>
+                                        <th scope="col" style="width: 30%;" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tuVongTableBody">
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>TV001</td>
+                                        <td>Tai nạn giao thông</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning me-2" onclick="editTuVong('TV001')">
+                                                <i class="bi bi-pencil"></i> Sửa
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteTuVong('TV001')">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td>TV002</td>
+                                        <td>Bệnh tim mạch</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning me-2" onclick="editTuVong('TV002')">
+                                                <i class="bi bi-pencil"></i> Sửa
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteTuVong('TV002')">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="tuVongTen" class="form-label">Tên danh mục:</label>
-                        <input autocomplete="off" type="text" class="form-control" id="tuVongTen" required>
+
+                    <div class="col-md-5 ps-4">
+                        <h4 class="mb-3">Thêm/Chỉnh sửa Danh mục</h4>
+                        <form id="tuVongForm">
+                            <input type="hidden" id="tuVongId" value="">
+                            
+                            <div class="form-group mb-3">
+                                <label for="tuVongMa" class="form-label">Mã danh mục:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="tuVongMa" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="tuVongTen" class="form-label">Tên danh mục:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="tuVongTen" required>
+                            </div>
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="saveTuVong()">
+                                    <i class="bi bi-save"></i> Lưu Danh mục
+                                </button>
+
+                                <button type="button" 
+                                        class="btn btn-secondary btn-lg" 
+                                        id="tuVongCancelBtn" 
+                                        style="display: none;" 
+                                        onclick="resetTuVongForm()">
+                                    Hủy Sửa
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="saveTuVong()">Lưu</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>

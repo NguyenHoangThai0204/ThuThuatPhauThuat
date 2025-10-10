@@ -367,56 +367,8 @@ sequence-editor-panel .editor-content {
     margin-right: 0;
 }
 
-.input-group-ellipsis {
-    position: relative;
-}
 
-.ellipsis-btn {
-    position: absolute;
-    right: -15px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 10;
-    padding: 2px;
-    border-radius: 3px;
-    transition: background-color 0.2s;
-}
 
-    .ellipsis-btn:hover {
-        background-color: #ccc;
-    }
-
-    .ellipsis-btn svg {
-        width: 16px;
-        height: 16px;
-        color: #6c757d;
-    }
-
-/* MODAL */
-.custom-modal-body {
-    min-height: 400px;
-    padding-bottom: 0.5rem !important;
-}
-
-.custom-content-area {
-    height: calc(100% - 40px);
-    min-height: 350px;
-}
-
-.custom-table-scroll {
-    height: 100%;
-    max-height: 100%;
-    overflow-y: auto;
-}
-
-.textarea-fixed-height {
-    resize: none;
-    min-height: 150px;
-    max-height: 350px;
-}
 
 #chiTietTitleInput:focus {
     border-color: #80bdff;
@@ -538,51 +490,24 @@ sequence-editor-panel .editor-content {
     border-collapse: collapse;
 }
 
-    /* Hàng trong bảng chiếm hết chiều cao */
-    #dichVuTable tr {
-        height: 100%;
-    }
 
-    /* Hai ô (td) nằm cạnh nhau, cao 100% */
-    #dichVuTable td {
-        vertical-align: top;
-        height: 100%;
-        padding: 0;
-    }
+/* CSS MODAL TEMPALTE*/
 
-        /* Giúp 2 textarea giãn đầy ô */
-        #dichVuTable td textarea {
-            display: block;
-            width: 100%;
-            height: 100%;
-            min-height: 100%;
-            resize: none;
-            border: none;
-            outline: none;
-            padding: 8px;
-            box-sizing: border-box;
-            font-size: 0.9rem;
-            background-color: #fff;
-        }
 
-        /* Nếu muốn 2 ô cân bằng 50% - 50% chiều rộng */
-        #dichVuTable td:first-child,
-        #dichVuTable td:last-child {
-            width: 50%;
-        }
-
-.table-scroll-container2.custom-table-scroll2 {
-    flex: 1;
+#myModal .modal-content {
+    height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
-    .table-scroll-container2.custom-table-scroll2 table {
-        width: 100%;
-        height: 100%;
-        border-collapse: collapse;
-    }
+#myModal .modal-body {
+    flex-grow: 1; 
+    overflow: hidden; 
+}
+
+.main-content-row {
+    height: 100%;
+}
 
     .table-scroll-container2.custom-table-scroll2 tbody {
         flex: 1;
@@ -831,4 +756,12 @@ sequence-editor-panel .editor-content {
     .editor-summary {
         font-size: 16px;
     }
+}
+.table-wrapper {
+    height: 100%;
+    overflow-y: auto; 
+}
+
+textarea.form-control {
+    resize: none;
 }

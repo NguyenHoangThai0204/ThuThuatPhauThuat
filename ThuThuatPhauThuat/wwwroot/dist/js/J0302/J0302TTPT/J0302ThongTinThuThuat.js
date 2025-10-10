@@ -720,103 +720,271 @@ function configCbThongTin(configs) {
 
 
 // ================= XU LY MODAL ========================
+// Cập nhật hàm openModal hiện có
 function openModal(modalId) {
     const modal = new bootstrap.Modal(document.getElementById(modalId));
+
+    switch (modalId) {
+        case 'tuVongModal':
+            loadTableData(modalId, allDataThongTin.tuVong, 'tuVong');
+            break;
+        case 'bienChungModal':
+            loadTableData(modalId, allDataThongTin.taiBienBienChung, 'bienChung');
+            break;
+        case 'cheDoThuThuatModal':
+            loadTableData(modalId, allDataThongTin.cheDoThuThuat, 'cheDoThuThuat');
+            break;
+        case 'viTriThucHienModal':
+            loadTableData(modalId, allDataThongTin.viTriThucHien, 'viTriThucHien');
+            break;
+    }
+
     modal.show();
 }
-function resetModalForm(modalId) {
-    const modalElement = document.getElementById(modalId);
-    if (modalElement) {
-        const formId = modalId.replace('Modal', 'Form');
-        const formElement = modalElement.querySelector(`#${formId}`);
+function createTableRow(stt, item, type) {
+    const id = item.id !== undefined ? String(item.id) : String(item.ma);
+    const ma = item.ma || '';
+    const ten = item.ten || '';
 
-        if (formElement && typeof formElement.reset === 'function') {
-            formElement.reset();
-        }
-    }
+    const editFunctionName = `edit${type.charAt(0).toUpperCase() + type.slice(1)}`;
+    const deleteFunctionName = `delete${type.charAt(0).toUpperCase() + type.slice(1)}`;
+
+    return `
+        <tr>
+            <th scope="row">${stt}</th>
+            <td>${ma}</td>
+            <td>${ten}</td>
+            <td class="text-center">
+                <button type="button" class="btn btn-sm btn-warning me-2" onclick="${editFunctionName}('${id}', '${ma}', '${ten}')">
+                    <i class="bi bi-pencil"></i> Sửa
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" onclick="${deleteFunctionName}('${id}')">
+                    <i class="bi bi-trash"></i> Xóa
+                </button>
+            </td>
+        </tr>
+    `;
 }
-if (typeof modals === "undefined") {
 
-    var modals = document.querySelectorAll('.modal');
-    modals.forEach(modalElement => {
+function loadTableData(modalId, dataArray, dataKey) {
+    const tableBodyId = `${modalId.replace('Modal', 'TableBody')}`;
+    const tableBody = document.getElementById(tableBodyId);
 
-        modalElement.addEventListener('hide.bs.modal', function (e) {
-            const modalId = modalElement.id;
+    if (!tableBody) {
+        console.error(`Không tìm thấy table body với ID: ${tableBodyId}`);
+        return;
+    }
 
-            if (document.activeElement) {
-                document.activeElement.blur();
-            }
-            resetModalForm(modalId);
+    tableBody.innerHTML = ''; 
+
+    if (Array.isArray(dataArray)) {
+        dataArray.forEach((item, index) => {
+            const row = createTableRow(index + 1, item, dataKey);
+            tableBody.insertAdjacentHTML('beforeend', row);
         });
-    });
+    }
+}
+function resetModalForm(modalId, defaultTitle) {
+    const formId = modalId.replace('Modal', 'Form');
+    const idFieldId = modalId.replace('Modal', 'Id');
+    const titleId = modalId.replace('Modal', 'Label');
+    const cancelBtnId = modalId.replace('Modal', 'CancelBtn');
+
+    const formElement = document.getElementById(formId);
+    if (formElement) {
+        formElement.reset();
+    }
+
+    const idField = document.getElementById(idFieldId);
+    if (idField) {
+        idField.value = '';
+    }
+
+    const titleElement = document.getElementById(titleId);
+    if (titleElement && defaultTitle) {
+        titleElement.textContent = defaultTitle;
+    }
+
+    const cancelBtn = document.getElementById(cancelBtnId);
+    if (cancelBtn) {
+        cancelBtn.style.display = 'none';
+    }
 }
 
-function closeModal(modalId) {
-    if (document.activeElement) {
-        document.activeElement.blur();
+// TU VONG
+function resetTuVongForm() {
+    resetModalForm('tuVongModal', "Thêm/Chỉnh sửa tử vong");
+}
+function editTuVong(id, ma, ten) {
+    document.getElementById('tuVongId').value = id;
+    document.getElementById('tuVongMa').value = ma;
+    document.getElementById('tuVongTen').value = ten;
+
+    document.getElementById('tuVongModalLabel').textContent = "Chỉnh sửa danh mục tử vong";
+    const cancelBtn = document.getElementById('tuVongCancelBtn');
+    if (cancelBtn) {
+        cancelBtn.style.display = 'block';
     }
-    resetModalForm(modalId);
-    const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
-    if (modal) {
-        modal.hide();
+    const formElement = document.getElementById('tuVongForm');
+    if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
     }
 }
-document.addEventListener('DOMContentLoaded', function () {
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modalElement => {
-        modalElement.addEventListener('hide.bs.modal', function (e) {
-            const modalId = modalElement.id;
-            if (document.activeElement) {
-                document.activeElement.blur();
-            }
-            resetModalForm(modalId);
-        });
-    });
-});
-async function saveThietBi() {
-    const ma = document.getElementById('thietBiMa').value;
-    const ten = document.getElementById('thietBiTen').value;
+function updateTuVongTableAndSelect(newData) {
+    allDataThongTin.tuVong = newData;
+
+    refreshTomSelect('.cbTuVong', allDataThongTin.tuVong);
+
+    loadTableData('tuVongModal', allDataThongTin.tuVong, 'tuVong');
+}
+async function saveTuVong() {
+    const id = document.getElementById('tuVongId').value;
+    const ma = document.getElementById('tuVongMa').value;
+    const ten = document.getElementById('tuVongTen').value;
+    const isEditing = id !== null && id !== '';
+
     if (!ma) {
-        toastr.error('Vui lòng nhập đầy đủ mã thiết bị!', "Thông báo");
-        document.getElementById('thietBiMa').focus();
+        toastr.error('Vui lòng nhập đầy đủ mã mục tử vong!', "Thông báo");
+        document.getElementById('tuVongMa').focus();
         return;
     }
     if (!ten) {
-        toastr.error('Vui lòng nhập đầy đủ tên thiết bị!', "Thông báo");
-        document.getElementById('thietBiTen').focus();
+        toastr.error('Vui lòng nhập đầy đủ tên mục tử vong!', "Thông báo");
+        document.getElementById('tuVongTen').focus();
         return;
     }
+
+    const dataToSend = {
+        ID: isEditing ? parseInt(id) : 0,
+        Ma: ma,
+        Ten: ten,
+        Active: true
+    };
+
+    const endpoint = isEditing ? `/TuVong/Update/${id}` : '/TuVong/Create';
+    const method = isEditing ? 'PUT' : 'POST';
+    const successMessage = isEditing ? "Cập nhật mục tử vong thành công" : "Thêm mục tử vong thành công";
+
     try {
-        const response = await fetch('/ThietBiThuThuat/Create', {
-            method: 'POST',
+        const response = await fetch(endpoint, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ ma: ma, ten: ten })
+            body: JSON.stringify(dataToSend)
         });
-        if (response.ok) {
-            const newItem = { ma: ma, ten: ten, alias: ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
-            allDataThongTin.thietBi.push(newItem);
-            refreshTomSelect('.cbThietBi', allDataThongTin.thietBi);
-            document.getElementById('thietBiForm').reset();
-            closeModal('thietBiModal');
-            toastr.success("Thêm mới thiết bị thủ thuật thành công", "Thông báo");
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+
+            const newItem = {
+                id: result.data.id || result.data.ID,
+                ma: result.data.ma || result.data.Ma,
+                ten: result.data.ten || result.data.Ten,
+                alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("")
+            };
+
+            let currentData = allDataThongTin.tuVong;
+
+            if (isEditing) {
+                const index = currentData.findIndex(item => String(item.id) === String(newItem.id));
+                if (index !== -1) {
+                    currentData[index] = newItem;
+                }
+            } else {
+                currentData.push(newItem);
+            }
+
+            updateTuVongTableAndSelect(currentData);
+            resetTuVongForm(); 
+
+            toastr.success(successMessage, "Thông báo");
 
         } else {
-
-            toastr.success('Có lỗi xảy ra khi lưu thiết bị!', "Thông báo");
-
+            const errorMessage = result.message || 'Có lỗi xảy ra khi lưu mục tử vong!';
+            toastr.error(errorMessage, "Thông báo");
         }
     } catch (error) {
-        console.error('[v0] Error saving thiết bị:', error);
-        toastr.success('Có lỗi xảy ra khi lưu thiết bị!', "Thông báo");
-
+        console.error(`[v0] Error saving tử vong (method: ${method}):`, error);
+        toastr.error('Lỗi kết nối hoặc lỗi server khi lưu thông tin.', "Thông báo");
     }
 }
+async function deleteTuVong(id) {
+    if (!confirm(`Bạn có chắc chắn muốn VÔ HIỆU HÓA danh mục có ID: ${id} này?`)) {
+        return; 
+    }
 
+    const endpoint = `/TuVong/UpdateTrangThai/${id}`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            toastr.success(`Đã vô hiệu hóa danh mục ID: ${id} thành công!`, "Thông báo");
+
+            let currentData = allDataThongTin.tuVong;
+            const index = currentData.findIndex(item => String(item.id || item.ID) === String(id));
+
+            if (index !== -1) {
+                currentData[index].Active = false;
+
+                const activeData = currentData.filter(item => item.Active !== false);
+
+                updateTuVongTableAndSelect(activeData);
+
+            } else {
+                console.warn("Không tìm thấy item trong mảng local. Cần fetch lại danh sách.");
+            }
+
+        } else {
+            const errorMessage = result.message || `Lỗi khi vô hiệu hóa ID: ${id}.`;
+            toastr.error(errorMessage, "Thông báo");
+        }
+    } catch (error) {
+        console.error(`[v0] Error calling UpdateTrangThai:`, error);
+        toastr.error('Lỗi kết nối hoặc lỗi server khi vô hiệu hóa danh mục.', "Thông báo");
+    }
+}
+//BIEN CHUNG/ TAI BIEN
+function resetBienChungForm() {
+    resetModalForm('bienChungModal', "Thêm/Chỉnh sửa tai biến/biến chứng");
+}
+function updateBienChungTableAndSelect(newData) {
+    allDataThongTin.taiBienBienChung = newData;
+    refreshTomSelect('.cbBienChung', allDataThongTin.taiBienBienChung);
+    loadTableData('bienChungModal', allDataThongTin.taiBienBienChung, 'bienChung');
+}
+function editBienChung(id, ma, ten) {
+    document.getElementById('bienChungId').value = id;
+    document.getElementById('bienChungMa').value = ma;
+    document.getElementById('bienChungTen').value = ten;
+
+    document.getElementById('bienChungModalLabel').textContent = "Chỉnh sửa Tai biến/Biến chứng";
+
+    const cancelBtn = document.getElementById('bienChungCancelBtn');
+    if (cancelBtn) {
+        cancelBtn.style.display = 'block';
+    }
+
+    const formElement = document.getElementById('bienChungForm');
+    if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
+    }
+}
 async function saveBienChung() {
+    const id = document.getElementById('bienChungId').value;
     const ma = document.getElementById('bienChungMa').value;
     const ten = document.getElementById('bienChungTen').value;
+    const isEditing = id !== null && id !== '';
+
     if (!ma) {
         toastr.error('Vui lòng nhập đầy đủ mã biến chứng!', "Thông báo");
         document.getElementById('bienChungMa').focus();
@@ -827,35 +995,179 @@ async function saveBienChung() {
         document.getElementById('bienChungTen').focus();
         return;
     }
+
+    const dataToSend = {
+        ID: isEditing ? parseInt(id) : 0,
+        Ma: ma,
+        Ten: ten,
+        Active: true 
+    };
+
+    const endpoint = isEditing ? `/TaiBienBienChung/Update/${id}` : '/TaiBienBienChung/Create';
+    const method = isEditing ? 'PUT' : 'POST';
+    const successMessage = isEditing ? "Cập nhật tai biến/biến chứng thành công" : "Thêm mới tai biến/biến chứng thành công";
+
     try {
-        const response = await fetch('/TaiBienBienChung/Create', {
-            method: 'POST',
+        const response = await fetch(endpoint, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ ma: ma, ten: ten })
+            body: JSON.stringify(dataToSend)
         });
 
-        if (response.ok) {
-            const result = await response.json();
-            const newItem = { id: result.data.id, ma: result.data.ma, ten: result.data.ten, alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
-            allDataThongTin.taiBienBienChung.push(newItem);
-            refreshTomSelect('.cbBienChung', allDataThongTin.taiBienBienChung);
-            document.getElementById('bienChungForm').reset();
-            closeModal('bienChungModal');
-            toastr.success("Thêm mới tai biến biến chứng thành công", "Thông báo");
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+
+            const newItem = {
+                id: result.data.id || result.data.ID,
+                ma: result.data.ma || result.data.Ma,
+                ten: result.data.ten || result.data.Ten,
+                alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("")
+            };
+
+            let currentData = allDataThongTin.taiBienBienChung;
+
+            if (isEditing) {
+                const index = currentData.findIndex(item => String(item.id) === String(newItem.id));
+                if (index !== -1) {
+                    currentData[index] = newItem;
+                }
+            } else {
+                currentData.push(newItem);
+            }
+
+            updateBienChungTableAndSelect(currentData);
+            resetBienChungForm();
+
+            toastr.success(successMessage, "Thông báo");
+
         } else {
-            toastr.error('Có lỗi xảy ra khi lưu tai biến/biến chứng!', "Thông báo");
+            const errorMessage = result.message || 'Có lỗi xảy ra khi lưu tai biến/biến chứng!';
+            toastr.error(errorMessage, "Thông báo");
         }
     } catch (error) {
-        console.error('[v0] Error saving biến chứng:', error);
-        toastr.error('Có lỗi xảy ra khi lưu tai biến/biến chứng!', "Thông báo");
+        console.error(`[v0] Error saving biến chứng (method: ${method}):`, error);
+        toastr.error('Lỗi kết nối hoặc lỗi server khi lưu thông tin.', "Thông báo");
+    }
+}
+async function deleteBienChung(id) {
+    if (!confirm(`Bạn có chắc chắn muốn VÔ HIỆU HÓA danh mục tai biến/biến chứng ID: ${id} này?`)) {
+        return;
+    }
+
+    const endpoint = `/TaiBienBienChung/UpdateTrangThai/${id}`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            toastr.success(`Đã vô hiệu hóa danh mục ID: ${id} thành công!`, "Thông báo");
+
+            let currentData = allDataThongTin.taiBienBienChung;
+            const index = currentData.findIndex(item => String(item.id || item.ID) === String(id));
+
+            if (index !== -1) {
+                currentData[index].Active = false;
+
+                const activeData = currentData.filter(item => item.Active !== false);
+
+                updateBienChungTableAndSelect(activeData);
+
+            } else {
+                console.warn("Không tìm thấy item trong mảng local. Cần fetch lại danh sách.");
+            }
+
+        } else {
+            const errorMessage = result.message || `Lỗi khi vô hiệu hóa ID: ${id}.`;
+            toastr.error(errorMessage, "Thông báo");
+        }
+    } catch (error) {
+        console.error(`[v0] Error calling UpdateTrangThai:`, error);
+        toastr.error('Lỗi kết nối hoặc lỗi server khi vô hiệu hóa danh mục.', "Thông báo");
     }
 }
 
+//CHE DO THU THUAT
+function resetCheDoThuThuatForm() {
+    resetModalForm('cheDoThuThuatModal', "Thêm chế độ thủ thuật mới");
+}
+function updateCheDoThuThuatTableAndSelect(newData) {
+    allDataThongTin.cheDoThuThuat = newData;
+    refreshTomSelect('.cbCheDoThuThuat', allDataThongTin.cheDoThuThuat);
+    loadTableData('cheDoThuThuatModal', allDataThongTin.cheDoThuThuat, 'cheDoThuThuat');
+}
+function editCheDoThuThuat(id, ma, ten) {
+    document.getElementById('cheDoThuThuatId').value = id;
+    document.getElementById('cheDoThuThuatMa').value = ma;
+    document.getElementById('cheDoThuThuatTen').value = ten;
+
+    document.getElementById('cheDoThuThuatModalLabel').textContent = "Chỉnh sửa chế độ thủ thuật";
+    const cancelBtn = document.getElementById('cheDoThuThuatCancelBtn');
+    if (cancelBtn) {
+        cancelBtn.style.display = 'block';
+    }
+    const formElement = document.getElementById('cheDoThuThuatForm');
+    if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+async function deleteCheDoThuThuat(id) {
+    if (!confirm(`Bạn có chắc chắn muốn VÔ HIỆU HÓA danh mục chế độ thủ thuật ID: ${id} này?`)) {
+        return;
+    }
+
+    const endpoint = `/CheDoThuThuat/UpdateTrangThai/${id}`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            toastr.success(`Đã vô hiệu hóa danh mục ID: ${id} thành công!`, "Thông báo");
+
+            let currentData = allDataThongTin.cheDoThuThuat;
+            const index = currentData.findIndex(item => String(item.id || item.ID) === String(id));
+
+            if (index !== -1) {
+                currentData[index].Active = false;
+
+                const activeData = currentData.filter(item => item.Active !== false);
+
+                updateCheDoThuThuatTableAndSelect(activeData);
+
+            } else {
+                console.warn("Không tìm thấy item trong mảng local. Cần fetch lại danh sách.");
+            }
+
+        } else {
+            const errorMessage = result.message || `Lỗi khi vô hiệu hóa ID: ${id}.`;
+            toastr.error(errorMessage, "Thông báo");
+        }
+    } catch (error) {
+        console.error(`[v0] Error calling UpdateTrangThai:`, error);
+        toastr.error('Lỗi kết nối hoặc lỗi server khi vô hiệu hóa danh mục.', "Thông báo");
+    }
+}
 async function saveCheDoThuThuat() {
+    const id = document.getElementById('cheDoThuThuatId').value;
     const ma = document.getElementById('cheDoThuThuatMa').value;
     const ten = document.getElementById('cheDoThuThuatTen').value;
+    const isEditing = id !== null && id !== '';
 
     if (!ma) {
         toastr.error('Vui lòng nhập đầy đủ mã chế độ thủ thuật!', "Thông báo");
@@ -865,41 +1177,97 @@ async function saveCheDoThuThuat() {
     if (!ten) {
         toastr.error('Vui lòng nhập đầy đủ tên chế độ thủ thuật!', "Thông báo");
         document.getElementById('cheDoThuThuatTen').focus();
-
         return;
     }
 
+    const dataToSend = {
+        ID: isEditing ? parseInt(id) : 0,
+        Ma: ma,
+        Ten: ten,
+        Active: true
+    };
+
+    const endpoint = isEditing ? `/CheDoThuThuat/Update/${id}` : '/CheDoThuThuat/Create';
+    const method = isEditing ? 'PUT' : 'POST';
+    const successMessage = isEditing ? "Cập nhật chế độ thủ thuật thành công" : "Thêm mới chế độ thủ thuật thành công";
+
     try {
-        const response = await fetch('/CheDoThuThuat/Create', {
-            method: 'POST',
+        const response = await fetch(endpoint, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ ma: ma, ten: ten })
+            body: JSON.stringify(dataToSend)
         });
 
-        if (response.ok) {
-            const result = await response.json();
-            const newItem = { id: result.data.id, ma: result.data.ma, ten: result.data.ten, alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
-            allDataThongTin.cheDoThuThuat.push(newItem);
-            refreshTomSelect('.cbCheDoThuThuat', allDataThongTin.cheDoThuThuat);
+        const result = await response.json();
 
-            document.getElementById('cheDoThuThuatForm').reset();
-            closeModal('cheDoThuThuatModal');
-            toastr.success("Thêm mới chế độ thủ thuật thành công", "Thông báo");
+        if (response.ok && result.success) {
+
+            const newItem = {
+                id: result.data.id || result.data.ID,
+                ma: result.data.ma || result.data.Ma,
+                ten: result.data.ten || result.data.Ten,
+                alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("")
+            };
+
+            let currentData = allDataThongTin.cheDoThuThuat;
+
+            if (isEditing) {
+                const index = currentData.findIndex(item => String(item.id) === String(newItem.id));
+                if (index !== -1) {
+                    currentData[index] = newItem;
+                }
+            } else {
+                currentData.push(newItem);
+            }
+
+            updateCheDoThuThuatTableAndSelect(currentData);
+            resetCheDoThuThuatForm();
+
+            toastr.success(successMessage, "Thông báo");
+
         } else {
-            toastr.error('Có lỗi xảy ra khi lưu chế độ thủ thuật!', "Thông báo");
+            const errorMessage = result.message || 'Có lỗi xảy ra khi lưu chế độ thủ thuật!';
+            toastr.error(errorMessage, "Thông báo");
         }
     } catch (error) {
-        console.error('[v0] Error saving chế độ thủ thuật:', error);
-        toastr.error('Có lỗi xảy ra khi lưu chế độ thủ thuật!', "Thông báo");
+        console.error(`[v0] Error saving chế độ thủ thuật (method: ${method}):`, error);
+        toastr.error('Lỗi kết nối hoặc lỗi server khi lưu thông tin.', "Thông báo");
     }
 }
 
+// VI TRI THUC HIEN
+function resetViTriThucHienForm() {
+    resetModalForm('viTriThucHienModal', "Thêm vị trí thực hiện mới");
+}
+function updateViTriThucHienTableAndSelect(newData) {
+    allDataThongTin.viTriThucHien = newData;
+
+    refreshTomSelect('.cbViTriThucHien', allDataThongTin.viTriThucHien);
+
+    loadTableData('viTriThucHienModal', allDataThongTin.viTriThucHien, 'viTriThucHien');
+}
+function editViTriThucHien(id, ma, ten) {
+    document.getElementById('viTriThucHienId').value = id;
+    document.getElementById('viTriThucHienMa').value = ma;
+    document.getElementById('viTriThucHienTen').value = ten;
+
+    document.getElementById('viTriThucHienModalLabel').textContent = "Chỉnh sửa Vị trí Thực hiện";
+    const cancelBtn = document.getElementById('viTriThucHienCancelBtn');
+    if (cancelBtn) {
+        cancelBtn.style.display = 'block';
+    }
+    const formElement = document.getElementById('viTriThucHienForm');
+    if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
+    }
+}
 async function saveViTriThucHien() {
+    const id = document.getElementById('viTriThucHienId').value;
     const ma = document.getElementById('viTriThucHienMa').value;
     const ten = document.getElementById('viTriThucHienTen').value;
-
+    const isEditing = id !== null && id !== '';
 
     if (!ma) {
         toastr.error('Vui lòng nhập đầy đủ mã vị trí thực hiện!', "Thông báo");
@@ -909,77 +1277,137 @@ async function saveViTriThucHien() {
     if (!ten) {
         toastr.error('Vui lòng nhập đầy đủ tên vị trí thực hiện!', "Thông báo");
         document.getElementById('viTriThucHienTen').focus();
-
         return;
     }
 
+    const dataToSend = {
+        ID: isEditing ? parseInt(id) : 0,
+        Ma: ma,
+        Ten: ten,
+        Active: true
+    };
+
+    const endpoint = isEditing ? `/ViTriThucHien/Update/${id}` : '/ViTriThucHien/Create';
+    const method = isEditing ? 'PUT' : 'POST';
+    const successMessage = isEditing ? "Cập nhật vị trí thực hiện thành công" : "Thêm vị trí thực hiện thành công";
+
     try {
-        const response = await fetch('/ViTriThucHien/Create', {
-            method: 'POST',
+        const response = await fetch(endpoint, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ ma: ma, ten: ten })
+            body: JSON.stringify(dataToSend)
         });
 
-        if (response.ok) {
-            const result = await response.json();
-            const newItem = { id: result.data.id, ma: result.data.ma, ten: result.data.ten, alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
-            allDataThongTin.viTriThucHien.push(newItem);
-            refreshTomSelect('.cbViTriThucHien', allDataThongTin.viTriThucHien);
+        const result = await response.json();
 
-            document.getElementById('viTriThucHienForm').reset();
-            closeModal('viTriThucHienModal');
-            toastr.success("Thêm vị trí thực hiện thành công", "Thông báo");
+        if (response.ok && result.success) {
+
+            const newItem = {
+                id: result.data.id || result.data.ID,
+                ma: result.data.ma || result.data.Ma,
+                ten: result.data.ten || result.data.Ten,
+                alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("")
+            };
+
+            let currentData = allDataThongTin.viTriThucHien;
+
+            if (isEditing) {
+                const index = currentData.findIndex(item => String(item.id) === String(newItem.id));
+                if (index !== -1) {
+                    currentData[index] = newItem;
+                }
+            } else {
+                currentData.push(newItem);
+            }
+
+            updateViTriThucHienTableAndSelect(currentData);
+            resetViTriThucHienForm();
+            toastr.success(successMessage, "Thông báo");
+
         } else {
-            toastr.error('Có lỗi xảy ra khi lưu vị trí thực hiện!', "Thông báo");
+            const errorMessage = result.message || 'Có lỗi xảy ra khi lưu vị trí thực hiện!';
+            toastr.error(errorMessage, "Thông báo");
         }
     } catch (error) {
-        console.error('[v0] Error saving vị trí thực hiện:', error);
-        toastr.error('Có lỗi xảy ra khi lưu vị trí thực hiện!', "Thông báo");
+        console.error(`[v0] Error saving vị trí thực hiện (method: ${method}):`, error);
+        toastr.error('Lỗi kết nối hoặc lỗi server khi lưu thông tin.', "Thông báo");
     }
 }
-async function saveTuVong() {
-    const ma = document.getElementById('tuVongMa').value;
-    const ten = document.getElementById('tuVongTen').value;
-
-    if (!ma) {
-        toastr.error('Vui lòng nhập đầy đủ mã mục tử vong!', "Thông báo");
-        document.getElementById('tuVongMa').focus();
+async function deleteViTriThucHien(id) {
+    if (!confirm(`Bạn có chắc chắn muốn VÔ HIỆU HÓA danh mục vị trí thực hiện ID: ${id} này?`)) {
         return;
     }
-    if (!ten) {
-        toastr.error('Vui lòng nhập đầy đủ tên mục tử vong!', "Thông báo");
-        document.getElementById('tuVongTen').focus();
 
-        return;
-    }
+    const endpoint = `/ViTriThucHien/UpdateTrangThai/${id}`;
 
     try {
-        const response = await fetch('/TuVong/Create', {
-            method: 'POST',
+        const response = await fetch(endpoint, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ Ma: ma, Ten: ten, Active: true })
+            }
         });
 
-        if (response.ok) {
-            const result = await response.json();
-            const newItem = { id: result.data.id, ma: result.data.ma, ten: result.data.ten, alias: result.data.ten.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()).join("") };
-            allDataThongTin.tuVong.push(newItem);
-            refreshTomSelect('.cbTuVong', allDataThongTin.tuVong);
+        const result = await response.json();
 
-            document.getElementById('tuVongForm').reset();
-            closeModal('tuVongModal');
-            toastr.success("Thêm mục tử vong thành công", "Thông báo");
+        if (response.ok && result.success) {
+            toastr.success(`Đã vô hiệu hóa danh mục ID: ${id} thành công!`, "Thông báo");
+
+            let currentData = allDataThongTin.viTriThucHien;
+            const index = currentData.findIndex(item => String(item.id || item.ID) === String(id));
+
+            if (index !== -1) {
+                currentData[index].Active = false;
+
+                const activeData = currentData.filter(item => item.Active !== false);
+
+                updateViTriThucHienTableAndSelect(activeData);
+
+            } else {
+                console.warn("Không tìm thấy item trong mảng local. Cần fetch lại danh sách.");
+            }
+
         } else {
-            toastr.error('Có lỗi xảy ra khi mục tử vong!', "Thông báo");
+            const errorMessage = result.message || `Lỗi khi vô hiệu hóa ID: ${id}.`;
+            toastr.error(errorMessage, "Thông báo");
         }
     } catch (error) {
-        toastr.error('Có lỗi xảy ra khi lưu vị trí thực hiện!', "Thông báo");
+        console.error(`[v0] Error calling UpdateTrangThai:`, error);
+        toastr.error('Lỗi kết nối hoặc lỗi server khi vô hiệu hóa danh mục.', "Thông báo");
     }
 }
+
+document.getElementById('cheDoThuThuatModal').addEventListener('hide.bs.modal', function (e) {
+    resetCheDoThuThuatForm();
+    const resetFn = getResetFunction(modalId);
+    if (resetFn) {
+        resetFn();
+    }
+});
+document.getElementById('bienChungModal').addEventListener('hide.bs.modal', function (e) {
+    resetBienChungForm();
+    const resetFn = getResetFunction(modalId);
+    if (resetFn) {
+        resetFn();
+    }
+});
+document.getElementById('viTriThucHienModal').addEventListener('hide.bs.modal', function (e) {
+    resetViTriThucHienForm();
+    const resetFn = getResetFunction(modalId);
+    if (resetFn) {
+        resetFn();
+    }
+});
+document.getElementById('tuVongModal').addEventListener('hide.bs.modal', function (e) {
+    resetTuVongForm();
+    const resetFn = getResetFunction(modalId);
+    if (resetFn) {
+        resetFn();
+    }
+});
+
 function refreshTomSelect(selector, newData) {
     const tomSelectInstance = document.querySelector(selector).tomselect;
     if (tomSelectInstance) {
@@ -999,7 +1427,6 @@ function validateForm() {
         { data: selectedICDs.vao_khoa, element: '.cbCDVaoKhoa', name: 'Chẩn đoán vào khoa' },
         { data: selectedICDs.truoc_thuat, element: '.cbTruocThuThuat', name: 'Chẩn đoán trước thủ thuật' },
         { data: selectedICDs.sau_thuat, element: '.cbSauThuThuat', name: 'Chẩn đoán sau thủ thuật' },
-
         { data: $('.cbPhongThucHien').val(), element: '.cbPhongThucHien', name: 'Phòng thực hiện' },
         { data: $('.cbPhanLoai').val(), element: '.cbPhanLoai', name: 'Phân loại' },
         { data: $('.cbThietBi').val(), element: '.cbThietBi', name: 'Thiết bị' },
@@ -1008,7 +1435,6 @@ function validateForm() {
         { data: $('.cbPTVoCam').val(), element: '.cbPTVoCam', name: 'Phương pháp vô cảm' },
         { data: $('.cbCheDoThuThuat').val(), element: '.cbCheDoThuThuat', name: 'Chế độ thủ thuật' },
         { data: $('.cbTuVong').val(), element: '.cbTuVong', name: 'Tử vong' },
-
         { data: $('#ma_fna').val(), element: '#ma_fna', name: 'Mã FNA' },
         { data: $('#tien_can').val(), element: '#tien_can', name: 'Tiền căn' },
 
