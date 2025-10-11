@@ -77,7 +77,7 @@ function getEkipTomSelectConfigs(allData) {
         {
             className: "#cb_NhanVien",
             placeholder: "-- Tên nhân viên --",
-            data: allData.nhanVien,
+            data: allData.nhanVien || [], 
             //data: allData.nhanVien.filter(nv => nv.idKhoa === window.IDKhoa) || [],
             valueField: "id",
             labelField: "ten",
@@ -243,7 +243,7 @@ function handleAddEkip() {
         nhanVienWrapper.classList.remove('is-invalid');
     }
 
-    if (typeof toastr !== 'undefined') toastr.success(`Đã thêm thành viên ${newMember.nhanVienTen} vào ekip.`);
+    //if (typeof toastr !== 'undefined') toastr.success(`Đã thêm thành viên ${newMember.nhanVienTen} vào ekip.`);
 }
 
 /**
@@ -259,7 +259,7 @@ function handleRemoveEkip(maNhanVien) {
 
     if (ekipList.length < initialLength && typeof toastr !== 'undefined') {
         const memberName = memberToRemove ? memberToRemove.nhanVienTen : 'một thành viên';
-        toastr.success(`Đã xóa thành viên ${memberName} khỏi ekip.`);
+        //toastr.success(`Đã xóa thành viên ${memberName} khỏi ekip.`);
     }
 
     renderEkipTable();
@@ -300,9 +300,9 @@ async function loadEkipByPhieuId(idPhieuTTPT, allData) {
             });
 
             renderEkipTable();
-            if (typeof toastr !== 'undefined') {
-                toastr.info(`Đã tải thành công ${ekipList.length} thành viên ekip.`);
-            }
+            //if (typeof toastr !== 'undefined') {
+            //    toastr.info(`Đã tải thành công ${ekipList.length} thành viên ekip.`);
+            //}
         } else {
             console.error("Lỗi logic khi tải dữ liệu ekip:", response.message || "Không có success: true");
             if (typeof toastr !== 'undefined') toastr.error(`Lỗi tải ekip: ${response.message || 'Lỗi server không rõ'}`);
