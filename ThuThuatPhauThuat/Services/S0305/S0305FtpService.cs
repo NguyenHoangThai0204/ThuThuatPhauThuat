@@ -235,7 +235,7 @@ namespace ThuThuatPhauThuat.Services.S0305
                         var fileInfo = ParseFtpListLine(line, remoteDirectory);
                         if (fileInfo != null)
                         {
-                            var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
+                            var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".jfif" };
                             var extension = Path.GetExtension(fileInfo.FileName).ToLowerInvariant();
 
                             if (!fileInfo.IsDirectory && imageExtensions.Contains(extension))

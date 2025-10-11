@@ -17,7 +17,7 @@
                 else
                 {
                     <input type="text" class="form-control form-control-md" value="@Model.SoPhieu" readonly />
-                    <div class="col-auto">
+                    @* <div class="col-auto">
                         <button id="btnXoaPhieuTTPT_@tabIndex" class="btn btn-danger d-flex align-items-center justify-content-center btn-xoa-phieu" style="padding: 5px; width: 32px; height: 32px;"
                                 data-idphieu="@Model?.IDPhieuTTPT">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -32,7 +32,7 @@
                                 <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
                             </svg>
                         </button>
-                    </div>
+                    </div> *@
 
                 }
             </div>
@@ -128,183 +128,136 @@
 </div>
 
 <script>
-    $(document).off('click', '.btn-xoa-phieu').on('click', '.btn-xoa-phieu', async function (e) {
-        e.preventDefault(); // chặn submit form
-        e.stopPropagation(); // chặn lan truyền sự kiện
+    // $(document).off('click', '.btn-xoa-phieu').on('click', '.btn-xoa-phieu', async function (e) {
+    //     e.preventDefault();
+    //         e.stopPropagation();
 
-        const idPhieuTTPT = window.IDPhieuTTPT;
-        const tabIndex = $(this).data('tabindex') || 0;
+    //         const idPhieuTTPT = window.IDPhieuTTPT;
+    //         const tabIndex = $(this).data('tabindex') || 0;
 
-        console.log('🗑 Click xóa phiếu:', { idPhieuTTPT, tabIndex, globalID: window.IDPhieuTTPT });
+    //         console.log('🗑 Click xóa phiếu:', { idPhieuTTPT, tabIndex });
 
-        // Kiểm tra có phiếu hay không
-        if (!idPhieuTTPT || idPhieuTTPT === 0) {
-            toastr.warning("Không có phiếu nào để xóa!");
-            return;
-        }
+    //         if (!idPhieuTTPT || idPhieuTTPT === 0) {
+    //             toastr.warning("Không có phiếu nào để xóa!");
+    //             return;
+    //         }
 
-        // Xác nhận chỉ hỏi 1 lần
-        if (!window.confirm("Bạn có chắc chắn muốn xóa phiếu này? Hành động này không thể hoàn tác!")) {
-            return;
-        }
+    //         if (!window.confirm("Bạn có chắc chắn muốn xóa phiếu này? Hành động này không thể hoàn tác!")) return;
 
-        // Gọi API xóa
-        await deletePhieuTTPT(idPhieuTTPT, tabIndex);
-    });
-        async function deletePhieuTTPT(idPhieuTTPT, tabIndex) {
-        try {
-            console.log("🔄 Bắt đầu xóa phiếu:", idPhieuTTPT);
+    //         await deletePhieuTTPT(idPhieuTTPT, tabIndex);
+    //     });
 
-            const response = await $.ajax({
-                url: '/thu_thuat_phau_thuat/XoaPhieuTTPT',
-                type: 'POST',
-                dataType: 'json',
-                data: { idPhieuTTPT }
-            });
+    //     async function deletePhieuTTPT(idPhieuTTPT, tabIndex) {
+    //         try {
+    //             console.log("🔄 Bắt đầu xóa phiếu:", idPhieuTTPT);
 
-            if (response && response.success) {
-                // ✅ RESET TOÀN BỘ STATE QUAN TRỌNG
-                window.IDPhieuTTPT = 0;
-                window.soPhieuGlobalData = {
-                    soPhieu: '',
-                    idNguonBenh: null,
-                    batDauThuThuat: '',
-                    ketThucThuThuat: '',
-                    thoiGianKhoa: '',
-                    nguoiKhoa: ''
-                };
+    //             const response = await $.ajax({
+    //                 url: '/thu_thuat_phau_thuat/XoaPhieuTTPT',
+    //                 type: 'POST',
+    //                 dataType: 'json',
+    //                 data: { idPhieuTTPT }
+    //             });
 
-                // ✅ RESET TAB LOADED
-                if (window.parent && window.parent.tabLoaded) {
-                    window.parent.tabLoaded = {};
-                }
+    //             if (response && response.success) {
+    //                 toastr.success(response.message || "Đã xóa phiếu thành công ✅");
 
-                toastr.success(response.message || "Đã xóa phiếu thành công ✅");
+    //                 🧹 Reset toàn bộ biến toàn cục
+    //                 resetGlobalStateAfterDelete();
 
-                // ✅ Reset UI global
-                resetAllDataAfterDelete();
+    //                 🧼 Reset toàn bộ dữ liệu trong giao diện
+    //                 resetAllDataAfterDelete();
 
-                // ✅ Load lại global số phiếu
-                await loadGlobalSoPhieu(true);
+    //                 🔁 Reload lại tất cả tabs (vì dữ liệu liên quan nhau)
+    //                 reloadTatCaTabs();
 
-                // ✅ Reload lại tab hiện tại
-                reloadCurrentTabCompletely();
+    //                 🔁 Load lại global số phiếu
+    //                 await loadGlobalSoPhieu(true);
 
-                // ✅ Làm mới danh sách phiếu / danh sách bệnh nhân
-                reloadDanhSachPhieuSauKhiXoa();
+    //                 🔁 Làm mới danh sách phiếu
+    //                 reloadDanhSachPhieuSauKhiXoa();
 
-                // ✅ Làm mới danh sách trong parent nếu có
-                if (window.parent && typeof window.parent.updateDanhSachAfterSave === 'function') {
-                    window.parent.updateDanhSachAfterSave();
-                }
+    //                 🔁 Thông báo parent nếu có
+    //                 if (window.parent?.updateDanhSachAfterSave) {
+    //                     window.parent.updateDanhSachAfterSave();
+    //                 }
 
-            } else {
-                toastr.error(response?.message || "Xóa phiếu thất bại!");
-            }
-        } catch (error) {
-            console.error("❌ Lỗi khi xóa phiếu:", error);
-            toastr.error("Đã xảy ra lỗi khi xóa phiếu!");
-        }
-    }
-    function reloadDanhSachPhieuSauKhiXoa() {
-        // console.log("🔁 Reload lại danh sách phiếu sau khi xóa...");
+    //                 console.log("✅ Hoàn tất quá trình xóa phiếu và reset toàn bộ tabs.");
+    //             } else {
+    //                 toastr.error(response?.message || "Xóa phiếu thất bại!");
+    //             }
+    //         } catch (error) {
+    //             console.error("❌ Lỗi khi xóa phiếu:", error);
+    //             toastr.error("Đã xảy ra lỗi khi xóa phiếu!");
+    //         }
+    //     }
 
-        let currentPage = 1;
+    //     function resetGlobalStateAfterDelete() {
+    //         window.IDPhieuTTPT = 0;
+    //         window.selectedIdVaoVien = 0;
+    //         window.selectedIdChiDinhChiTiet = 0;
+    //         window.soPhieuGlobalData = {
+    //             soPhieu: '',
+    //             idNguonBenh: null,
+    //             batDauThuThuat: '',
+    //             ketThucThuThuat: '',
+    //             thoiGianKhoa: '',
+    //             nguoiKhoa: ''
+    //         };
+    //         if (window.parent?.tabLoaded) window.parent.tabLoaded = {};
+    //         console.log("🧹 Đã reset toàn bộ state sau khi xóa phiếu.");
+    //     }
 
-        const pageAttr = $('#table-danhsach-phieu').data('current-page');
-        if (pageAttr) currentPage = pageAttr;
+    //     function resetAllDataAfterDelete() {
+    //         $('#global-so-phieu-container').show().find('input, textarea').val('');
+    //         $('#global-so-phieu-container').find('select').val(null).trigger('change');
+    //         console.log("🧹 Đã reset dữ liệu form thông tin phiếu.");
+    //     }
 
-        const activePage = $('.pagination .page-item.active a').text();
-        if (activePage) currentPage = parseInt(activePage, 10);
+    //     function reloadTatCaTabs() {
+    //         const tabs = {
+    //             '#tabs-thongtin-7': "/thu_thuat_phau_thuat/thong_tin",
+    //             '#tabs-trinhtu-7': "/thu_thuat_phau_thuat/trinh_tu",
+    //             '#tabs-ekip-7': "/thu_thuat_phau_thuat/ekip",
+    //             '#tabs-thuoc-7': "/thu_thuat_phau_thuat/ghi_nhan_thuoc_vat_tu"
+    //         };
 
-        // console.log("📄 Giữ nguyên phân trang hiện tại:", currentPage);
+    //         for (const [tabSelector, url] of Object.entries(tabs)) {
+    //             $(tabSelector).load(url, function () {
+    //                 setTimeout(() => {
+    //                     const tabIndex = tabSelector.replace(/\D/g, '') || 0;
+    //                     khoiTaoJSChoTab(tabIndex);
 
-        if (window.parent && typeof window.parent.loadDanhSachPhieu === 'function') {
-            window.parent.loadDanhSachPhieu(currentPage);
-            // console.log("✅ Gọi loadDanhSachPhieu(page) trong parent thành công.");
-            return;
-        }
+    //                     if (tabSelector === '#tabs-thongtin-7') {
+    //                         initThongTinTab(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
+    //                     }
+    //                     if (tabSelector === '#tabs-ekip-7') {
+    //                         initEkipTab();
+    //                     }
+    //                 }, 150);
+    //             });
+    //         }
+    //         console.log("🔁 Đã reload toàn bộ các tab chính sau khi xóa phiếu.");
+    //     }
 
-        if ($('#table-danhsach-phieu').length) {
-            $('#table-danhsach-phieu').load(`/thu_thuat_phau_thuat/DanhSachPhieu?page=${currentPage}`, function () {
-                console.log(`✅ Danh sách phiếu trang ${currentPage} đã được load lại hoàn toàn.`);
-            });
-            return;
-        }
+    //     function reloadDanhSachPhieuSauKhiXoa() {
+    //         let currentPage = 1;
 
-        console.warn("⚠️ Không tìm thấy danh sách phiếu để reload!");
-    }
+    //         const pageAttr = $('#table-danhsach-phieu').data('current-page');
+    //         if (pageAttr) currentPage = pageAttr;
 
-       function reloadCurrentTabCompletely() {
-           const currentTab = $('a[data-bs-toggle="tab"].active').attr('href');
-           if (!currentTab) return;
+    //         const activePage = $('.pagination .page-item.active a').text();
+    //         if (activePage) currentPage = parseInt(activePage, 10);
 
-           const urlMap = {
-               '#tabs-thongtin-7': "/thu_thuat_phau_thuat/thong_tin",
-               '#tabs-trinhtu-7': "/thu_thuat_phau_thuat/trinh_tu",
-               '#tabs-ekip-7': "/thu_thuat_phau_thuat/ekip",
-               '#tabs-thuoc-7': "/thu_thuat_phau_thuat/ghi_nhan_thuoc_vat_tu"
-           };
-
-           const url = urlMap[currentTab];
-           if (!url) return;
-
-           // console.log("🔁 Reload toàn bộ tab:", currentTab, "từ URL:", url);
-
-           $(currentTab).load(url, function () {
-               // ⏳ Sau khi load xong, khởi tạo lại script JS
-               setTimeout(() => {
-                   const tabIndex = currentTab.replace(/\D/g, '') || 0;
-                   khoiTaoJSChoTab(tabIndex);
-
-                   if (currentTab === '#tabs-thongtin-7') {
-                       initThongTinTab(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
-                   }
-                   if (currentTab === '#tabs-ekip-7') {
-                       initEkipTab();
-                   }
-
-                   console.log("✅ Tab đã được load lại hoàn toàn như mới.");
-               }, 200);
-           });
-       }
-
-    function resetAllDataAfterDelete() {
-
-
-        $('#global-so-phieu-container').show().find('input, textarea').val('');
-        $('#global-so-phieu-container').find('select').val(null).trigger('change');
-
-        console.log("🧹 Đã reset dữ liệu sau khi xóa phiếu (giữ nguyên DOM).");
-    }
-
-
-    function reloadCurrentTabAfterDelete() {
-        // Lấy tab hiện tại
-        const currentTab = $('a[data-bs-toggle="tab"].active').attr('href');
-
-        if (!currentTab) return;
-
-        const urlMap = {
-            '#tabs-thongtin-7': "/thu_thuat_phau_thuat/thong_tin",
-            '#tabs-trinhtu-7': "/thu_thuat_phau_thuat/trinh_tu",
-            '#tabs-ekip-7': "/thu_thuat_phau_thuat/ekip",
-            '#tabs-thuoc-7': "/thu_thuat_phau_thuat/ghi_nhan_thuoc_vat_tu"
-        };
-
-        const url = urlMap[currentTab];
-        if (!url) return;
-
-        console.log("🔄 Reload lại tab hiện tại sau khi xóa:", currentTab);
-
-        $(currentTab).load(url, function () {
-            setTimeout(() => {
-                khoiTaoJSChoTab(currentTab.replace(/\D/g, '') || 0);
-                if (currentTab === '#tabs-thongtin-7') initThongTinTab(selectedIdVaoVien, window._idcn, selectedIdChiDinhChiTiet);
-                if (currentTab === '#tabs-ekip-7') initEkipTab();
-            }, 100);
-        });
-    }
+    //         if (window.parent?.loadDanhSachPhieu) {
+    //             window.parent.loadDanhSachPhieu(currentPage);
+    //         } else if ($('#table-danhsach-phieu').length) {
+    //             $('#table-danhsach-phieu').load(`/thu_thuat_phau_thuat/DanhSachPhieu?page=${currentPage}`, function () {
+    //                 console.log(`✅ Danh sách phiếu trang ${currentPage} đã được load lại.`);
+    //             });
+    //         } else {
+    //             console.warn("⚠️ Không tìm thấy danh sách phiếu để reload!");
+    //         }
+    //     }
 
 
 
@@ -413,9 +366,9 @@
                     // Nếu tab có Model sẵn thì set value
                     @if (!isEmptyModel && Model?.IDNguonBenh != null)
                     {
-                            <text>
-                                tomSelectInstance.setValue('@Model.IDNguonBenh');
-                            </text>
+                                <text>
+                                    tomSelectInstance.setValue('@Model.IDNguonBenh');
+                                </text>
                     }
                 }
             });

@@ -90,6 +90,14 @@ $(document).on("click", "#example tbody tr", function (e) {
     selectedIdVaoVien = $(this).data("idvaovien");
     selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
     window.IDPhieuTTPT = $(this).data("idphieu");
+
+    const btnXoa = document.getElementById("btnXoaPhieuTTPT");
+    if (btnXoa) {
+        btnXoa.disabled = !window.IDPhieuTTPT; // nếu 0 thì disable
+        btnXoa.classList.toggle("btn-secondary", !window.IDPhieuTTPT);
+        btnXoa.classList.toggle("btn-danger", !!window.IDPhieuTTPT);
+    }
+
     window.MaKhoa = $(this).data("makhoa");
     window.yhct = $(this).data("yhct");
     window.IDKhoa = $(this).data("idkhoa");
@@ -116,7 +124,6 @@ $(document).on("click", "#example tbody tr", function (e) {
         }
     }
 });
-
 
 $(document).ready(function () {
     updateDateTime();

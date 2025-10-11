@@ -266,7 +266,67 @@ function handleRemoveEkip(maNhanVien) {
 }
 
 
+//async function loadEkipByPhieuId(idPhieuTTPT, allData) {
+//    if (!idPhieuTTPT) {
+//        console.warn("Không có ID Phiếu TTPT, bỏ qua tải dữ liệu ekip.");
+//        return;
+//    }
+
+//    const endpoint = `/thu_thuat_phau_thuat/ekip/list-by-idttpt/${idPhieuTTPT}`;
+
+//    try {
+//        const response = await $.ajax({
+//            url: endpoint,
+//            method: 'GET',
+//            dataType: 'json',
+//        });
+
+//        //console.log("Response nhận được (đã resolved): ", response);
+
+//        if (response.success && Array.isArray(response.data)) {
+//            const serverEkipList = response.data;
+//            //console.log("serverEkipList =", serverEkipList);
+//            ekipList = serverEkipList.map(item => {
+//                const nhanVienData = findItem(allData.nhanVien, item.idNhanVien, 'id');
+//                const vaiTroData = findItem(allData.vaiTro, item.idVaiTro, 'id');
+//                //console.log("vaiTroData =", vaiTroData);
+//                return {
+//                    nhanVienMa: item.idNhanVien.toString(),
+//                    nhanVienTen: nhanVienData ? nhanVienData.ten : `ID ${item.idNhanVien} (Lỗi map)`,
+//                    vaiTroMa: vaiTroData ? vaiTroData.id : item.id,
+//                    vaiTroTen: vaiTroData ? vaiTroData.ten : item.ten,
+//                    ghiChu: item.ghiChu
+//                };
+//            });
+
+//            renderEkipTable();
+//            //if (typeof toastr !== 'undefined') {
+//            //    toastr.info(`Đã tải thành công ${ekipList.length} thành viên ekip.`);
+//            //}
+//        } else {
+//            console.error("Lỗi logic khi tải dữ liệu ekip:", response.message || "Không có success: true");
+//            if (typeof toastr !== 'undefined') toastr.error(`Lỗi tải ekip: ${response.message || 'Lỗi server không rõ'}`);
+//            ekipList = [];
+//            renderEkipTable();
+//        }
+
+//    } catch (jqXHR) {
+//        let message = "Lỗi kết nối Server.";
+//        if (jqXHR.status) {
+//            message = `Lỗi Server (${jqXHR.status}): ${jqXHR.responseJSON?.message || jqXHR.responseText || "Không rõ."}`;
+//        }
+//        console.error("Lỗi AJAX khi tải ekip:", message);
+//        if (typeof toastr !== 'undefined') toastr.error(`Lỗi tải ekip: ${message}`);
+//        ekipList = [];
+//        renderEkipTable();
+//    }
+//}
+
 async function loadEkipByPhieuId(idPhieuTTPT, allData) {
+    // 🧹 Reset danh sách ekip mỗi khi load phiếu mới
+    ekipList = [];
+    renderEkipTable(); // Xóa table cũ ngay lập tức (hiển thị "Chưa có thành viên...")
+
     if (!idPhieuTTPT) {
         console.warn("Không có ID Phiếu TTPT, bỏ qua tải dữ liệu ekip.");
         return;
@@ -281,15 +341,12 @@ async function loadEkipByPhieuId(idPhieuTTPT, allData) {
             dataType: 'json',
         });
 
-        //console.log("Response nhận được (đã resolved): ", response);
-
         if (response.success && Array.isArray(response.data)) {
             const serverEkipList = response.data;
-            //console.log("serverEkipList =", serverEkipList);
+
             ekipList = serverEkipList.map(item => {
                 const nhanVienData = findItem(allData.nhanVien, item.idNhanVien, 'id');
                 const vaiTroData = findItem(allData.vaiTro, item.idVaiTro, 'id');
-                //console.log("vaiTroData =", vaiTroData);
                 return {
                     nhanVienMa: item.idNhanVien.toString(),
                     nhanVienTen: nhanVienData ? nhanVienData.ten : `ID ${item.idNhanVien} (Lỗi map)`,
@@ -300,9 +357,6 @@ async function loadEkipByPhieuId(idPhieuTTPT, allData) {
             });
 
             renderEkipTable();
-            //if (typeof toastr !== 'undefined') {
-            //    toastr.info(`Đã tải thành công ${ekipList.length} thành viên ekip.`);
-            //}
         } else {
             console.error("Lỗi logic khi tải dữ liệu ekip:", response.message || "Không có success: true");
             if (typeof toastr !== 'undefined') toastr.error(`Lỗi tải ekip: ${response.message || 'Lỗi server không rõ'}`);
@@ -359,17 +413,21 @@ async function initEkipTab() {
 }
 
 function handleSaveEkip(suppressToastr = false) {
-    if (ekipList.length === 0) {
-        if (!suppressToastr && typeof toastr !== 'undefined') toastr.warning("Danh sách ekip rỗng, không có dữ liệu để lưu.");
-        return;
-    }
+    //if (ekipList.length === 0) {
+    //    if (!suppressToastr && typeof toastr !== 'undefined') toastr.warning("Danh sách ekip rỗng, không có dữ liệu để lưu.");
+    //    return;
+    //}
 
-    const dataToSend = ekipList.map(item => ({
-        IDPhieuTTPT: window.IDPhieuTTPT,
-        IDNhanVien: item.nhanVienMa,
-        IDVaiTro: item.vaiTroMa,
-        GhiChu: item.ghiChu
-    }));
+    const dataToSend = {
+        idPhieuTTPT: window.IDPhieuTTPT,
+        ekipList: ekipList.map(item => ({
+            IDPhieuTTPT: window.IDPhieuTTPT,
+            IDNhanVien: item.nhanVienMa,
+            IDVaiTro: item.vaiTroMa,
+            GhiChu: item.ghiChu
+        }))
+    };
+    console.log("dataToSend == ", dataToSend);
 
     $.ajax({
         url: "/thu_thuat_phau_thuat/ekip/create",

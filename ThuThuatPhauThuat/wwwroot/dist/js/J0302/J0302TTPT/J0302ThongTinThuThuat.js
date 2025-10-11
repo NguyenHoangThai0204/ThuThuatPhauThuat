@@ -578,11 +578,19 @@ function bindDataToForm(data) {
     document.getElementById('so_lan_mo_lai').value = data.soLanMoLai || '';
     document.getElementById('ly_do_mo_lai').value = data.lyDoMoLai || '';
     document.getElementById('dan_luu').value = data.danLuu || '';
-    document.getElementById('ngay_rut_ong_dan_luu').value =
-        moment(data.ngayRutOngDanLuu || new Date()).format("DD-MM-YYYY HH:mm:ss");
+    if (data.ngayRutOngDanLuu) {
+        document.getElementById('ngay_rut_ong_dan_luu').value =
+            moment(data.ngayRutOngDanLuu).format("DD-MM-YYYY HH:mm:ss");
+    } else {
+        document.getElementById('ngay_rut_ong_dan_luu').value = "";
+    }
 
-    document.getElementById('ngay_cat_chi').value =
-        moment(data.ngayCatChi || new Date()).format("DD-MM-YYYY HH:mm:ss");
+    if (data.ngayCatChi) {
+        document.getElementById('ngay_cat_chi').value =
+            moment(data.ngayCatChi).format("DD-MM-YYYY HH:mm:ss");
+    } else {
+        document.getElementById('ngay_cat_chi').value = "";
+    }
 
     //document.getElementById('ngay_rut_ong_dan_luu').value = formatDate(data.ngayRutOngDanLuu);
     //document.getElementById('ngay_cat_chi').value = formatDate(data.ngayCatChi);

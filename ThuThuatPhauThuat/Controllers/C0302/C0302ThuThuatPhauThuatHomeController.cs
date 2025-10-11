@@ -981,16 +981,17 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             };
             return PartialView("~/Views/V0302/V0302ThuThuatPhauThuat/V0302EkipThucHienTTPT.cshtml");
         }
+        public class CreateEkipRequest
+        {
+            public long IDPhieuTTPT { get; set; }
+            public List<EkipRequest> EkipList { get; set; }
+        }
 
         [HttpPost]
         [Route("ekip/create")]
-        public IActionResult CreateEkip([FromBody] List<EkipRequest> ekipList)
+        public IActionResult CreateEkip([FromBody] CreateEkipRequest request)
         {
-
-            if (ekipList == null || ekipList.Count == 0)
-            {
-                return BadRequest(new { success = false, message = "Danh sách ekip rỗng, không có dữ liệu để lưu." });
-            }
+ 
 
             var dt = new DataTable();
             dt.Columns.Add("IDPhieuTTPT", typeof(long));
@@ -998,27 +999,31 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             dt.Columns.Add("IDVaiTro", typeof(long));
             dt.Columns.Add("GhiChu", typeof(string));
 
-            foreach (var item in ekipList)
+            foreach (var item in request.EkipList)
             {
-                dt.Rows.Add(item.IDPhieuTTPT, item.IDNhanVien, item.IDVaiTro, item.GhiChu);
-                _logger.LogWarning($"item : {item.IDPhieuTTPT}");
+                dt.Rows.Add(request.IDPhieuTTPT, item.IDNhanVien, item.IDVaiTro, item.GhiChu);
+                _logger.LogWarning($"item : {request.IDPhieuTTPT}");
             }
 
-            // --- BƯỚC 2: TẠO THAM SỐ SQL TVP ---
+            // Tạo tham số TVP
             var tvpParam = new SqlParameter("@EkipData", dt)
             {
                 SqlDbType = SqlDbType.Structured,
                 TypeName = "dbo.T0301_EkipThucHienUpdate"
             };
 
+            // Tạo tham số IDPhieuTTPT
+            var idPhieuParam = new SqlParameter("@IDPhieuTTPT", SqlDbType.BigInt)
+            {
+                Value = request.IDPhieuTTPT
+            };
+
             try
             {
-                var sql = "EXEC dbo.TTPT_S0301_ThemEkipThucHien @EkipData";
+                var sql = "EXEC dbo.TTPT_S0301_ThemEkipThucHien @IDPhieuTTPT, @EkipData";
 
-                // --- BƯỚC 3: GỌI STORED PROCEDURE VÀ ĐỌC KẾT QUẢ ---
-                // _context.DoiNguEkip là DbSet<M0301DoiNguEkip> đã được cấu hình HasNoKey()
                 var result = _context.EkipResult
-                                     .FromSqlRaw(sql, tvpParam)
+                                     .FromSqlRaw(sql, idPhieuParam, tvpParam)
                                      .AsEnumerable()
                                      .FirstOrDefault();
 
@@ -1027,19 +1032,17 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                     return StatusCode(500, new { success = false, message = "Store Procedure đã thực thi nhưng không trả về kết quả (SELECT Result, Message)." });
                 }
 
-                // Xử lý kết quả trả về
-                if (result.Result == 1) // Thành công
+                if (result.Result == 1)
                 {
                     return Ok(new { success = true, message = result.Message });
                 }
-                else // Lỗi từ Store Procedure (Result = -1)
+                else
                 {
                     return StatusCode(500, new { success = false, message = result.Message });
                 }
             }
             catch (Exception ex)
             {
-                // Xử lý lỗi kết nối, lỗi SQL syntax, hoặc lỗi khác trong quá trình thực thi
                 return StatusCode(500, new { success = false, message = $"Lỗi Server: Không thể thực thi Store Procedure. Chi tiết: {ex.Message}" });
             }
         }

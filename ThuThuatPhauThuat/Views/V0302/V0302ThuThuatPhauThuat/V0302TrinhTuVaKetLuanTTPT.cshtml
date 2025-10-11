@@ -425,7 +425,6 @@
                         }
 
                         addImageToPanel(newImage, false);
-                        await loadImagesFromServerByMaKhoa(window.MaKhoa);
 
                     } else {
                         throw new Error(result.message || 'Upload thất bại');
@@ -535,23 +534,27 @@
 
             const addedImages = new Set();
 
-            // Hiển thị ảnh từ khoa
+            const phieuImageMap = new Map();
+            imagesFromPhieu.forEach(phieuImg => {
+                phieuImageMap.set(phieuImg.name.toLowerCase(), phieuImg);
+            });
+
             imagesFromKhoa.forEach(khoaImage => {
-                const imageKey = `${khoaImage.source}_${khoaImage.name}`.toLowerCase();
+                const imageKey = khoaImage.name.toLowerCase();
                 if (!addedImages.has(imageKey)) {
-                    const isSelected = imagesFromPhieu.some(phieuImg =>
-                        phieuImg.name.toLowerCase() === khoaImage.name.toLowerCase()
-                    );
-                    addImageToPanel(khoaImage, isSelected);
+                    const hasInPhieu = phieuImageMap.has(imageKey);
+                    addImageToPanel(khoaImage, hasInPhieu);
                     addedImages.add(imageKey);
                 }
             });
 
-            // Hiển thị ảnh từ phiếu (đã upload)
+            // Hiển thị ảnh từ phiếu mà KHÔNG có trong khoa
             imagesFromPhieu.forEach(phieuImage => {
-                const imageKey = `${phieuImage.source}_${phieuImage.name}`.toLowerCase();
+                const imageKey = phieuImage.name.toLowerCase();
                 if (!addedImages.has(imageKey)) {
-                    addImageToPanel(phieuImage, false);
+                    // Ảnh này chỉ có trong phiếu, chưa có trong khoa
+                    // Nên cũng checked vì đã được lưu trong phiếu
+                    addImageToPanel(phieuImage, true);
                     addedImages.add(imageKey);
                 }
             });

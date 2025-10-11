@@ -78,3 +78,22 @@
         transform: rotate(360deg);
     }
 }
+/* Căn giữa hoàn toàn modal xem PDF */
+#pdfPreviewModal .modal-dialog {
+    margin-top: 0;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+}
+
+#pdfPreviewModal .modal-content {
+    max-height: 90vh;
+}
+
+#pdfPreviewModal iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
