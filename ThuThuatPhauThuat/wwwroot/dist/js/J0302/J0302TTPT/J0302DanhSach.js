@@ -117,13 +117,15 @@ $(document).on("click", "#example tbody tr", function (e) {
     if (e.detail === 2) {
         const thongTinTab = $('a[href="#tabs-thongtin-7"]');
         if (thongTinTab.length) {
-            console.log("🩺 Đúp chuột - chuyển sang tab Thông tin...");
+
             setTimeout(() => thongTinTab.tab('show'), 100);
+            loadGlobalSoPhieu(true);
         } else {
             console.warn("⚠️ Không tìm thấy tab Thông tin (#tabs-thongtin-7)");
         }
     }
 });
+
 
 $(document).ready(function () {
     updateDateTime();
