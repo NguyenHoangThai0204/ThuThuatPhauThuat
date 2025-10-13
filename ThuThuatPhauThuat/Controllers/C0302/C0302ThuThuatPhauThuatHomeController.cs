@@ -705,7 +705,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             }
         }
         [HttpGet]
-        [Route("trinh-tu/vai-tro-ttpt")]
+        [Route("ekip/vai-tro-ttpt")]
         public async Task<IActionResult> GetVaiTroTTPT()
         {
             try
@@ -718,7 +718,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
                     using (var command = connection.CreateCommand())
                     {
-                        command.CommandText = "SELECT ID, Ma, Ten, Active FROM DM_VaiTroTTPT";
+                        command.CommandText = "SELECT ID, Ma, Ten, MaVaiTroTTPT, Active FROM DM_VaiTroTTPT";
                         using (var reader = await command.ExecuteReaderAsync())
                         {
                             while (await reader.ReadAsync())
@@ -728,7 +728,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                                     ID = reader.GetInt64(0),
                                     Ma = reader.GetString(1),
                                     Ten = reader.GetString(2),
-                                    Active = reader.GetBoolean(3)
+                                    MaVaiTroTTPT = reader.GetInt32(3),
+                                    Active = reader.GetBoolean(4)
                                 });
                             }
                         }

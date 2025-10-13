@@ -2,6 +2,7 @@
 using DemoCauTruc.Models.M0302;
 using Microsoft.EntityFrameworkCore;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
+using static C0301VaiTroThuThuatController;
 using static ThuThuatPhauThuat.Controllers.C0302.C0302ThuThuatPhauThuatHomeController;
 
 namespace ThuThuatPhauThuat.Models.M0302
@@ -25,6 +26,7 @@ namespace ThuThuatPhauThuat.Models.M0302
         public DbSet<M0302ThongTinThuThuatPhauThuatModel> M0302ThongTinThuThuatPhauThuatModels { get; set; }
         public DbSet<M0301TuVong> TuVong { get; set; }
         public DbSet<M0301CheDoThuThuat> CheDoThuThuat { get; set; }
+        public DbSet<M0301VaiTroThuThuat> VaiTroThuThuat { get; set; }
         public DbSet<M0302NguonBenhTTPT> NguonBenhTTPT { get; set; }
         public DbSet<M0301TaiBienBienChung> TaiBienBienChung { get; set; }
         public DbSet<M0301ThietBiTTPT> ThietBi { get; set; }
