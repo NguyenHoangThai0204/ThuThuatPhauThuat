@@ -528,7 +528,6 @@
                 GhiChu: item.ghiChu
             }))
         };
-        console.log("dataToSend == ", dataToSend);
 
         $.ajax({
             url: "/thu_thuat_phau_thuat/ekip/create",
@@ -694,30 +693,67 @@
             if (typeof toastr !== 'undefined') toastr.error("Lưu vai trò thất bại. Vui lòng thử lại.");
         }
     }
-    async function deleteVaiTroTTPT(id) {
-        if (confirm('Bạn có chắc chắn muốn ẩn vai trò này không? Vai trò sẽ không bị xóa vĩnh viễn.')) {
+    //async function deleteVaiTroTTPT(id) {
+    //    if (confirm('Bạn có chắc chắn muốn ẩn vai trò này không? Vai trò sẽ không bị xóa vĩnh viễn.')) {
 
-            const apiUrl = `${VAI_TRO_API_BASE_URL}/UpdateTrangThai/${id}`;
+    //        const apiUrl = `${VAI_TRO_API_BASE_URL}/UpdateTrangThai/${id}`;
 
-            try {
-                const response = await $.ajax({
-                    url: apiUrl,
-                    method: 'POST',
-                });
+    //        try {
+    //            const response = await $.ajax({
+    //                url: apiUrl,
+    //                method: 'POST',
+    //            });
 
-                if (response.success) {
-                    if (typeof toastr !== 'undefined') toastr.success("Đã ẩn vai trò thành công!");
+    //            if (response.success) {
+    //                if (typeof toastr !== 'undefined') toastr.success("Đã ẩn vai trò thành công!");
 
-                    resetVaiTroForm();
+    //                resetVaiTroForm();
 
-                    await loadAndRenderVaiTroTable();
-                } else {
-                    if (typeof toastr !== 'undefined') toastr.error(`Lỗi: ${response.message || 'Thao tác thất bại'}`);
-                }
-            } catch (error) {
-                console.error("Lỗi khi cập nhật trạng thái vai trò:", error);
-                if (typeof toastr !== 'undefined') toastr.error("Thao tác thất bại. Vui lòng thử lại.");
+    //                await loadAndRenderVaiTroTable();
+    //            } else {
+    //                if (typeof toastr !== 'undefined') toastr.error(`Lỗi: ${response.message || 'Thao tác thất bại'}`);
+    //            }
+    //        } catch (error) {
+    //            console.error("Lỗi khi cập nhật trạng thái vai trò:", error);
+    //            if (typeof toastr !== 'undefined') toastr.error("Thao tác thất bại. Vui lòng thử lại.");
+    //        }
+    //    }
+    //}
+    function deleteVaiTroTTPT(id) {
+        const confirmModalEl = document.getElementById('confirmDeleteModal');
+        if (!confirmModalEl) {
+            console.error("Lỗi: Không tìm thấy #confirmDeleteModal trong HTML.");
+            return;
+        }
+
+        const confirmModal = new bootstrap.Modal(confirmModalEl);
+        const confirmButton = document.getElementById('btn_confirmDelete');
+
+        // Gán ID và một "loại" vào nút xác nhận để phân biệt
+        confirmButton.dataset.deleteId = id;
+        confirmButton.dataset.deleteType = 'vaiTro'; // Đánh dấu đây là xóa vai trò
+
+        confirmModal.show();
+    }
+    async function performDeleteVaiTro(id) {
+        const apiUrl = `${VAI_TRO_API_BASE_URL}/UpdateTrangThai/${id}`;
+
+        try {
+            const response = await $.ajax({
+                url: apiUrl,
+                method: 'POST',
+            });
+
+            if (response.success) {
+                if (typeof toastr !== 'undefined') toastr.success("Đã ẩn vai trò thành công!");
+                resetVaiTroForm();
+                await loadAndRenderVaiTroTable(); // Tải lại bảng
+            } else {
+                if (typeof toastr !== 'undefined') toastr.error(`Lỗi: ${response.message || 'Thao tác thất bại'}`);
             }
+        } catch (error) {
+            console.error("Lỗi khi cập nhật trạng thái vai trò:", error);
+            if (typeof toastr !== 'undefined') toastr.error("Thao tác thất bại. Vui lòng thử lại.");
         }
     }
 
@@ -777,31 +813,28 @@
         const searchInput = document.getElementById('vaiTroSearchInput');
         const pageSizeSelect = document.getElementById('vaiTroPageSizeSelect');
         const paginationUl = document.getElementById('vaiTroPagination');
+        const confirmDeleteButton = document.getElementById('btn_confirmDelete');
 
-        // 1. Sự kiện nhấn nút Tìm kiếm
         searchBtn.addEventListener('click', () => {
             vaiTroSearchTerm = searchInput.value.trim();
-            vaiTroCurrentPage = 1; // Luôn quay về trang 1 khi tìm kiếm mới
+            vaiTroCurrentPage = 1; 
             loadAndRenderVaiTroTable();
         });
 
-        // 2. Sự kiện nhấn Enter trong ô tìm kiếm
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                searchBtn.click(); // Giả lập hành vi click nút tìm kiếm
+                searchBtn.click(); 
             }
         });
 
-        // 3. Sự kiện thay đổi Page Size
         pageSizeSelect.addEventListener('change', () => {
             vaiTroPageSize = parseInt(pageSizeSelect.value, 10);
-            vaiTroCurrentPage = 1; // Quay về trang 1 khi thay đổi số lượng hiển thị
+            vaiTroCurrentPage = 1;
             loadAndRenderVaiTroTable();
         });
 
-        // 4. Sự kiện click vào các nút phân trang (dùng Event Delegation)
         paginationUl.addEventListener('click', (e) => {
-            e.preventDefault(); // Ngăn trình duyệt tải lại trang
+            e.preventDefault(); 
             const target = e.target;
             if (target.tagName === 'A' && !target.parentElement.classList.contains('disabled')) {
                 const page = parseInt(target.dataset.page, 10);
@@ -811,6 +844,20 @@
                 }
             }
         });
+        if (confirmDeleteButton && !confirmDeleteButton.dataset.listenerAttached) {
+            confirmDeleteButton.addEventListener('click', function () {
+                const idToDelete = this.dataset.deleteId;
+                const deleteType = this.dataset.deleteType;
+
+                if (idToDelete && deleteType === 'vaiTro') {
+                    performDeleteVaiTro(idToDelete);
+
+                    const modalInstance = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
+                    modalInstance.hide();
+                }
+            });
+            confirmDeleteButton.dataset.listenerAttached = 'true';
+        }
     }
     async function reloadVaiTroTomSelect() {
         const vaiTroTomSelectEl = document.querySelector('#cb_VaiTro');
@@ -832,7 +879,6 @@
         tomSelectInstance.clearOptions();
         tomSelectInstance.addOptions(newData); 
         tomSelectInstance.enable();
-        console.log("Đã cập nhật xong TomSelect Vai trò.");
     }
 
     window.initEkipTab = initEkipTab;

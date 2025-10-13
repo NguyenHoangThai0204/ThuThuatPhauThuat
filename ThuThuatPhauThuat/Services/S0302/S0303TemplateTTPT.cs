@@ -96,10 +96,14 @@ namespace ThuThuatPhauThuat.Services.S0302
 
             try
             {
-                // Nếu Ten hoặc NoiDung khác null thì cập nhật, giữ nguyên cái còn lại
                 var result = await _localDb.M0303TemplateTTPT
-                    .FromSqlRaw("EXEC TTPT_S0303DM_TemplateTTPT @Action={0}, @ID={1}, @Ten={2}, @NoiDung={3}, @ThongTinLuocDo={4}",
-                        "UPDATE", model.ID, model.Ten, model.NoiDung, model.ThongTinLuocDo)
+                    .FromSqlRaw("EXEC TTPT_S0303DM_TemplateTTPT @Action={0}, @ID={1}, @IDKhoa={2}, @Ten={3}, @NoiDung={4}, @ThongTinLuocDo={5}",
+                        "UPDATE",
+                        model.ID,
+                        model.IDKhoa, 
+                        model.Ten,
+                        model.NoiDung,
+                        model.ThongTinLuocDo)
                     .ToListAsync();
 
                 return result.FirstOrDefault();

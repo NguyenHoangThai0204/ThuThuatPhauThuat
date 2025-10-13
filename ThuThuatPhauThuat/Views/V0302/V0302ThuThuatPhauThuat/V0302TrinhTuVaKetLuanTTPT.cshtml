@@ -179,9 +179,9 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary me-auto d-none" id="btnCancel">Hủy</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-secondary d-none" id="btnCancel">Hủy</button>
                 <button type="button" class="btn btn-success" id="btnSave">Lưu thay đổi</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>
@@ -766,6 +766,8 @@
     }
     loadTrinhTuVaKetLuanWithFocus(window.IDPhieuTTPT);
     window.loadTrinhTuVaKetLuanWithFocus = loadTrinhTuVaKetLuanWithFocus;
+
+
     /* UPDATE MODAL MOI */
     function openModalFnc(){
         var currentIdKhoa = window.IDKhoa;
@@ -793,13 +795,22 @@
             reloadTemplateSelect();
         });
     });
-    tinymce.init({
+        tinymce.init({
         selector: '#moTaLuocDo, #noiDungTrinhTu',
         height: 180,
         menubar: false,
-        plugins: 'lists link image code help wordcount',
+        plugins: 'lists link image code help wordcount paste',
         toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent',
-        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } p { margin: 0; padding: 0; }',
+        paste_data_images: true,
+        paste_webkit_styles: 'font-weight font-style', 
+        paste_remove_styles_if_webkit: true, 
+        paste_as_text: false, 
+
+        paste_word_valid_elements: 'b,strong,i,em,ul,ol,li,p,br',
+        paste_preprocess: function(plugin, args) {
+            args.content = args.content.replace(/ style="[^"]*"/g, '').replace(/ class="[^"]*"/g, '');
+        }
     });
 
 </script>
