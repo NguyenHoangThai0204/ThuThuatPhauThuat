@@ -750,7 +750,7 @@
     function setupVaiTroModalListeners() {
         const tableBody = document.getElementById('vaiTroTableBody');
         const saveButton = document.getElementById('btnSaveVaiTro');
-
+        const cancelButton = document.getElementById('vaiTroCancelBtn');
         if (tableBody) {
             tableBody.addEventListener('click', function (event) {
                 const button = event.target.closest('button');
@@ -769,6 +769,9 @@
 
         if (saveButton) {
             saveButton.addEventListener('click', saveVaiTroTTPT);
+        }
+        if (cancelButton) {
+            cancelButton.addEventListener('click', resetVaiTroForm);
         }
         const searchBtn = document.getElementById('vaiTroSearchBtn');
         const searchInput = document.getElementById('vaiTroSearchInput');

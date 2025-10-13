@@ -30,8 +30,8 @@
     function resetFormState() {
         $('#chiTietTitleInput').val('');
 
-        $('#moTaLuocDo').html('');
-        $('#noiDungTrinhTu').html('');
+        $('#moTaLuocDo').val('');   
+        $('#noiDungTrinhTu').val('');
         $('#editingTemplateId').val('');
 
         $('#btnSave').text('Thêm mới');
@@ -220,9 +220,10 @@
         const template = currentTemplateData.find(t => t.id === templateId);
         if (template) {
             $('#chiTietTitleInput').val(template.ten);
-
-            $('#moTaLuocDo').html(template.thongTinLuocDo || '');
-            $('#noiDungTrinhTu').html(template.noiDung || '');
+            const moTaForEditor = convertNewlinesToBr(template.thongTinLuocDo);
+            const noiDungForEditor = convertNewlinesToBr(template.noiDung);
+            tinymce.get('moTaLuocDo').setContent(moTaForEditor || '');
+            tinymce.get('noiDungTrinhTu').setContent(noiDungForEditor || '');
 
             $('#editingTemplateId').val(template.id);
             $('#btnSave').text('Cập nhật');
@@ -355,12 +356,31 @@
         resetFormState();
         setDefaultKhoaAndFetch(khoaIdString);
     };
-    function replaceNewlinesWithHr(content) {
-        if (!content) return '';
 
-        let hrContent = content.replace(/(\r\n|\n|\r){2,}/g, '<hr>');
+    function cleanupAndPreserveBreaks(htmlString) {
+        if (!htmlString) {
+            return '';
+        }
 
-        return hrContent;
+        let text = htmlString
+            .replace(/<br\s*\/?>/gi, '\n')      
+            .replace(/<\/p>/gi, '\n')          
+            .replace(/<p>/gi, '')         
+            .replace(/&nbsp;/g, ' ');
+
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = text;
+        text = tempDiv.textContent || tempDiv.innerText || '';
+
+        text = text.replace(/\n\s*\n/g, '\n\n').trim();
+
+        return text;
+    }
+    function convertNewlinesToBr(text) {
+        if (!text) {
+            return '';
+        }
+        return text.replace(/\n/g, '<br />');
     }
     // ============ GÁN SỰ KIỆN KHI TRANG ĐÃ TẢI XONG ============
     $(document).ready(function () {
@@ -401,15 +421,11 @@
                 $('#chiTietTitleInput').focus();
                 return;
             }
-            let moTaLuocDoContent = $('#moTaLuocDo').html() || $('#moTaLuocDo').val();
-            let noiDungTrinhTuContent = $('#noiDungTrinhTu').html() || $('#noiDungTrinhTu').val();
+            const rawMoTaLuocDo = tinymce.get('moTaLuocDo').getContent();
+            const rawNoiDungTrinhTu = tinymce.get('noiDungTrinhTu').getContent();
 
-            if ($('#moTaLuocDo').is('textarea')) {
-                moTaLuocDoContent = replaceNewlinesWithHr(moTaLuocDoContent);
-            }
-            else {
-                moTaLuocDoContent = replaceNewlinesWithHr(moTaLuocDoContent);
-            }
+            const moTaLuocDoContent = cleanupAndPreserveBreaks(rawMoTaLuocDo);
+            const noiDungTrinhTuContent = cleanupAndPreserveBreaks(rawNoiDungTrinhTu);
 
             const editingId = $('#editingTemplateId').val();
             const serverModel = {
@@ -422,10 +438,8 @@
             };
 
             if (editingId) {
-                //console.log("Gửi dữ liệu CẬP NHẬT:", serverModel);
                 saveTemplate(`${BASE_URL}/CapNhat`, 'POST', serverModel);
             } else {
-                //console.log("Gửi dữ liệu THÊM MỚI:", serverModel);
                 saveTemplate(`${BASE_URL}/ThemTemplate`, 'POST', serverModel);
             }
         });
