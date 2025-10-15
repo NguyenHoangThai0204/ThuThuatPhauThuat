@@ -110,26 +110,36 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                         }
                         body {
                             font-family: 'Times New Roman', serif;
-                            font-size: 14px;
+                            font-size: 14pt !important;
                             color: black;
-                            line-height: 1.4;
+                            line-height: 1.5;
                         }
                         .title {
                             text-align: center;
-                            font-size: 16px;
+                            font-size: 18pt !important; 
                             font-weight: bold;
                             margin: 10px 0;
+                        }
+                        * {
+                            font-size: 14pt !important;
+                        }
+                        .luoc-do-container h2,
+                        .tuong-trinh-container h2 {
+                            font-size: 18px; 
+                            margin-top: 0;
+                            margin-bottom: 10px;
                         }
                         .bold { font-weight: bold; }
                         .border-box {
                             border: 1px solid black;
                             padding: 5px;
-                            font-size: 14px;
+                            font-size: 14pt !important;
                             margin-top: 10px;
                             margin-bottom: 10px;
                             box-sizing: border-box;
                         }
                         .luoc-do-container {
+                            position: relative;
                             border: 1px solid black;
                             padding: 5px;
                             font-size: 14px;
@@ -191,20 +201,19 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                         }
 
                         .box-text {
-                            font-size: 14px !important; 
+                            font-size: 14pt !important; 
                             text-align: left;
                             margin-top: 2px;
                             margin-bottom: 2px;
                         }
                         .image-container {
-                            text-align: center;
+                            text-align: left;
                             margin: 10px 0;
                         }
                         .luoc-do-image {
-                            max-width: 300px;
-                            max-height: 150px;
+                            max-width: 400px;
+                            max-height: 300px;
                             margin: 5px;
-                            border: 1px solid #ddd;
                         }
                         .luoc-do-content {
                             min-height: 400px;
@@ -315,7 +324,7 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
 
             // ===== LƯỢC ĐỒ - FULL PAGE 1 =====
             sb.Append(@"<div class='luoc-do-container'>
-                            <h2 style='text-align:center'> LƯỢC ĐỒ PHẪU THUẬT / THỦ THUẬT (vẽ hoặc mô tả)</h2>
+                            <h2 style='text-align:center'> LƯỢC ĐỒ PHẪU THUẬT / THỦ THUẬT</h2>
                         <div class='image-container'>");
 
             if (listAnhTruongTrinh != null && listAnhTruongTrinh.Any())
@@ -338,18 +347,20 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             }
             else
             {
-                sb.Append("<p>Không có ảnh lược đồ</p>");
+                sb.Append("<p></p>");
             }
 
             sb.Append($@"</div>
                 <div class='luoc-do-content'>
-                </br>
-                {_data.ThongTinLuocDo ?? ""}</br>
-                <p class='box-text'>- Dẫn lưu: <span class='bold'> {_data.DanLuu ?? ""}</span></p>
-                <p class='box-text'>- Bấc: <span class='bold'>{_data.Bac ?? ""}</span></p>
-                <p class='box-text'>- Ngày rút chỉ: <span class='bold'>{ngayRutChiText}</span></p>
-                <p class='box-text'>- Ngày cắt chỉ: <span class='bold'> {ngayCatChiText}</span></p>
-                <p class='box-text'>- Khác: <span class='bold'>{_data.Khac ?? ""}</span></p>
+                    </br>
+                    {_data.ThongTinLuocDo ?? ""}</br>
+                </div>
+                <div style='position: absolute; bottom: 20px; left: 10px; right: 25px;'>
+                    <p class='box-text'>- Dẫn lưu: <span class='bold'> {_data.DanLuu ?? ""}</span></p>
+                    <p class='box-text'>- Bấc: <span class='bold'>{_data.Bac ?? ""}</span></p>
+                    <p class='box-text'>- Ngày rút chỉ: <span class='bold'>{ngayRutChiText}</span></p>
+                    <p class='box-text'>- Ngày cắt chỉ: <span class='bold'> {ngayCatChiText}</span></p>
+                    <p class='box-text'>- Khác: <span class='bold'>{_data.Khac ?? ""}</span></p>
                 </div>
             </div>");
 
@@ -368,7 +379,7 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             sb.Append(@$"<div class='tuong-trinh-container'>
                 <h2 style='text-align:center'> TƯỜNG TRÌNH PHẪU THUẬT / THỦ THUẬT </h2>
                  {_data.TrinhTu}
-                <p class='box-text bold'>KẾT LUẬN: {(_data.KetLuan ?? "").ToUpper()}</p>
+                 {(string.IsNullOrWhiteSpace(_data.KetLuan) ? "" : $"<p class='box-text bold'>Kết luận: {_data.KetLuan}</p>")}
             </div>");
 
             // ===== CHỮ KÝ =====

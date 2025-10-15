@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using System.Data;
+using ThuThuatPhauThuat.Configurations.FtpConfig;
 using ThuThuatPhauThuat.Models.M0302;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
 using ThuThuatPhauThuat.PDFDocuments.P0302;
@@ -596,7 +597,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             }
         }
 
-
+        #region Trình Tự
         [HttpGet("trinh_tu")]
         public async Task<IActionResult> TrinhTuVaKetLuan(long? idVaoVien, int tabIndex = 0)
         {
@@ -632,7 +633,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             try
             {
                 string sqlQuery1 = @"EXEC TTPT_S0305_TaoTrinhTuVaKetLuan 
-                          @IDPhieuTTPT, @TrinhTu, @KetLuan, @ThongTinLuocDo";
+                      @IDPhieuTTPT, @TrinhTu, @KetLuan, @ThongTinLuocDo";
                 string sqlQuery2 = @"DELETE FROM QL_TTPT_AnhTruongTrinh WHERE IDPhieuTTPT = @IDPhieuTTPT;";
                 string sqlQuery3 = @"EXEC TTPT_S0305_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT";
 
@@ -642,23 +643,28 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                     new SqlParameter("@KetLuan", model.KetLuan ?? (object)DBNull.Value),
                     new SqlParameter("@ThongTinLuocDo", model.ThongTinLuocDo ?? (object)DBNull.Value)
                 );
+
                 await _context.Database.ExecuteSqlRawAsync(sqlQuery2,
                     new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT)
                 );
+
                 foreach (var anh in model.AnhTruongTrinhSaveToServer ?? [])
                 {
-                    var newImageIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
+                    // Chỉ lưu những ảnh không phải là tạm thời
+                    if (!anh.IsTemp)
                     {
-                        Direction = ParameterDirection.Output
-                    };
-                    //_logger.LogInformation("  - URL: {url}, TenAnh: {ten}", anh.URL, anh.TenAnh);
-                    await _context.Database.ExecuteSqlRawAsync(sqlQuery3,
-                        new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT),
-                        new SqlParameter("@URL", anh.URL ?? (object)DBNull.Value),
-                        new SqlParameter("@TenAnh", anh.TenAnh ?? (object)DBNull.Value),
-                        newImageIdParam
-                    );
-                    _logger.LogInformation("  - NewImageId: {newImageId}", newImageIdParam.Value);
+                        var newImageIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+
+                        await _context.Database.ExecuteSqlRawAsync(sqlQuery3,
+                            new SqlParameter("@IDPhieuTTPT", model.IDPhieuTTPT),
+                            new SqlParameter("@URL", anh.URL ?? (object)DBNull.Value),
+                            new SqlParameter("@TenAnh", anh.TenAnh ?? (object)DBNull.Value),
+                            newImageIdParam
+                        );
+                    }
                 }
 
                 return Ok(new { success = true, message = "Lưu trình tự thành công." });
@@ -746,43 +752,38 @@ namespace ThuThuatPhauThuat.Controllers.C0302
         [HttpPost("trinh-tu/upload-image")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] long? idPhieuTTPT, [FromForm] string maKhoa)
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] long? idPhieuTTPT)
         {
             if (file == null || file.Length == 0)
             {
                 return BadRequest(new { success = false, message = "File không hợp lệ." });
             }
 
-            if (string.IsNullOrWhiteSpace(maKhoa))
+            if (!idPhieuTTPT.HasValue || idPhieuTTPT.Value <= 0)
             {
-                return BadRequest(new { success = false, message = "Vui lòng chọn khoa trước khi upload ảnh." });
+                return BadRequest(new { success = false, message = "ID phiếu không hợp lệ." });
             }
 
             try
             {
-                // Upload vào thư mục khoa
-                var remoteFilePath = await _ftpService.UploadFileAsync(file, $"ttpt_images/khoa/{maKhoa}");
+                var remoteFilePath = await _ftpService.UploadFileAsync(file, $"ttpt_images/phieu/{idPhieuTTPT}");
 
                 long? newImageId = null;
 
-                // Nếu có IDPhieuTTPT thì lưu vào DB, không thì chỉ trả về thông tin file
-                if (idPhieuTTPT.HasValue && idPhieuTTPT.Value > 0)
+                var newImageIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
                 {
-                    var newImageIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
+                    Direction = ParameterDirection.Output
+                };
 
-                    await _context.Database.ExecuteSqlRawAsync(
-                        "EXEC TTPT_S0305_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT",
-                        new SqlParameter("@IDPhieuTTPT", idPhieuTTPT.Value),
-                        new SqlParameter("@URL", remoteFilePath),
-                        new SqlParameter("@TenAnh", file.FileName),
-                        newImageIdParam
-                    );
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC TTPT_S0305_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT",
+                    new SqlParameter("@IDPhieuTTPT", idPhieuTTPT.Value),
+                    new SqlParameter("@URL", remoteFilePath),
+                    new SqlParameter("@TenAnh", file.FileName),
+                    newImageIdParam
+                );
 
-                    newImageId = (long)newImageIdParam.Value;
-                }
+                newImageId = (long)newImageIdParam.Value;
 
                 return Ok(new
                 {
@@ -802,6 +803,213 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             {
                 return StatusCode(500, new { success = false, message = $"Lỗi upload ảnh: {ex.Message}" });
             }
+        }
+
+        [HttpPost("trinh-tu/upload-image-to-khoa")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UploadImageToKhoa([FromForm] IFormFile file, [FromForm] string maKhoa)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new { success = false, message = "File không hợp lệ." });
+            }
+
+            if (string.IsNullOrWhiteSpace(maKhoa))
+            {
+                return BadRequest(new { success = false, message = "Mã khoa không hợp lệ." });
+            }
+
+            try
+            {
+                // Upload vào thư mục khoa thay vì phiếu
+                var remoteFilePath = await _ftpService.UploadFileAsync(file, $"ttpt_images/khoa/{maKhoa}");
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Upload ảnh vào khoa thành công.",
+                    data = new
+                    {
+                        url = remoteFilePath,
+                        fileName = file.FileName,
+                        httpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(remoteFilePath)}"
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Lỗi upload ảnh vào khoa: {ex.Message}" });
+            }
+        }
+
+        [HttpPost("trinh-tu/move-image")]
+        public async Task<IActionResult> MoveImageToPhieuFolder([FromBody] MoveImageRequest request)
+        {
+            try
+            {
+                var success = await _ftpService.MoveFileAsync(request.SourcePath, request.DestinationPath);
+
+                if (success)
+                {
+                    return Ok(new { success = true, message = "Di chuyển ảnh thành công" });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Không thể di chuyển ảnh" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"Lỗi di chuyển ảnh: {ex.Message}" });
+            }
+        }
+
+        public class MoveImageRequest
+        {
+            public string SourcePath { get; set; }
+            public string DestinationPath { get; set; }
+        }
+
+        [HttpPost("trinh-tu/copy-image-to-phieu")]
+        public async Task<IActionResult> CopyImageToPhieu([FromBody] CopyImageRequest request)
+        {
+            try
+            {
+                if (request.IDPhieuTTPT == 0)
+                {
+                    return Json(new { success = false, message = "IDPhieuTTPT không hợp lệ" });
+                }
+
+                // Tạo đường dẫn đích trong thư mục phiếu
+                var fileName = Path.GetFileName(request.SourcePath);
+                var destPath = $"/ttpt_images/phieu/{request.IDPhieuTTPT}/{fileName}";
+
+                // Copy file từ khoa sang phiếu
+                var copySuccess = await _ftpService.CopyFileAsync(request.SourcePath, destPath);
+
+                if (!copySuccess)
+                {
+                    return Json(new { success = false, message = "Không thể copy ảnh" });
+                }
+
+                // Lưu vào database
+                var idPhieuParam = new SqlParameter("@IDPhieuTTPT", request.IDPhieuTTPT);
+                var urlParam = new SqlParameter("@URL", destPath);
+                var tenAnhParam = new SqlParameter("@TenAnh", fileName);
+                var newIdParam = new SqlParameter("@NewImageId", SqlDbType.BigInt)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC TTPT_S0305_TaoAnhTruongTrinh @IDPhieuTTPT, @URL, @TenAnh, @NewImageId OUTPUT",
+                    idPhieuParam, urlParam, tenAnhParam, newIdParam
+                );
+
+                var newImageId = newIdParam.Value != DBNull.Value ? (long)newIdParam.Value : 0L;
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Đã thêm ảnh vào phiếu",
+                    data = new
+                    {
+                        id = newImageId,
+                        url = destPath,
+                        httpUrl = $"/thu_thuat_phau_thuat/image/view?path={Uri.EscapeDataString(destPath)}",
+                        tenAnh = fileName
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Copy image error: {ex.Message}");
+                return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
+            }
+        }
+
+        [HttpPost("trinh-tu/delete-image-from-phieu")]
+        public async Task<IActionResult> DeleteImageFromPhieu([FromBody] DeleteImageRequest request)
+        {
+            try
+            {
+                // Xóa khỏi database
+                var idParam = new SqlParameter("@ID", request.ImageID);
+                var idPhieuParam = new SqlParameter("@IDPhieuTTPT", request.IDPhieuTTPT);
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC TTPT_S0305_DeleteAnhTruongTrinh @ID, @IDPhieuTTPT",
+                    idParam, idPhieuParam
+                );
+
+                // Xóa file khỏi FTP
+                if (!string.IsNullOrEmpty(request.FileUrl))
+                {
+                    await _ftpService.DeleteFileAsync(request.FileUrl);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Đã xóa ảnh khỏi phiếu"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Delete image error: {ex.Message}");
+                return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
+            }
+        }
+
+        // DTO classes
+        public class CopyImageRequest
+        {
+            public long IDPhieuTTPT { get; set; }
+            public string SourcePath { get; set; }
+        }
+
+        public class DeleteImageRequest
+        {
+            public long ImageID { get; set; }
+            public long IDPhieuTTPT { get; set; }
+            public string FileUrl { get; set; }
+        }
+
+        [HttpPost("trinh-tu/delete-image-from-khoa")]
+        public async Task<IActionResult> DeleteImageFromKhoa([FromBody] DeleteImageFromKhoaRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.FilePath))
+                {
+                    return BadRequest(new { success = false, message = "Đường dẫn file không hợp lệ." });
+                }
+
+                // Xóa file từ FTP
+                var deleteSuccess = await _ftpService.DeleteFileAsync(request.FilePath);
+
+                if (deleteSuccess)
+                {
+                    _logger.LogInformation($"Đã xóa ảnh từ khoa: {request.FilePath}");
+                    return Ok(new { success = true, message = "Đã xóa ảnh khỏi khoa thành công." });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Không thể xóa file từ server." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Lỗi khi xóa ảnh từ khoa: {ex.Message}");
+                return StatusCode(500, new { success = false, message = $"Lỗi khi xóa ảnh: {ex.Message}" });
+            }
+        }
+
+        public class DeleteImageFromKhoaRequest
+        {
+            public string FilePath { get; set; }
+            public string FileName { get; set; }
         }
 
         [HttpGet("trinh-tu/get-images/{idPhieuTTPT}")]
@@ -955,6 +1163,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             public string Url { get; set; }
             public string FileName { get; set; }
         }
+
+        #endregion
 
 
         [HttpGet("ekip")]

@@ -14,5 +14,6 @@
     {
         public string? URL { get; set; }
         public string? TenAnh { get; set; }
+        public bool IsTemp { get; set; }
     }
 }

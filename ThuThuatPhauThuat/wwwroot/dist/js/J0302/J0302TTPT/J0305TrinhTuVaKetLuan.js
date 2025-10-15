@@ -7,23 +7,36 @@
     }
 }
 
+function normalizeFontSize(htmlContent) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+
+    // Loại bỏ tất cả style font-size cũ
+    const allElements = tempDiv.querySelectorAll('*');
+    allElements.forEach(el => {
+        el.style.fontSize = '14pt';
+    });
+
+    return tempDiv.innerHTML;
+}
+
 function getSelectedImagesForSave() {
-    if (typeof window.getSelectedImages !== 'function') {
-        console.warn('window.getSelectedImages chưa được khởi tạo');
-        return [];
-    }
-
+    // CHỈ lấy ảnh từ phần phiếu để gửi lên server
     var anhTruongTrinhSaveToServer = [];
-    var selectedImages = window.getSelectedImages();
 
-    if (selectedImages && selectedImages.length > 0) {
-        selectedImages.forEach(item => {
+    // Sử dụng window.imagesFromPhieu để đảm bảo truy cập đúng
+    const images = window.imagesFromPhieu || [];
+
+    document.querySelectorAll('.phieu-image-item').forEach(item => {
+        const id = item.dataset.imageId;
+        const img = images.find(i => i.id === id);
+        if (img) {
             anhTruongTrinhSaveToServer.push({
-                URL: item.ftpUrl,
-                TenAnh: item.name
+                URL: img.ftpUrl,
+                TenAnh: img.name
             });
-        });
-    }
+        }
+    });
 
     return anhTruongTrinhSaveToServer;
 }
@@ -34,24 +47,21 @@ function saveTrinhTu(suppressToastr = false) {
         return;
     }
 
-    // Kiểm tra xem confirmTempImages có tồn tại không
     const confirmPromise = typeof window.confirmTempImages === 'function'
         ? window.confirmTempImages()
         : Promise.resolve();
 
     confirmPromise.then(() => {
-        var thongTinLuocDo = $('#editorDiagram').html();
-        console.log('Thông tin lược đồ:', thongTinLuocDo);
+        var thongTinLuocDo = normalizeFontSize($('#editorDiagram').html());
+        var trinhTu = normalizeFontSize($('#editorContent').html());
 
         var formData = {
             IDPhieuTTPT: window.IDPhieuTTPT,
-            TrinhTu: $('#editorContent').html(),
+            TrinhTu: trinhTu,
             KetLuan: $('.editor-summary').val(),
             ThongTinLuocDo: thongTinLuocDo,
             AnhTruongTrinhSaveToServer: getSelectedImagesForSave()
         };
-
-        console.log('Dữ liệu gửi đi:', formData);
 
         $.ajax({
             url: '/thu_thuat_phau_thuat/trinh-tu/save',
@@ -59,7 +69,6 @@ function saveTrinhTu(suppressToastr = false) {
             contentType: 'application/json',
             data: JSON.stringify(formData),
             success: function (response) {
-                console.log('Phản hồi từ server:', response);
                 if (response.success) {
                     if (!suppressToastr) {
                         toastr.success(response.message);
@@ -69,15 +78,9 @@ function saveTrinhTu(suppressToastr = false) {
                 }
             },
             error: function (xhr, status, error) {
-                console.error('Lỗi AJAX:', error);
                 toastr.error('Lỗi khi lưu trình tự: ' + error);
             }
         });
-    }).catch(error => {
-        console.error('Lỗi confirm temp images:', error);
-        if (!suppressToastr) {
-            toastr.error('Lỗi xác nhận ảnh tạm');
-        }
     });
 }
 

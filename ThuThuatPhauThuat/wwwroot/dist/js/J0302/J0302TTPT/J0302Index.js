@@ -478,7 +478,13 @@ $(document).ready(async function () {
 
                 toastr.success(saveMessage);
                 updateDanhSachAfterSave();
-
+                // Cập nhật nút Xóa
+                const btnXoa = document.getElementById("btnXoaPhieuTTPT");
+                if (btnXoa) {
+                    btnXoa.disabled = !window.IDPhieuTTPT;
+                    btnXoa.classList.toggle("btn-secondary", !window.IDPhieuTTPT);
+                    btnXoa.classList.toggle("btn-danger", !!window.IDPhieuTTPT);
+                }
                 // Chỉ reload lại thông tin phiếu nếu KHÔNG ở tab danh sách
                 const activeTab = $('a[data-bs-toggle="tab"].active').attr("href");
                 if (activeTab !== "#tabs-danhsach-7") {
@@ -504,56 +510,53 @@ $(document).ready(async function () {
         };
 
         if (selectedIdChiDinhChiTiet && selectedIdVaoVien && IDPhieuTTPT) {
-            setLoading($btn, true, "Đang tạo...");
+            setLoading($btn, true, "Đang tạo..");
 
             fetch("/thu_thuat_phau_thuat/xuat-pdf-bang-html", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", "Accept": "application/pdf" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/pdf"
+                },
                 body: JSON.stringify(data)
             })
                 .then(res => {
-                    if (!res.ok) throw new Error("Export PDF thất bại");
+                    if (!res.ok) throw new Error("Xuất PDF thất bại");
                     return res.blob();
                 })
                 .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    window.currentPdfUrl = url;
+                    const pdfUrl = URL.createObjectURL(blob);
 
-                    // Hiển thị modal xem trước
-                    $('#pdfPreviewFrame').attr('src', url);
-                    $('#pdfPreviewModal').modal('show');
-                    toastr.success("Xem trước PDF thành công");
+                    // 📄 Tạo iframe ẩn để mở file PDF
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = pdfUrl;
+                    document.body.appendChild(iframe);
+
+                    // 🖨️ Khi tải xong, tự động mở giao diện in của Chrome
+                    iframe.onload = function () {
+                        const printWindow = iframe.contentWindow;
+                        printWindow.focus();
+                        printWindow.print();
+                    };
+
+                    toastr.success("Đã tạo và mở file PDF để in");
                 })
                 .catch(err => {
-                    console.error("Lỗi export PDF:", err);
-                    toastr.error("Xuất PDF thất bại");
+                    console.error("Lỗi xuất PDF:", err);
+                    toastr.error("Không thể tạo file PDF, vui lòng thử lại");
                 })
                 .finally(() => {
                     setLoading($btn, false);
                 });
         } else {
-            toastr.error("Vui lòng tạo số phiếu trước khi xuất PDF");
+            toastr.warning("Vui lòng tạo số phiếu trước khi xuất PDF");
         }
     });
 
-    // Nút tải xuống PDF trong modal
-    $(document).on('click', '#btn_downloadPdf', function () {
-        if (window.currentPdfUrl) {
-            const a = document.createElement("a");
-            a.href = window.currentPdfUrl;
-            a.download = "ThuThuatPhauThuat.pdf";
-            a.click();
 
-            toastr.success("Đã tải xuống PDF");
 
-            // 🔒 Đóng modal sau khi tải
-            $('#pdfPreviewModal').modal('hide');
-        } else {
-            toastr.error("Không tìm thấy file PDF để tải");
-        }
-    });
-
-    $(document).off('click', '.btn-xoa-phieu').on('click', '.btn-xoa-phieu', async function (e) {
+    $(document).off('click', '.btn-xoa-phieu').on('click', '.btn-xoa-phieu', function (e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -563,13 +566,28 @@ $(document).ready(async function () {
         console.log('🗑 Click xóa phiếu:', { idPhieuTTPT, tabIndex });
 
         if (!idPhieuTTPT || idPhieuTTPT === 0) {
-            toastr.warning("Không có phiếu nào để xóa!");
+            toastr.warning("Không có phiếu nào để xoá!");
             return;
         }
 
-        if (!window.confirm("Bạn có chắc chắn muốn xóa phiếu này? Hành động này không thể hoàn tác!")) return;
+        // 👉 Lưu thông tin phiếu cần xoá
+        pendingDelete = { idPhieuTTPT, tabIndex };
 
-        await deletePhieuTTPT(idPhieuTTPT, tabIndex);
+        // 👉 Hiển thị modal xác nhận
+        $('#confirmDeleteModal').modal('show');
+    });
+
+    // Khi người dùng bấm nút "Xoá" trong modal
+    $(document).off('click', '#btn_confirmDelete').on('click', '#btn_confirmDelete', async function () {
+        const { idPhieuTTPT, tabIndex } = pendingDelete;
+        $('#confirmDeleteModal').modal('hide'); // Đóng modal trước khi xoá
+
+        try {
+            await deletePhieuTTPT(idPhieuTTPT, tabIndex);
+        } catch (err) {
+            console.error("Lỗi khi xoá phiếu:", err);
+            toastr.error("Không thể xoá phiếu, vui lòng thử lại.");
+        }
     });
 
     async function deletePhieuTTPT(idPhieuTTPT, tabIndex) {

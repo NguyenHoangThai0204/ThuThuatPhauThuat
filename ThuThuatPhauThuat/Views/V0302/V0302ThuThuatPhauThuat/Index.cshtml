@@ -125,31 +125,34 @@ ViewData["Title"] = "Thủ thuật / phẩu thuật";
 </div>
 
 
-<!-- Modal xem trước PDF -->
-<div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-xl modal-dialog-centered">
-		<div class="modal-content" style="border-radius: 10px; overflow: hidden;">
-			<div class="modal-header bg-primary text-white">
-				<h5 class="modal-title" id="pdfPreviewModalLabel">📄 Xem trước phiếu thủ thuật / phẫu thuật</h5>
+<!-- Modal xác nhận xóa phiếu -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header bg-danger text-white">
+				<h5 class="modal-title">Xác nhận xoá phiếu</h5>
 				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
 			</div>
-			<div class="modal-body p-0" style="height: calc(100vh - 200px);">
-				<iframe id="pdfPreviewFrame" width="100%" height="100%" frameborder="0"></iframe>
+			<div class="modal-body">
+				<p>
+					Bạn có chắc chắn muốn xoá phiếu này không?<br>
+					<strong>Hành động này không thể hoàn tác!</strong>
+				</p>
 			</div>
 			<div class="modal-footer">
-				<button type="button" id="btn_downloadPdf" class="btn btn-success">
-					<i class="fa fa-download"></i> Tải xuống PDF
-				</button>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+				<button type="button" class="btn btn-danger" id="btn_confirmDelete">Xoá</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 
+
+
 @section Scripts {
 	<script src="~/dist/lib/toastr/build/toastr.min.js"></script>
 	<script src="~/dist/js/J0302/J0302TTPT/J0305TrinhTuVaKetLuan.js" asp-append-version="true"></script>
-	 <script src="~/dist/js/J0305/J0305TTPT/J0305FloatingActionBtn.js" asp-append-version="true"></script>
+	<script src="~/dist/js/J0305/J0305TTPT/J0305FloatingActionBtn.js" asp-append-version="true"></script>
 	<script src="~/dist/js/J0302/J0302TTPT/J0302Index.js" asp-append-version="true"></script> 
 }

@@ -77,13 +77,14 @@ namespace ThuThuatPhauThuat.Services.S0305
 
         public async Task<bool> DeleteFileAsync(string remoteFilePath)
         {
-            var ftpUrl = $"ftp://{_ftpSettings.FtpHost}{remoteFilePath}";
+            var ftpUrl = $"ftp://{_ftpSettings.FtpHost}/{remoteFilePath}";
 
             try
             {
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
                 request.Method = WebRequestMethods.Ftp.DeleteFile;
                 request.Credentials = new NetworkCredential(_ftpSettings.FtpUsername, _ftpSettings.FtpPassword);
+                _logger.LogInformation($"FTP URL: ftp://{_ftpSettings.FtpHost}/{remoteFilePath}");
 
                 using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
                 {
@@ -449,7 +450,72 @@ namespace ThuThuatPhauThuat.Services.S0305
             }
         }
 
-        // Thêm method kiểm tra file tồn tại
+        // Method CopyFileAsync vào FtpService
+        public async Task<bool> CopyFileAsync(string sourceFilePath, string destinationFilePath)
+        {
+            try
+            {
+                // Đảm bảo đường dẫn bắt đầu bằng /
+                if (!sourceFilePath.StartsWith("/"))
+                    sourceFilePath = "/" + sourceFilePath;
+                if (!destinationFilePath.StartsWith("/"))
+                    destinationFilePath = "/" + destinationFilePath;
+
+                // Tải file từ nguồn
+                using (var sourceStream = await DownloadAsync(sourceFilePath))
+                {
+                    // Tạo thư mục đích nếu chưa tồn tại
+                    var destDirectory = Path.GetDirectoryName(destinationFilePath)?.Replace("\\", "/");
+                    if (!string.IsNullOrEmpty(destDirectory))
+                    {
+                        await CreateDirectoryIfNotExistsAsync(destDirectory.TrimStart('/'));
+                    }
+
+                    // Upload lên đích
+                    var destFtpUrl = $"ftp://{_ftpSettings.FtpHost}{destinationFilePath}";
+
+                    FtpWebRequest request = (FtpWebRequest)WebRequest.Create(destFtpUrl);
+                    request.Method = WebRequestMethods.Ftp.UploadFile;
+                    request.Credentials = new NetworkCredential(_ftpSettings.FtpUsername, _ftpSettings.FtpPassword);
+                    request.UseBinary = true;
+                    request.UsePassive = true;
+                    request.KeepAlive = false;
+
+                    using (var ftpStream = await request.GetRequestStreamAsync())
+                    {
+                        await sourceStream.CopyToAsync(ftpStream);
+                    }
+
+                    _logger.LogInformation($"File copied: {sourceFilePath} -> {destinationFilePath}");
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"FTP Copy Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Method xóa file theo URL
+        public async Task<bool> DeleteFileByUrlAsync(string fileUrl)
+        {
+            try
+            {
+                // Chuyển URL thành đường dẫn FTP
+                var uri = new Uri(fileUrl);
+                var ftpPath = uri.AbsolutePath;
+
+                return await DeleteFileAsync(ftpPath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Delete file by URL error: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Method kiểm tra file tồn tại
         private async Task<bool> FileExistsAsync(string filePath)
         {
             try
@@ -473,7 +539,7 @@ namespace ThuThuatPhauThuat.Services.S0305
             }
         }
 
-        // Thêm method kiểm tra thư mục tồn tại
+        // Method kiểm tra thư mục tồn tại
         private async Task<bool> DirectoryExistsAsync(string directoryPath)
         {
             try
