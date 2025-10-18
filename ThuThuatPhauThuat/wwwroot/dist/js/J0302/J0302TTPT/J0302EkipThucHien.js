@@ -720,24 +720,29 @@
     //    }
     //}
     function deleteVaiTroTTPT(id) {
-        const confirmModalEl = document.getElementById('confirmDeleteModal');
+        // 1. Lấy tham chiếu đến MODAL MỚI
+        const confirmModalEl = document.getElementById('confirmDeleteVaiTroModal');
         if (!confirmModalEl) {
-            console.error("Lỗi: Không tìm thấy #confirmDeleteModal trong HTML.");
+            console.error("Lỗi: Không tìm thấy #confirmDeleteVaiTroModal trong HTML.");
             return;
         }
 
         const confirmModal = new bootstrap.Modal(confirmModalEl);
-        const confirmButton = document.getElementById('btn_confirmDelete');
 
-        // Gán ID và một "loại" vào nút xác nhận để phân biệt
-        confirmButton.dataset.deleteId = id;
-        confirmButton.dataset.deleteType = 'vaiTro'; // Đánh dấu đây là xóa vai trò
+        const confirmButton = document.getElementById('btn_confirmDeleteVaiTro');
+
+        confirmButton.addEventListener('click', async function handler() {
+            await performDeleteVaiTro(id);
+
+            confirmModal.hide();
+
+        }, { once: true }); // Tùy chọn { once: true } đảm bảo hàm chỉ chạy 1 lần duy nhất
 
         confirmModal.show();
     }
+
     async function performDeleteVaiTro(id) {
         const apiUrl = `${VAI_TRO_API_BASE_URL}/UpdateTrangThai/${id}`;
-
         try {
             const response = await $.ajax({
                 url: apiUrl,
@@ -747,7 +752,7 @@
             if (response.success) {
                 if (typeof toastr !== 'undefined') toastr.success("Đã ẩn vai trò thành công!");
                 resetVaiTroForm();
-                await loadAndRenderVaiTroTable(); // Tải lại bảng
+                await loadAndRenderVaiTroTable();
             } else {
                 if (typeof toastr !== 'undefined') toastr.error(`Lỗi: ${response.message || 'Thao tác thất bại'}`);
             }
@@ -756,7 +761,6 @@
             if (typeof toastr !== 'undefined') toastr.error("Thao tác thất bại. Vui lòng thử lại.");
         }
     }
-
     function editVaiTroTTPT(id) {
         const vaiTro = danhSachVaiTro.find(item => item.id == id);
         if (vaiTro) {
