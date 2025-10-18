@@ -51,12 +51,11 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             var writer = new PdfWriter(memoryStream);
             var pdfDocument = new PdfDocument(writer);
 
-            pdfDocument.AddEventHandler(PdfDocumentEvent.END_PAGE, new PageNumberHandler());
+            string fontFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "dist", "js", "J0302", "J0302Fonts");
+            pdfDocument.AddEventHandler(PdfDocumentEvent.END_PAGE, new PageNumberHandler(fontFolder));
 
             // Await the async HTML generation
             var htmlContent = await GenerateHtmlContent();
-
-            string fontFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "dist", "js", "J0302", "J0302Fonts");
 
             var fontSet = new FontSet();
             fontSet.AddFont(Path.Combine(fontFolder, "times.ttf"));
@@ -99,133 +98,104 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             List<AnhTruongTrinhDTO> listAnhTruongTrinh = await GetListAnhTuIDPhieuTTPT(_data.IDPhieuTTPT);
 
             sb.Append(@"
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset='UTF-8'>
-                    <style>
-                        @page {
-                            size: A4;
-                            margin: 25px;
-                        }
-                        body {
-                            font-family: 'Times New Roman', serif;
-                            font-size: 14pt !important;
-                            color: black;
-                            line-height: 1.5;
-                        }
-                        .title {
-                            text-align: center;
-                            font-size: 18pt !important; 
-                            font-weight: bold;
-                            margin: 10px 0;
-                        }
-                        * {
-                            font-size: 14pt !important;
-                        }
-                        .luoc-do-container h2,
-                        .tuong-trinh-container h2 {
-                            font-size: 18px; 
-                            margin-top: 0;
-                            margin-bottom: 10px;
-                        }
-                        .bold { font-weight: bold; }
-                        .border-box {
-                            border: 1px solid black;
-                            padding: 5px;
-                            font-size: 14pt !important;
-                            margin-top: 10px;
-                            margin-bottom: 10px;
-                            box-sizing: border-box;
-                        }
-                        .luoc-do-container {
-                            position: relative;
-                            border: 1px solid black;
-                            padding: 5px;
-                            font-size: 14px;
-                            box-sizing: border-box;
-                            min-height: calc(100vh - 200px);
-                            page-break-inside: avoid;
-                        }
-                        .luoc-do-container-page2 {
-                            border: 1px solid black;
-                            padding: 5px;
-                            font-size: 14px;
-                            box-sizing: border-box;
-                            min-height: calc(100vh - 80px);
-                            page-break-inside: avoid;
-                        }
-                        .tuong-trinh-container {
-                            border: 1px solid black;
-                            padding: 5px;
-                            font-size: 14px;
-                            box-sizing: border-box;
-                            min-height: calc(100vh - 80px);
-                            page-break-inside: avoid;
-                        }
-                        .page-break { page-break-after: always; }
-                        .page-break-before { page-break-before: always; }
-                        .signature-section {
-                            margin-top: 20px;
-                            text-align: right;
-                        }
-                        .signature-box {
-                            display: inline-block;
-                            text-align: center;
-                            width: 250px;
-                        }
-                        .signature-date {
-                            font-size: 13px;
-                            font-style: italic;
-                        }
-                        .signature-title {
-                            font-size: 14px;
-                            font-weight: bold;
-                            margin-top: 5px;
-                        }
-                        .signature-note {
-                            font-size: 13px;
-                            font-style: italic;
-                        }
-                        table {
-                            width: 100%;
-                            border-collapse: collapse;
-                        }
-                        td {
-                            vertical-align: top;
-                        }
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset='UTF-8'>
+            <style>
+                @page {
+                    size: A4;
+                    margin: 20px 25px;
+                }
+                body {
+                    font-family: 'Times New Roman', serif;
+                    font-size: 13pt !important;
+                    color: black;
+                    line-height: 1.3;
+                }
+                .title {
+                    text-align: center;
+                    font-size: 16pt !important; 
+                    font-weight: bold;
+                    margin: 8px 0;
+                }
+                * {
+                    font-size: 13pt !important;
+                }
+                .bold { font-weight: bold; }
+                .border-box {
+                    border: 1px solid black;
+                    padding: 5px;
+                }
+                .page-break { page-break-after: always; }
+                .signature-section {
+                    margin-top: 15px;
+                    text-align: right;
+                }
+                .signature-box {
+                    display: inline-block;
+                    text-align: center;
+                    width: 250px;
+                }
+                .signature-date {
+                    font-size: 12px;
+                    font-style: italic;
+                }
+                .signature-title {
+                    font-size: 13px;
+                    padding-right: 10px;
+                    margin-top: 5px;
+                    white-space: nowrap;
+                }
+                .signature-note {
+                    font-size: 12px;
+                    font-style: italic;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                td {
+                    vertical-align: top;
+                }
+                .info-row {
+                    margin: 3px 0;
+                }
+                .luoc-do-title {
+                    text-align: center;
+                    font-size: 15pt !important;
+                    font-weight: bold;
+                }
+                .image-container {
+                    text-align: left;
+                    margin: 10px 0;
+                }
+                .luoc-do-image {
+                    max-width: 350px;
+                    max-height: 250px;
+                    margin: 5px;
+                    display: inline-block;
+                }
+                .luoc-do-content {
+                    margin: 10px 0;
+                    font-size: 13pt !important;
+                }
+                .tuong-trinh-content {
+                    margin: 10px 0;
+                    font-size: 13pt !important;
+                }
+                .compact-text {
+                    margin: 2px 0;
+                    line-height: 1.2;
+                }
+            </style>
+        </head>
+        <body>");
 
-                        .box-title {
-                            margin-top: 5px;
-                            margin-bottom: 5px;
-                        }
-
-                        .box-text {
-                            font-size: 14pt !important; 
-                            text-align: left;
-                            margin-top: 2px;
-                            margin-bottom: 2px;
-                        }
-                        .image-container {
-                            text-align: left;
-                            margin: 10px 0;
-                        }
-                        .luoc-do-image {
-                            max-width: 400px;
-                            max-height: 300px;
-                            margin: 5px;
-                        }
-                        .luoc-do-content {
-                            min-height: 400px;
-                        }
-                    </style>
-                </head>
-                <body>");
-
-            // ===== HEADER =====
-            sb.Append("<table style='width:100%; margin-bottom:10px;'>");
+            // ===== TRANG 1: HEADER + THÔNG TIN =====
+            sb.Append("<table style='width:100%; margin-bottom:8px;'>");
             sb.Append("<tr>");
-            sb.Append("<td style='width:70%;'>");
+            sb.Append("<td style='width:65%;'>");
 
             if (!string.IsNullOrEmpty(logoBase64))
             {
@@ -237,65 +207,53 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             sb.Append("</div>");
             sb.Append("</td>");
 
-            sb.Append("<td style='width:30%; font-size:13px; font-style:italic;'>");
+            sb.Append("<td style='width:35%; font-size:12px; font-style:italic;'>");
             sb.Append("<div>Mã số: 14/BV-01</div>");
             sb.Append($"<div>Mã số đợt/MYT: <span class='bold'>{_data.MaVaoVien ?? ""}</span></div>");
             sb.Append("</td>");
             sb.Append("</tr>");
             sb.Append("</table>");
 
-            // ===== TIÊU ĐỀ =====
             sb.Append("<div class='title'>PHIẾU PHẪU THUẬT / THỦ THUẬT</div>");
 
-            // ===== THÔNG TIN NGƯỜI BỆNH =====
+            // THÔNG TIN NGƯỜI BỆNH - compact
             int tuoi = DateTime.Now.Year - (_data.NamSinh ?? DateTime.Now.Year);
 
             sb.Append("<table>");
             sb.Append("<tr>");
             sb.Append($"<td>- Họ tên người bệnh: <span class='bold'>{(_data.TenBN ?? "").ToUpper()}</span></td>");
-            sb.Append($"<td style='text-align:right;'>Tuổi: <span class='bold' style='margin-right:8px;'>{tuoi}</span>&nbsp;&nbsp;&nbsp;Giới tính: <span class='bold' style='margin-right:5px;'>{_data.TenGioiTinh ?? ""}</span></td>");
+            sb.Append($"<td style='text-align:right;'>Tuổi: <span class='bold'>{tuoi}</span>&nbsp;&nbsp;Giới tính: <span class='bold'>{_data.TenGioiTinh ?? ""}</span></td>");
             sb.Append("</tr>");
             sb.Append("</table>");
 
             sb.Append("<table>");
             sb.Append("<tr>");
             sb.Append($"<td>- Khoa/Phòng: <span class='bold'>{(_data.Khoa ?? "").ToUpper()}</span></td>");
-            sb.Append($"<td style='text-align:right;'>Buồng: <span class='bold' style='margin-right:60px;'>{_data.Buong}</span>&nbsp;&nbsp;&nbsp;Giường: <span class='bold' style='margin-right:40px;'>{_data.Giuong}</span></td>");
+            sb.Append($"<td style='text-align:right;'>Buồng: <span class='bold'>{_data.Buong}</span>&nbsp;&nbsp;Giường: <span class='bold'>{_data.Giuong}</span></td>");
             sb.Append("</tr>");
             sb.Append("</table>");
 
-            // Vào viện lúc
-            string vaoVienText = "";
-            if (_data.VaoVienLuc.HasValue)
-            {
-                var dt = _data.VaoVienLuc.Value;
-                vaoVienText = $"{dt:HH} giờ {dt:mm} phút {dt:ss} giây, ngày {dt:dd}-{dt:MM}-{dt:yyyy}";
-            }
-            sb.Append($"<div>- Vào viện lúc: <span class='bold'>{vaoVienText}</span></div>");
+            // Thời gian
+            string vaoVienText = _data.VaoVienLuc.HasValue ?
+                $"{_data.VaoVienLuc.Value:HH} giờ {_data.VaoVienLuc.Value:mm} phút {_data.VaoVienLuc.Value:ss} giây, ngày {_data.VaoVienLuc.Value:dd}/{_data.VaoVienLuc.Value:MM}/{_data.VaoVienLuc.Value:yyyy}" : "";
 
-            // Bắt đầu thủ thuật
-            string batDauText = "";
-            if (_data.BatDauThuThuat.HasValue)
-            {
-                var dt = _data.BatDauThuThuat.Value;
-                batDauText = $"{dt:HH} giờ {dt:mm} phút, ngày {dt:dd}-{dt:MM}-{dt:yyyy}";
-            }
-            sb.Append($"<div>- Phẫu thuật/ Thủ thuật lúc: <span class='bold'>{batDauText}</span></div>");
+            string batDauText = _data.BatDauThuThuat.HasValue ?
+                $"{_data.BatDauThuThuat.Value:HH} giờ {_data.BatDauThuThuat.Value:mm} phút, ngày {_data.BatDauThuThuat.Value:dd}/{_data.BatDauThuThuat.Value:MM}/{_data.BatDauThuThuat.Value:yyyy}" : "";
 
-            string ketThucText = "";
-            if (_data.KetThucThuThuat.HasValue)
-            {
-                var dt = _data.KetThucThuThuat.Value;
-                ketThucText = $"{dt:HH} giờ {dt:mm} phút, ngày {dt:dd}-{dt:MM}-{dt:yyyy}";
-            }
-            sb.Append($"<div>- Phẫu thuật/ Thủ thuật kết thúc: <span class='bold'>{ketThucText}</span></div>");
+            string ketThucText = _data.KetThucThuThuat.HasValue ?
+                $"{_data.KetThucThuThuat.Value:HH} giờ {_data.KetThucThuThuat.Value:mm} phút, {_data.KetThucThuThuat.Value:dd}/{_data.KetThucThuThuat.Value:MM}/{_data.KetThucThuThuat.Value:yyyy}" : "";
+
+            sb.Append($"<div class='compact-text'>- Vào viện lúc: <span class='bold'>{vaoVienText}</span></div>");
+            sb.Append($"<div class='compact-text'>- Phẫu thuật/ Thủ thuật lúc: <span class='bold'>{batDauText}</span></div>");
+            sb.Append($"<div class='compact-text'>- Phẫu thuật/ Thủ thuật kết thúc: <span class='bold'>{ketThucText}</span></div>");
 
             // Chẩn đoán
-            sb.Append($"<div>- Chẩn đoán: Trước phẫu thuật/ thủ thuật: <span class='bold'>{_data.TenChanDoanTruoc ?? ""}</span></div>");
-            sb.Append($"<div style='margin-left:75px;'>Sau phẫu thuật/ thủ thuật: <span class='bold'>{_data.TenChanDoanSau ?? ""}</span></div>");
+            sb.Append($"<div class='compact-text'>- Chẩn đoán: Trước phẫu thuật/ thủ thuật: <span class='bold'>{_data.TenChanDoanTruoc ?? ""}</span></div>");
+            sb.Append($"<div class='compact-text' style='margin-left:75px;'>Sau phẫu thuật/ thủ thuật: <span class='bold'>{_data.TenChanDoanSau ?? ""}</span></div>");
 
             // Phương pháp
-            sb.Append($"<div>- Phương pháp phẫu thuật/ thủ thuật: <span class='bold'>{_data.PhuongPhapTTPT ?? ""}</span></div>");
+            sb.Append($"<div class='compact-text'>- Phương pháp phẫu thuật/ thủ thuật: <span class='bold'>{_data.PhuongPhapTTPT ?? ""}</span></div>");
+
             sb.Append("<table>");
             sb.Append("<tr>");
             sb.Append($"<td>- Phương pháp vô cảm: <span class='bold'>{_data.PhuongPhapVoCam ?? ""}</span></td>");
@@ -303,86 +261,71 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             sb.Append("</tr>");
             sb.Append("</table>");
 
-            sb.Append($"<div>- Can thiệp phẫu thuật: <span class='bold'>{_data.CanThiepPhauThuat ?? ""}</span></div>");
-            sb.Append($"<div>- Bác sĩ phẫu thuật: <span class='bold'>{_data.BacSiPhauThuat ?? ""}</span></div>");
-            sb.Append($"<div>- Phụ mổ: <span class='bold'>{_data.PhuTTPT ?? ""}</span></div>");
-            sb.Append($"<div>- Bác sĩ gây mê: <span class='bold'>{_data.BacSiGayMe ?? ""}</span></div>");
-            sb.Append($"<div>- KTV gây mê: <span class='bold'>{_data.KyThuatVienGayMe ?? ""}</span></div>");
+            sb.Append($"<div class='compact-text'>- Can thiệp phẫu thuật: <span class='bold'>{_data.CanThiepPhauThuat ?? ""}</span></div>");
+            sb.Append($"<div class='compact-text'>- Bác sĩ phẫu thuật: <span class='bold'>{_data.BacSiPhauThuat ?? ""}</span></div>");
+            sb.Append($"<div class='compact-text'>- Phụ mổ: <span class='bold'>{_data.PhuTTPT ?? ""}</span></div>");
+            sb.Append($"<div class='compact-text'>- Bác sĩ gây mê: <span class='bold'>{_data.BacSiGayMe ?? ""}</span></div>");
+            sb.Append($"<div class='compact-text' style='margin-bottom:20px;'>- KTV gây mê: <span class='bold'>{_data.KyThuatVienGayMe ?? ""}</span></div>");
 
-            string ngayRutChiText = "";
-            if (_data.NgayRut.HasValue)
-            {
-                var dt = _data.NgayRut.Value;
-                ngayRutChiText = $"{dt:HH} giờ {dt:mm} phút, ngày {dt:dd}-{dt:MM}-{dt:yyyy}";
-            }
-            string ngayCatChiText = "";
-            if (_data.NgayCatChi.HasValue)
-            {
-                var dt = _data.NgayCatChi.Value;
-                ngayCatChiText = $"{dt:HH} giờ {dt:mm} phút, ngày {dt:dd}-{dt:MM}-{dt:yyyy}";
-            }
+            // Lược đồ mô tả text trên trang 1
+            sb.Append("<div class='border-box'>");
+            sb.Append("<div class='luoc-do-title'>LƯỢC ĐỒ PHẪU THUẬT / THỦ THUẬT</div>");
+            sb.Append("</div>");
 
-            // ===== LƯỢC ĐỒ - FULL PAGE 1 =====
-            sb.Append(@"<div class='luoc-do-container'>
-                            <h2 style='text-align:center'> LƯỢC ĐỒ PHẪU THUẬT / THỦ THUẬT</h2>
-                        <div class='image-container'>");
+            // PAGE BREAK
+            sb.Append("<div class='page-break'></div>");
 
+            // ===== TRANG 2: HÌNH ẢNH + TƯỜNG TRÌNH =====
+
+            // HÌNH ẢNH LƯỢC ĐỒ
             if (listAnhTruongTrinh != null && listAnhTruongTrinh.Any())
             {
+                sb.Append("<div class='border-box'>");
+                sb.Append("<div class='image-container'>");
+
                 foreach (var anh in listAnhTruongTrinh)
                 {
                     if (!string.IsNullOrEmpty(anh.URL))
                     {
-                        // Tải ảnh từ FTP và convert sang Base64
                         string base64Image = await DownloadImageFromFtpAsBase64(anh.URL);
-
                         if (!string.IsNullOrEmpty(base64Image))
                         {
-                            // Xác định MIME type dựa vào extension
                             string mimeType = GetMimeType(anh.URL);
-                            sb.Append($"<img src='data:{mimeType};base64,{base64Image}' class='luoc-do-image' alt='{anh.TenAnh ?? "Lược đồ"}' />");
+                            sb.Append($"<img src='data:{mimeType};base64,{base64Image}' class='luoc-do-image' alt='{anh.TenAnh ?? ""}' />");
                         }
                     }
                 }
+                sb.Append("</div>");
+                sb.Append($"<div class='luoc-do-content'>{_data.ThongTinLuocDo ?? ""}</div>");
+
+                // Thông tin bổ sung
+                string ngayRutChiText = _data.NgayRut.HasValue ?
+                    $"{_data.NgayRut.Value:HH} giờ {_data.NgayRut.Value:mm} phút, ngày {_data.NgayRut.Value:dd}/{_data.NgayRut.Value:MM}/{_data.NgayRut.Value:yyyy}" : "";
+
+                string ngayCatChiText = _data.NgayCatChi.HasValue ?
+                    $"{_data.NgayCatChi.Value:HH} giờ {_data.NgayCatChi.Value:mm} phút, ngày {_data.NgayCatChi.Value:dd}/{_data.NgayCatChi.Value:MM}/{_data.NgayCatChi.Value:yyyy}" : "";
+
+                sb.Append($"<div class='compact-text' style='text-align:left; margin-top:50px;'>- Dẫn lưu: <span class='bold'>{_data.DanLuu ?? ""}</span></div>");
+                sb.Append($"<div class='compact-text' style='text-align:left;'>- Bấc: <span class='bold'>{_data.Bac ?? ""}</span></div>");
+                sb.Append($"<div class='compact-text' style='text-align:left;'>- Ngày rút chỉ: <span class='bold'>{ngayRutChiText}</span></div>");
+                sb.Append($"<div class='compact-text' style='text-align:left;'>- Ngày cắt chỉ: <span class='bold'>{ngayCatChiText}</span></div>");
+                sb.Append($"<div class='compact-text' style='text-align:left;'>- Khác: <span class='bold'>{_data.Khac ?? ""}</span></div>");
+
+                sb.Append("</div>");
             }
-            else
+
+            // TƯỜNG TRÌNH
+            sb.Append("<div class='border-box'>");
+            sb.Append("<div class='luoc-do-title'>TƯỜNG TRÌNH PHẪU THUẬT / THỦ THUẬT</div>");
+            sb.Append($"<div class='tuong-trinh-content'>{_data.TrinhTu}</div>");
+
+            if (!string.IsNullOrWhiteSpace(_data.KetLuan))
             {
-                sb.Append("<p></p>");
+                sb.Append($"<div class='compact-text bold'>Kết luận: {_data.KetLuan}</div>");
             }
+            sb.Append("</div>");
 
-            sb.Append($@"</div>
-                <div class='luoc-do-content'>
-                    </br>
-                    {_data.ThongTinLuocDo ?? ""}</br>
-                </div>
-                <div style='position: absolute; bottom: 20px; left: 10px; right: 25px;'>
-                    <p class='box-text'>- Dẫn lưu: <span class='bold'> {_data.DanLuu ?? ""}</span></p>
-                    <p class='box-text'>- Bấc: <span class='bold'>{_data.Bac ?? ""}</span></p>
-                    <p class='box-text'>- Ngày rút chỉ: <span class='bold'>{ngayRutChiText}</span></p>
-                    <p class='box-text'>- Ngày cắt chỉ: <span class='bold'> {ngayCatChiText}</span></p>
-                    <p class='box-text'>- Khác: <span class='bold'>{_data.Khac ?? ""}</span></p>
-                </div>
-            </div>");
-
-            // Nếu nội dung lược đồ quá dài và cần trang thứ 2, tạo container mới
-            sb.Append(@"<div class='luoc-do-container-page2' style='display: none;'>
-                            <h2 style='text-align:center'> LƯỢC ĐỒ PHẪU THUẬT / THỦ THUẬT (tiếp theo)</h2>
-                            <div class='luoc-do-content'>
-                                <!-- Nội dung tiếp theo sẽ được tự động chuyển sang đây nếu tràn -->
-                            </div>
-                        </div>");
-
-            // Page break
-            sb.Append("<div class='page-break'></div>");
-
-            // ===== TƯỜNG TRÌNH - FULL PAGE 2 =====
-            sb.Append(@$"<div class='tuong-trinh-container'>
-                <h2 style='text-align:center'> TƯỜNG TRÌNH PHẪU THUẬT / THỦ THUẬT </h2>
-                 {_data.TrinhTu}
-                 {(string.IsNullOrWhiteSpace(_data.KetLuan) ? "" : $"<p class='box-text bold'>Kết luận: {_data.KetLuan}</p>")}
-            </div>");
-
-            // ===== CHỮ KÝ =====
+            // CHỮ KÝ
             sb.Append("<div class='signature-section'>");
             sb.Append("<div class='signature-box'>");
             sb.Append($"<div class='signature-date'>Ngày {DateTime.Now:dd} tháng {DateTime.Now:MM} năm {DateTime.Now:yyyy}</div>");
@@ -432,28 +375,47 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                 ".gif" => "image/gif",
                 ".bmp" => "image/bmp",
                 ".webp" => "image/webp",
-                _ => "image/jpeg" // default
+                _ => "image/jpeg" 
             };
         }
 
-        // === Handler đánh số trang ===
+
+        // === Handler đánh số trang và ngày in ===
         private class PageNumberHandler : IEventHandler
         {
+            private readonly string _fontFolder;
+
+            public PageNumberHandler(string fontFolder)
+            {
+                _fontFolder = fontFolder;
+            }
+
             public void HandleEvent(Event @event)
             {
                 var docEvent = (PdfDocumentEvent)@event;
                 var pdfDoc = docEvent.GetDocument();
                 var page = docEvent.GetPage();
-
                 int pageNumber = pdfDoc.GetPageNumber(page);
                 int totalPages = pdfDoc.GetNumberOfPages();
-
                 var canvas = new PdfCanvas(page.NewContentStreamAfter(), page.GetResources(), pdfDoc);
                 var document = new Document(pdfDoc);
+                var fontSet = new FontSet();
+                fontSet.AddFont(Path.Combine(_fontFolder, "timesi.ttf"));
+                var fontProvider = new FontProvider(fontSet);
+                document.SetFontProvider(fontProvider);
 
-                // Vẽ số trang ở góc phải dưới
+                string ngayIn = $"(In ngày: {DateTime.Now:dd/MM/yyyy HH:mm})";
                 document.ShowTextAligned(
-                    new Paragraph($"Trang {pageNumber}/{totalPages}").SetFontSize(10),
+                    new Paragraph(ngayIn).SetFontSize(10).SetFontFamily("Times New Roman"),
+                    40,
+                    20, 
+                    pageNumber,
+                    TextAlignment.LEFT,
+                    VerticalAlignment.BOTTOM,
+                    0
+                );
+                document.ShowTextAligned(
+                    new Paragraph($"Trang {pageNumber}/{totalPages}").SetFontSize(10).SetFontFamily("Times New Roman"),
                     pdfDoc.GetDefaultPageSize().GetWidth() - 40,
                     20,
                     pageNumber,
@@ -461,7 +423,6 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
                     VerticalAlignment.BOTTOM,
                     0
                 );
-
                 canvas.Release();
             }
         }

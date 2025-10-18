@@ -1,4 +1,8 @@
-﻿/* CSS hiện tại - giữ nguyên tất cả các style cũ */
+﻿p {
+    margin-bottom: 0 !important;
+}
+
+/* CSS hiện tại - giữ nguyên tất cả các style cũ */
 .report-template-editor {
     height: 40vh;
     margin: 10px;

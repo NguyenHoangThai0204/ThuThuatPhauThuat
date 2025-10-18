@@ -62,6 +62,7 @@ function saveTrinhTu(suppressToastr = false) {
             ThongTinLuocDo: thongTinLuocDo,
             AnhTruongTrinhSaveToServer: getSelectedImagesForSave()
         };
+        console.log("formData", formData);
 
         $.ajax({
             url: '/thu_thuat_phau_thuat/trinh-tu/save',
