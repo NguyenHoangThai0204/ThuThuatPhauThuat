@@ -23,6 +23,7 @@ public class C0301VaiTroThuThuatController : Controller
         public string Ten { get; set; } = string.Empty;
         public int MaVaiTroTTPT { get; set; }
         public bool Active { get; set; }
+        public bool BSChinh { get; set; }
     }
     public class PagedResult<T>
     {

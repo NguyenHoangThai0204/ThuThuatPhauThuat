@@ -490,12 +490,13 @@
             btnAdd.addEventListener('click', handleAddEkip);
         }
 
+       
         const btnSave = document.getElementById('btn_saveEkip');
         if (btnSave) {
             btnSave.removeEventListener('click', handleSaveEkip);
             btnSave.addEventListener('click', handleSaveEkip);
         }
-
+        
         const vaiTroModalEl = document.getElementById('vaiTroModal');
         if (vaiTroModalEl) {
             vaiTroModalEl.addEventListener('show.bs.modal', function () {
@@ -655,6 +656,8 @@
         const ma = document.getElementById('vaiTroMa').value.trim();
         const ten = document.getElementById('vaiTroTen').value.trim();
         const role = document.getElementById('vaiTroRole').value;
+        const bacSiChinh = document.getElementById('vaiTroCheck').checked;
+        
 
         if (!ma || !ten || !role) {
             if (typeof toastr !== 'undefined') toastr.warning('Vui lòng điền đầy đủ Mã, Tên và chọn Nhóm vai trò!');
@@ -666,9 +669,10 @@
             id: id ? parseInt(id, 10) : 0, // Chuyển id sang số, nếu không có thì là 0
             ma: ma,
             ten: ten,
-            maVaiTroTTPT: parseInt(role, 10)
+            maVaiTroTTPT: parseInt(role, 10),
+            bschinh: bacSiChinh || false,
         };
-
+        console.log("dataToSend = ", dataToSend);
         const isUpdating = !!id;
         const apiUrl = isUpdating ? `${VAI_TRO_API_BASE_URL}/Update/${id}` : `${VAI_TRO_API_BASE_URL}/Create`;
         const apiMethod = 'POST';
@@ -768,6 +772,7 @@
             document.getElementById('vaiTroMa').value = vaiTro.ma;
             document.getElementById('vaiTroTen').value = vaiTro.ten;
             document.getElementById('vaiTroRole').value = vaiTro.maVaiTroTTPT;
+            document.getElementById('vaiTroCheck').checked = !!vaiTro.bsChinh;
             document.getElementById('vaiTroCancelBtn').style.display = 'block';
         }
     }
@@ -775,6 +780,7 @@
     function resetVaiTroForm() {
         document.getElementById('vaiTroForm').reset();
         document.getElementById('vaiTroId').value = '';
+        document.getElementById('vaiTroCheck').value = false;
         document.getElementById('vaiTroCancelBtn').style.display = 'none';
         document.getElementById('vaiTroMa').focus();
     }
@@ -884,7 +890,7 @@
         tomSelectInstance.addOptions(newData); 
         tomSelectInstance.enable();
     }
-
+    window.openThemVaiTroModal_0301 = openThemVaiTroModal;
     window.initEkipTab = initEkipTab;
     window.handleSaveEkip = window.handleSaveEkip || function () { };
 }());

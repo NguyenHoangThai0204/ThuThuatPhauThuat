@@ -31,6 +31,34 @@
     .table-responsive {
         min-height: 300px;
     }
+
+    .input-group-ellipsis {
+        position: relative;
+    }
+
+    .ellipsis-btn {
+        position: absolute;
+        right: -7px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 10;
+        padding: 2px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+    }
+
+        .ellipsis-btn:hover {
+            background-color: #ccc;
+        }
+
+        .ellipsis-btn svg {
+            width: 16px;
+            height: 16px;
+            color: #6c757d;
+        }
 </style>
 
 <div class="container mt-1 compact-form card p-2">
@@ -38,8 +66,15 @@
         <div class="col-md-4 mb-3 ">
             <select class="tom-select cbNhanVien form-select" id="cb_NhanVien"></select>
         </div>
-        <div class="col-md-4 mb-3 ">
-            <select class="tom-select cbVaiTro form-select" id="cb_VaiTro"></select>
+        <div class="col-md-4 mb-3 input-group-ellipsis">
+            <select class="tom-select cbVaiTro form-select" id="cb_VaiTro" title="Chỉnh sửa vai trò"></select>
+            <button type="button" class="ellipsis-btn" id="btnOpenVaiTroModal" onclick="openThemVaiTroModal_0301()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="1" />
+                    <circle cx="12" cy="5" r="1" />
+                    <circle cx="12" cy="19" r="1" />
+                </svg>
+            </button>
         </div>
         <div class="col-md-4 mb-3 ">
             <div class="row">
@@ -57,19 +92,7 @@
                 </span>
             </div>
         </div>
-        @* <div class="row mt-2">
-            <div class="col-12 text-end">
-                <button type="button" class="btn btn-success" id="btn_saveEkip" title="Lưu danh sách ekip">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 0 2 -2"></path>
-                        <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                        <path d="M14 4l0 4l-4 0"></path>
-                    </svg>
-                    Lưu Dữ Liệu
-                </button>
-            </div>
-        </div> *@
+       
     </div>
 
     <div class="row">
@@ -172,6 +195,13 @@
                                     <option value="3">Bác sĩ gây mê</option>
                                     <option value="4">Kỹ thuật viên gây mê</option>
                                 </select>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="bacSiChinh" class="form-label" style="min-width: 100px;">Bác sĩ chính:</label>
+                                <div class="d-flex justify-content-center align-content-center">
+                                    <input type="checkbox" class="form-check" id="vaiTroCheck" required />
+
+                                </div>
                             </div>
 
                             <div class="d-grid gap-2 mt-4">
