@@ -98,99 +98,99 @@ namespace ThuThuatPhauThuat.PDFDocuments.P0302
             List<AnhTruongTrinhDTO> listAnhTruongTrinh = await GetListAnhTuIDPhieuTTPT(_data.IDPhieuTTPT);
 
             sb.Append(@"
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset='UTF-8'>
-            <style>
-                @page {
-                    size: A4;
-                    margin: 20px 25px;
-                }
-                body {
-                    font-family: 'Times New Roman', serif;
-                    font-size: 13pt !important;
-                    color: black;
-                    line-height: 1.3;
-                }
-                .title {
-                    text-align: center;
-                    font-size: 16pt !important; 
-                    font-weight: bold;
-                    margin: 8px 0;
-                }
-                * {
-                    font-size: 13pt !important;
-                }
-                .bold { font-weight: bold; }
-                .border-box {
-                    border: 1px solid black;
-                    padding: 5px;
-                }
-                .page-break { page-break-after: always; }
-                .signature-section {
-                    margin-top: 15px;
-                    text-align: right;
-                }
-                .signature-box {
-                    display: inline-block;
-                    text-align: center;
-                    width: 250px;
-                }
-                .signature-date {
-                    font-size: 12px;
-                    font-style: italic;
-                }
-                .signature-title {
-                    font-size: 13px;
-                    padding-right: 10px;
-                    margin-top: 5px;
-                    white-space: nowrap;
-                }
-                .signature-note {
-                    font-size: 12px;
-                    font-style: italic;
-                }
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                }
-                td {
-                    vertical-align: top;
-                }
-                .info-row {
-                    margin: 3px 0;
-                }
-                .luoc-do-title {
-                    text-align: center;
-                    font-size: 15pt !important;
-                    font-weight: bold;
-                }
-                .image-container {
-                    text-align: left;
-                    margin: 10px 0;
-                }
-                .luoc-do-image {
-                    max-width: 350px;
-                    max-height: 250px;
-                    margin: 5px;
-                    display: inline-block;
-                }
-                .luoc-do-content {
-                    margin: 10px 0;
-                    font-size: 13pt !important;
-                }
-                .tuong-trinh-content {
-                    margin: 10px 0;
-                    font-size: 13pt !important;
-                }
-                .compact-text {
-                    margin: 2px 0;
-                    line-height: 1.2;
-                }
-            </style>
-        </head>
-        <body>");
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset='UTF-8'>
+                    <style>
+                        @page {
+                            size: A4;
+                            margin: 20px 25px;
+                        }
+                        body {
+                            font-family: 'Times New Roman', serif;
+                            font-size: 13pt !important;
+                            color: black;
+                            line-height: 1.3;
+                        }
+                        .title {
+                            text-align: center;
+                            font-size: 16pt !important; 
+                            font-weight: bold;
+                            margin: 8px 0;
+                        }
+                        * {
+                            font-size: 13pt !important;
+                        }
+                        .bold { font-weight: bold; }
+                        .border-box {
+                            border: 1px solid black;
+                            padding: 5px;
+                        }
+                        .page-break { page-break-after: always; }
+                        .signature-section {
+                            margin-top: 15px;
+                            text-align: right;
+                        }
+                        .signature-box {
+                            display: inline-block;
+                            text-align: center;
+                            width: 250px;
+                        }
+                        .signature-date {
+                            font-size: 12px;
+                            font-style: italic;
+                        }
+                        .signature-title {
+                            font-size: 13px;
+                            padding-right: 10px;
+                            margin-top: 5px;
+                            white-space: nowrap;
+                        }
+                        .signature-note {
+                            font-size: 12px;
+                            font-style: italic;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        td {
+                            vertical-align: top;
+                        }
+                        .info-row {
+                            margin: 3px 0;
+                        }
+                        .luoc-do-title {
+                            text-align: center;
+                            font-size: 15pt !important;
+                            font-weight: bold;
+                        }
+                        .image-container {
+                            text-align: left;
+                            margin: 10px 0;
+                        }
+                        .luoc-do-image {
+                            max-width: 350px;
+                            max-height: 250px;
+                            margin: 5px;
+                            display: inline-block;
+                        }
+                        .luoc-do-content {
+                            margin: 10px 0;
+                            font-size: 13pt !important;
+                        }
+                        .tuong-trinh-content {
+                            margin: 10px 0;
+                            font-size: 13pt !important;
+                        }
+                        .compact-text {
+                            margin: 2px 0;
+                            line-height: 1.2;
+                        }
+                    </style>
+                </head>
+                <body>");
 
             // ===== TRANG 1: HEADER + THÔNG TIN =====
             sb.Append("<table style='width:100%; margin-bottom:8px;'>");

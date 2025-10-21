@@ -266,6 +266,14 @@
                                 </button>
                             </div>
 
+                            <!-- Công cụ Text -->
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm btn-light" id="btnAddText"
+                                        data-bs-toggle="tooltip" title="Thêm văn bản (T)">
+                                    <i class="ti ti-clear-formatting"></i>
+                                </button>
+                            </div>
+
                             <!-- Hình dạng -->
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-sm btn-light" id="btnDrawRect" data-bs-toggle="tooltip" title="Hình chữ nhật (R)">
@@ -1334,7 +1342,7 @@
         }
         let fabricCanvas = null;
         let currentImageData = null;
-        let currentMode = 'select'; // 'select', 'draw', 'line', 'arrow', 'rect', 'circle', 'ellipse', 'text'
+        let currentMode = localStorage.getItem('imageEditorCurrentMode') || 'select';
         let undoStack = [];
         let redoStack = [];
         let isDrawing = false;
@@ -1345,12 +1353,19 @@
         let originalImageWidth = 0;
         let originalImageHeight = 0;
 
+        let currentTextColor = '#000000';
+        let currentFontSize = 24;
+        let currentFontFamily = 'Arial';
+        let currentFontWeight = 'normal';
+        let textCounter = 0;
+
         // Keyboard shortcuts
         const keyboardShortcuts = {
             'KeyV': 'select',
             'KeyB': 'draw',
             'KeyL': 'line',
             'KeyA': 'arrow',
+            'KeyT': 'text',
             'KeyR': 'rect',
             'KeyC': 'circle',
             'KeyE': 'ellipse',
@@ -1367,9 +1382,9 @@
             if (!fabricCanvas) {
                 initializeCanvas();
             }
+            setupTextControls();
             setupKeyboardShortcuts();
-
-            // Load ảnh vào canvas
+            restoreEditorState();
             if (currentImageData) {
                 loadImageToCanvas(currentImageData.src);
             }
@@ -1378,14 +1393,27 @@
         });
 
         $('#imageEditorModal').on('hidden.bs.modal', function() {
+            saveEditorState();
             removeKeyboardShortcuts();
-            currentMode = 'select';
             updateToolIndicators();
             const activeObject = fabricCanvas.getActiveObject();
             if (activeObject && activeObject.isEditing) {
                 activeObject.exitEditing();
             }
         });
+
+        function saveEditorState() {
+            localStorage.setItem('imageEditorCurrentMode', currentMode);
+        }
+
+        function restoreEditorState() {
+            const savedMode = localStorage.getItem('imageEditorCurrentMode');
+            if (savedMode && ['select', 'draw', 'line', 'arrow', 'rect', 'circle', 'ellipse'].includes(savedMode)) {
+                setMode(savedMode);
+            } else {
+                setMode('select');
+            }
+        }
 
         function initializeCanvas() {
             const existingCanvas = fabric.Canvas.instances && fabric.Canvas.instances[0];
@@ -1396,13 +1424,14 @@
             fabricCanvas = new fabric.Canvas('imageEditorCanvas', {
                 backgroundColor: '#ffffff',
                 selection: true,
-                preserveObjectStacking: true
+                preserveObjectStacking: true,
+                isDrawingMode: false 
             });
-
-            // Thiết lập kích thước canvas
+            fabricCanvas.freeDrawingBrush = new fabric.PencilBrush(fabricCanvas);
+            fabricCanvas.freeDrawingBrush.color = $('#drawColor').val();
+            fabricCanvas.freeDrawingBrush.width = parseInt($('#strokeWidth').val());
             updateCanvasSize();
             window.addEventListener('resize', updateCanvasSize);
-
             setupCanvasEvents();
             updateToolIndicators();
         }
@@ -1411,12 +1440,10 @@
             const container = $('.canvas-container-wrapper');
             const width = Math.min(1200, container.width() - 40);
             const height = Math.min(800, container.height() - 40);
-
             fabricCanvas.setDimensions({
                 width: width,
                 height: height
             });
-            // Center image if exists
             if (originalImage) {
                 centerImage();
             }
@@ -1435,39 +1462,39 @@
                 )) {
                     return;
                 }
-
                 const pointer = fabricCanvas.getPointer(options.e);
                 updateCursorPosition(pointer.x, pointer.y);
-
                 const activeObject = fabricCanvas.getActiveObject();
                 if (activeObject && activeObject.isEditing) {
                     return;
                 }
-
                 if (activeObject && activeObject.type === 'i-text') {
                     activeObject.enterEditing();
                     activeObject.selectAll();
                     return;
                 }
-
                 if (currentMode === 'select') {
-                    return;
+                    return; 
                 }
 
                 if (currentMode === 'draw') {
-                    fabricCanvas.isDrawingMode = true;
-                    fabricCanvas.freeDrawingBrush.color = $('#drawColor').val();
-                    fabricCanvas.freeDrawingBrush.width = parseInt($('#strokeWidth').val());
                     return;
                 }
 
+                if (currentMode === 'text') {
+                    const pointer = fabricCanvas.getPointer(options.e);
+                    addTextAtPosition(pointer.x, pointer.y);
+                    options.e.preventDefault();
+                    options.e.stopPropagation();
+                }
+
+                // Các chế độ vẽ hình dạng
                 if (['line', 'arrow', 'rect', 'circle', 'ellipse'].includes(currentMode)) {
                     isDrawing = true;
                     startPoint = pointer;
                     createShape(pointer);
                 }
-
-                if (currentMode !== 'select' && currentMode !== 'text') {
+                if (currentMode !== 'select') {
                     options.e.preventDefault();
                     options.e.stopPropagation();
                 }
@@ -1481,60 +1508,65 @@
                 if (activeObject && activeObject.isEditing) {
                     return;
                 }
-
-                if (!isDrawing || !currentShape) return;
-
+                if (!isDrawing || !currentShape || currentMode === 'draw') return;
                 updateShape(pointer);
                 fabricCanvas.renderAll();
             });
 
             // Mouse up
-            fabricCanvas.on('mouse:up', function() {
+            fabricCanvas.on('mouse:up', function(options) {
                 const activeObject = fabricCanvas.getActiveObject();
                 if (activeObject && activeObject.isEditing) {
                     return;
                 }
-
-                if (isDrawing && currentShape) {
+                if (isDrawing && currentShape && currentMode !== 'draw') {
                     saveState();
                 }
                 isDrawing = false;
                 currentShape = null;
-
-                if (currentMode === 'draw') {
-                    fabricCanvas.isDrawingMode = false;
-                }
             });
 
+            fabricCanvas.on('path:created', function(options) {
+                saveState();
+            });
             // Selection events
             fabricCanvas.on('selection:created', function() {
                 updateSelectionInfo();
             });
-
             fabricCanvas.on('selection:updated', function() {
                 updateSelectionInfo();
             });
-
             fabricCanvas.on('selection:cleared', function() {
                 updateSelectionInfo();
             });
-
             // Object scaling/rotating
             fabricCanvas.on('object:modified', function() {
                 saveState();
+            });
+
+            $('#drawColor').on('change', function() {
+                if (fabricCanvas.freeDrawingBrush) {
+                    fabricCanvas.freeDrawingBrush.color = $(this).val();
+                }
+            });
+
+            $('#strokeWidth').on('change', function() {
+                if (fabricCanvas.freeDrawingBrush) {
+                    fabricCanvas.freeDrawingBrush.width = parseInt($(this).val());
+                }
             });
         }
 
         function createShape(pointer) {
             const color = $('#drawColor').val();
             const strokeWidth = parseInt($('#strokeWidth').val());
-
             switch (currentMode) {
                 case 'line':
                     currentShape = new fabric.Line([pointer.x, pointer.y, pointer.x, pointer.y], {
                         stroke: color,
                         strokeWidth: strokeWidth,
-                        selectable: true
+                        selectable: true,
+                        strokeLineCap: 'round'
                     });
                     break;
                 case 'arrow':
@@ -1576,7 +1608,6 @@
                     });
                     break;
             }
-
             if (currentShape) {
                 fabricCanvas.add(currentShape);
                 fabricCanvas.renderAll();
@@ -1585,10 +1616,12 @@
 
         function updateShape(pointer) {
             if (!currentShape) return;
-
             switch (currentMode) {
                 case 'line':
-                    currentShape.set({ x2: pointer.x, y2: pointer.y });
+                    currentShape.set({
+                        x2: pointer.x,
+                        y2: pointer.y
+                    });
                     break;
                 case 'arrow':
                     updateArrow(currentShape, startPoint.x, startPoint.y, pointer.x, pointer.y);
@@ -1608,55 +1641,113 @@
                         Math.pow(pointer.x - startPoint.x, 2) +
                         Math.pow(pointer.y - startPoint.y, 2)
                     ) / 2;
-                    currentShape.set({ radius: radius });
+                    currentShape.set({
+                        radius: radius,
+                        left: startPoint.x,
+                        top: startPoint.y
+                    });
                     break;
                 case 'ellipse':
+                    const rx = Math.abs(pointer.x - startPoint.x) / 2;
+                    const ry = Math.abs(pointer.y - startPoint.y) / 2;
                     currentShape.set({
-                        rx: Math.abs(pointer.x - startPoint.x) / 2,
-                        ry: Math.abs(pointer.y - startPoint.y) / 2
+                        rx: rx,
+                        ry: ry,
+                        left: startPoint.x,
+                        top: startPoint.y
                     });
                     break;
             }
         }
 
         function createArrow(x1, y1, x2, y2, color, strokeWidth) {
-            const line = new fabric.Line([x1, y1, x2, y2], {
+            const arrow = new fabric.Arrow({
+                x1: x1,
+                y1: y1,
+                x2: x2,
+                y2: y2,
                 stroke: color,
-                strokeWidth: strokeWidth
+                strokeWidth: strokeWidth,
+                fill: '',
+                selectable: true,
+                hasControls: true,
+                hasBorders: true,
+                cornerStyle: 'circle',
+                cornerColor: '#22c55e',
+                transparentCorners: false
             });
-
-            const angle = Math.atan2(y2 - y1, x2 - x1);
-            const headSize = strokeWidth * 3;
-
-            const arrowHead = new fabric.Triangle({
-                left: x2,
-                top: y2,
-                originX: 'center',
-                originY: 'center',
-                angle: (angle * 180 / Math.PI) + 90,
-                width: headSize,
-                height: headSize,
-                fill: color
-            });
-
-            return new fabric.Group([line, arrowHead], {
-                selectable: true
-            });
+            return arrow;
         }
 
         function updateArrow(arrow, x1, y1, x2, y2) {
-            const objects = arrow._objects;
-            const line = objects[0];
-            const triangle = objects[1];
-
-            line.set({ x1: x1, y1: y1, x2: x2, y2: y2 });
-
-            const angle = Math.atan2(y2 - y1, x2 - x1);
-            triangle.set({
-                left: x2,
-                top: y2,
-                angle: (angle * 180 / Math.PI) + 90
+            if (!arrow) return;
+            arrow.set({
+                x1: x1,
+                y1: y1,
+                x2: x2,
+                y2: y2
             });
+            arrow.setCoords();
+        }
+
+        if (!fabric.Arrow) {
+            fabric.Arrow = fabric.util.createClass(fabric.Object, {
+                type: 'arrow',
+
+                initialize: function(options) {
+                    this.callSuper('initialize', options);
+                    this.x1 = options.x1 || 0;
+                    this.y1 = options.y1 || 0;
+                    this.x2 = options.x2 || 0;
+                    this.y2 = options.y2 || 0;
+                    this.stroke = options.stroke || '#000000';
+                    this.strokeWidth = options.strokeWidth || 2;
+                },
+
+                render: function(ctx) {
+                    ctx.save();
+                    ctx.strokeStyle = this.stroke;
+                    ctx.fillStyle = this.stroke;
+                    ctx.lineWidth = this.strokeWidth;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+
+                    // Vẽ đường thẳng
+                    ctx.beginPath();
+                    ctx.moveTo(this.x1, this.y1);
+                    ctx.lineTo(this.x2, this.y2);
+                    ctx.stroke();
+
+                    // Vẽ mũi tên
+                    const headlen = Math.max(this.strokeWidth * 3, 10);
+                    const angle = Math.atan2(this.y2 - this.y1, this.x2 - this.x1);
+
+                    // Mũi tên bên phải
+                    ctx.beginPath();
+                    ctx.moveTo(this.x2, this.y2);
+                    ctx.lineTo(this.x2 - headlen * Math.cos(angle - Math.PI / 6), this.y2 - headlen * Math.sin(angle - Math.PI / 6));
+                    ctx.lineTo(this.x2 - headlen * Math.cos(angle + Math.PI / 6), this.y2 - headlen * Math.sin(angle + Math.PI / 6));
+                    ctx.closePath();
+                    ctx.fill();
+
+                    ctx.restore();
+                },
+
+                toObject: function() {
+                    return fabric.util.object.extend(this.callSuper('toObject'), {
+                        x1: this.x1,
+                        y1: this.y1,
+                        x2: this.x2,
+                        y2: this.y2,
+                        stroke: this.stroke,
+                        strokeWidth: this.strokeWidth
+                    });
+                }
+            });
+
+            fabric.Arrow.fromObject = function(object, callback) {
+                callback && callback(new fabric.Arrow(object));
+            };
         }
 
         // Load ảnh vào canvas
@@ -1668,12 +1759,14 @@
                 originalImage = img;
                 originalImageWidth = img.width;
                 originalImageHeight = img.height;
+
                 const canvasWidth = fabricCanvas.width;
                 const canvasHeight = fabricCanvas.height;
                 const scale = Math.min(
                     canvasWidth / img.width,
                     canvasHeight / img.height
                 ) * 0.95;
+
                 originalImageScale = scale;
                 img.scale(scale);
                 img.set({
@@ -1683,6 +1776,7 @@
                     evented: false,
                     name: 'backgroundImage'
                 });
+
                 fabricCanvas.add(img);
                 fabricCanvas.sendToBack(img);
                 fabricCanvas.renderAll();
@@ -1740,53 +1834,84 @@
         }
 
         // Toolbar buttons
-        $('#btnSelectMode').click(() => setMode('select'));
-        $('#btnDrawFree').click(() => setMode('draw'));
-        $('#btnDrawLine').click(() => setMode('line'));
-        $('#btnDrawArrow').click(() => setMode('arrow'));
-        $('#btnDrawRect').click(() => setMode('rect'));
-        $('#btnDrawCircle').click(() => setMode('circle'));
-        $('#btnDrawEllipse').click(() => setMode('ellipse'));
-        $('#btnAddText').click(() => setMode('text'));
+        $('#btnSelectMode').click(() => {
+            setMode('select');
+            saveEditorState();
+        });
+        $('#btnDrawFree').click(() => {
+            setMode('draw');
+            saveEditorState();
+        });
+        $('#btnDrawLine').click(() => {
+            setMode('line');
+            saveEditorState();
+        });
+        $('#btnDrawArrow').click(() => {
+            setMode('arrow');
+            saveEditorState();
+        });
+        $('#btnDrawRect').click(() => {
+            setMode('rect');
+            saveEditorState();
+        });
+        $('#btnDrawCircle').click(() => {
+            setMode('circle');
+            saveEditorState();
+        });
+        $('#btnDrawEllipse').click(() => {
+            setMode('ellipse');
+            saveEditorState();
+        });
 
         function setMode(mode) {
             currentMode = mode;
             updateToolIndicators();
             updateCanvasCursor();
+
             if (mode === 'text') {
                 fabricCanvas.isDrawingMode = false;
-                fabricCanvas.selection = false; 
+                fabricCanvas.selection = true;
                 fabricCanvas.defaultCursor = 'text';
                 fabricCanvas.hoverCursor = 'text';
-                const activeObject = fabricCanvas.getActiveObject();
-                if (activeObject && activeObject.isEditing) {
-                    activeObject.exitEditing();
-                }
+            } else if (mode === 'draw') {
+                fabricCanvas.isDrawingMode = true;
+                fabricCanvas.selection = false;
+                fabricCanvas.defaultCursor = 'crosshair';
+                fabricCanvas.hoverCursor = 'crosshair';
+            } else if (mode === 'select') {
+                fabricCanvas.isDrawingMode = false;
+                fabricCanvas.selection = true;
+                fabricCanvas.defaultCursor = 'default';
+                fabricCanvas.hoverCursor = 'move';
             } else {
-                fabricCanvas.isDrawingMode = (mode === 'draw');
-                fabricCanvas.selection = (mode === 'select');
-                fabricCanvas.defaultCursor = (mode === 'select') ? 'default' : 'crosshair';
-                fabricCanvas.hoverCursor = (mode === 'select') ? 'move' : 'crosshair';
-                const activeObject = fabricCanvas.getActiveObject();
-                if (activeObject && activeObject.isEditing) {
-                    activeObject.exitEditing();
-                }
+                fabricCanvas.isDrawingMode = false;
+                fabricCanvas.selection = true;
+                fabricCanvas.defaultCursor = 'crosshair';
+                fabricCanvas.hoverCursor = 'crosshair';
             }
-            $(`#btn${mode.charAt(0).toUpperCase() + mode.slice(1)}Mode`)
-                .addClass('tool-changed');
+
+            if (mode === 'draw' && fabricCanvas.freeDrawingBrush) {
+                fabricCanvas.freeDrawingBrush.color = $('#drawColor').val();
+                fabricCanvas.freeDrawingBrush.width = parseInt($('#strokeWidth').val());
+            }
+
+            const activeObject = fabricCanvas.getActiveObject();
+            if (activeObject && activeObject.isEditing) {
+                activeObject.exitEditing();
+            }
+
+            const buttonId = '#btn' + mode.charAt(0).toUpperCase() + mode.slice(1) + 'Mode';
+            $(buttonId).addClass('tool-changed');
             setTimeout(() => {
-                $(`#btn${mode.charAt(0).toUpperCase() + mode.slice(1)}Mode`)
-                    .removeClass('tool-changed');
+                $(buttonId).removeClass('tool-changed');
             }, 300);
         }
 
         function updateToolIndicators() {
             $('.editor-toolbar-panel .btn').removeClass('active btn-primary');
             $('.editor-toolbar-panel .btn').addClass('btn-light');
-
             const activeButton = $('#btn' + currentMode.charAt(0).toUpperCase() + currentMode.slice(1) + 'Mode');
             activeButton.removeClass('btn-light').addClass('btn-primary active');
-
             $('#currentTool').text('Công cụ: ' + getToolName(currentMode));
         }
 
@@ -1799,8 +1924,236 @@
                 'rect': 'Hình chữ nhật',
                 'circle': 'Hình tròn',
                 'ellipse': 'Hình elip',
+                'text': 'Thêm văn bản'
             };
             return names[mode] || 'Chọn';
+        }
+
+        function addTextAtPosition(x, y) {
+            showTextInputModal((text) => {
+                if (!text || text.trim() === '') {
+                    return;
+                }
+                textCounter++;
+                const fabricText = new fabric.IText(text, {
+                    left: x,
+                    top: y,
+                    fontSize: currentFontSize,
+                    fontFamily: currentFontFamily,
+                    fontWeight: currentFontWeight,
+                    fill: currentTextColor,
+                    editable: true,
+                    name: `text_${textCounter}`,
+                    selectable: true,
+                    evented: true,
+                    hasControls: true,
+                    hasBorders: true,
+                    cornerStyle: 'circle',
+                    cornerColor: '#22c55e',
+                    transparentCorners: false,
+                    padding: 5,
+                    strokeWidth: 0
+                });
+                fabricCanvas.add(fabricText);
+                fabricCanvas.setActiveObject(fabricText);
+                fabricCanvas.renderAll();
+                saveState();
+                setTimeout(() => {
+                    setMode('select');
+                }, 100);
+            });
+        }
+
+        function showTextInputModal(callback) {
+            let modal = document.getElementById('textInputModal');
+            if (!modal) {
+                const modalHTML = `
+                    <div id="textInputModal" class="modal fade" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title">
+                                        <i class="ti ti-text"></i> Thêm văn bản
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nội dung văn bản</label>
+                                        <textarea id="textInputField" class="form-control"
+                                                  rows="4" placeholder="Nhập văn bản của bạn..."></textarea>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-6">
+                                            <label class="form-label">Kích thước</label>
+                                            <input type="number" id="modalTextSize" class="form-control"
+                                                   value="24" min="8" max="200">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label">Màu</label>
+                                            <input type="color" id="modalTextColor" class="form-control form-control-color"
+                                                   value="#000000" style="height: 38px;">
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mt-2">
+                                        <div class="col-6">
+                                            <label class="form-label">Font</label>
+                                            <select id="modalTextFont" class="form-select">
+                                                <option value="Arial">Arial</option>
+                                                <option value="Times New Roman">Times New Roman</option>
+                                                <option value="Courier New">Courier New</option>
+                                                <option value="Verdana">Verdana</option>
+                                                <option value="Georgia">Georgia</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label">Độ đậm</label>
+                                            <select id="modalTextWeight" class="form-select">
+                                                <option value="normal">Bình thường</option>
+                                                <option value="bold">Đậm</option>
+                                                <option value="lighter">Nhạt</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        Hủy
+                                    </button>
+                                    <button type="button" class="btn btn-primary" id="textInputConfirm">Thêm văn bản</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                modal = document.getElementById('textInputModal');
+            }
+
+            // Reset fields
+            document.getElementById('textInputField').value = '';
+            document.getElementById('modalTextSize').value = currentFontSize;
+            document.getElementById('modalTextColor').value = currentTextColor;
+            document.getElementById('modalTextFont').value = currentFontFamily;
+            document.getElementById('modalTextWeight').value = currentFontWeight;
+
+            // Cập nhật biến toàn cục từ modal
+            document.getElementById('modalTextSize').addEventListener('change', function() {
+                currentFontSize = parseInt(this.value);
+            });
+            document.getElementById('modalTextColor').addEventListener('change', function() {
+                currentTextColor = this.value;
+            });
+            document.getElementById('modalTextFont').addEventListener('change', function() {
+                currentFontFamily = this.value;
+            });
+            document.getElementById('modalTextWeight').addEventListener('change', function() {
+                currentFontWeight = this.value;
+            });
+
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+
+            const confirmBtn = document.getElementById('textInputConfirm');
+            const textField = document.getElementById('textInputField');
+
+            // Focus vào input
+            setTimeout(() => textField.focus(), 100);
+
+            const handleConfirm = () => {
+                const text = textField.value;
+                bsModal.hide();
+
+                // Xóa event listener cũ
+                confirmBtn.removeEventListener('click', handleConfirm);
+                textField.removeEventListener('keydown', handleEnter);
+
+                callback(text);
+            };
+
+            const handleEnter = (e) => {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    e.preventDefault();
+                    handleConfirm();
+                }
+            };
+
+            confirmBtn.addEventListener('click', handleConfirm);
+            textField.addEventListener('keydown', handleEnter);
+
+            // Xóa event listener khi modal đóng
+            modal.addEventListener('hidden.bs.modal', () => {
+                confirmBtn.removeEventListener('click', handleConfirm);
+                textField.removeEventListener('keydown', handleEnter);
+            });
+        }
+
+        function updateSelectedTextProperties() {
+            const activeObject = fabricCanvas.getActiveObject();
+
+            if (!activeObject || activeObject.type !== 'i-text') {
+                return;
+            }
+
+            activeObject.set({
+                fontSize: parseInt($('#textFontSize').val()),
+                fontFamily: $('#textFontFamily').val(),
+                fill: $('#textColor').val(),
+                fontWeight: $('#textFontWeight').val()
+            });
+
+            fabricCanvas.renderAll();
+            saveState();
+        }
+
+        function setupTextControls() {
+            $('#btnAddText').click(() => {
+                setMode('text');
+                saveEditorState();
+            });
+
+            $('#textColor').on('change', function() {
+                currentTextColor = $(this).val();
+                updateSelectedTextProperties();
+            });
+
+            $('#textFontSize').on('change', function() {
+                currentFontSize = parseInt($(this).val());
+                updateSelectedTextProperties();
+            });
+
+            $('#textFontFamily').on('change', function() {
+                currentFontFamily = $(this).val();
+                updateSelectedTextProperties();
+            });
+
+            $('#textFontWeight').on('change', function() {
+                currentFontWeight = $(this).val();
+                updateSelectedTextProperties();
+            });
+
+            // Cập nhật UI khi chọn text object
+            fabricCanvas.on('object:selected', function(e) {
+                if (e.selected[0] && e.selected[0].type === 'i-text') {
+                    $('#textControls').show();
+                    $('#textColor').val(e.selected[0].fill || '#000000');
+                    $('#textFontSize').val(e.selected[0].fontSize);
+                    $('#textFontFamily').val(e.selected[0].fontFamily || 'Arial');
+                    $('#textFontWeight').val(e.selected[0].fontWeight || 'normal');
+
+                    // Cập nhật biến toàn cục
+                    currentTextColor = e.selected[0].fill || '#000000';
+                    currentFontSize = e.selected[0].fontSize;
+                    currentFontFamily = e.selected[0].fontFamily || 'Arial';
+                    currentFontWeight = e.selected[0].fontWeight || 'normal';
+                } else {
+                    $('#textControls').hide();
+                }
+            });
+
+            fabricCanvas.on('selection:cleared', function() {
+                $('#textControls').hide();
+            });
         }
 
         function updateCanvasCursor() {
@@ -1887,7 +2240,7 @@
         function saveState() {
             redoStack = [];
             undoStack.push(JSON.stringify(fabricCanvas.toJSON()));
-            if (undoStack.length > 50) undoStack.shift(); // Giới hạn stack size
+            if (undoStack.length > 50) undoStack.shift();
         }
 
         function undo() {
@@ -1966,7 +2319,7 @@
             if (activeObject && activeObject.isEditing) {
                 return;
             }
-            // Check for Ctrl/Cmd key
+
             const ctrlKey = e.ctrlKey || e.metaKey;
 
             if (ctrlKey) {
@@ -1999,7 +2352,6 @@
                         break;
                 }
             } else {
-                // Single key shortcuts
                 if (keyboardShortcuts[e.code]) {
                     e.preventDefault();
                     const action = keyboardShortcuts[e.code];
@@ -2191,11 +2543,9 @@
 
             // Thêm vào đầu danh sách
             khoaContainer.insertBefore(imageItem, khoaContainer.firstChild);
-
-            // KHỞI TẠO TOOLTIP CHO TẤT CẢ NÚT - SỬ DỤNG HÀM initTooltip CUSTOM
             const tooltipElements = imageItem.querySelectorAll('[data-bs-toggle="tooltip"]');
             tooltipElements.forEach(el => {
-                initTooltip(el); // Sử dụng hàm initTooltip custom của bạn
+                initTooltip(el); // Sử dụng hàm initTooltip
             });
 
             // Cập nhật số lượng
@@ -2212,6 +2562,7 @@
                 block: 'nearest'
             });
         }
+
         window.openImageEditor = function(imageData) {
             currentImageData = imageData;
             $('#imageEditorModal').modal('show');
