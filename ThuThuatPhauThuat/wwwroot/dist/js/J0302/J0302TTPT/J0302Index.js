@@ -6,7 +6,10 @@ var currentTabIndex = 0;
 window.yhct = false;
 window.IDKhoa = 0;
 window.MaKhoa = "";
-
+var maChanDoanVao_0301 = "";
+var tenChanDoanVao_0301 = "";
+window.idPhongThucHien_0301 = null;
+window.tendichvu0301 = "";
 function resetPatientSelection() {
     selectedIdVaoVien = null;
     selectedIdChiDinhChiTiet = null;

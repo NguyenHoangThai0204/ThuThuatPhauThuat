@@ -21,50 +21,11 @@ function updateDateTime() {
     $("#info-datetime", window.parent.document).text(formatted);
 }
 
-//$(document).on("click", "#example tbody tr", function () {
-//    // Xóa class active trước đó
-//    $("#example tbody tr").removeClass("table-active");
-//    $(this).addClass("table-active");
-
-//    // Cập nhật thông tin
-//    var tenBN = $(this).find("td:eq(2)").text().trim();
-//    var namSinh = $(this).find("td:eq(3)").text().trim();
-//    var gioiTinh = $(this).find("td:eq(4)").text().trim();
-//    var bacSi = $(this).find("td:eq(10)").text().trim();
-//    var tendichvu = $(this).find("td:eq(7)").text().trim();
-
-//    selectedIdVaoVien = $(this).data("idvaovien");
-//    selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
-//    window.IDPhieuTTPT = $(this).data("idphieu");
-//    window.MaKhoa = $(this).data("makhoa");
-//    window.yhct = $(this).data("yhct");
-//    window.IDKhoa = $(this).data("idkhoa");
-
-//    console.log("🔄 Đã chọn bệnh nhân mới:", {
-//        idVaoVien: selectedIdVaoVien,
-//        idChiDinhChiTiet: selectedIdChiDinhChiTiet,
-//        idPhieu: window.IDPhieuTTPT
-//    });
-
-//    $("#info-tenbn", window.parent.document).text(tenBN);
-//    $("#info-namsinh", window.parent.document).text(namSinh + " - " + gioiTinh);
-//    $("#info-bacsi", window.parent.document).text(bacSi);
-//    $("#info-tendichvu", window.parent.document).text(tendichvu);
-
-//    // ✅ KIỂM TRA TAB HIỆN TẠI - CHỈ LOAD THÔNG TIN SỐ PHIẾU NẾU KHÔNG Ở TAB DANH SÁCH
-//    const activeTab = $('a[data-bs-toggle="tab"].active').attr("href");
-//    console.log("📑 Tab hiện tại khi chọn bệnh nhân:", activeTab);
-
-//    if (activeTab !== "#tabs-danhsach-7" && typeof loadGlobalSoPhieu === 'function') {
-//        loadGlobalSoPhieu(true);
-//    }
-//});
 $(document).on("click", "#example tbody tr", function (e) {
     // 🧹 Xóa class active trước đó
     $("#example tbody tr").removeClass("table-active");
     $(this).addClass("table-active");
-
-    const noiThucHien = $(this).find("td:eq(9)").text().trim();
+    var noiThucHien = $(this).find("td:eq(9)").text().trim();
 
     // 🕐 Chờ TomSelect load xong rồi mới setValue
     const waitForTomSelect = (retries = 5) => {
@@ -90,10 +51,8 @@ $(document).on("click", "#example tbody tr", function (e) {
 
         if (found) {
             phongBuongSelect.setValue(found.id, true);
-            console.log("🏥 Đã cập nhật TomSelect theo phòng:", found.ten);
         } else {
             phongBuongSelect.clear();
-            console.warn("⚠️ Không tìm thấy phòng:", noiThucHien);
         }
     }).catch(err => console.warn(err));
 
@@ -107,11 +66,13 @@ $(document).on("click", "#example tbody tr", function (e) {
     selectedIdVaoVien = $(this).data("idvaovien");
     selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
     window.IDPhieuTTPT = $(this).data("idphieu");
+    maChanDoanVao_0301 = $(this).data("machandoanvao");
+    tenChanDoanVao_0301 = $(this).data("tenchandoanvao");
 
     // ⚙️ Cập nhật nút Xóa
     const btnXoa = document.getElementById("btnXoaPhieuTTPT");
     if (btnXoa) {
-        btnXoa.disabled = !window.IDPhieuTTPT;
+        btnXoa.disabled = !window.IDPhieuTTPT; 
         btnXoa.classList.toggle("btn-secondary", !window.IDPhieuTTPT);
         btnXoa.classList.toggle("btn-danger", !!window.IDPhieuTTPT);
     }
@@ -120,8 +81,9 @@ $(document).on("click", "#example tbody tr", function (e) {
     window.MaKhoa = $(this).data("makhoa");
     window.yhct = $(this).data("yhct");
     window.IDKhoa = $(this).data("idkhoa");
-
-    // 🩺 Hiển thị thông tin bệnh nhân
+    window.idPhongThucHien_0301 = $(this).data("idphongthuchien0301");
+    window.tendichvu0301 = $(this).data("tendichvu0301");
+    console.log("Ten dich vu =", window.tendichvu0301);
     $("#info-tenbn", window.parent.document).text(tenBN);
     $("#info-namsinh", window.parent.document).text(`${namSinh} - ${gioiTinh}`);
     $("#info-bacsi", window.parent.document).text(bacSi);
@@ -242,9 +204,28 @@ function renderTable(data, page = 1, size = 10) {
     const pageData = data.slice(start, start + size);
 
     pageData.forEach((item, index) => {
+
         const ngayGioEncoded = encodeURIComponent(item.ngayGioChiDinh || "");
+        const maChanDoanEncoded = encodeURIComponent(item.maChanDoanVao || 'Z00');
+        const tenChanDoanEncoded = encodeURIComponent(
+            item.tenChanDoanVao ||
+            'Khám tổng quát và kiểm tra sức khỏe cho những người không có điều gì than phiền về sức khỏe hoặc những người đã có chẩn đoán'
+        );
         tbody.append(`
-            <tr data-idvaovien="${item.idVaoVien || ''}" data-yhct="${item.yHocCoTruyen}" data-idkhoa="${item.idKhoa || 0}" data-idchidinhct="${item.idChiDinhChiTiet || ''}" data-idphieu="${item.idPhieuTTPT || 0}" data-makhoa="${item.maKhoa || ''}" data-ngaygiochidinh="${ngayGioEncoded}">
+            <tr
+            data-idvaovien="${item.idVaoVien || ''}" 
+            data-yhct="${item.yHocCoTruyen}" 
+            data-idkhoa="${item.idKhoa || 0}" 
+            data-idchidinhct="${item.idChiDinhChiTiet || ''}" 
+            data-idphieu="${item.idPhieuTTPT || 0}" 
+            data-makhoa="${item.maKhoa || ''}" 
+            data-ngaygiochidinh="${ngayGioEncoded}" 
+            data-machandoanvao="${maChanDoanEncoded}" 
+            data-tenchandoanvao="${tenChanDoanEncoded}" 
+            data-idphongthuchien0301="${item.idPhongThucHien || 0}"
+            data-tendichvu0301="${item.dichVuKyThuat || ''}
+            
+            ">
                 <td class="text-center">${start + index + 1}</td>
                 <td class="text-center">${item.maBenhNhan || ""}</td>
                 <td>${item.tenBenhNhan || ""}</td>

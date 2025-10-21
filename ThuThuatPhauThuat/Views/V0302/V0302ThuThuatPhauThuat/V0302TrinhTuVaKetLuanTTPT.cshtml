@@ -191,12 +191,11 @@
                         <div class="row">
                             <div class="col-12 mb-3">
                                 <label for="moTaLuocDo" class="form-label">Mô tả lược đồ</label>
-                                <div id="moTaLuocDo" contenteditable="true" class="form-control editor-content" style="height: 180px; max-height: 180px; overflow-y: auto;"></div>
-
+                                <textarea id="moTaLuocDo" class="form-control editor-content"></textarea>
                             </div>
                             <div class="col-12">
                                 <label for="noiDungTrinhTu" class="form-label">Nội dung trình tự</label>
-                                <div id="noiDungTrinhTu" contenteditable="true" class="form-control editor-content" style="height: 180px; max-height: 180px; overflow-y: auto;"></div>
+                                <textarea id="noiDungTrinhTu" class="form-control editor-content"></textarea>
                             </div>
                         </div>
                     </div>
@@ -204,9 +203,9 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary me-auto d-none" id="btnCancel">Hủy</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-secondary d-none" id="btnCancel">Hủy</button>
                 <button type="button" class="btn btn-success" id="btnSave">Lưu thay đổi</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>
@@ -386,6 +385,7 @@
 </div>
 
 <link href="~/dist/css/CSS0305/CSS0305TTPT/CSS0305TrinhTuVaKetLuan.css" rel="stylesheet" />
+<script src="~/dist/lib/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 <script src="~/dist/js/J0302/J0302TTPT/J0303TemplateTuongTrinh.js" asp-append-version="true" defer></script>
 <script src="~/dist/lib/fabric/fabric.min.js" asp-append-version="true" defer></script>
 
@@ -2644,6 +2644,8 @@
     }
     loadTrinhTuVaKetLuanWithFocus(window.IDPhieuTTPT);
     window.loadTrinhTuVaKetLuanWithFocus = loadTrinhTuVaKetLuanWithFocus;
+
+
     /* UPDATE MODAL MOI */
     function openModalFnc(){
         var currentIdKhoa = window.IDKhoa;
@@ -2670,6 +2672,28 @@
             console.log("Modal template đã đóng. Đang tải lại danh sách mẫu...");
             reloadTemplateSelect();
         });
+    });
+        tinymce.init({
+        selector: '#moTaLuocDo, #noiDungTrinhTu',
+        height: 180,
+        menubar: false,
+        plugins: 'lists advlist autolink charmap preview anchor searchreplace visualblocks insertdatetime table help wordcount',
+        toolbar: "accordion addcomment aidialog aishortcuts alignleft aligncenter alignjustify alignright | bold underline italic | fontfamily fontsize forecolor | undo redo | lineheight",
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } p { margin: 0; padding: 0; }',
+                    promotion: false,
+            branding: false,
+            text_patterns: false,
+         font_family_formats: 'Times New Roman=Times New Roman,Times,serif; Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace; Georgia=georgia,palatino; Tahoma=tahoma,arial,helvetica,sans-serif; Verdana=verdana,geneva',
+        forced_root_block: 'p',
+         paste_data_images: true,
+        paste_webkit_styles: 'font-weight font-style', 
+        paste_remove_styles_if_webkit: true, 
+        paste_as_text: false, 
+
+        paste_word_valid_elements: 'b,strong,i,em,ul,ol,li,p,br',
+        paste_preprocess: function(plugin, args) {
+            args.content = args.content.replace(/ style="[^"]*"/g, '').replace(/ class="[^"]*"/g, '');
+        }
     });
 
 </script>

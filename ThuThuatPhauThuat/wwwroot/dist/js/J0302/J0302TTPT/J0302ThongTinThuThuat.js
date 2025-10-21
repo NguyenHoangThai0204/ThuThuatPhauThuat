@@ -104,7 +104,6 @@ function loadInitialOptions(tomSelectInstance, isYhct = false) {
         dataType: 'json',
         success: function (response) {
             if (Array.isArray(response)) {
-                console.log("loadInitialOptions =  ", response);
                 response.forEach(icd => {
                     tomSelectInstance.addOption(icd);
                 });
@@ -175,30 +174,6 @@ function initTomSelect(elementId, initialValue, isYhct = false) {
 
     return tomSelectInstance;
 }
-
-
-//function addICDTag(type, icdId, icdCode, icdName) {
-//    const displayArea = document.getElementById(`hien_thi_icd_${type}`)
-
-//    if (selectedICDs[type]?.find((item) => String(item.id) === String(icdId))) {
-//        return
-//    }
-//    selectedICDs[type].push({ id: icdId, ma: icdCode, ten: icdName })
-
-//    const tag = document.createElement("span")
-//    tag.className = "icd-tag"
-//    const escapedIcdId = String(icdId).replace(/'/g, "\\'")
-
-//    // Gán ID vào dataset để xóa chính xác
-//    tag.dataset.icdId = escapedIcdId;
-
-//    tag.innerHTML = `
-//    ${icdCode}
-//    <button type="button" class="remove-btn" onclick="removeICDTag('${type}', '${escapedIcdId}')">×</button>
-//  `
-//    displayArea.appendChild(tag)
-//    renderICDNameInputs(type);
-//}
 function addICDTag(type, icdId, icdCode, icdName) {
     if (selectedICDs[type]?.find(item => String(item.id) === String(icdId))) {
         return;
@@ -227,22 +202,7 @@ function addICDTag(type, icdId, icdCode, icdName) {
     `;
     nameContainer.appendChild(inputRow);
 }
-//function removeICDTag(type, icdId) {
-//    const displayArea = document.getElementById(`hien_thi_icd_${type}`)
 
-//    selectedICDs[type] = selectedICDs[type].filter((item) => String(item.id) !== icdId)
-
-//    const tags = displayArea.querySelectorAll(".icd-tag")
-//    tags.forEach((tag) => {
-//        if (tag.dataset.icdId === icdId) {
-//            tag.remove()
-//        }
-//    })
-
-//    renderICDNameInputs(type);
-//    updateICDTextArea(type);
-
-//}
 function removeICDTag(type, icdId) {
     selectedICDs[type] = selectedICDs[type].filter(item => String(item.id) !== icdId);
 
@@ -258,15 +218,7 @@ function removeICDTag(type, icdId) {
         inputRowToRemove.remove();
     }
 }
-//function updateICDTextArea(type) {
-//    const $targetTextarea = $(`#ten_icd_${type}`);
 
-//    const content = selectedICDs[type]
-//        .map(item => `${item.ten}`)
-//        .join('; \n');
-
-//    $targetTextarea.val(content);
-//}
 function renderICDNameInputs(type) {
     const nameContainer = document.getElementById(`ten_icd_${type}`);
     if (!nameContainer) return;
@@ -495,86 +447,107 @@ function getTomSelectConfigs(allDataThongTin) {
     ]
 }
 
-//function processICDLoading(type, idChanDoanStr, maChanDoanStr, tenChanDoanStr) {
-//    // 1. Kiểm tra dữ liệu đầu vào
-//    if (!idChanDoanStr || !maChanDoanStr || !tenChanDoanStr) {
-//        console.warn(`[ICD Load] Thiếu dữ liệu load cho loại: ${type}`);
-//        return;
-//    }
 
-//    // 2. Chuẩn bị (Reset State)
-//    selectedICDs[type] = [];
-//    const displayArea = document.getElementById(`hien_thi_icd_${type}`);
-//    if (displayArea) {
-//        displayArea.innerHTML = '';
-//    }
-
-//    // 3. Phân tách chuỗi thành mảng
-//    const ids = idChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
-//    const codes = maChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
-//    const names = tenChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
-
-//    // Kiểm tra số lượng phần tử phải bằng nhau
-//    if (ids.length !== codes.length || ids.length !== names.length) {
-//        console.error(`[ICD Load] Lỗi đồng bộ: Số lượng ID (${ids.length}), Mã (${codes.length}), và Tên (${names.length}) không khớp cho loại: ${type}. Bỏ qua load.`, { ids, codes, names });
-//        return;
-//    }
-
-//    // 4. Lặp và gọi addICDTag
-//    ids.forEach((id, index) => {
-//        const ma = codes[index];
-//        const ten = names[index];
-
-//        let finalName = ten;
-//        if (finalName.startsWith(ma + ':')) {
-//            finalName = finalName.substring(ma.length + 1).trim();
-//        }
-
-//        // Gọi hàm addICDTag để tạo tag và cập nhật selectedICDs
-//        addICDTag(type, id, ma, finalName);
-
-//        // Log để kiểm tra:
-//        //console.log(`[ICD Load] Đã thêm: ${type} - ID: ${id}, Mã: ${ma}, Tên: ${finalName}`);
-//    });
-//}
-function processICDLoading(type, idChanDoanStr, maChanDoanStr, tenChanDoanStr) {
-    if (!idChanDoanStr || !maChanDoanStr || !tenChanDoanStr) {
-        return;
-    }
-
-    // Reset state
+function processICDLoading(type, idStr, maStr, tenStr) {
     selectedICDs[type] = [];
     const displayArea = document.getElementById(`hien_thi_icd_${type}`);
     if (displayArea) displayArea.innerHTML = '';
+    const nameContainer = document.getElementById(`ten_icd_${type}`);
+    if (nameContainer) nameContainer.innerHTML = '';
 
-    // Phân tách chuỗi
-    const ids = idChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
-    const codes = maChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
-    const names = tenChanDoanStr.split(';').map(s => s.trim()).filter(s => s.length > 0);
-
-    if (ids.length !== codes.length || ids.length !== names.length) {
-        console.error(`Lỗi đồng bộ dữ liệu ICD cho loại: ${type}.`);
+    if (!idStr || !maStr || !tenStr) {
         return;
     }
 
-    // Lặp qua và tạo lại giao diện
-    ids.forEach((id, index) => {
-        // Tên đã được custom, nên ta lấy thẳng từ chuỗi tên
-        const customName = names[index];
-        const code = codes[index];
-        // Gọi hàm addICDTag để tạo tag và cập nhật selectedICDs
-        addICDTag(type, id, code, customName);
-    });
+    const ids = idStr.split(';').map(s => s.trim());
+    const mas = maStr.split(';').map(s => s.trim());
+    const tens = tenStr.split(';').map(s => s.trim());
+
+    if (ids.length === mas.length && mas.length === tens.length) {
+        for (let i = 0; i < ids.length; i++) {
+            if (ids[i] && mas[i]) {
+                addICDTag(type, ids[i], mas[i], tens[i] || '');
+            }
+        }
+    } else {
+        console.error(`Dữ liệu ICD không nhất quán cho loại [${type}]:`, { ids, mas, tens });
+    }
 }
-function bindDataToForm(data) {
-    if (!data) return;
+async function fetchICDDetailsByCode(codesStr) {
+    if (!codesStr) return [];
+    try {
+        const response = await fetch(`/thu_thuat_phau_thuat/thong-tin/get-icd-details-by-codes?codes=${encodeURIComponent(codesStr)}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Lỗi khi fetch chi tiết ICD:", error);
+        toastr.error("Không thể tải thông tin ICD mặc định.");
+        return [];
+    }
+}
+async function bindDataToForm(data) {
+    if (!data) {
+        data = {};
+    }
+    console.log("Binding data:", data);
+    const hasChanDoanVao = data.maChanDoanVao && data.idChanDoanVao;
+    const hasChanDoanTruoc = data.maChanDoanTruoc && data.idChanDoanTruoc;
+    const hasChanDoanSau = data.maChanDoanSau && data.idChanDoanSau;
+    const phongSelect = document.querySelector(".cbPhongThucHien")?.tomselect;
 
-    // Bind dữ liệu vào các trường
-    processICDLoading('vao_khoa', data.idChanDoanVao, data.maChanDoanVao, data.tenChanDoanVao);
-    processICDLoading('truoc_thuat', data.idChanDoanTruoc, data.maChanDoanTruoc, data.tenChanDoanTruoc);
-    processICDLoading('sau_thuat', data.idChanDoanSau, data.maChanDoanSau, data.tenChanDoanSau);
 
-    document.getElementById('can_thiep_thu_thuat').value = data.canThiepThuThuat || '';
+    if (hasChanDoanVao) {
+        processICDLoading('vao_khoa', data.idChanDoanVao, data.maChanDoanVao, data.tenChanDoanVao);
+    }
+    if (hasChanDoanTruoc) {
+        processICDLoading('truoc_thuat', data.idChanDoanTruoc, data.maChanDoanTruoc, data.tenChanDoanTruoc);
+    }
+    if (hasChanDoanSau) {
+        processICDLoading('sau_thuat', data.idChanDoanSau, data.maChanDoanSau, data.tenChanDoanSau);
+    }
+    if (phongSelect) {
+        phongSelect.setValue(String(window.idPhongThucHien_0301));
+    }
+
+    if (!hasChanDoanVao || !hasChanDoanTruoc || !hasChanDoanSau) {
+
+        const defaultMaVao = decodeURIComponent(window.maChanDoanVao_0301 || '');
+        const defaultTenVao = decodeURIComponent(window.tenChanDoanVao_0301 || '');
+
+        const maVaoArray = !hasChanDoanVao ? defaultMaVao.split(';').map(s => s.trim()).filter(Boolean) : [];
+
+        const codesToFetch = ['Z00', ...maVaoArray];
+        const uniqueCodesToFetch = [...new Set(codesToFetch)].filter(Boolean);
+
+        let icdDetails = [];
+        if (uniqueCodesToFetch.length > 0) {
+            icdDetails = await fetchICDDetailsByCode(uniqueCodesToFetch.join(';'));
+        }
+
+        const z00Detail = icdDetails.find(icd => icd.ma === 'Z00');
+
+        if (!hasChanDoanVao && maVaoArray.length > 0) {
+            const icdIdMap = new Map(icdDetails.map(item => [item.ma, item.id]));
+
+            const idVaoStr = maVaoArray
+                .map(ma => icdIdMap.get(ma) || 0)
+                .join(';');
+
+            processICDLoading('vao_khoa', idVaoStr, defaultMaVao, defaultTenVao);
+        }
+
+        if (!hasChanDoanTruoc && z00Detail) {
+            processICDLoading('truoc_thuat', z00Detail.id.toString(), z00Detail.ma, z00Detail.ten);
+        }
+
+        if (!hasChanDoanSau && z00Detail) {
+            processICDLoading('sau_thuat', z00Detail.id.toString(), z00Detail.ma, z00Detail.ten);
+        }
+    }
+    console.log("Binding data to tendichvu:", window.tendichvu0301);
+    document.getElementById('can_thiep_thu_thuat').value = data.canThiepThuThuat || window.tendichvu0301;
     document.getElementById('so_lan_mo_lai').value = data.soLanMoLai || '';
     document.getElementById('ly_do_mo_lai').value = data.lyDoMoLai || '';
     document.getElementById('dan_luu').value = data.danLuu || '';
@@ -592,9 +565,6 @@ function bindDataToForm(data) {
         document.getElementById('ngay_cat_chi').value = "";
     }
 
-    //document.getElementById('ngay_rut_ong_dan_luu').value = formatDate(data.ngayRutOngDanLuu);
-    //document.getElementById('ngay_cat_chi').value = formatDate(data.ngayCatChi);
-
     document.getElementById('khac').value = data.khac || '';
     document.getElementById('ma_fna').value = data.maFNA || '';
     document.getElementById('tien_can').value = data.tienCan || '';
@@ -602,16 +572,15 @@ function bindDataToForm(data) {
     document.getElementById('chi_dinh_vi_tri_ton_thuong_fna').value = data.chiDinhViTriTonThuongFNA || '';
     document.getElementById('yeu_cau_xet_nghiem').value = data.yeuCauXetNghiem || '';
 
-    if (data.idPhongThucHien) {
-        const phongSelect = document.querySelector(".cbPhongThucHien")?.tomselect;
-        if (phongSelect) phongSelect.setValue(String(data.idPhongThucHien));
+    if (phongSelect && data.idPhongThucHien) {
+        console.log("Đang set idPhongThucHien:", data.idPhongThucHien);
+        phongSelect.setValue(String(data.idPhongThucHien));
+      
     }
-
     if (data.idThietBi) {
         const thietBiSelect = document.querySelector(".cbThietBi")?.tomselect;
         if (thietBiSelect) thietBiSelect.setValue(String(data.idThietBi));
     }
-
     if (data.idLoaiTTPT) {
         const plSelect = document.querySelector(".cbPhanLoai")?.tomselect;
         if (plSelect) plSelect.setValue(String(data.idLoaiTTPT));
@@ -669,31 +638,32 @@ function shouldPreventDataReload() {
     }
     return true;
 }
-function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
-    // Kiểm tra xem có nên ngăn load data không
-    if (!shouldPreventDataReload()) {
-        return; // Người dùng chọn hủy
-    }
 
+async function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
     if (idVaoVien && idChiNhanh && idChiDinhChiTiet) {
-        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${idChiDinhChiTiet}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    bindDataToForm(data.data);
-                    markFormAsClean(); // Đánh dấu form sạch sau khi load data
-                } else {
-                    console.error("Lỗi khi tải dữ liệu:", data.message);
-                }
-            })
-            .catch(error => console.error("Lỗi:", error));
-    }
-}
-async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
+        try {
+            const response = await fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${idChiDinhChiTiet}`);
+            const result = await response.json();
 
+            if (result.success && result.data) {
+                bindDataToForm(result.data);
+                markFormAsClean(); 
+                return result.data; 
+            } else {
+                console.error("Lỗi khi tải dữ liệu:", result.message);
+                return null;
+            }
+        } catch (error) {
+            console.error("Lỗi fetch dữ liệu:", error);
+            return null;
+        }
+    }
+    return null;
+}
+
+async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet ) {
     resetThongTinState();
-    const shouldLoadData = (idVaoVien !== null && idChiNhanh !== null && idChiDinhChiTiet !== null &&
-        isNewPatientSelection()); 
+
     const dataPromises = {
         phongBuong: fetchDataAndNormalize("dist/data/json/DM_PhongBuong.json", 'ten', 'viettat', _idcn),
         phanLoai: fetchDataAndNormalize("dist/data/json/DM_LoaiThuThuatPhauThuat.json", 'ten', 'viettat', _idcn),
@@ -703,31 +673,28 @@ async function initThongTinTab(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
         thietBi: fetchDataAndNormalize("dist/data/json/CLS_DanhMucMayCls.json", 'ten', 'viettat', _idcn),
         tuVong: fetchDataAndNormalize("/TuVong/List", 'ten', 'viettat', _idcn),
         voCam: fetchDataAndNormalize("dist/data/json/DM_PhuongPhapVoCam.json", 'ten', 'viettat', _idcn),
-
-
     };
 
     const results = await Promise.all(Object.values(dataPromises));
-    if (shouldLoadData) {
-        loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet);
-    }
-    if (idVaoVien !== null && idChiNhanh !== null && idChiDinhChiTiet !== null) {
-        loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet)
-    }
-
     const keys = Object.keys(dataPromises);
     keys.forEach((key, index) => {
         allDataThongTin[key] = results[index];
     });
 
-    let yhct = window.yhct;
-    configureICDTomSelect(yhct);
-
-
     const configs = getTomSelectConfigs(allDataThongTin);
     configCbThongTin(configs);
-    $('#btn_saveThongTin').on('click', handleSaveThongTin);
+    configureICDTomSelect(window.yhct);
 
+    let loadedData = null;
+    if (idVaoVien && idChiNhanh && idChiDinhChiTiet) {
+        if (!shouldPreventDataReload()) return; 
+        loadedData = await loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet);
+    }
+    if (!loadedData) {
+        await bindDataToForm({});
+    }
+
+    $('#btn_saveThongTin').off('click').on('click', handleSaveThongTin);
 }
 function formatDate(date) {
     if (!date) return '';
@@ -754,21 +721,45 @@ function updateDateTime() {
     var formatted = formatDateTime(now);
     $("#info-datetime", window.parent.document).text(formatted);
 }
-function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
-    if (idVaoVien && idChiNhanh && idChiDinhChiTiet) {
-        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${idChiDinhChiTiet}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    //console.log("data = ", data.data);
-                    bindDataToForm(data.data);
-                } else {
-                    console.error("Lỗi khi tải dữ liệu:", data.message);
-                }
-            })
-            .catch(error => console.error("Lỗi:", error));
-    }
-}
+//function loadData(idVaoVien, idChiNhanh, idChiDinhChiTiet) {
+//    if (idVaoVien && idChiNhanh && idChiDinhChiTiet) {
+//        fetch(`/thu_thuat_phau_thuat/get_thong_tin_chi_tiet?idVaoVien=${idVaoVien}&idChiNhanh=${idChiNhanh}&idChiDinhChiTiet=${idChiDinhChiTiet}`)
+//            .then(response => response.json())
+//            .then(data => {
+//                if (data.success) {
+//                    bindDataToForm(data.data);
+//                } else {
+//                    console.error("Lỗi khi tải dữ liệu:", data.message);
+//                }
+//            })
+//            .catch(error => console.error("Lỗi:", error));
+//    }
+//}
+
+//async function setDefaultICDs(defaultMaVao, defaultTenVao) {
+//    const maVaoArray = defaultMaVao ? defaultMaVao.split(';').map(s => s.trim()).filter(Boolean) : [];
+
+//    const codesToFetch = ['Z00', ...maVaoArray];
+//    const uniqueCodesToFetch = [...new Set(codesToFetch)];
+
+//    const icdDetails = await fetchICDDetailsByCode(uniqueCodesToFetch.join(';'));
+
+//    if (maVaoArray.length > 0) {
+//        const icdIdMap = new Map(icdDetails.map(item => [item.ma, item.id]));
+
+//        const idVaoStr = maVaoArray
+//            .map(ma => icdIdMap.get(ma) || 0) 
+//            .join(';');
+
+//        processICDLoading('vao_khoa', idVaoStr, defaultMaVao, defaultTenVao);
+//    }
+
+//    const z00Detail = icdDetails.find(icd => icd.ma === 'Z00');
+//    if (z00Detail) {
+//        processICDLoading('truoc_thuat', z00Detail.id.toString(), z00Detail.ma, z00Detail.ten);
+//        processICDLoading('sau_thuat', z00Detail.id.toString(), z00Detail.ma, z00Detail.ten);
+//    }
+//}
 function configCbThongTin(configs) {
     configs.forEach((cfg) => {
         const element = document.querySelector(cfg.className);

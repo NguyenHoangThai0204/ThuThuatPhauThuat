@@ -31,6 +31,34 @@
     .table-responsive {
         min-height: 300px;
     }
+
+    .input-group-ellipsis {
+        position: relative;
+    }
+
+    .ellipsis-btn {
+        position: absolute;
+        right: -7px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 10;
+        padding: 2px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+    }
+
+        .ellipsis-btn:hover {
+            background-color: #ccc;
+        }
+
+        .ellipsis-btn svg {
+            width: 16px;
+            height: 16px;
+            color: #6c757d;
+        }
 </style>
 
 <div class="container mt-1 compact-form card p-2">
@@ -38,8 +66,15 @@
         <div class="col-md-4 mb-3 ">
             <select class="tom-select cbNhanVien form-select" id="cb_NhanVien"></select>
         </div>
-        <div class="col-md-4 mb-3 ">
-            <select class="tom-select cbVaiTro form-select" id="cb_VaiTro"></select>
+        <div class="col-md-4 mb-3 input-group-ellipsis">
+            <select class="tom-select cbVaiTro form-select" id="cb_VaiTro" title="Chỉnh sửa vai trò"></select>
+            <button type="button" class="ellipsis-btn" id="btnOpenVaiTroModal" onclick="openThemVaiTroModal_0301()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="1" />
+                    <circle cx="12" cy="5" r="1" />
+                    <circle cx="12" cy="19" r="1" />
+                </svg>
+            </button>
         </div>
         <div class="col-md-4 mb-3 ">
             <div class="row">
@@ -57,19 +92,7 @@
                 </span>
             </div>
         </div>
-        @* <div class="row mt-2">
-            <div class="col-12 text-end">
-                <button type="button" class="btn btn-success" id="btn_saveEkip" title="Lưu danh sách ekip">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 0 2 -2"></path>
-                        <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                        <path d="M14 4l0 4l-4 0"></path>
-                    </svg>
-                    Lưu Dữ Liệu
-                </button>
-            </div>
-        </div> *@
+       
     </div>
 
     <div class="row">
@@ -92,5 +115,134 @@
         </div>
     </div>
 </div>
-<!-- Đã đổi ID nút thêm từ btn_ghiChu thành btn_addEkip để rõ ràng hơn -->
+<div class="modal fade" id="vaiTroModal" tabindex="-1" aria-labelledby="vaiTroModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vaiTroModalLabel">Quản lý vai trò phẫu thuật</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5 border-end pe-4">
+                        <h4 class="mb-3">Danh sách vai trò hiện có</h4>
+
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Nhập mã hoặc tên vai trò..." id="vaiTroSearchInput">
+                            <button class="btn btn-primary" type="button" id="vaiTroSearchBtn">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24"
+                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <circle cx="10" cy="10" r="7" />
+                                    <line x1="21" y1="21" x2="15" y2="15" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="table-responsive" style="height: 300px; max-height: 300px; overflow-y:auto;">
+                            <table class="table table-bordered table-striped align-middle table-sm">
+                                <thead>
+                                    <tr class="table-primary">
+                                        <th scope="col" style="width: 5%;" class="text-center">STT</th>
+                                        <th scope="col" style="width: 15%;" class="text-center">Mã vai trò</th>
+                                        <th scope="col" style="width: 55%;" class="text-center">Tên Vai trò</th>
+                                        <th scope="col" style="width: 25%;" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="vaiTroTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span class="me-2">Hiển thị:</span>
+                                <select class="form-select form-select-sm d-inline-block" style="width: 70px;" id="vaiTroPageSizeSelect">
+                                    <option value="5" selected>5</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                </select>
+                            </div>
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0" id="vaiTroPagination">
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7 ps-4">
+                        <h4 class="mb-3">Thêm/Chỉnh sửa vai trò</h4>
+                        <form id="vaiTroForm">
+                            <input type="hidden" id="vaiTroId" value="">
+
+                            <div class="form-group mb-3">
+                                <label for="vaiTroMa" class="form-label" style="min-width: 100px;">Mã vai trò:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="vaiTroMa" placeholder="VD: BSPTC, PM1..." required>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="vaiTroTen" class="form-label" style="min-width: 100px;">Tên vai trò:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="vaiTroTen" placeholder="VD: Bác sĩ chính, Phụ mổ 1..." required>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="vaiTroRole" class="form-label" style="min-width: 100px;">Nhóm vai trò:</label>
+                                <select class="form-select" id="vaiTroRole" required>
+                                    <option value="" selected disabled>-- Chọn nhóm --</option>
+                                    <option value="1">Bác sĩ phẫu thuật</option>
+                                    <option value="2">Phụ mổ</option>
+                                    <option value="3">Bác sĩ gây mê</option>
+                                    <option value="4">Kỹ thuật viên gây mê</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="bacSiChinh" class="form-label" style="min-width: 100px;">Bác sĩ chính:</label>
+                                <div class="d-flex justify-content-center align-content-center">
+                                    <input type="checkbox" class="form-check" id="vaiTroCheck" required />
+
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="saveVaiTroTTPT()" id="btnSaveVaiTro">Lưu vai trò</button>
+                                <button type="button"
+                                        class="btn btn-secondary btn-lg"
+                                        id="vaiTroCancelBtn"
+                                        style="display: none;"
+                                        onclick="resetVaiTroForm()">
+                                    Hủy sửa
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteVaiTroModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Xác nhận xoá vai trò</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Bạn có chắc chắn muốn xoá vai trò này không?<br>
+                    <strong>Hành động này không thể hoàn tác!</strong>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                <button type="button" class="btn btn-danger" id="btn_confirmDeleteVaiTro">Xoá</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/dist/js/J0302/J0302TTPT/J0302EkipThucHien.js" asp-append-version="true" defer></script>

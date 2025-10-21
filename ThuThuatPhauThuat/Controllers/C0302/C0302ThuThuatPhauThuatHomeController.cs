@@ -196,7 +196,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             //var quyenVaiTro = await _memoryCache.getQuyenVaiTro(_maChucNang);
             //if (quyenVaiTro == null)
             //{
-            //    return RedirectToAction("NotFound", "Home");
+            //    return RedirectToAction("NotFound", "HomXuate");
             //}
             //ViewBag.quyenVaiTro = quyenVaiTro;
             //ViewData["Title"] = CommonServices.toEmptyData(quyenVaiTro);
@@ -523,6 +523,41 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             return Ok(results);
         }
 
+        [HttpGet("thong-tin/get-icd-details-by-codes")]
+        public IActionResult GetIcdDetailsByCodes([FromQuery] string codes, [FromQuery] bool yhct = false)
+        {
+            if (string.IsNullOrWhiteSpace(codes))
+            {
+                return Ok(new List<object>());
+            }
+
+            var codeList = codes.Split(';')
+                                .Select(c => c.Trim())
+                                .Where(c => !string.IsNullOrEmpty(c))
+                                .ToList();
+
+            if (!codeList.Any())
+            {
+                return Ok(new List<object>());
+            }
+
+            var allIcd = _icdService.GetAllIcdData(yhct);
+
+            var results = from code in codeList
+                          join icd in allIcd on code equals icd.ma into gj
+                          from subIcd in gj.DefaultIfEmpty()
+                          select new
+                          {
+                              id = subIcd?.id ?? 0,
+                              ma = code,
+                              ten = subIcd?.ten ?? "Không tìm thấy",
+                              viettat = subIcd?.viettat,
+                              active = subIcd?.active ?? false
+                          };
+
+            return Ok(results.ToList());
+        }
+
 
         [HttpPost("thong-tin/save-thong-tin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -711,7 +746,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
             }
         }
         [HttpGet]
-        [Route("trinh-tu/vai-tro-ttpt")]
+        [Route("ekip/vai-tro-ttpt")]
         public async Task<IActionResult> GetVaiTroTTPT()
         {
             try
@@ -724,7 +759,7 @@ namespace ThuThuatPhauThuat.Controllers.C0302
 
                     using (var command = connection.CreateCommand())
                     {
-                        command.CommandText = "SELECT ID, Ma, Ten, Active FROM DM_VaiTroTTPT";
+                        command.CommandText = "SELECT ID, Ma, Ten, MaVaiTroTTPT, Active FROM DM_VaiTroTTPT";
                         using (var reader = await command.ExecuteReaderAsync())
                         {
                             while (await reader.ReadAsync())
@@ -734,7 +769,8 @@ namespace ThuThuatPhauThuat.Controllers.C0302
                                     ID = reader.GetInt64(0),
                                     Ma = reader.GetString(1),
                                     Ten = reader.GetString(2),
-                                    Active = reader.GetBoolean(3)
+                                    MaVaiTroTTPT = reader.GetInt32(3),
+                                    Active = reader.GetBoolean(4)
                                 });
                             }
                         }

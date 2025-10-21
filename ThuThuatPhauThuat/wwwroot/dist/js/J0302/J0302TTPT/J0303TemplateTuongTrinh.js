@@ -30,8 +30,19 @@
     function resetFormState() {
         $('#chiTietTitleInput').val('');
 
-        $('#moTaLuocDo').html('');
-        $('#noiDungTrinhTu').html('');
+        try {
+            if (tinymce.get('moTaLuocDo')) {
+                tinymce.get('moTaLuocDo').setContent('');
+            }
+            if (tinymce.get('noiDungTrinhTu')) {
+                tinymce.get('noiDungTrinhTu').setContent('');
+            }
+        } catch (e) {
+            console.error("Lỗi khi xóa nội dung TinyMCE:", e);
+            // Fallback cho trường hợp TinyMCE chưa khởi tạo
+            $('#moTaLuocDo').val('');
+            $('#noiDungTrinhTu').val('');
+        }
         $('#editingTemplateId').val('');
 
         $('#btnSave').text('Thêm mới');
@@ -220,9 +231,9 @@
         const template = currentTemplateData.find(t => t.id === templateId);
         if (template) {
             $('#chiTietTitleInput').val(template.ten);
-
-            $('#moTaLuocDo').html(template.thongTinLuocDo || '');
-            $('#noiDungTrinhTu').html(template.noiDung || '');
+         
+            tinymce.get('moTaLuocDo').setContent(template.thongTinLuocDo || '');
+            tinymce.get('noiDungTrinhTu').setContent(template.noiDung || '');
 
             $('#editingTemplateId').val(template.id);
             $('#btnSave').text('Cập nhật');
@@ -355,13 +366,7 @@
         resetFormState();
         setDefaultKhoaAndFetch(khoaIdString);
     };
-    function replaceNewlinesWithHr(content) {
-        if (!content) return '';
 
-        let hrContent = content.replace(/(\r\n|\n|\r){2,}/g, '<hr>');
-
-        return hrContent;
-    }
     // ============ GÁN SỰ KIỆN KHI TRANG ĐÃ TẢI XONG ============
     $(document).ready(function () {
         renderTemplateTable([]);
@@ -401,15 +406,8 @@
                 $('#chiTietTitleInput').focus();
                 return;
             }
-            let moTaLuocDoContent = $('#moTaLuocDo').html() || $('#moTaLuocDo').val();
-            let noiDungTrinhTuContent = $('#noiDungTrinhTu').html() || $('#noiDungTrinhTu').val();
-
-            if ($('#moTaLuocDo').is('textarea')) {
-                moTaLuocDoContent = replaceNewlinesWithHr(moTaLuocDoContent);
-            }
-            else {
-                moTaLuocDoContent = replaceNewlinesWithHr(moTaLuocDoContent);
-            }
+            const moTaLuocDoContent = tinymce.get('moTaLuocDo').getContent();
+            const noiDungTrinhTuContent = tinymce.get('noiDungTrinhTu').getContent();
 
             const editingId = $('#editingTemplateId').val();
             const serverModel = {
@@ -422,10 +420,8 @@
             };
 
             if (editingId) {
-                //console.log("Gửi dữ liệu CẬP NHẬT:", serverModel);
                 saveTemplate(`${BASE_URL}/CapNhat`, 'POST', serverModel);
             } else {
-                //console.log("Gửi dữ liệu THÊM MỚI:", serverModel);
                 saveTemplate(`${BASE_URL}/ThemTemplate`, 'POST', serverModel);
             }
         });
