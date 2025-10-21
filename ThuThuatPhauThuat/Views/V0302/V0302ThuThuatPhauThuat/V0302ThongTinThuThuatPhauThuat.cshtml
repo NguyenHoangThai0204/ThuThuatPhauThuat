@@ -1,21 +1,11 @@
-﻿
-<style>
-    .container{
-        padding: 10px;
-    }
-    .col-form-label {
-        padding-top: 2px;
-        padding-bottom: 2px;
-        font-size: 13px;
-    }
-
+﻿<style>
     .form-border-container {
         position: relative;
         border: 1px solid #ccc;
         border-radius: 5px;
-        padding: 5px;
+        padding: 7px;
         margin-top: 5px;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
     }
 
     .border-label {
@@ -24,7 +14,7 @@
         left: 10px;
         background-color: white;
         padding: 0 5px;
-        font-size: 13px;
+        font-size: 14px;
         color: #333;
     }
 
@@ -35,12 +25,143 @@
     .table-responsive {
         min-height: 300px;
     }
-    hr{
-        margin: 1rem !important;
-    }
-</style>
 
-<div class="container mt-1 compact-form card">
+    .input-group-ellipsis {
+        position: relative;
+    }
+
+    .ellipsis-btn {
+        position: absolute;
+        right: -5px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 10;
+        padding: 2px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+    }
+
+        .ellipsis-btn:hover {
+            background-color: #ccc;
+        }
+
+        .ellipsis-btn svg {
+            width: 16px;
+            height: 16px;
+            color: #6c757d;
+        }
+
+    .modal-dialog {
+        display: flex;
+        align-items: center;
+        min-height: calc(100vh - 1rem);
+    }
+
+    .modal-body .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .modal-body .form-label {
+        min-width: 150px;
+        display: inline-block;
+    }
+
+    .delete-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+        .delete-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .delete-btn svg {
+            width: 16px;
+            height: 16px;
+            color: #dc3545;
+        }
+
+    .icd-tag {
+        background-color: #e3f2fd;
+        border: 1px solid #2196f3;
+        border-radius: 5px;
+        padding: 5px;
+        padding-right:0;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        margin: 2px;
+    }
+
+        .icd-tag .remove-btn {
+            background: none;
+            border: none;
+            color: #1976d2;
+            cursor: pointer;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1;
+            border-radius: 50%;
+            /* width: 16px;
+            height: 16px; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .icd-tag .remove-btn:hover {
+                background-color: #1976d2;
+                color: white;
+            }
+
+    .ts-dropdown-up {
+        top: auto !important;
+        bottom: 100% !important;
+        margin-top: 0;
+        margin-bottom: 5px;
+    }
+
+    .validation-error {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+
+    .datepicker {
+        /* transform: none !important; */
+        transform: scale(1.3) translateY(-40px) !important;
+        position: absolute !important;
+    }
+.modal-body .table-responsive {
+    max-height: 400px;
+    
+    overflow-y: auto; 
+    
+}
+
+.modal-body .table-responsive table thead th {
+    position: sticky;
+    top: 0; 
+    z-index: 10; 
+    color: white;
+}
+
+</style>
+<link href="/dist/lib/litepicker/dist/css/litepicker.css" rel="stylesheet" />
+
+
+<div class="mt-1 compact-form card p-2" style="min-height: 60vh;">
     <div class="row">
         <input type="hidden" id="hiddenIdVaoVien" value="@ViewBag.IdVaoVien" />
         <input type="hidden" id="hiddenTabIndex" value="@ViewBag.TabIndex" />
@@ -48,156 +169,197 @@
         <div class="col-md-3">
             <div class="form-border-container">
                 <label class="border-label fw-bold">Chẩn đoán vào khoa</label>
-                <div class="row" style="margin-bottom: 6px;">
-                    <div class="col-4">
-                        <input type="text" class="form-control form-control-md  me-2" id="ma_icd_vao_khoa" placeholder="Mã ICD">
+                <div class="row">
+                    <div class="col-md-5 col-12">
+                        <select type="text" class="form-select me-2 tom-select cbCDVaoKhoa" id="ma_icd_vao_khoa" placeholder="Mã ICD"></select>
                     </div>
-                    <div class="col-8">
-                        <input type="text" class="form-control form-control-md " id="hien_thi_icd_vao_khoa" readonly placeholder="">
+                    <div class="col-md-7 col-12">
+                        <div class="form-control" id="hien_thi_icd_vao_khoa" style="min-height: 35px; display: flex; flex-wrap: wrap; gap: 2px; align-items: center; padding: 1px; background-color: #F0F2F4;"></div>
                     </div>
                 </div>
-                <div class="row" style="margin-bottom: 6px;">
+                <div class="row">
                     <div class="col-12">
-                        <textarea class="form-control " id="ten_icd_vao_khoa" rows="3" readonly placeholder="" style="height: 25px;"></textarea>
+                        <div style="padding: 5px; height: 75px; max-height: 150px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px;" id="ten_icd_vao_khoa"></div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <div class="row" style="margin-bottom: 15px;">
                 <div class="col-md-4">
-                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Phòng thực hiện: </label>
+                    <label class="form-label" style="max-width: 180px">Phòng thực hiện: </label>
                 </div>
                 <div class="col-md-8">
-                    <input class="tom-select cbPhongThucHien form-select form-select-md" type="text" name="name" />
+                    <input autocomplete="off" class="tom-select cbPhongThucHien form-select " type="text" name="name" />
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <div class="row" style="margin-bottom: 15px;">
                 <div class="col-md-4">
                     <label class="col-form-label form-label text-truncate" style="max-width: 180px">Phân loại: </label>
                 </div>
                 <div class="col-md-8 flex-fill">
-                    <input class="tom-select cbPhanLoai form-select form-select-md" type="text" name="name" />
+                    <input autocomplete="off" class="tom-select cbPhanLoai form-select " type="text" name="name" />
+                </div>
+               
+            </div>
+            <!-- Added ellipsis button for Thiết bị -->
+            <div class="row" style="margin-bottom: 15px;">
+                <div class="col-md-4">
+                    <label class="col-form-label text-truncate" style="max-width: 180px">Thiết bị: </label>
+                </div>
+                <div class="col-md-8 flex-fill input-group-ellipsis">
+                    <input autocomplete="off" class="tom-select cbThietBi form-select " type="text" name="name" />
+ 
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <div class="row" style="margin-bottom: 12px;">
                 <div class="col-md-4">
-                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Thiết bị: </label>
+                    <label for="voCamSelect" class="fw-bold">Phương thức vô cảm :</label>
                 </div>
-                <div class="col-md-8 flex-fill">
-                    <input class="tom-select cbThietBi form-select form-select-md" type="text" name="name" />
+                <div class="col-8">
+                    <select class="tom-select cbPTVoCam form-select " type="text" name="name" id="voCamSelect"></select>
+
                 </div>
             </div>
             <div class="row mb-3">
-                <label for="can_thiep_thu_thuat" class="col-4 col-form-label">Can thiệp thủ thuật</label>
+                <label for="can_thiep_thu_thuat" class="col-4 col-form-label">Can thiệp thủ thuật :</label>
                 <div class="col-8">
-                    <textarea class="form-control" rows="3" id="can_thiep_thu_thuat" rows="3"></textarea>
+                    <textarea class="form-control" rows="3" id="can_thiep_thu_thuat"></textarea>
                 </div>
             </div>
+
         </div>
 
         <!-- Cột 2: Chẩn đoán trước thủ thuật -->
         <div class="col-md-3">
             <div class="form-border-container">
                 <label class="border-label fw-bold col-form-label">Chẩn đoán trước thủ thuật</label>
-                <div class="row" style="margin-bottom: 6px;">
-                    <div class="col-4">
-                        <input type="text" class="form-control  form-control-md me-2" id="ma_icd_truoc_thuat" placeholder="Mã ICD">
+                <div class="row">
+                    <div class="col-md-5 col-12">
+                        <select type="text" class="form-select   me-2 tom-select cbTruocThuThuat" id="ma_icd_truoc_thuat" placeholder="Mã ICD"></select>
                     </div>
-                    <div class="col-8">
-                        <input type="text" class="form-control form-control-md  " id="hien_thi_icd_truoc_thuat" readonly placeholder="">
+                    <div class="col-md-7 col-12">
+                        <div class="form-control " id="hien_thi_icd_truoc_thuat" style="min-height: 35px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 1px; background-color: #F0F2F4;"></div>
                     </div>
                 </div>
-                <div class="row" style="margin-bottom: 6px;">
+                <div class="row">
                     <div class="col-12">
-                        <textarea class="form-control  " id="ten_icd_truoc_thuat" rows="3" style="height: 25px;" readonly placeholder=""></textarea>
+                        <div id="ten_icd_truoc_thuat" style="padding: 5px; height: 75px; max-height: 150px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px;" ></div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <!-- Added ellipsis button for Tai biến/biến chứng -->
+            <div class="row" style="margin-bottom: 12px;">
                 <div class="col-md-4">
-                    <label class="col-form-label form-label text-truncate" title="Tai biến/biến chứng" style="max-width: 180px">Tai biến/biến chứng: </label>
+                    <label class="fw-bold" title="Tai biến/biến chứng" style="max-width: 180px" onclick="openModal('bienChungModal')">Tai biến/biến chứng: </label>
                 </div>
-                <div class="col-md-8 flex-fill">
-                    <input class="tom-select cbBienChung form-select form-select-md" type="text" name="name" />
+                <div class="col-md-8 flex-fill input-group-ellipsis">
+                    <input autocomplete="off" class="tom-select cbBienChung form-select " type="text" name="name" />
+
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <!-- Added ellipsis button for Chế độ thủ thuật -->
+            <div class="row" style="margin-bottom: 10px;">
                 <div class="col-md-4">
-                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Chế độ thủ thuật: </label>
+                    <label class="fw-bold" style="max-width: 180px" onclick="openModal('cheDoThuThuatModal')">Chế độ thủ thuật: </label>
                 </div>
-                <div class="col-md-8 flex-fill">
-                    <input class="tom-select cbCheDoThuThuat form-select form-select-md" type="text" name="name" />
+                <div class="col-md-8 flex-fill input-group-ellipsis">
+                    <input autocomplete="off" class="tom-select cbCheDoThuThuat form-select " type="text" name="name" />
+
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <!-- Added ellipsis button for Vị trí thực hiện -->
+            <div class="row" style="margin-bottom: 15px;">
+                <div class="col-md-4">
+                    <label class="col-form-label form-label text-truncate" style="max-width: 180px" onclick="openModal('viTriThucHienModal')">Vị trí thực hiện: </label>
+                </div>
+                <div class="col-md-8 flex-fill input-group-ellipsis">
+                    <input autocomplete="off" class="tom-select cbViTriThucHien form-select " type="text" name="name" />
+
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 15px;">
                 <label for="so_lan_mo_lai" class="col-4 col-form-label">Số lần mổ lại :</label>
                 <div class="col-8">
-                    <input type="number" class="form-control form-control-md" id="so_lan_mo_lai">
+                    <input autocomplete="off" type="number" class="form-control " id="so_lan_mo_lai">
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <div class="row" style="margin-bottom: 10px;">
                 <label for="ly_do_mo_lai" class="col-4 col-form-label">Lý do mổ lại :</label>
                 <div class="col-8">
-                    <input type="text" class="form-control form-control-md" id="ly_do_mo_lai">
+                    <textarea autocomplete="off" rows="3" class="form-control " id="ly_do_mo_lai"></textarea>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
-                <div class="col-md-4">
-                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Vị trí thực hiện: </label>
-                </div>
-                <div class="col-md-8 flex-fill">
-                    <input class="tom-select cbViTriThucHien form-select form-select-md" type="text" name="name" />
-                </div>
-            </div>
+           
         </div>
 
         <!-- Cột 3: Chẩn đoán sau thủ thuật -->
         <div class="col-md-3">
             <div class="form-border-container">
                 <label class="border-label fw-bold">Chẩn đoán sau thủ thuật</label>
-                <div class="row" style="margin-bottom: 6px;">
-                    <div class="col-4">
-                        <input type="text" class="form-control form-control-md me-2" id="ma_icd_sau_thuat" placeholder="Mã ICD">
+                <div class="row">
+                    <div class="col-md-5 col-12">
+                        <select type="text" class="form-select  me-2 tom-select cbSauThuThuat" id="ma_icd_sau_thuat" placeholder="Mã ICD"></select>
                     </div>
-                    <div class="col-8">
-                        <input type="text" class="form-control form-control-md " id="hien_thi_icd_sau_thuat" readonly placeholder="">
+                    <div class="col-md-7 col-12">
+                        <div class="form-control " id="hien_thi_icd_sau_thuat" style="min-height: 35px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 1px; background-color: #F0F2F4;"></div>
                     </div>
                 </div>
-                <div class="row" style="margin-bottom: 6px;">
+                <div class="row">
                     <div class="col-12">
-                        <textarea class="form-control " id="ten_icd_sau_thuat" rows="3" style="height: 25px;" readonly placeholder=""></textarea>
+                        <div id="ten_icd_sau_thuat" style="padding: 5px; height: 75px; max-height: 150px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px;"></div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <div class="row" style="margin-bottom: 15px;">
                 <div class="col-md-4">
-                    <label class="col-form-label form-label text-truncate" style="max-width: 180px">Tử vong: </label>
+                    <label class="col-form-label form-label text-truncate" style="max-width: 180px" onclick="openModal('tuVongModal')">Tử vong: </label>
                 </div>
                 <div class="col-md-8 flex-fill">
-                    <input class="tom-select form-select-md cbTuVong form-select" type="text" name="name" />
+                    <input autocomplete="off" class="tom-select  cbTuVong form-select" type="text" name="name" />
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <div class="row" style="margin-bottom: 13px;">
                 <label for="dan_luu" class="col-4 col-form-label">Dẫn lưu :</label>
                 <div class="col-8">
-                    <input type="text" class="form-control form-control-md" id="dan_luu">
+                    <input autocomplete="off" type="text" class="form-control " id="dan_luu">
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
-                <label for="ngay_rut_ong_dan_luu" class="col-4 col-form-label text-truncate">Ngày rút ống dẫn lưu</label>
-                <div class="col-8">
-                    <input type="date" class="form-control form-control-md" id="ngay_rut_ong_dan_luu">
-                </div>
+            <div class="row" style="margin-bottom: 12px;">
+                <label for="ngay_rut_ong_dan_luu" class="col-4 fw-bold">Ngày rút ống dẫn lưu</label>
+
+                <div class="col-8 datepicker-wrapper">
+                  @*  <input autocomplete="off" class="form-control " lang="vi" id="ngay_rut_ong_dan_luu" placeholder="dd-mm-yyyy">*@
+                    <div class="input-icon w-100">
+                        <input type="text"
+                            id="ngay_rut_ong_dan_luu"
+                               class="form-control form-control-md txtDateTimeNgayRutOng text-dark"
+                               autocomplete="off" />
+                        <span class="input-icon-addon">
+                            <i class="ti ti-calendar-event"></i>
+                        </span>
+                    </div> 
+
+                </div> 
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <div class="row" style="margin-bottom: 15px; ">
                 <label for="ngay_cat_chi" class="col-4 col-form-label">Ngày cắt chỉ :</label>
-                <div class="col-8">
-                    <input type="date" class="form-control form-control-md" id="ngay_cat_chi">
+
+                <div class="col-8 datepicker-wrapper">
+                 @*   <input autocomplete="off" class="form-control " lang="vi" id="ngay_cat_chi" placeholder="dd-mm-yyyy">*@
+                     <div class="input-icon w-100">
+                        <input type="text"
+                          id="ngay_cat_chi"
+                               class="form-control form-control-md txtDateTimeNgayCatChi text-dark"
+                               autocomplete="off" />
+                        <span class="input-icon-addon">
+                            <i class="ti ti-calendar-event"></i>
+                        </span>
+                    </div> 
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 6px;">
+            <div class="row" style="margin-bottom: 10px;">
                 <label for="khac" class="col-4 col-form-label">Khác :</label>
                 <div class="col-8">
-                    <input type="text" class="form-control form-control-md" id="khac">
+                        <textarea class="form-control" rows="3" id="khac"></textarea>
                 </div>
             </div>
         </div>
@@ -206,77 +368,477 @@
         <div class="col-md-3">
             <div class="form-border-container">
                 <label class="border-label fw-bold">FNA</label>
-                <div style="margin-bottom: 6px;" class="d-flex align-content-center">
+                <div class="d-flex align-content-center" style="margin-top: 10px;">
                     <label for="ma_fna" class="col-form-label" style="min-width:70px;">Mã FNA :</label>
-                    <input type="text" class="form-control form-control-md" id="ma_fna">
+                    <input autocomplete="off" type="text" class="form-control " id="ma_fna">
 
                 </div>
-                <div class="d-flex align-content-center" style="margin-bottom: 2px;">
+                <div class="d-flex align-content-center" style="margin-top: 10px;">
                     <label for="tien_can" class="col-form-label" style="min-width:70px;">Tiền căn :</label>
-                    <input type="text" class="form-control form-control-md" id="tien_can">
+                    <textarea autocomplete="off" class="form-control " rows="3" id="tien_can"></textarea>
 
                 </div>
             </div>
-            <div>
-                <label for="ket_qua_xet_nghiem" class="col-form-label fw-bold">Kết quả xét nghiệm FNA, GBP lần trước : </label>
-                <input type="text" class="form-control form-control-md" id="ket_qua_xet_nghiem">
+            <div style="margin-bottom: 5px;">
+                <label for="ket_qua_xet_nghiem" class="fw-bold">Kết quả xét nghiệm FNA, GBP lần trước : </label>
+                <textarea autocomplete="off" class="form-control " id="ket_qua_xet_nghiem"></textarea>
+            </div style="margin-bottom: 5px;">
+            <div style="margin-bottom: 5px;">
+                <label for="chi_dinh_vi_tri_ton_thuong_fna" class="fw-bold">Chỉ định vị trí tổn thương FNA :</label>
+                <textarea autocomplete="off" rows="3" class="form-control " id="chi_dinh_vi_tri_ton_thuong_fna"></textarea>
             </div>
-            <div>
-                <label for="chi_dinh_vi_tri_ton_thuong_fna" class="col-form-label fw-bold">Chỉ định vị trí tổn thương FNA :</label>
-                <input type="text" class="form-control form-control-md" id="chi_dinh_vi_tri_ton_thuong_fna">
+            <div style="margin-bottom: 5px;">
+                <label for="yeu_cau_xet_nghiem" class="fw-bold">Yêu cầu xét nghiệm :</label>
+                <textarea autocomplete="off" rows="3" class="form-control " id="yeu_cau_xet_nghiem"></textarea>
             </div>
-            <div>
-                <label for="yeu_cau_xet_nghiem" class="col-form-label fw-bold">Yêu cầu xét nghiệm :</label>
-                <input type="text" class="form-control form-control-md" id="yeu_cau_xet_nghiem">
-            </div>
+           
         </div>
     </div>
-
-    <!-- Hàng chứa hai bảng -->
-    <div class="row">
-        <!-- Bảng 1: Phương pháp vô cảm -->
-        <div class="col-md-4">
-            <div class="row mb-3">
-
-                <div class="col-md-10 flex-fill">
-                    <input class="tom-select cbPTVoCam form-control" type="text" name="name" />
-                </div>
-                <div class="col-md-2 d-grid">
-                    <button type="button" class="btn btn-primary" style="padding-left: 15px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-plus">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                            <path d="M12 5l0 14"></path>
-                            <path d="M5 12l14 0"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-vcenter text-nowrap table-text">
-                    <thead class="table-light">
-                        <tr>
-                            <th>STT</th>
-                            <th style="min-width: 300px;">Phương pháp vô cảm</th>
-                            <th>Xóa</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Dữ liệu sẽ được thêm vào đây -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
 </div>
-<script>
-    (function() {
-        const idVaoVien = document.getElementById("hiddenIdVaoVien")?.value;
-        const tabIndex = document.getElementById("hiddenTabIndex")?.value;
 
-        console.log("DEBUG IdVaoVien:", idVaoVien, " TabIndex:", tabIndex);
-    })();
-</script>
+
+
+<!-- Modal for Tai biến/biến chứng -->
+<div class="modal fade" id="bienChungModal" tabindex="-1" aria-labelledby="bienChungModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bienChungModalLabel">Quản lý Danh mục Tai biến/Biến chứng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-7 border-end pe-4">
+                        <h4 class="mb-3">Danh sách Tai biến/Biến chứng hiện có</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle table-sm">
+                                <thead>
+                                    <tr class="table-primary">
+                                        <th scope="col" style="width: 5%;">STT</th>
+                                        <th scope="col" style="width: 20%;">Mã Danh mục</th>
+                                        <th scope="col" style="width: 45%;">Tên Danh mục</th>
+                                        <th scope="col" style="width: 30%;" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bienChungTableBody">
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>BC001</td>
+                                        <td>Nhiễm trùng vết mổ</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning me-2" onclick="editBienChung('BC001')">Sửa</button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteBienChung('BC001')">Xóa</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 ps-4">
+                        <h4 class="mb-3">Thêm/Chỉnh sửa Tai biến/Biến chứng</h4>
+                        <form id="bienChungForm">
+                            <input type="hidden" id="bienChungId" value="">
+                            
+                            <div class="form-group mb-3">
+                                <label for="bienChungMa" class="form-label">Mã tai biến/biến chứng:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="bienChungMa" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="bienChungTen" class="form-label">Tên tai biến/biến chứng:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="bienChungTen" required>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="saveBienChung()">Lưu Danh mục</button>
+                                <button type="button" 
+                                        class="btn btn-secondary btn-lg" 
+                                        id="bienChungCancelBtn" 
+                                        style="display: none;" 
+                                        onclick="resetBienChungForm()">
+                                    Hủy Sửa
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Chế độ thủ thuật -->
+<div class="modal fade" id="cheDoThuThuatModal" tabindex="-1" aria-labelledby="cheDoThuThuatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cheDoThuThuatModalLabel">Quản lý Danh mục Chế độ thủ thuật</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-7 border-end pe-4">
+                        <h4 class="mb-3">Danh sách Chế độ thủ thuật hiện có</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle table-sm">
+                                <thead>
+                                    <tr class="table-primary">
+                                        <th scope="col" style="width: 5%;">STT</th>
+                                        <th scope="col" style="width: 20%;">Mã Danh mục</th>
+                                        <th scope="col" style="width: 45%;">Tên Danh mục</th>
+                                        <th scope="col" style="width: 30%;" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cheDoThuThuatTableBody">
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>CDTT01</td>
+                                        <td>Thông thường</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning me-2" onclick="editCheDoThuThuat('CDTT01')">Sửa</button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteCheDoThuThuat('CDTT01')">Xóa</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 ps-4">
+                        <h4 class="mb-3">Thêm/Chỉnh sửa Chế độ thủ thuật</h4>
+                        <form id="cheDoThuThuatForm">
+                            <input type="hidden" id="cheDoThuThuatId" value="">
+
+                            <div class="form-group mb-3">
+                                <label for="cheDoThuThuatMa" class="form-label">Mã chế độ thủ thuật:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="cheDoThuThuatMa" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="cheDoThuThuatTen" class="form-label">Tên chế độ thủ thuật:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="cheDoThuThuatTen" required>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="saveCheDoThuThuat()">Lưu Danh mục</button>
+                             <button type="button" 
+                                    class="btn btn-secondary btn-lg" 
+                                    id="cheDoThuThuatCancelBtn" 
+                                    style="display: none;" 
+                                    onclick="resetCheDoThuThuatForm()">
+                                Hủy Sửa
+                            </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Vị trí thực hiện -->
+<div class="modal fade" id="viTriThucHienModal" tabindex="-1" aria-labelledby="viTriThucHienModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viTriThucHienModalLabel">Quản lý Danh mục Vị trí thực hiện</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-7 border-end pe-4">
+                        <h4 class="mb-3">Danh sách Vị trí thực hiện hiện có</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle table-sm">
+                                <thead>
+                                    <tr class="table-primary">
+                                        <th scope="col" style="width: 5%;">STT</th>
+                                        <th scope="col" style="width: 20%;">Mã Danh mục</th>
+                                        <th scope="col" style="width: 45%;">Tên Danh mục</th>
+                                        <th scope="col" style="width: 30%;" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="viTriThucHienTableBody">
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>VTTT01</td>
+                                        <td>Khoa Ngoại</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning me-2" onclick="editViTriThucHien('VTTT01')">Sửa</button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteViTriThucHien('VTTT01')">Xóa</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 ps-4">
+                        <h4 class="mb-3">Thêm/Chỉnh sửa Vị trí thực hiện</h4>
+                        <form id="viTriThucHienForm">
+                            <input type="hidden" id="viTriThucHienId" value="">
+
+                            <div class="form-group mb-3">
+                                <label for="viTriThucHienMa" class="form-label">Mã vị trí thực hiện:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="viTriThucHienMa" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="viTriThucHienTen" class="form-label">Tên vị trí thực hiện:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="viTriThucHienTen" required>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="saveViTriThucHien()">Lưu Danh mục</button>
+                                 <button type="button" 
+                                        class="btn btn-secondary btn-lg" 
+                                        id="viTriThucHienCancelBtn" 
+                                        style="display: none;" 
+                                        onclick="resetViTriThucHienForm()">
+                                    Hủy Sửa
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for tử vong -->
+<div class="modal fade" id="tuVongModal" tabindex="-1" aria-labelledby="tuVongModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tuVongModalLabel">Quản lý Danh mục Tử vong</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-7 border-end pe-4">
+                        <h4 class="mb-3">Danh sách Danh mục hiện có</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle table-sm">
+                                <thead>
+                                    <tr class="table-primary">
+                                        <th scope="col" style="width: 5%;">STT</th>
+                                        <th scope="col" style="width: 20%;">Mã Danh mục</th>
+                                        <th scope="col" style="width: 45%;">Tên Danh mục</th>
+                                        <th scope="col" style="width: 30%;" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tuVongTableBody">
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>TV001</td>
+                                        <td>Tai nạn giao thông</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning me-2" onclick="editTuVong('TV001')">
+                                                <i class="bi bi-pencil"></i> Sửa
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteTuVong('TV001')">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td>TV002</td>
+                                        <td>Bệnh tim mạch</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning me-2" onclick="editTuVong('TV002')">
+                                                <i class="bi bi-pencil"></i> Sửa
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteTuVong('TV002')">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 ps-4">
+                        <h4 class="mb-3">Thêm/Chỉnh sửa Danh mục</h4>
+                        <form id="tuVongForm">
+                            <input type="hidden" id="tuVongId" value="">
+                            
+                            <div class="form-group mb-3">
+                                <label for="tuVongMa" class="form-label">Mã danh mục:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="tuVongMa" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="tuVongTen" class="form-label">Tên danh mục:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="tuVongTen" required>
+                            </div>
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="saveTuVong()">
+                                    <i class="bi bi-save"></i> Lưu Danh mục
+                                </button>
+
+                                <button type="button" 
+                                        class="btn btn-secondary btn-lg" 
+                                        id="tuVongCancelBtn" 
+                                        style="display: none;" 
+                                        onclick="resetTuVongForm()">
+                                    Hủy Sửa
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/dist/js/J0302/J0302TTPT/J0302ThongTinThuThuat.js" asp-append-version="true" defer></script>
+<script src="~/dist/lib/litepicker/dist/litepicker.js" asp-append-version="true" defer></script>
+
+ <script>
+$(function () {
+    const selector = '#ngay_cat_chi, #ngay_rut_ong_dan_luu';
+
+    $(selector).datetimepicker({
+        format: 'DD-MM-YYYY HH:mm:ss',
+        locale: 'vi',
+        useCurrent: false,
+        showTodayButton: true,
+        showClear: true,
+        showClose: true,
+            calendarWeeks: false, // Ẩn tuần trong lịch
+        stepping: 1,
+        tooltips: {
+            today: 'Chuyển đến hôm nay',
+            clear: 'Xóa lựa chọn',
+            close: 'Đóng',
+            selectMonth: 'Chọn tháng',
+            prevMonth: 'Tháng trước',
+            nextMonth: 'Tháng sau',
+            selectYear: 'Chọn năm',
+            prevYear: 'Năm trước',
+            nextYear: 'Năm sau',
+            selectTime: 'Chọn giờ'
+        },
+        icons: {
+            time: 'ti ti-clock',
+            date: 'ti ti-calendar',
+            up: 'ti ti-chevron-up',
+            down: 'ti ti-chevron-down',
+            previous: 'ti ti-chevron-left',
+            next: 'ti ti-chevron-right',
+            today: '',
+            clear: 'ti ti-trash',
+            close: 'ti ti-x'
+        }
+    })
+    .on('dp.show', function () {
+        const $widget = $('.bootstrap-datetimepicker-widget:last');
+        const $input = $(this);
+        const offset = $input.offset();
+        const inputHeight = $input.outerHeight();
+        const widgetHeight = $widget.outerHeight();
+        const widgetWidth = $widget.outerWidth();
+        const winWidth = $(window).width();
+        const winHeight = $(window).height();
+        const scrollTop = $(window).scrollTop();
+
+        // THU NHỎ BẢNG LỊCH (CALENDAR) - KHÔNG ẢNH HƯỞNG ĐẾN INPUT
+        $widget.css({
+            'transform': 'scale(0.85)',
+            'transform-origin': 'top center'
+        });
+
+        // Tính toán lại kích thước sau khi scale
+        const scaledHeight = widgetHeight * 0.85;
+        const scaledWidth = widgetWidth * 0.85;
+
+        // VỊ TRÍ BẢNG LỊCH - CÁCH XA INPUT (ở giữa màn hình hoặc bên phải)
+        let left = (winWidth / 2) - (scaledWidth / 2); // Căn giữa màn hình
+        let top = (winHeight / 2) - (scaledHeight / 2); // Căn giữa màn hình
+        
+        // Hoặc nếu muốn hiển thị bên phải input:
+        // let left = offset.left + $input.outerWidth() + 10;
+        // let top = offset.top - 50;
+
+        // Đảm bảo không tràn màn hình
+        if (left < 10) left = 10;
+        if (left + scaledWidth > winWidth - 10) {
+            left = winWidth - scaledWidth - 10;
+        }
+        if (top < 10) top = 10;
+        if (top + scaledHeight > winHeight - 10) {
+            top = winHeight - scaledHeight - 10;
+        }
+
+        // Gán vị trí popup - TÁCH BIỆT với input
+        $widget.appendTo('body').css({
+            position: 'fixed', // Dùng fixed để luôn cố định
+            top: top,
+            left: left,
+            zIndex: 999999,
+            margin: 0
+        }).addClass('active-popup');
+    })
+    .on('dp.hide', function () {
+        $('.bootstrap-datetimepicker-widget')
+            .removeClass('active-popup')
+            .css('transform', '');
+    });
+
+    // CSS cho ô input nhỏ
+    const style = document.createElement('style');
+    Inputmask({
+        alias: "datetime",
+        inputFormat: "dd-mm-yyyy HH:MM:ss",
+        placeholder: "dd-mm-yyyy hh:mm:ss",
+        clearIncomplete: true,
+        showMaskOnHover: false,
+        showMaskOnFocus: true
+    }).mask(selector);
+    style.textContent = `
+        #ngay_cat_chi, #ngay_rut_ong_dan_luu {
+            height: 35px !important;
+            font-size: 14px !important;
+            padding: 5px 10px !important;
+        }
+        .bootstrap-datetimepicker-widget {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    `;
+    document.head.appendChild(style);
+
+     $('#dan_luu').on('input', function() {
+            const danLuuValue = $(this).val();
+            const ngayCatChiPicker = $('#ngay_cat_chi').data('DateTimePicker');
+            const ngayRutOngPicker = $('#ngay_rut_ong_dan_luu').data('DateTimePicker');
+
+            if (danLuuValue.trim() !== '') {
+                if (!ngayCatChiPicker.date()) {
+                    ngayCatChiPicker.date(moment());
+                }
+                if (!ngayRutOngPicker.date()) {
+                    ngayRutOngPicker.date(moment());
+                }
+            } else {
+                ngayCatChiPicker.clear();
+                ngayRutOngPicker.clear();
+            }
+        });
+});
+</script> 
 
 

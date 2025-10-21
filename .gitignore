@@ -1,6 +1,5 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+﻿
+*.sln
 
 /.vs/ThuThuatPhauThuat/FileContentIndex/af955042-79c3-4699-a4ef-ae75fd306981.vsidx
 /.vs/ProjectEvaluation/thuthuatphauthuat.metadata.v9.bin
@@ -15,3 +14,7 @@
 /ThuThuatPhauThuat/obj/project.nuget.cache
 /ThuThuatPhauThuat/obj/Debug/net8.0/ThuThuatPhauThuat.genruntimeconfig.cache
 /ThuThuatPhauThuat/obj/project.assets.json
+.vs/
+bin/
+obj/
+/ThuThuatPhauThuat/obj/

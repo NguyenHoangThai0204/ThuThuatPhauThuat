@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "ma": "VT001",
+    "ten": "Bác sĩ phẫu thuật",
+    "viettat": "BSPT",
+    "ghiChu": "Chịu trách nhiệm chính trong ca phẫu thuật",
+    "active": 1
+  },
+  {
+    "id": 2,
+    "ma": "VT002",
+    "ten": "Phụ tá phẫu thuật",
+    "viettat": "PTPT",
+    "ghiChu": "Hỗ trợ bác sĩ chính trong suốt quá trình mổ",
+    "active": 1
+  },
+  {
+    "id": 3,
+    "ma": "VT003",
+    "ten": "Bác sĩ gây mê",
+    "viettat": "BSGM",
+    "ghiChu": "Chuẩn bị và theo dõi tình trạng gây mê cho bệnh nhân",
+    "active": 1
+  },
+  {
+    "id": 4,
+    "ma": "VT004",
+    "ten": "Điều dưỡng phòng mổ",
+    "viettat": "DDPM",
+    "ghiChu": "Quản lý dụng cụ và hỗ trợ ekip trong phòng mổ",
+    "active": 1
+  },
+  {
+    "id": 5,
+    "ma": "VT005",
+    "ten": "Bác sĩ hậu phẫu",
+    "viettat": "BSHP",
+    "ghiChu": "Theo dõi và chăm sóc bệnh nhân sau phẫu thuật",
+    "active": 1
+  },
+  {
+    "id": 6,
+    "ma": "VT006",
+    "ten": "Kỹ thuật viên dụng cụ",
+    "viettat": "KTVDC",
+    "ghiChu": "Chuẩn bị, tiệt trùng và bảo quản dụng cụ mổ",
+    "active": 1
+  },
+  {
+    "id": 7,
+    "ma": "VT007",
+    "ten": "Nhân viên khử trùng",
+    "viettat": "NVKT",
+    "ghiChu": "Đảm bảo môi trường phòng mổ vô trùng",
+    "active": 0
+  },
+  {
+    "id": 8,
+    "ma": "VT008",
+    "ten": "Bác sĩ nội soi",
+    "viettat": "BSNS",
+    "ghiChu": "Thực hiện các thủ thuật nội soi chuẩn đoán và điều trị",
+    "active": 1
+  },
+  {
+    "id": 9,
+    "ma": "VT009",
+    "ten": "Kỹ thuật viên gây mê",
+    "viettat": "KTVGM",
+    "ghiChu": "Hỗ trợ bác sĩ gây mê trong việc chuẩn bị thuốc và thiết bị",
+    "active": 1
+  },
+  {
+    "id": 10,
+    "ma": "VT010",
+    "ten": "Điều dưỡng hồi sức",
+    "viettat": "DDHS",
+    "ghiChu": "Chăm sóc bệnh nhân trong phòng hồi sức sau mổ",
+    "active": 1
+  }
+]

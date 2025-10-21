@@ -2,8 +2,10 @@
 using DemoCauTruc.Models.M0302;
 using Microsoft.EntityFrameworkCore;
 using ThuThuatPhauThuat.Models.M0302.M0302ThuThuatPhauThuat;
+using static C0301VaiTroThuThuatController;
+using static ThuThuatPhauThuat.Controllers.C0302.C0302ThuThuatPhauThuatHomeController;
 
-namespace C0302_HoangThai.Models.M0302
+namespace ThuThuatPhauThuat.Models.M0302
 {
     public class Context0302 : DbContext
     {
@@ -12,15 +14,56 @@ namespace C0302_HoangThai.Models.M0302
 
         public DbSet<M0302ThongTinDoanhNghiep> ThongTinDoanhNghieps { get; set; }
         public DbSet<M0302ThuThuatPhauThuatModelList> M0302ThuThuatPhauThuatModelLists { get; set; }
-
+        public DbSet<M0303TemplateTTPT> M0303TemplateTTPT { get; set; }
+        public DbSet<M0303Khoa> M0303Khoa { get; set; }
+        public DbSet<M0301DoiNguEkip> DoiNguEkip { get; set; }
         public DbSet<HH_DM_KhoHang> HH_DM_KhoHang { get; set; }
+        public DbSet<EkipResult> EkipResult { get; set; }
+        public DbSet<M0301ViTriThucHienTTPT> ViTriThucHien { get; set; }
+        public DbSet<M0302ThongTinXuatPDFTTPTModel> M0302ThongTinXuatPDFTTPTModels { get; set; }
+        public DbSet<M0302ThongTinXuatPDFTTPTModel2> M0302ThongTinXuatPDFTTPTModel2s { get; set; }
+        public DbSet<M0302PhieuThuThuatPhauThuatModel> M0302PhieuThuThuatPhauThuatModels { get; set; }
+        public DbSet<M0302ThongTinThuThuatPhauThuatModel> M0302ThongTinThuThuatPhauThuatModels { get; set; }
+        public DbSet<M0301TuVong> TuVong { get; set; }
+        public DbSet<M0301CheDoThuThuat> CheDoThuThuat { get; set; }
+        public DbSet<M0301VaiTroThuThuat> VaiTroThuThuat { get; set; }
+        public DbSet<M0302NguonBenhTTPT> NguonBenhTTPT { get; set; }
+        public DbSet<M0301TaiBienBienChung> TaiBienBienChung { get; set; }
+        public DbSet<M0301ThietBiTTPT> ThietBi { get; set; }
+        public DbSet<M0305TrinhTuVaKetLuanModel> TrinhTuVaKetLuan { get; set; }
+        public DbSet<M0305AnhTruongTrinhModel> AnhTruongTrinh { get; set; }
+        public DbSet<TaoPhieuResult> TaoPhieuResults { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<M0302ThongTinDoanhNghiep>().HasNoKey();
-           
-            modelBuilder.Entity<HH_DM_KhoHang>().HasNoKey();
-            modelBuilder.Entity<M0302ThuThuatPhauThuatModelList>().HasNoKey();
+            modelBuilder.Entity<M0301DoiNguEkip>().ToTable("QL_TTPT_Ekip");
+            modelBuilder.Entity<EkipResult>().HasNoKey().ToView(null);
 
+            modelBuilder.Entity<HH_DM_KhoHang>().HasNoKey();
+            modelBuilder.Entity<TaoPhieuResult>().HasNoKey();
+            modelBuilder.Entity<M0302PhieuThuThuatPhauThuatModel>().HasNoKey();
+            modelBuilder.Entity<M0302ThongTinXuatPDFTTPTModel>().HasNoKey();
+            modelBuilder.Entity<M0302ThongTinXuatPDFTTPTModel2>().HasNoKey();
+            modelBuilder.Entity<M0302ThuThuatPhauThuatModelList>().HasNoKey();
+            modelBuilder.Entity<M0302ThongTinThuThuatPhauThuatModel>().HasNoKey();
+            modelBuilder.Entity<M0303TemplateTTPT>().HasIndex(v => v.ID)
+                .IsUnique();
+            modelBuilder.Entity<M0301ViTriThucHienTTPT>().HasIndex(v => v.ID)
+                .IsUnique();
+            modelBuilder.Entity<M0301TuVong>().HasIndex(v => v.ID)
+               .IsUnique();
+            modelBuilder.Entity<M0301CheDoThuThuat>().HasIndex(v => v.ID)
+                .IsUnique();
+            modelBuilder.Entity<M0302NguonBenhTTPT>().HasIndex(v => v.ID)
+                .IsUnique();
+            modelBuilder.Entity<M0301TaiBienBienChung>().HasIndex(v => v.ID)
+                .IsUnique();
+            modelBuilder.Entity<M0301ThietBiTTPT>().HasIndex(v => v.ID)
+                .IsUnique();
+            modelBuilder.Entity<M0303Khoa>().HasNoKey();
+            modelBuilder.Entity<M0305TrinhTuVaKetLuanModel>().HasNoKey();
+            modelBuilder.Entity<M0305AnhTruongTrinhModel>().HasNoKey();
+            base.OnModelCreating(modelBuilder);
         }
 
         public bool TestConnection()

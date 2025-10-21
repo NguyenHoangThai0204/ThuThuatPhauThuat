@@ -1,13 +1,27 @@
-﻿using C0302_HoangThai.Models.M0302;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
-using ThuThuatPhauThuat.Service.S0302;
-using ThuThuatPhauThuat.Service.S0302.IS0302;
+using ThuThuatPhauThuat.Configurations.FtpConfig;
+using ThuThuatPhauThuat.Models.M0302;
+using ThuThuatPhauThuat.Services.S0302;
+using ThuThuatPhauThuat.Services.S0302.IS0302;
+using ThuThuatPhauThuat.Services.S0305;
+using ThuThuatPhauThuat.Services.S0305.IS0305;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        // Đây là cách phổ biến để xử lý tham chiếu vòng
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 
+        // Đảm bảo tên thuộc tính được viết bằng camelCase (tiêu chuẩn JS)
+        options.JsonSerializerOptions.PropertyNamingPolicy =
+            System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 // Add services to the container.
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
@@ -15,10 +29,17 @@ builder.Services.AddControllersWithViews()
         options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
-
+// Cấu hình QuestPDF
+QuestPDF.Settings.License = LicenseType.Community;
 // Đăng ký DbContext với connection string
 builder.Services.AddDbContext<Context0302>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
+
+// Cấu hình FTP lưu ảnh
+builder.Services.Configure<FtpSettings>(
+    builder.Configuration.GetSection("FtpServer"));
+builder.Services.AddScoped<IS0305FtpService, S0305FtpService>();
+
 
 // Cấu hình Session (CÁCH MỚI)
 builder.Services.AddDistributedMemoryCache(); // THÊM DÒNG NÀY
@@ -28,11 +49,13 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+builder.Services.AddScoped<IS0303TemplateTTPT, S0303TemplateTTPT>();
 builder.Services.AddScoped<IS0302ThuThuatPhauThuatInterface, S0302ThuThuatPhauThuatService>();
+builder.Services.AddScoped<S0305PdfExtractionService>();
 
 
-
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<S0301ICDService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -61,7 +84,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
-app.UseSession();  // ĐẶT SAU UseRouting() và TRƯỚC MapControllerRoute()
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

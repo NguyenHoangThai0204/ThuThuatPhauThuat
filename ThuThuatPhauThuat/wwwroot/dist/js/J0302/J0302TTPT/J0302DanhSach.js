@@ -21,24 +21,94 @@ function updateDateTime() {
     $("#info-datetime", window.parent.document).text(formatted);
 }
 
-$(document).on("click", "#example tbody tr", function () {
-    var tenBN = $(this).find("td:eq(2)").text().trim();
-    var namSinh = $(this).find("td:eq(3)").text().trim();
-    var gioiTinh = $(this).find("td:eq(4)").text().trim();
-    var bacSi = $(this).find("td:eq(10)").text().trim();
-    selectedIdVaoVien = $(this).data("idvaovien");
-
-    var dateStr = decodeURIComponent($(this).attr("data-ngaygiochidinh"));
-    var date = formatDateTime(new Date(dateStr));
-
-    $("#info-tenbn", window.parent.document).text(tenBN);
-    $("#info-namsinh", window.parent.document).text(namSinh + " - " + gioiTinh);
-    $("#info-bacsi", window.parent.document).text(bacSi);
-    $("#info-datetime", window.parent.document).text(date);
-    
-
+$(document).on("click", "#example tbody tr", function (e) {
+    // 🧹 Xóa class active trước đó
     $("#example tbody tr").removeClass("table-active");
     $(this).addClass("table-active");
+    var noiThucHien = $(this).find("td:eq(9)").text().trim();
+
+    // 🕐 Chờ TomSelect load xong rồi mới setValue
+    const waitForTomSelect = (retries = 5) => {
+        return new Promise((resolve, reject) => {
+            const check = () => {
+                const phongBuongSelect = document.querySelector(".tom-select-test")?.tomselect;
+                if (phongBuongSelect && typeof listDanToc !== "undefined" && listDanToc.length > 0) {
+                    resolve(phongBuongSelect);
+                } else if (retries > 0) {
+                    setTimeout(() => check(--retries), 200);
+                } else {
+                    reject("❌ Không load được TomSelect hoặc listDanToc");
+                }
+            };
+            check();
+        });
+    };
+
+    waitForTomSelect().then(phongBuongSelect => {
+        const found = listDanToc.find(x =>
+            x.ten.trim().toLowerCase() === noiThucHien.toLowerCase()
+        );
+
+        if (found) {
+            phongBuongSelect.setValue(found.id, true);
+        } else {
+            phongBuongSelect.clear();
+        }
+    }).catch(err => console.warn(err));
+
+    // 🧩 Lấy thông tin cơ bản
+    const tenBN = $(this).find("td:eq(2)").text().trim();
+    const namSinh = $(this).find("td:eq(3)").text().trim();
+    const gioiTinh = $(this).find("td:eq(4)").text().trim();
+    const bacSi = $(this).find("td:eq(10)").text().trim();
+    const tendichvu = $(this).find("td:eq(7)").text().trim();
+
+    selectedIdVaoVien = $(this).data("idvaovien");
+    selectedIdChiDinhChiTiet = $(this).data("idchidinhct");
+    window.IDPhieuTTPT = $(this).data("idphieu");
+    maChanDoanVao_0301 = $(this).data("machandoanvao");
+    tenChanDoanVao_0301 = $(this).data("tenchandoanvao");
+
+    // ⚙️ Cập nhật nút Xóa
+    const btnXoa = document.getElementById("btnXoaPhieuTTPT");
+    if (btnXoa) {
+        btnXoa.disabled = !window.IDPhieuTTPT; 
+        btnXoa.classList.toggle("btn-secondary", !window.IDPhieuTTPT);
+        btnXoa.classList.toggle("btn-danger", !!window.IDPhieuTTPT);
+    }
+
+    // 🌐 Lưu biến global
+    window.MaKhoa = $(this).data("makhoa");
+    window.yhct = $(this).data("yhct");
+    window.IDKhoa = $(this).data("idkhoa");
+    window.idPhongThucHien_0301 = $(this).data("idphongthuchien0301");
+    window.tendichvu0301 = $(this).data("tendichvu0301");
+    console.log("Ten dich vu =", window.tendichvu0301);
+    $("#info-tenbn", window.parent.document).text(tenBN);
+    $("#info-namsinh", window.parent.document).text(`${namSinh} - ${gioiTinh}`);
+    $("#info-bacsi", window.parent.document).text(bacSi);
+    $("#info-tendichvu", window.parent.document).text(tendichvu);
+
+    const activeTab = $('a[data-bs-toggle="tab"].active').attr("href");
+    console.log("📑 Tab hiện tại khi chọn bệnh nhân:", activeTab);
+
+    // 🧾 Nếu không ở tab danh sách thì load lại thông tin
+    if (activeTab !== "#tabs-danhsach-7" && typeof loadGlobalSoPhieu === 'function') {
+        setTimeout(() => loadGlobalSoPhieu(true), 200);
+    }
+
+    // 👆 Double click => chuyển tab Thông tin
+    if (e.detail === 2) {
+        const thongTinTab = $('a[href="#tabs-thongtin-7"]');
+        if (thongTinTab.length) {
+            setTimeout(() => {
+                thongTinTab.tab('show');
+                loadGlobalSoPhieu(true);
+            }, 200);
+        } else {
+            console.warn("⚠️ Không tìm thấy tab Thông tin (#tabs-thongtin-7)");
+        }
+    }
 });
 
 $(document).ready(function () {
@@ -106,6 +176,19 @@ $(function () {
     $('#txtDateTime').datepicker('setDate', new Date());
     $('#txtDateTime').inputmask('99-99-9999', { placeholder: 'dd-mm-yyyy' });
 });
+function tinhSoPhut(batDau, ketThuc) {
+    if (!batDau || !ketThuc) return "";
+
+    const start = new Date(batDau);
+    const end = new Date(ketThuc);
+
+    if (isNaN(start) || isNaN(end)) return "";
+
+    const diffMs = end - start;
+    const diffMinutes = Math.floor(diffMs / 60000);
+
+    return diffMinutes >= 0 ? diffMinutes + " phút" : "";
+}
 
 // ==================== PHÂN TRANG ====================
 function renderTable(data, page = 1, size = 10) {
@@ -121,9 +204,28 @@ function renderTable(data, page = 1, size = 10) {
     const pageData = data.slice(start, start + size);
 
     pageData.forEach((item, index) => {
+
         const ngayGioEncoded = encodeURIComponent(item.ngayGioChiDinh || "");
+        const maChanDoanEncoded = encodeURIComponent(item.maChanDoanVao || 'Z00');
+        const tenChanDoanEncoded = encodeURIComponent(
+            item.tenChanDoanVao ||
+            'Khám tổng quát và kiểm tra sức khỏe cho những người không có điều gì than phiền về sức khỏe hoặc những người đã có chẩn đoán'
+        );
         tbody.append(`
-            <tr data-idvaovien="${item.idVaoVien || ''}" data-ngaygiochidinh="${ngayGioEncoded}">
+            <tr
+            data-idvaovien="${item.idVaoVien || ''}" 
+            data-yhct="${item.yHocCoTruyen}" 
+            data-idkhoa="${item.idKhoa || 0}" 
+            data-idchidinhct="${item.idChiDinhChiTiet || ''}" 
+            data-idphieu="${item.idPhieuTTPT || 0}" 
+            data-makhoa="${item.maKhoa || ''}" 
+            data-ngaygiochidinh="${ngayGioEncoded}" 
+            data-machandoanvao="${maChanDoanEncoded}" 
+            data-tenchandoanvao="${tenChanDoanEncoded}" 
+            data-idphongthuchien0301="${item.idPhongThucHien || 0}"
+            data-tendichvu0301="${item.dichVuKyThuat || ''}
+            
+            ">
                 <td class="text-center">${start + index + 1}</td>
                 <td class="text-center">${item.maBenhNhan || ""}</td>
                 <td>${item.tenBenhNhan || ""}</td>
@@ -131,8 +233,10 @@ function renderTable(data, page = 1, size = 10) {
                 <td class="text-center">${item.gioiTinh || ""}</td>
                 <td class="text-center">${item.khan ? 'Có' : 'Không'}</td>
                 <td>${item.nhomDichVuKyThuat || ""}</td>
-                <td>${item.dichVuKyThuat || ""}</td>
-                <td class="text-center">${item.thoiGian || ""}</td>
+                <td class="text-ellipsis" title="${item.dichVuKyThuat || ""}">
+                    ${item.dichVuKyThuat || ""}
+                </td>
+                <td class="text-center">  ${tinhSoPhut(item.batDauThuThuat, item.ketThucThuThuat)}</td>
                 <td>${item.noiThucHien || ""}</td>
                 <td>${item.bacSiChiDinh || ""}</td>
                 <td>${item.noiChiDinh || ""}</td>
@@ -144,43 +248,7 @@ function renderTable(data, page = 1, size = 10) {
     updatePaginationInfo(data.length, page, size);
     renderPagination(data.length, page, size);
 }
-
-//function renderTable(data, page = 1, size = 10) {
-//    const tbody = $("#tbodyData");
-//    tbody.empty();
-
-//    if (!data || data.length === 0) {
-//        tbody.append('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
-//        return;
-//    }
-
-//    const start = (page - 1) * size;
-//    const pageData = data.slice(start, start + size);
-
-//    pageData.forEach((item, index) => {
-//        tbody.append(`
-//             <tr data-idvaovien="${item.idVaoVien || ''}">
-//                <td class="text-center">${start + index + 1}</td>
-//                <td class="text-center">${item.maBenhNhan || ""}</td>
-//                <td>${item.tenBenhNhan || ""}</td>
-//                <td class="text-center">${item.namSinh || ""}</td>
-//                <td class="text-center">${item.gioiTinh || ""}</td>
-//                <td class="text-center">${item.khan ? 'Có' : 'Không'}</td>
-//                <td>${item.nhomDichVuKyThuat || ""}</td>
-//                <td>${item.dichVuKyThuat || ""}</td>
-//                <td class="text-center">${item.thoiGian || ""}</td>
-//                <td>${item.noiThucHien || ""}</td>
-//                <td>${item.bacSiChiDinh || ""}</td>
-//                <td>${item.noiChiDinh || ""}</td>
-//                <td>${item.ngayGioChiDinh || ""}</td>
-//            </tr>
-//        `);
-//    });
-
-//    updatePaginationInfo(data.length, page, size);
-//    renderPagination(data.length, page, size);
-//}
-
+//<td>${item.dichVuKyThuat || ""}</td>
 function updatePaginationInfo(totalRecords, currentPage, pageSize) {
     const startRecord = (currentPage - 1) * pageSize + 1;
     const endRecord = Math.min(currentPage * pageSize, totalRecords);
@@ -219,6 +287,7 @@ $(document).on("click", ".page-link", function (e) {
     if (!isNaN(page) && page >= 1 && page <= totalPages) {
         currentPage = page;
         renderTable(allData, currentPage, pageSize);
+        
     }
 });
 
@@ -241,21 +310,44 @@ $(document).on("change", "#pageSizeSelect", function () {
 
 
 // ==================== LỌC DANH SÁCH (CẢ THƯỜNG VÀ NÂNG CAO) có real time ====================
-$(document).on("click", "#btnLocDanhSachTTPT, #btnSearchNangCao", function (e) {
-    e.preventDefault();
+function filterDanhSach(isAdvanced = false) {
+    $('#loadingSpinner').show();
+    $('.table-wrapper').css('opacity', '0.5');
 
-    const isAdvancedSearch = $(this).attr('id') === 'btnSearchNangCao';
+    // 🏥 Lấy giá trị từ TomSelect
+    const phongBuongSelect = document.querySelector(".tom-select-test")?.tomselect;
+    let idPhongBuong = 0;
 
-    // Tham số lọc cơ bản
+    if (phongBuongSelect) {
+        idPhongBuong = phongBuongSelect.getValue();
+
+        // Nếu TomSelect chưa có value (id), ta dựa theo tên hiển thị để tìm lại id
+        if (!idPhongBuong || idPhongBuong === "0" || idPhongBuong === "") {
+            const tenHienThi = phongBuongSelect.getItem()?.textContent?.trim()?.toLowerCase() || "";
+
+            if (tenHienThi) {
+                const found = listDanToc.find(x =>
+                    x.ten.trim().toLowerCase() === tenHienThi &&
+                    x.idcn === _idcn
+                );
+                if (found) {
+                    idPhongBuong = found.id;
+                    console.log("🔁 Đã tìm lại ID phòng từ tên:", tenHienThi, "→", idPhongBuong);
+                } else {
+                    console.warn("⚠️ Không tìm thấy phòng tương ứng:", tenHienThi);
+                }
+            }
+        }
+    }
+
     const filterParams = {
         IdChiNhanh: _idcn,
         Ngay: $("#txtDateTime").val().trim(),
-        IdPhongBuong: $(".tom-select-test").val() || 0,
+        IdPhongBuong: idPhongBuong || 0,
         TrangThai: $("input[name='statusGroup']:checked").val() || 0
     };
 
-    // Nếu là tìm kiếm nâng cao, thêm các tham số bổ sung
-    if (isAdvancedSearch) {
+    if (isAdvanced) {
         Object.assign(filterParams, {
             MaVaoVien: $("#txtMaVaoVienDS").val().trim(),
             MaBenhNhan: $("#txtMaBenhNhanDS").val().trim(),
@@ -277,8 +369,80 @@ $(document).on("click", "#btnLocDanhSachTTPT, #btnSearchNangCao", function (e) {
     }).fail(function () {
         allData = [];
         renderTable(allData, currentPage, pageSize);
+    }).always(function () {
+        $('#loadingSpinner').hide();
+        $('.table-wrapper').css('opacity', '1');
     });
+}
+
+// ==================== GỌI KHI NHẤN NÚT ====================
+$(document).on("click", "#btnLocDanhSachTTPT", function (e) {
+    e.preventDefault();
+    filterDanhSach(false);
 });
+$(document).on("click", "#btnSearchNangCao", function (e) {
+    e.preventDefault();
+    filterDanhSach(true);
+});
+
+// ==================== GỌI TỰ ĐỘNG KHI NGƯỜI DÙNG THAY ĐỔI ====================
+// Khi chọn ngày
+$(document).on("change", "#txtDateTime", function () {
+    filterDanhSach(false);
+});
+
+// Khi chọn phòng (TomSelect)
+$(document).on("change", ".tom-select-test", function () {
+    filterDanhSach(false);
+});
+
+// Khi đổi radio trạng thái
+$(document).on("change", "input[name='statusGroup']", function () {
+    filterDanhSach(false);
+});
+
+//$(document).on("click", "#btnLocDanhSachTTPT, #btnSearchNangCao", function (e) {
+//    e.preventDefault();
+//    $('#loadingSpinner').show();
+//    $('.table-wrapper').css('opacity', '0.5');
+//    const isAdvancedSearch = $(this).attr('id') === 'btnSearchNangCao';
+
+//    // Tham số lọc cơ bản
+//    const filterParams = {
+//        IdChiNhanh: _idcn,
+//        Ngay: $("#txtDateTime").val().trim(),
+//        IdPhongBuong: $(".tom-select-test").val() || 0,
+//        TrangThai: $("input[name='statusGroup']:checked").val() || 0
+//    };
+
+//    // Nếu là tìm kiếm nâng cao, thêm các tham số bổ sung
+//    if (isAdvancedSearch) {
+//        Object.assign(filterParams, {
+//            MaVaoVien: $("#txtMaVaoVienDS").val().trim(),
+//            MaBenhNhan: $("#txtMaBenhNhanDS").val().trim(),
+//            TenBenhNhan: $("#txtTenBnDS").val().trim(),
+//            CCCD: $("#txtCCCDDS").val().trim(),
+//            MaThe: $("#txtMaTheDS").val().trim(),
+//            SoDienThoai: $("#txtSDTDS").val().trim()
+//        });
+//    }
+
+//    $.post("/thu_thuat_phau_thuat/loc_danh_sach", filterParams, function (response) {
+//        if (response && response.success && Array.isArray(response.data?.data)) {
+//            allData = response.data.data;
+//        } else {
+//            allData = [];
+//        }
+//        currentPage = 1;
+//        renderTable(allData, currentPage, pageSize);
+//    }).fail(function () {
+//        allData = [];
+//        renderTable(allData, currentPage, pageSize);
+//    }).always(function () {   // <- luôn chạy dù thành công hay thất bại
+//        $('#loadingSpinner').hide();
+//        $('.table-wrapper').css('opacity', '1');
+//    });
+//});
 
 
 
