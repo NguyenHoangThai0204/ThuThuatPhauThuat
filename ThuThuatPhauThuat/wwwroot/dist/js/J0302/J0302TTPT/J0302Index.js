@@ -571,7 +571,7 @@ $(document).ready(async function () {
             NguoiKhoa: window.soPhieuGlobalData.nguoiKhoa
         };
 
-        console.error("lỗi đây: ", data);
+
 
         try {
             let saveSuccess = true;
@@ -687,6 +687,59 @@ $(document).ready(async function () {
 
         // 👉 Hiển thị modal xác nhận
         $('#confirmDeleteModal').modal('show');
+    });
+
+    $(document).on('click', '#btn_pdfIndex', function () {
+        var $btn = $(this);
+        var data = {
+            IDVaoVien: selectedIdVaoVien,
+            IDChiDinhChiTiet: selectedIdChiDinhChiTiet,
+            IDChiNhanh: _idcn
+        };
+
+        if (selectedIdChiDinhChiTiet && selectedIdVaoVien && IDPhieuTTPT) {
+            setLoading($btn, true, "Đang tạo..");
+
+            fetch("/thu_thuat_phau_thuat/xuat-pdf-bang-html", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/pdf"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Xuất PDF thất bại");
+                    return res.blob();
+                })
+                .then(blob => {
+                    const pdfUrl = URL.createObjectURL(blob);
+
+                    // 📄 Tạo iframe ẩn để mở file PDF
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = pdfUrl;
+                    document.body.appendChild(iframe);
+
+                    // 🖨️ Khi tải xong, tự động mở giao diện in của Chrome
+                    iframe.onload = function () {
+                        const printWindow = iframe.contentWindow;
+                        printWindow.focus();
+                        printWindow.print();
+                    };
+
+                    toastr.success("Đã tạo và mở file PDF để in");
+                })
+                .catch(err => {
+                    console.error("Lỗi xuất PDF:", err);
+                    toastr.error("Không thể tạo file PDF, vui lòng thử lại");
+                })
+                .finally(() => {
+                    setLoading($btn, false);
+                });
+        } else {
+            toastr.warning("Vui lòng tạo số phiếu trước khi xuất PDF");
+        }
     });
 
     // Khi người dùng bấm nút "Xoá" trong modal
