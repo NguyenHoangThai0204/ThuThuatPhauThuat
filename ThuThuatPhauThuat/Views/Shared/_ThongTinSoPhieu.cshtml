@@ -696,7 +696,7 @@
                 const ketThucDate = e.date;
                 const batDauDate = $batDau.data("DateTimePicker").date();
                 const now = moment();
-                if(!ketThucDate || ketThucDate.isBefore(batDauDate || now)){
+                if(!ketThucDate || ketThucDate.isBefore(batDauDate)){
                     toastr.warning('Thời gian kết thúc phải sau thời gian bắt đầu!');
                     $(this).data("DateTimePicker").date(now);
                 }
