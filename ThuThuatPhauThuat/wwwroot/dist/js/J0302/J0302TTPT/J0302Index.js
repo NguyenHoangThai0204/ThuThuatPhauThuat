@@ -539,7 +539,16 @@ $(document).ready(async function () {
         if (idNguonBenh === null || idNguonBenh === undefined || idNguonBenh === '' || isNaN(idNguonBenh)) {
             idNguonBenh = 1;
         }
+        if (!window.IDPhieuTTPT || window.IDPhieuTTPT === 0) {
 
+            window.soPhieuGlobalData = {
+                idNguonBenh: 1,
+                batDauThuThuat: null,
+                ketThucThuThuat: null,
+                thoiGianKhoa: null,
+                nguoiKhoa: null
+            };
+        }
         var data = {
             SoPhieu: $('#soPhieu').val(),
             IDNguonBenh: idNguonBenh,
