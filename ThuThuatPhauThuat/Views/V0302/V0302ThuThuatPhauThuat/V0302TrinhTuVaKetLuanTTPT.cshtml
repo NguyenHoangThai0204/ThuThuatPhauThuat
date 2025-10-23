@@ -1436,6 +1436,15 @@
             updateToolIndicators();
         }
 
+        function isEditingText() {
+            const activeElement = document.activeElement;
+            return activeElement && (
+                activeElement.tagName === 'INPUT' ||
+                activeElement.tagName === 'TEXTAREA' ||
+                activeElement.isContentEditable
+            );
+        }
+
         function updateCanvasSize() {
             const container = $('.canvas-container-wrapper');
             const width = Math.min(1200, container.width() - 40);
@@ -1452,29 +1461,32 @@
         function setupCanvasEvents() {
             // Mouse down
             fabricCanvas.on('mouse:down', function(options) {
-                const target = options.e.target;
-                if (target && (
-                    target.isContentEditable ||
-                    target.closest('[contenteditable="true"]') ||
-                    target.tagName === 'INPUT' ||
-                    target.tagName === 'TEXTAREA' ||
-                    target.tagName === 'SELECT'
+                const target = options.target; // Kiểm tra target của fabric canvas
+                if (target && target.type === 'i-text') {
+                    return;
+                }
+
+                const domTarget = options.e.target;
+                if (domTarget && (
+                    domTarget.isContentEditable ||
+                    domTarget.closest('[contenteditable="true"]') ||
+                    domTarget.tagName === 'INPUT' ||
+                    domTarget.tagName === 'TEXTAREA' ||
+                    domTarget.tagName === 'SELECT'
                 )) {
                     return;
                 }
+
                 const pointer = fabricCanvas.getPointer(options.e);
                 updateCursorPosition(pointer.x, pointer.y);
+
                 const activeObject = fabricCanvas.getActiveObject();
                 if (activeObject && activeObject.isEditing) {
                     return;
                 }
-                if (activeObject && activeObject.type === 'i-text') {
-                    activeObject.enterEditing();
-                    activeObject.selectAll();
-                    return;
-                }
+
                 if (currentMode === 'select') {
-                    return; 
+                    return;
                 }
 
                 if (currentMode === 'draw') {
@@ -1482,10 +1494,10 @@
                 }
 
                 if (currentMode === 'text') {
-                    const pointer = fabricCanvas.getPointer(options.e);
                     addTextAtPosition(pointer.x, pointer.y);
                     options.e.preventDefault();
                     options.e.stopPropagation();
+                    return; 
                 }
 
                 // Các chế độ vẽ hình dạng
@@ -1494,6 +1506,7 @@
                     startPoint = pointer;
                     createShape(pointer);
                 }
+
                 if (currentMode !== 'select') {
                     options.e.preventDefault();
                     options.e.stopPropagation();
@@ -1867,10 +1880,14 @@
             currentMode = mode;
             updateToolIndicators();
             updateCanvasCursor();
+            const activeObject = fabricCanvas.getActiveObject();
+            if (activeObject && activeObject.isEditing) {
+                activeObject.exitEditing();
+            }
 
             if (mode === 'text') {
                 fabricCanvas.isDrawingMode = false;
-                fabricCanvas.selection = true;
+                fabricCanvas.selection = true; 
                 fabricCanvas.defaultCursor = 'text';
                 fabricCanvas.hoverCursor = 'text';
             } else if (mode === 'draw') {
@@ -1880,31 +1897,26 @@
                 fabricCanvas.hoverCursor = 'crosshair';
             } else if (mode === 'select') {
                 fabricCanvas.isDrawingMode = false;
-                fabricCanvas.selection = true;
+                fabricCanvas.selection = true; 
                 fabricCanvas.defaultCursor = 'default';
                 fabricCanvas.hoverCursor = 'move';
+                fabricCanvas.forEachObject(function(obj) {
+                    if (obj.name !== 'backgroundImage') {
+                        obj.selectable = true;
+                        obj.evented = true;
+                    }
+                });
             } else {
                 fabricCanvas.isDrawingMode = false;
-                fabricCanvas.selection = true;
+                fabricCanvas.selection = true; 
                 fabricCanvas.defaultCursor = 'crosshair';
                 fabricCanvas.hoverCursor = 'crosshair';
             }
-
             if (mode === 'draw' && fabricCanvas.freeDrawingBrush) {
                 fabricCanvas.freeDrawingBrush.color = $('#drawColor').val();
                 fabricCanvas.freeDrawingBrush.width = parseInt($('#strokeWidth').val());
             }
-
-            const activeObject = fabricCanvas.getActiveObject();
-            if (activeObject && activeObject.isEditing) {
-                activeObject.exitEditing();
-            }
-
-            const buttonId = '#btn' + mode.charAt(0).toUpperCase() + mode.slice(1) + 'Mode';
-            $(buttonId).addClass('tool-changed');
-            setTimeout(() => {
-                $(buttonId).removeClass('tool-changed');
-            }, 300);
+            fabricCanvas.renderAll();
         }
 
         function updateToolIndicators() {
@@ -1932,6 +1944,7 @@
         function addTextAtPosition(x, y) {
             showTextInputModal((text) => {
                 if (!text || text.trim() === '') {
+                    setMode('select');
                     return;
                 }
                 textCounter++;
@@ -1948,6 +1961,8 @@
                     evented: true,
                     hasControls: true,
                     hasBorders: true,
+                    lockMovementX: false, 
+                    lockMovementY: false, 
                     cornerStyle: 'circle',
                     cornerColor: '#22c55e',
                     transparentCorners: false,
@@ -1955,12 +1970,13 @@
                     strokeWidth: 0
                 });
                 fabricCanvas.add(fabricText);
-                fabricCanvas.setActiveObject(fabricText);
-                fabricCanvas.renderAll();
-                saveState();
+                setMode('select');
                 setTimeout(() => {
-                    setMode('select');
-                }, 100);
+                    fabricCanvas.setActiveObject(fabricText);
+                    fabricCanvas.renderAll();
+                    saveState();
+                    fabricCanvas.wrapperEl.focus();
+                }, 50);
             });
         }
 
@@ -2064,7 +2080,6 @@
                 const text = textField.value;
                 bsModal.hide();
 
-                // Xóa event listener cũ
                 confirmBtn.removeEventListener('click', handleConfirm);
                 textField.removeEventListener('keydown', handleEnter);
 
@@ -2085,7 +2100,10 @@
             modal.addEventListener('hidden.bs.modal', () => {
                 confirmBtn.removeEventListener('click', handleConfirm);
                 textField.removeEventListener('keydown', handleEnter);
-            });
+                // Chuyển về select mode khi đóng modal
+                setMode('select');
+                fabricCanvas.wrapperEl.focus();
+            }, { once: true }); 
         }
 
         function updateSelectedTextProperties() {
@@ -2314,9 +2332,20 @@
 
         function handleKeyDown(e) {
             if (!fabricCanvas) return;
-
+            // Kiểm tra xem đang focus vào input/textarea không
+            const activeElement = document.activeElement;
+            const isTyping = activeElement && (
+                activeElement.tagName === 'INPUT' ||
+                activeElement.tagName === 'TEXTAREA' ||
+                activeElement.isContentEditable ||
+                activeElement.closest('.modal') 
+            );
             const activeObject = fabricCanvas.getActiveObject();
             if (activeObject && activeObject.isEditing) {
+                return;
+            }
+
+            if (isTyping) {
                 return;
             }
 
@@ -2406,15 +2435,45 @@
                     } else {
                         const cloned = await new Promise((resolve) => {
                             obj.clone((clonedObj) => {
+                                // Tính toán vị trí tương đối so với background
                                 const objLeft = (obj.left - backgroundImage.left) / currentScale;
                                 const objTop = (obj.top - backgroundImage.top) / currentScale;
 
-                                clonedObj.set({
-                                    scaleX: obj.scaleX / currentScale,
-                                    scaleY: obj.scaleY / currentScale,
-                                    left: objLeft,
-                                    top: objTop
-                                });
+                                // Xử lý đặc biệt cho Arrow
+                                if (obj.type === 'arrow') {
+                                    // Transform tọa độ x1, y1, x2, y2 của arrow
+                                    const x1 = (obj.x1 - backgroundImage.left) / currentScale;
+                                    const y1 = (obj.y1 - backgroundImage.top) / currentScale;
+                                    const x2 = (obj.x2 - backgroundImage.left) / currentScale;
+                                    const y2 = (obj.y2 - backgroundImage.top) / currentScale;
+
+                                    clonedObj.set({
+                                        x1: x1,
+                                        y1: y1,
+                                        x2: x2,
+                                        y2: y2,
+                                        strokeWidth: obj.strokeWidth / currentScale,
+                                        left: 0,
+                                        top: 0,
+                                        scaleX: 1,
+                                        scaleY: 1
+                                    });
+                                } else {
+                                    clonedObj.set({
+                                        scaleX: obj.scaleX / currentScale,
+                                        scaleY: obj.scaleY / currentScale,
+                                        left: objLeft,
+                                        top: objTop
+                                    });
+
+                                    // Scale strokeWidth cho các đối tượng khác
+                                    if (obj.strokeWidth) {
+                                        clonedObj.set({
+                                            strokeWidth: obj.strokeWidth / currentScale
+                                        });
+                                    }
+                                }
+
                                 resolve(clonedObj);
                             });
                         });

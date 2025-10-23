@@ -475,6 +475,7 @@ $(document).ready(async function () {
             //    toastr.error(saveMessage);
             //}
             if (saveSuccess) {
+                await ensureTabLoaded(3);
                 if (typeof handleSaveThongTin === 'function') await handleSaveThongTin(true);
                 if (typeof saveTrinhTu === 'function') await saveTrinhTu(true);
                 if (typeof handleSaveEkip === 'function') await handleSaveEkip(true);
@@ -557,7 +558,31 @@ $(document).ready(async function () {
         }
     });
 
+    function ensureTabLoaded(tabNumber) {
+        return new Promise((resolve) => {
+            var tabKey = `${tabNumber}_${selectedIdVaoVien}_${selectedIdChiDinhChiTiet}`;
 
+            if (tabLoaded[tabKey]) {
+                resolve(); // Tab đã load rồi
+                return;
+            }
+
+            var urlMap = {
+                2: "/thu_thuat_phau_thuat/thong_tin",
+                3: "/thu_thuat_phau_thuat/trinh_tu",
+                4: "/thu_thuat_phau_thuat/ekip",
+                5: "/thu_thuat_phau_thuat/ghi_nhan_thuoc_vat_tu"
+            };
+
+            var target = `#tabs-${tabNumber === 2 ? 'thongtin' : tabNumber === 3 ? 'trinhtu' : tabNumber === 4 ? 'ekip' : 'thuoc'}-7`;
+
+            $(target).load(urlMap[tabNumber], function () {
+                khoiTaoJSChoTab(tabNumber);
+                tabLoaded[tabKey] = true;
+                resolve();
+            });
+        });
+    }
 
     $(document).off('click', '.btn-xoa-phieu').on('click', '.btn-xoa-phieu', function (e) {
         e.preventDefault();
