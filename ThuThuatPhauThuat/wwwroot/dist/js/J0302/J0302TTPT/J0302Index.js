@@ -141,12 +141,25 @@ function khoiTaoJSChoTab(tabIndex) {
     }
 }
 
-function formatLocalDateTime(str) {
-    if (!str) return null;
-    const parts = str.split(/[- :]/);
-    if (parts.length < 5) return null;
+function formatLocalDateTime(input) {
+    if (!input) return null;
 
-    const d = new Date(parts[2], parts[1] - 1, parts[0], parts[3], parts[4]);
+    let d;
+
+    // Nếu input là Date object
+    if (input instanceof Date) {
+        d = input;
+    }
+    // Nếu input là string
+    else if (typeof input === 'string') {
+        const parts = input.split(/[- :]/);
+        if (parts.length < 5) return null;
+        d = new Date(parts[2], parts[1] - 1, parts[0], parts[3], parts[4]);
+    }
+    else {
+        return null;
+    }
+
     return d.getFullYear() + "-" +
         ("0" + (d.getMonth() + 1)).slice(-2) + "-" +
         ("0" + d.getDate()).slice(-2) + "T" +
@@ -424,16 +437,16 @@ $(document).ready(async function () {
         var data = {
             SoPhieu: $('#soPhieu').val(),
             IDNguonBenh: idNguonBenh,
-            BatDauThuThuat: formatLocalDateTime(window.soPhieuGlobalData.batDauThuThuat),
-            KetThucThuThuat: formatLocalDateTime(window.soPhieuGlobalData.ketThucThuThuat),
-            ThoiGianKhoa: formatLocalDateTime(window.soPhieuGlobalData.thoiGianKhoa),
+            BatDauThuThuat: formatLocalDateTime(window.soPhieuGlobalData.batDauThuThuat || new Date()),
+            KetThucThuThuat: formatLocalDateTime(window.soPhieuGlobalData.ketThucThuThuat || new Date()),
+            ThoiGianKhoa: formatLocalDateTime(window.soPhieuGlobalData.thoiGianKhoa || new Date()),
             NhomMau: $('#nhomMau').val(),
             YeuToRh: $('#yeuToRh').val(),
             IDVaoVien: selectedIdVaoVien,
             IDChiDinhChiTiet: selectedIdChiDinhChiTiet,
             NguoiKhoa: window.soPhieuGlobalData.nguoiKhoa
         };
-
+        console.error("lỗi đây: ", data);
         try {
             let saveSuccess = true;
             let saveMessage = "";
@@ -618,10 +631,59 @@ $(document).ready(async function () {
         }
     });
 
+    //async function deletePhieuTTPT(idPhieuTTPT, tabIndex) {
+    //    try {
+    //        console.log("🔄 Bắt đầu xóa phiếu:", idPhieuTTPT);
+
+    //        const response = await $.ajax({
+    //            url: '/thu_thuat_phau_thuat/XoaPhieuTTPT',
+    //            type: 'POST',
+    //            dataType: 'json',
+    //            data: { idPhieuTTPT }
+    //        });
+
+    //        if (response && response.success) {
+    //            toastr.success(response.message || "Đã xóa phiếu thành công ✅");
+
+    //            // 🧹 Reset toàn bộ biến toàn cục
+    //            resetGlobalStateAfterDelete();
+
+    //            // 🧼 Reset toàn bộ dữ liệu trong giao diện
+    //            resetAllDataAfterDelete();
+
+    //            // 🔁 Reload lại tất cả tabs (vì dữ liệu liên quan nhau)
+    //            reloadTatCaTabs();
+
+        
+
+    //            // 🔁 Làm mới danh sách phiếu
+    //            reloadDanhSachPhieuSauKhiXoa();
+    //            const activeTab = $('a[data-bs-toggle="tab"].active').attr("href");
+    //            if (activeTab !== "#tabs-danhsach-7") {
+    //                await loadGlobalSoPhieu(true);
+    //            }
+    //            // 🔁 Thông báo parent nếu có
+    //            if (window.parent?.updateDanhSachAfterSave) {
+    //                window.parent.updateDanhSachAfterSave();
+    //            }
+    //            const btnXoa = document.getElementById("btnXoaPhieuTTPT");
+    //            if (btnXoa) {
+    //                btnXoa.disabled = !window.IDPhieuTTPT; // nếu 0 thì disable
+    //                btnXoa.classList.toggle("btn-secondary", !window.IDPhieuTTPT);
+    //                btnXoa.classList.toggle("btn-danger", !!window.IDPhieuTTPT);
+    //            }
+    //            console.log("✅ Hoàn tất quá trình xóa phiếu và reset toàn bộ tabs.");
+    //        } else {
+    //            toastr.error(response?.message || "Xóa phiếu thất bại!");
+    //        }
+    //    } catch (error) {
+    //        console.error("❌ Lỗi khi xóa phiếu:", error);
+    //        toastr.error("Đã xảy ra lỗi khi xóa phiếu!");
+    //    }
+    //}
     async function deletePhieuTTPT(idPhieuTTPT, tabIndex) {
         try {
             console.log("🔄 Bắt đầu xóa phiếu:", idPhieuTTPT);
-
             const response = await $.ajax({
                 url: '/thu_thuat_phau_thuat/XoaPhieuTTPT',
                 type: 'POST',
@@ -638,28 +700,34 @@ $(document).ready(async function () {
                 // 🧼 Reset toàn bộ dữ liệu trong giao diện
                 resetAllDataAfterDelete();
 
-                // 🔁 Reload lại tất cả tabs (vì dữ liệu liên quan nhau)
+                // 🔁 Reload lại tất cả tabs
                 reloadTatCaTabs();
-
-        
 
                 // 🔁 Làm mới danh sách phiếu
                 reloadDanhSachPhieuSauKhiXoa();
+
                 const activeTab = $('a[data-bs-toggle="tab"].active').attr("href");
+
                 if (activeTab !== "#tabs-danhsach-7") {
                     await loadGlobalSoPhieu(true);
+                } else {
+                    // ✅ Ở tab danh sách: ẨN container thay vì xóa nội dung
+                    $('#global-so-phieu-container').hide();
                 }
+
                 // 🔁 Thông báo parent nếu có
                 if (window.parent?.updateDanhSachAfterSave) {
                     window.parent.updateDanhSachAfterSave();
                 }
+
                 const btnXoa = document.getElementById("btnXoaPhieuTTPT");
                 if (btnXoa) {
-                    btnXoa.disabled = !window.IDPhieuTTPT; // nếu 0 thì disable
+                    btnXoa.disabled = !window.IDPhieuTTPT;
                     btnXoa.classList.toggle("btn-secondary", !window.IDPhieuTTPT);
                     btnXoa.classList.toggle("btn-danger", !!window.IDPhieuTTPT);
                 }
-                console.log("✅ Hoàn tất quá trình xóa phiếu và reset toàn bộ tabs.");
+
+                console.log("✅ Hoàn tất quá trình xóa phiếu.");
             } else {
                 toastr.error(response?.message || "Xóa phiếu thất bại!");
             }
@@ -668,7 +736,6 @@ $(document).ready(async function () {
             toastr.error("Đã xảy ra lỗi khi xóa phiếu!");
         }
     }
-
     function resetGlobalStateAfterDelete() {
         window.IDPhieuTTPT = 0;
         // window.selectedIdVaoVien = 0;
