@@ -375,254 +375,359 @@
         }, 50); // delay nhẹ 50ms để DOM chắc chắn có <select>
     }
 
-    async function khoiTaoThongTinSoPhieu(tabIndex, isEmpty) {
-        // Load dữ liệu nguồn bệnh
-        await fetchNguonBenhData();
+    // async function khoiTaoThongTinSoPhieu(tabIndex, isEmpty) {
+    //     Load dữ liệu nguồn bệnh
+    //     await fetchNguonBenhData();
 
-        // Khởi tạo TomSelect cho nguồn bệnh
-        initNguonBenhTomSelect(tabIndex);
+    //     Khởi tạo TomSelect cho nguồn bệnh
+    //     initNguonBenhTomSelect(tabIndex);
 
-        // Khởi tạo datetime picker cho các trường Bắt đầu và Kết thúc thủ thuật
-        const selectorBatDauKetThuc = '.txtDateTimeBatDauThuThuat-' + tabIndex +
-                                     ', .txtDateTimeKetThucThuThuat-' + tabIndex;
+    //     Khởi tạo datetime picker cho các trường Bắt đầu và Kết thúc thủ thuật
+    //     const selectorBatDauKetThuc = '.txtDateTimeBatDauThuThuat-' + tabIndex +
+    //                                  ', .txtDateTimeKetThucThuThuat-' + tabIndex;
 
-        $(selectorBatDauKetThuc).datetimepicker({
-            format: 'DD-MM-YYYY HH:mm:ss',
-            locale: 'vi',
-            useCurrent: false,
-            showTodayButton: true,
-            showClear: true,
-            showClose: true,
-            calendarWeeks: false, // Ẩn tuần trong lịch
-            tooltips: {
-                today: 'Chuyển đến hôm nay',
-                clear: 'Xóa lựa chọn',
-                close: 'Đóng',
-                selectMonth: 'Chọn tháng',
-                prevMonth: 'Tháng trước',
-                nextMonth: 'Tháng sau',
-                selectYear: 'Chọn năm',
-                prevYear: 'Năm trước',
-                nextYear: 'Năm sau',
-                selectTime: 'Chọn giờ'
-            },
-            icons: {
-                time: 'ti ti-clock',
-                date: 'ti ti-calendar-event',
-                up: 'ti ti-chevron-up',
-                down: 'ti ti-chevron-down',
-                previous: 'ti ti-chevron-left',
-                next: 'ti ti-chevron-right',
-                today: '',
-                clear: 'ti ti-trash',
-                close: 'ti ti-x'
+    //     $(selectorBatDauKetThuc).datetimepicker({
+    //         format: 'DD-MM-YYYY HH:mm:ss',
+    //         locale: 'vi',
+    //         useCurrent: false,
+    //         showTodayButton: true,
+    //         showClear: true,
+    //         showClose: true,
+    //         calendarWeeks: false, Ẩn tuần trong lịch
+    //         tooltips: {
+    //             today: 'Chuyển đến hôm nay',
+    //             clear: 'Xóa lựa chọn',
+    //             close: 'Đóng',
+    //             selectMonth: 'Chọn tháng',
+    //             prevMonth: 'Tháng trước',
+    //             nextMonth: 'Tháng sau',
+    //             selectYear: 'Chọn năm',
+    //             prevYear: 'Năm trước',
+    //             nextYear: 'Năm sau',
+    //             selectTime: 'Chọn giờ'
+    //         },
+    //         icons: {
+    //             time: 'ti ti-clock',
+    //             date: 'ti ti-calendar-event',
+    //             up: 'ti ti-chevron-up',
+    //             down: 'ti ti-chevron-down',
+    //             previous: 'ti ti-chevron-left',
+    //             next: 'ti ti-chevron-right',
+    //             today: '',
+    //             clear: 'ti ti-trash',
+    //             close: 'ti ti-x'
+    //         }
+    //     })
+    //     .on('dp.show', function () {
+    //         const $widget = $('.bootstrap-datetimepicker-widget:last');
+    //         const $input = $(this);
+    //         const offset = $input.offset();
+    //         const inputHeight = $input.outerHeight();
+    //         const widgetHeight = $widget.outerHeight();
+    //         const widgetWidth = $widget.outerWidth();
+    //         const winWidth = $(window).width();
+    //         const winHeight = $(window).height();
+    //         const scrollTop = $(window).scrollTop();
+
+    //         THU NHỎ BẢNG LỊCH
+    //         $widget.css({
+    //             'transform': 'scale(0.85)',
+    //             'transform-origin': 'top center'
+    //         });
+
+    //         Tính toán lại kích thước sau khi scale
+    //         const scaledHeight = widgetHeight * 0.85;
+    //         const scaledWidth = widgetWidth * 0.85;
+
+    //         VỊ TRÍ BẢNG LỊCH - GẦN Ô INPUT HƠN (bên phải input) và XÍCH QUA TRÁI 30px
+    //         let left = offset.left + $input.outerWidth() + 10 - 180;
+    //         let top = offset.top - 20;
+
+    //         Nếu không đủ chỗ bên phải → hiển thị bên trái
+    //         if (left + scaledWidth > winWidth - 10) {
+    //             left = offset.left - scaledWidth - 10;
+    //         }
+
+    //         Nếu không đủ chỗ trên → hiển thị bên dưới
+    //         if (top < scrollTop + 10) {
+    //             top = offset.top + inputHeight + 10;
+    //         }
+
+    //         Đảm bảo không tràn màn hình
+    //         if (left < 10) left = 10;
+    //         if (left + scaledWidth > winWidth - 10) {
+    //             left = winWidth - scaledWidth - 10;
+    //         }
+    //         if (top < scrollTop + 10) top = scrollTop + 10;
+    //         if (top + scaledHeight > scrollTop + winHeight - 10) {
+    //             top = scrollTop + winHeight - scaledHeight - 10;
+    //         }
+
+    //         Gán vị trí popup
+    //         $widget.appendTo('body').css({
+    //             position: 'absolute',
+    //             top: top,
+    //             left: left,
+    //             zIndex: 999999
+    //         }).addClass('active-popup');
+    //     })
+    //     .on('dp.hide', function () {
+    //         $('.bootstrap-datetimepicker-widget')
+    //             .removeClass('active-popup')
+    //             .css('transform', '');
+    //     });
+
+    //     KHỞI TẠO RIÊNG CHO THỜI GIAN KHÓA
+    //     const selectorThoiGianKhoa = '.txtDateTimeThoiGianKhoa-' + tabIndex;
+
+    //         $(selectorThoiGianKhoa).datetimepicker({
+    //             format: 'DD-MM-YYYY HH:mm:ss',
+    //             locale: 'vi',
+    //             useCurrent: false,
+    //             showTodayButton: true,
+    //             showClear: true,
+    //             showClose: true,
+    //         calendarWeeks: false, Ẩn tuần trong lịch
+    //             tooltips: {
+    //                 today: 'Chuyển đến hôm nay',
+    //                 clear: 'Xóa lựa chọn',
+    //                 close: 'Đóng',
+    //                 selectMonth: 'Chọn tháng',
+    //                 prevMonth: 'Tháng trước',
+    //                 nextMonth: 'Tháng sau',
+    //                 selectYear: 'Chọn năm',
+    //                 prevYear: 'Năm trước',
+    //                 nextYear: 'Năm sau',
+    //                 selectTime: 'Chọn giờ'
+    //             },
+    //             icons: {
+    //                 time: 'ti ti-clock',
+    //                 date: 'ti ti-calendar-event',
+    //                 up: 'ti ti-chevron-up',
+    //                 down: 'ti ti-chevron-down',
+    //                 previous: 'ti ti-chevron-left',
+    //                 next: 'ti ti-chevron-right',
+    //                 today: '',
+    //                 clear: 'ti ti-trash',
+    //                 close: 'ti ti-x'
+    //             }
+    //         })
+    //         .on('dp.show', function () {
+    //             const $widget = $('.bootstrap-datetimepicker-widget:last');
+    //             const $input = $(this);
+    //             const offset = $input.offset();
+    //             const inputHeight = $input.outerHeight();
+    //             const widgetHeight = $widget.outerHeight();
+    //             const widgetWidth = $widget.outerWidth();
+    //             const winWidth = $(window).width();
+    //             const winHeight = $(window).height();
+    //             const scrollTop = $(window).scrollTop();
+
+    //             THU NHỎ BẢNG LỊCH
+    //             $widget.css({
+    //                 'transform': 'scale(0.85)',
+    //                 'transform-origin': 'top center'
+    //             });
+
+    //             Tính toán lại kích thước sau khi scale
+    //             const scaledHeight = widgetHeight * 0.85;
+    //             const scaledWidth = widgetWidth * 0.85;
+
+    //             VỊ TRÍ BẢNG LỊCH RIÊNG CHO THỜI GIAN KHÓA - THẤP HƠN 80px
+    //             let left = offset.left + $input.outerWidth() + 10 - 180;
+    //             let top = offset.top - 20 + 100; THÊM 80px để nằm thấp hơn
+
+    //             Nếu không đủ chỗ bên phải → hiển thị bên trái
+    //             if (left + scaledWidth > winWidth - 10) {
+    //                 left = offset.left - scaledWidth - 10;
+    //             }
+
+    //             Nếu không đủ chỗ trên → hiển thị bên dưới
+    //             if (top < scrollTop + 10) {
+    //                 top = offset.top + inputHeight + 10;
+    //             }
+
+    //             Đảm bảo không tràn màn hình
+    //             if (left < 10) left = 10;
+    //             if (left + scaledWidth > winWidth - 10) {
+    //                 left = winWidth - scaledWidth - 10;
+    //             }
+    //             if (top < scrollTop + 10) top = scrollTop + 10;
+    //             if (top + scaledHeight > scrollTop + winHeight - 10) {
+    //                 top = scrollTop + winHeight - scaledHeight - 10;
+    //             }
+
+    //             Gán vị trí popup
+    //             $widget.appendTo('body').css({
+    //                 position: 'absolute',
+    //                 top: top,
+    //                 left: left,
+    //                 zIndex: 999999
+    //             }).addClass('active-popup');
+    //         })
+    //         .on('dp.hide', function () {
+    //             $('.bootstrap-datetimepicker-widget')
+    //                 .removeClass('active-popup')
+    //                 .css('transform', '');
+    //         });
+
+    //     Thêm CSS RIÊNG cho các ô input datetime
+    //     const style = document.createElement('style');
+
+    //         Inputmask({
+    //     alias: "datetime",
+    //     inputFormat: "dd-mm-yyyy HH:MM:ss",
+    //     placeholder: "dd-mm-yyyy hh:mm:ss",
+    //     clearIncomplete: true,
+    //     showMaskOnHover: false,
+    //     showMaskOnFocus: true
+    // }).mask(selectorBatDauKetThuc);
+    // Inputmask({
+    //     alias: "datetime",
+    //     inputFormat: "dd-mm-yyyy HH:MM:ss",
+    //     placeholder: "dd-mm-yyyy hh:mm:ss",
+    //     clearIncomplete: true,
+    //     showMaskOnHover: false,
+    //     showMaskOnFocus: true
+    // }).mask(selectorThoiGianKhoa);
+    //     style.textContent = `
+    //         /* CSS CHO BẮT ĐẦU VÀ KẾT THÚC THỦ THUẬT */
+    //         .txtDateTimeBatDauThuThuat-${tabIndex},
+    //         .txtDateTimeKetThucThuThuat-${tabIndex} {
+    //             /* CSS riêng cho Bắt đầu và Kết thúc */
+    //             background-color: #f8f9fa;
+    //             border: 1px solid #ced4da;
+    //         }
+
+    //         /* CSS RIÊNG CHO THỜI GIAN KHÓA */
+    //         .txtDateTimeThoiGianKhoa-${tabIndex} {
+    //             border: 1px solid #ffeaa7;
+    //             color: #856404;
+    //             font-weight: bold;
+    //         }
+
+    //         .bootstrap-datetimepicker-widget {
+    //             border: 1px solid #ccc;
+    //             border-radius: 8px;
+    //             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    //         }
+    //     `;
+    //     document.head.appendChild(style);
+
+    //     Nếu phiếu rỗng → set mặc định là thời gian hiện tại
+    //     if (isEmpty) {
+    //         var now = moment().format("DD-MM-YYYY HH:mm:ss");
+    //         $('.txtDateTimeBatDauThuThuat-' + tabIndex).val(now);
+    //         $('.txtDateTimeKetThucThuThuat-' + tabIndex).val(now);
+    //         $('.txtDateTimeThoiGianKhoa-' + tabIndex).val(now);
+    //     }
+    // }
+        async function khoiTaoThongTinSoPhieu(tabIndex, isEmpty) {
+            // Load dữ liệu nguồn bệnh
+            await fetchNguonBenhData();
+
+            // Khởi tạo TomSelect cho nguồn bệnh
+            initNguonBenhTomSelect(tabIndex);
+
+            const $batDau = $('.txtDateTimeBatDauThuThuat-' + tabIndex);
+            const $ketThuc = $('.txtDateTimeKetThucThuThuat-' + tabIndex);
+            const $thoiGianKhoa = $('.txtDateTimeThoiGianKhoa-' + tabIndex);
+
+            function showAlert(message) {
+                alert(message); // Có thể thay bằng toastr hoặc modal
             }
-        })
-        .on('dp.show', function () {
-            const $widget = $('.bootstrap-datetimepicker-widget:last');
-            const $input = $(this);
-            const offset = $input.offset();
-            const inputHeight = $input.outerHeight();
-            const widgetHeight = $widget.outerHeight();
-            const widgetWidth = $widget.outerWidth();
-            const winWidth = $(window).width();
-            const winHeight = $(window).height();
-            const scrollTop = $(window).scrollTop();
 
-            // THU NHỎ BẢNG LỊCH
-            $widget.css({
-                'transform': 'scale(0.85)',
-                'transform-origin': 'top center'
-            });
+            function setupPopupPosition($input, offsetTopExtra = 0) {
+                $input.on('dp.show', function () {
+                    const $widget = $('.bootstrap-datetimepicker-widget:last');
+                    const offset = $input.offset();
+                    const inputHeight = $input.outerHeight();
+                    const widgetHeight = $widget.outerHeight();
+                    const widgetWidth = $widget.outerWidth();
+                    const winWidth = $(window).width();
+                    const winHeight = $(window).height();
+                    const scrollTop = $(window).scrollTop();
 
-            // Tính toán lại kích thước sau khi scale
-            const scaledHeight = widgetHeight * 0.85;
-            const scaledWidth = widgetWidth * 0.85;
+                    $widget.css({'transform': 'scale(0.85)','transform-origin': 'top center'});
 
-            // VỊ TRÍ BẢNG LỊCH - GẦN Ô INPUT HƠN (bên phải input) và XÍCH QUA TRÁI 30px
-            let left = offset.left + $input.outerWidth() + 10 - 180;
-            let top = offset.top - 20;
+                    const scaledHeight = widgetHeight * 0.85;
+                    const scaledWidth = widgetWidth * 0.85;
 
-            // Nếu không đủ chỗ bên phải → hiển thị bên trái
-            if (left + scaledWidth > winWidth - 10) {
-                left = offset.left - scaledWidth - 10;
+                    let left = offset.left + $input.outerWidth() + 10 - 180;
+                    let top = offset.top - 20 + offsetTopExtra;
+
+                    if (left + scaledWidth > winWidth - 10) left = offset.left - scaledWidth - 10;
+                    if (top < scrollTop + 10) top = offset.top + inputHeight + 10;
+                    if (left < 10) left = 10;
+                    if (left + scaledWidth > winWidth - 10) left = winWidth - scaledWidth - 10;
+                    if (top < scrollTop + 10) top = scrollTop + 10;
+                    if (top + scaledHeight > scrollTop + winHeight - 10) top = scrollTop + winHeight - scaledHeight - 10;
+
+                    $widget.appendTo('body').css({position: 'absolute', top: top, left: left, zIndex: 999999}).addClass('active-popup');
+                }).on('dp.hide', function () {
+                    $('.bootstrap-datetimepicker-widget').removeClass('active-popup').css('transform', '');
+                });
             }
 
-            // Nếu không đủ chỗ trên → hiển thị bên dưới
-            if (top < scrollTop + 10) {
-                top = offset.top + inputHeight + 10;
-            }
-
-            // Đảm bảo không tràn màn hình
-            if (left < 10) left = 10;
-            if (left + scaledWidth > winWidth - 10) {
-                left = winWidth - scaledWidth - 10;
-            }
-            if (top < scrollTop + 10) top = scrollTop + 10;
-            if (top + scaledHeight > scrollTop + winHeight - 10) {
-                top = scrollTop + winHeight - scaledHeight - 10;
-            }
-
-            // Gán vị trí popup
-            $widget.appendTo('body').css({
-                position: 'absolute',
-                top: top,
-                left: left,
-                zIndex: 999999
-            }).addClass('active-popup');
-        })
-        .on('dp.hide', function () {
-            $('.bootstrap-datetimepicker-widget')
-                .removeClass('active-popup')
-                .css('transform', '');
-        });
-
-        // KHỞI TẠO RIÊNG CHO THỜI GIAN KHÓA
-        const selectorThoiGianKhoa = '.txtDateTimeThoiGianKhoa-' + tabIndex;
-
-            $(selectorThoiGianKhoa).datetimepicker({
+            // Khởi tạo datetime picker Bắt đầu
+            $batDau.datetimepicker({
                 format: 'DD-MM-YYYY HH:mm:ss',
                 locale: 'vi',
                 useCurrent: false,
                 showTodayButton: true,
                 showClear: true,
                 showClose: true,
-            calendarWeeks: false, // Ẩn tuần trong lịch
-                tooltips: {
-                    today: 'Chuyển đến hôm nay',
-                    clear: 'Xóa lựa chọn',
-                    close: 'Đóng',
-                    selectMonth: 'Chọn tháng',
-                    prevMonth: 'Tháng trước',
-                    nextMonth: 'Tháng sau',
-                    selectYear: 'Chọn năm',
-                    prevYear: 'Năm trước',
-                    nextYear: 'Năm sau',
-                    selectTime: 'Chọn giờ'
-                },
-                icons: {
-                    time: 'ti ti-clock',
-                    date: 'ti ti-calendar-event',
-                    up: 'ti ti-chevron-up',
-                    down: 'ti ti-chevron-down',
-                    previous: 'ti ti-chevron-left',
-                    next: 'ti ti-chevron-right',
-                    today: '',
-                    clear: 'ti ti-trash',
-                    close: 'ti ti-x'
-                }
-            })
-            .on('dp.show', function () {
-                const $widget = $('.bootstrap-datetimepicker-widget:last');
-                const $input = $(this);
-                const offset = $input.offset();
-                const inputHeight = $input.outerHeight();
-                const widgetHeight = $widget.outerHeight();
-                const widgetWidth = $widget.outerWidth();
-                const winWidth = $(window).width();
-                const winHeight = $(window).height();
-                const scrollTop = $(window).scrollTop();
-
-                // THU NHỎ BẢNG LỊCH
-                $widget.css({
-                    'transform': 'scale(0.85)',
-                    'transform-origin': 'top center'
-                });
-
-                // Tính toán lại kích thước sau khi scale
-                const scaledHeight = widgetHeight * 0.85;
-                const scaledWidth = widgetWidth * 0.85;
-
-                // VỊ TRÍ BẢNG LỊCH RIÊNG CHO THỜI GIAN KHÓA - THẤP HƠN 80px
-                let left = offset.left + $input.outerWidth() + 10 - 180;
-                let top = offset.top - 20 + 100; // THÊM 80px để nằm thấp hơn
-
-                // Nếu không đủ chỗ bên phải → hiển thị bên trái
-                if (left + scaledWidth > winWidth - 10) {
-                    left = offset.left - scaledWidth - 10;
-                }
-
-                // Nếu không đủ chỗ trên → hiển thị bên dưới
-                if (top < scrollTop + 10) {
-                    top = offset.top + inputHeight + 10;
-                }
-
-                // Đảm bảo không tràn màn hình
-                if (left < 10) left = 10;
-                if (left + scaledWidth > winWidth - 10) {
-                    left = winWidth - scaledWidth - 10;
-                }
-                if (top < scrollTop + 10) top = scrollTop + 10;
-                if (top + scaledHeight > scrollTop + winHeight - 10) {
-                    top = scrollTop + winHeight - scaledHeight - 10;
-                }
-
-                // Gán vị trí popup
-                $widget.appendTo('body').css({
-                    position: 'absolute',
-                    top: top,
-                    left: left,
-                    zIndex: 999999
-                }).addClass('active-popup');
-            })
-            .on('dp.hide', function () {
-                $('.bootstrap-datetimepicker-widget')
-                    .removeClass('active-popup')
-                    .css('transform', '');
+                calendarWeeks: false,
+                icons: {time:'ti ti-clock',date:'ti ti-calendar-event',up:'ti ti-chevron-up',down:'ti ti-chevron-down',previous:'ti ti-chevron-left',next:'ti ti-chevron-right',clear:'ti ti-trash',close:'ti ti-x'}
             });
+            setupPopupPosition($batDau);
 
-        // Thêm CSS RIÊNG cho các ô input datetime
-        const style = document.createElement('style');
+            // Khởi tạo datetime picker Kết thúc với ràng buộc ≥ Bắt đầu
+            $ketThuc.datetimepicker({
+    format: 'DD-MM-YYYY HH:mm:ss',
+                locale: 'vi',
+                useCurrent: false,
+                showTodayButton: true,
+                showClear: true,
+                showClose: true,
+                calendarWeeks: false,
+                icons: {time:'ti ti-clock',date:'ti ti-calendar-event',up:'ti ti-chevron-up',down:'ti ti-chevron-down',previous:'ti ti-chevron-left',next:'ti ti-chevron-right',clear:'ti ti-trash',close:'ti ti-x'}
+            }).on('dp.change', function(e){
+                const ketThucDate = e.date;
+                const batDauDate = $batDau.data("DateTimePicker").date();
+                const now = moment();
+                if(!ketThucDate || ketThucDate.isBefore(batDauDate || now)){
+                    toastr.warning('Thời gian kết thúc phải sau thời gian bắt đầu!');
+                    $(this).data("DateTimePicker").date(now);
+                }
+            });
+            setupPopupPosition($ketThuc);
 
-            Inputmask({
-        alias: "datetime",
-        inputFormat: "dd-mm-yyyy HH:MM:ss",
-        placeholder: "dd-mm-yyyy hh:mm:ss",
-        clearIncomplete: true,
-        showMaskOnHover: false,
-        showMaskOnFocus: true
-    }).mask(selectorBatDauKetThuc);
-    Inputmask({
-        alias: "datetime",
-        inputFormat: "dd-mm-yyyy HH:MM:ss",
-        placeholder: "dd-mm-yyyy hh:mm:ss",
-        clearIncomplete: true,
-        showMaskOnHover: false,
-        showMaskOnFocus: true
-    }).mask(selectorThoiGianKhoa);
-        style.textContent = `
-            /* CSS CHO BẮT ĐẦU VÀ KẾT THÚC THỦ THUẬT */
-            .txtDateTimeBatDauThuThuat-${tabIndex},
-            .txtDateTimeKetThucThuThuat-${tabIndex} {
-                /* CSS riêng cho Bắt đầu và Kết thúc */
-                background-color: #f8f9fa;
-                border: 1px solid #ced4da;
+            // Khởi tạo datetime picker Thời gian khóa
+            $thoiGianKhoa.datetimepicker({
+                format: 'DD-MM-YYYY HH:mm:ss',
+                locale: 'vi',
+                useCurrent: false,
+                showTodayButton: true,
+                showClear: true,
+                showClose: true,
+                calendarWeeks: false,
+                icons: {time:'ti ti-clock',date:'ti ti-calendar-event',up:'ti ti-chevron-up',down:'ti ti-chevron-down',previous:'ti ti-chevron-left',next:'ti ti-chevron-right',clear:'ti ti-trash',close:'ti ti-x'}
+            });
+            setupPopupPosition($thoiGianKhoa, 100);
+
+            // Inputmask
+            Inputmask({alias:"datetime",inputFormat:"dd-mm-yyyy HH:MM:ss",placeholder:"dd-mm-yyyy hh:mm:ss",clearIncomplete:true}).mask($batDau.add($ketThuc));
+            Inputmask({alias:"datetime",inputFormat:"dd-mm-yyyy HH:MM:ss",placeholder:"dd-mm-yyyy hh:mm:ss",clearIncomplete:true}).mask($thoiGianKhoa);
+
+            // Nếu phiếu rỗng → set mặc định là thời gian hiện tại
+            if(isEmpty){
+                const now = moment().format("DD-MM-YYYY HH:mm:ss");
+                $batDau.val(now);
+                $ketThuc.val(now);
+                $thoiGianKhoa.val(now);
             }
-
-            /* CSS RIÊNG CHO THỜI GIAN KHÓA */
-            .txtDateTimeThoiGianKhoa-${tabIndex} {
-                border: 1px solid #ffeaa7;
-                color: #856404;
-                font-weight: bold;
-            }
-
-            .bootstrap-datetimepicker-widget {
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Nếu phiếu rỗng → set mặc định là thời gian hiện tại
-        if (isEmpty) {
-            var now = moment().format("DD-MM-YYYY HH:mm:ss");
-            $('.txtDateTimeBatDauThuThuat-' + tabIndex).val(now);
-            $('.txtDateTimeKetThucThuThuat-' + tabIndex).val(now);
-            $('.txtDateTimeThoiGianKhoa-' + tabIndex).val(now);
         }
-    }
-
     khoiTaoThongTinSoPhieu(@tabIndex, @(isEmptyModel.ToString().ToLower()));
 
     // Hàm để lấy giá trị nguồn bệnh đã chọn (có thể sử dụng khi save form)

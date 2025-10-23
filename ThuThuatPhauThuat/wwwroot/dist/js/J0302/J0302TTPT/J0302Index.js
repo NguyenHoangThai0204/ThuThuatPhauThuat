@@ -641,12 +641,14 @@ $(document).ready(async function () {
                 // 🔁 Reload lại tất cả tabs (vì dữ liệu liên quan nhau)
                 reloadTatCaTabs();
 
-                // 🔁 Load lại global số phiếu
-                await loadGlobalSoPhieu(true);
+        
 
                 // 🔁 Làm mới danh sách phiếu
                 reloadDanhSachPhieuSauKhiXoa();
-
+                const activeTab = $('a[data-bs-toggle="tab"].active').attr("href");
+                if (activeTab !== "#tabs-danhsach-7") {
+                    await loadGlobalSoPhieu(true);
+                }
                 // 🔁 Thông báo parent nếu có
                 if (window.parent?.updateDanhSachAfterSave) {
                     window.parent.updateDanhSachAfterSave();
