@@ -750,7 +750,7 @@ sequence-editor-panel .editor-content {
     }
 
     .editor-content {
-        font-size: 16px; /* Ngăn chặn zoom trên iOS */
+        font-size: 16px;
     }
 
     .editor-summary {
@@ -758,8 +758,8 @@ sequence-editor-panel .editor-content {
     }
 }
 .table-wrapper {
-    height: 50vh; /* Hoặc chiều cao bạn mong muốn */
-    overflow: auto; /* Cho phép cuộn cả ngang và dọc */
+    height: 50vh;
+    overflow: auto; 
     border: 1px solid #dee2e6;
 }
 
@@ -768,28 +768,25 @@ sequence-editor-panel .editor-content {
     border-collapse: collapse;
 }
 
-    /* Quan trọng: Làm cho toàn bộ header dính lại ở trên cùng */
     #templateListTable thead th {
         position: sticky;
-        top: 0; /* Dính vào cạnh trên của container cuộn */
-        background-color: #f8f9fa; /* Màu nền để che nội dung bên dưới */
-        z-index: 99; /* Đặt z-index cao hơn tbody */
+        top: 0; 
+        background-color: #f8f9fa;
+        z-index: 99; 
         border-bottom: 2px solid #dee2e6;
     }
 
-    /* Cột thao tác trong tbody */
     #templateListTable tbody td.sticky-col-template {
         position: sticky;
-        right: 0; /* Dính vào cạnh phải */
-        background-color: #ffffff; /* Màu nền trắng để che nội dung */
-        z-index: 1; /* z-index thấp hơn header */
+        right: 0; 
+        background-color: #ffffff; 
+        z-index: 1; 
         border-left: 1px solid #dee2e6;
     }
 
-    /* Ô giao nhau giữa header và cột sticky (góc trên bên phải) */
     #templateListTable thead th.sticky-col-template {
         right: 0;
-        z-index: 99; /* Phải có z-index cao nhất để nằm trên tất cả */
+        z-index: 99;
     }
 
 textarea.form-control {
