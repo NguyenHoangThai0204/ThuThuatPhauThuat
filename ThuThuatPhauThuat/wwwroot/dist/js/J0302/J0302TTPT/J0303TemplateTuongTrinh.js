@@ -216,7 +216,7 @@
                 <tr>
                     <td><span class="text-muted">${index + 1}</span></td>
                     <td><a href="#" class="text-reset">${template.ten}</a></td>
-                    <td class="text-center">
+                    <td class="text-center sticky-col-template">
                         <a href="#" class="btn btn-sm btn-outline-primary btn-edit" data-id="${template.id}" aria-label="Sửa mẫu">Sửa</a>
                         <a href="#" class="btn btn-sm btn-outline-danger ms-2 btn-delete" data-id="${template.id}" aria-label="Xóa mẫu">Xóa</a>
                     </td>

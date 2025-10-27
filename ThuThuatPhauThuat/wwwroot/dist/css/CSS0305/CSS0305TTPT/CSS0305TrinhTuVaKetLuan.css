@@ -758,10 +758,41 @@ sequence-editor-panel .editor-content {
     }
 }
 .table-wrapper {
-    height: 100%;
-    overflow-y: auto; 
+    height: 50vh; /* Hoặc chiều cao bạn mong muốn */
+    overflow: auto; /* Cho phép cuộn cả ngang và dọc */
+    border: 1px solid #dee2e6;
 }
+
+#templateListTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    /* Quan trọng: Làm cho toàn bộ header dính lại ở trên cùng */
+    #templateListTable thead th {
+        position: sticky;
+        top: 0; /* Dính vào cạnh trên của container cuộn */
+        background-color: #f8f9fa; /* Màu nền để che nội dung bên dưới */
+        z-index: 99; /* Đặt z-index cao hơn tbody */
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    /* Cột thao tác trong tbody */
+    #templateListTable tbody td.sticky-col-template {
+        position: sticky;
+        right: 0; /* Dính vào cạnh phải */
+        background-color: #ffffff; /* Màu nền trắng để che nội dung */
+        z-index: 1; /* z-index thấp hơn header */
+        border-left: 1px solid #dee2e6;
+    }
+
+    /* Ô giao nhau giữa header và cột sticky (góc trên bên phải) */
+    #templateListTable thead th.sticky-col-template {
+        right: 0;
+        z-index: 99; /* Phải có z-index cao nhất để nằm trên tất cả */
+    }
 
 textarea.form-control {
     resize: none;
 }
+
